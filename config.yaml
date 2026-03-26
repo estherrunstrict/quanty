@@ -1,16 +1,279 @@
-#홈페이지에서 API서비스 신청시 받은 Appkey, Appsecret 값 설정
-APP_KEY: ""
-APP_SECRET: ""
+# ============================================================
+# SECRETS are in .env file (not committed to git)
+# Required env vars: KIS_APP_KEY, KIS_APP_SECRET, KIS_CANO,
+#   KIS_ACNT_PRDT_CD, KIS_URL_BASE, UPBIT_ACCESS_KEY,
+#   UPBIT_SECRET_KEY, DISCORD_WEBHOOK_URL
+# ============================================================
 
-#계좌번호 앞 8자리
-CANO: ""
-#계좌번호 뒤 2자리
-ACNT_PRDT_CD: "01"
+# --- Korea Strategy Parameters (DISABLED — replaced by ETF Momentum) ---
+korea_trade:
+  TICKER: "233740"
+  RSI_PERIOD: 14
+  SMA_PERIOD: 200
+  RSI_OVERSOLD: 30
+  RSI_OVERBOUGHT: 70
+  INVEST_RATIO: 0.95 # 사용 가능 현금의 95%를 투자
+  ALLOCATION_RATIO: 0.5
 
-#실전투자
-URL_BASE: "https://openapi.koreainvestment.com:9443"
-#모의투자
-# URL_BASE: "https://openapivts.koreainvestment.com:29443"
+# --- Korea ETF Momentum Rotation Strategy ---
+# Multi-TF Dual Momentum: KODEX Silver Futures + TIGER Raw Materials
+# Backtest (2014-2026): CAGR 40.1%, MDD -21.7%, Sharpe 1.24
+korea_etf_momentum:
+  etfs:
+    "144600": "KODEX Silver Futures"
+    "139220": "TIGER Raw Materials"
+  # Strategy: Multi-TF Dual Momentum (Top 1, winner takes all)
+  # Weights: 40% 1m + 30% 3m + 20% 6m + 10% 12m
+  # Absolute filter: 12m return > 0, else go to CASH
+  # Rebalance: Monthly (first trading day of each month)
+  # Budget is set in capital_management section above
+  invest_ratio: 0.95            # 95% of budget (slippage buffer)
+  paper_trading: false          # true = paper, false = LIVE
 
-#디스코드 웹훅 URL
-DISCORD_WEBHOOK_URL: ""
+# --- USA Strategy Parameters ---
+usa_trade:
+  TICKER: "VTV"
+  EXCHANGE_CODE: "AMEX" # VTV is on NYSE Arca, KIS uses NAS for major US exchanges
+  # TWELVEDATA_API_KEY moved to .env
+  RSI_PERIOD: 14
+  SMA_PERIOD: 200
+  RSI_OVERSOLD: 30
+  RSI_OVERBOUGHT: 70
+  INVEST_RATIO: 0.95 # 사용 가능 현금의 95%를 투자
+  ALLOCATION_RATIO: 0.5
+
+# --- ETH Strategy Parameters ---
+eth_trade:
+  target_symbol: "ETH"
+  upbit_ticker: "KRW-ETH"
+  sequence_length: 20
+  prediction_threshold: 50000  # KRW
+  max_position_size: 0.95
+  min_order_amount: 5000
+  model_path: "eth_lstm_model.h5"
+  feature_scaler_path: "eth_feature_scaler.pkl"
+  target_scaler_path: "eth_target_scaler.pkl"
+  feature_list_path: "eth_feature_list.pkl"
+  stop_loss_percent: 0.30
+  take_profit_percent: 1.15
+  fallback_exchange_rate: 1435.0
+
+# --- Centralized Capital Management ---
+# All 3 trading bots read their budget from here.
+# Each bot will NOT exceed its budget regardless of total account balance.
+# Set budget to 0 to use all available (no cap).
+capital_management:
+  korea_etf_momentum:
+    budget_krw: 10000000           # 1천만원 fixed budget for Korea ETF Momentum
+  quant40:
+    budget_usd: 25165.0            # Quant40 Strategy 고정 투자금액 (USD)
+  jd_strategy:
+    budget_usd: 2796.0             # JD Strategy 고정 투자금액 (USD)
+  uranium_vb:
+    budget_usd: 5000.0             # Uranium VB Strategy 고정 투자금액 (USD)
+
+# --- Dual Strategy Settings (US Bots coordination) ---
+dual_strategy:
+  ENABLED: true                    # true: 두 전략 동시 실행, false: 개별 실행
+  REBALANCE_THRESHOLD: 0.10        # 10% 이상 차이날 때 자본 재분배
+
+# --- JD Investment Strategy Parameters (US Stocks) ---
+jd_strategy:
+  TOP_STOCK_CANDIDATES: ["AAPL", "MSFT", "GOOGL", "NVDA", "AMZN"]
+  MARKET_CAP_THRESHOLD: 0.10       # 10% gap rule
+  MINUS_3_THRESHOLD: -3.0          # -3% NASDAQ drop trigger
+  PANIC_THRESHOLD: 4               # 4 drops in 30 days = panic
+  ROLLING_WINDOW_DAYS: 30
+  # Rebalancing Protocol
+  REBALANCING_THRESHOLDS:
+    -2.5: 0.10                     # At -2.5%: 10% cash
+    -5.0: 0.20                     # At -5.0%: 20% cash
+    -7.5: 0.30                     # At -7.5%: 30% cash
+  # Stake-in Protocol
+  STAKE_25_INTERVALS: [-5, -10, -15, -20, -25]
+  STAKE_25_AMOUNT_PCT: 0.10
+  STAKE_50_INTERVALS: [-5, -10, -15, -20, -25, -30, -35, -40, -45, -50]
+  STAKE_50_AMOUNT_PCT: 0.05
+  # Exit Conditions
+  ALERT_EXIT_DAYS: 22
+  PANIC_EXIT_DAYS: 44
+  EARLY_EXIT_UP_DAYS: 8
+  # Safety Limits
+  MAX_DAILY_TRADES: 20
+  MIN_TRADE_SIZE_USD: 10
+  MAX_SINGLE_TRADE_PCT: 1.00       # Allows up to 100% allocation (JD strategy can require full allocation)
+  PAPER_TRADING: false             # true: 모의투자, false: 실전투자
+
+# --- IMPROVED Upbit JD Strategy Parameters (Crypto) ---
+# Based on IMPROVED_STRATEGY_GUIDE.md - Optimized for crypto volatility
+upbit_jd_strategy:
+  # Asset Configuration
+  ticker: "KRW-BTC"                # Trading pair (KRW-BTC, KRW-ETH, etc.)
+
+  # Historical ATH Override (IMPORTANT!)
+  # Set this to Bitcoin's real historical ATH if you want to track from the actual peak
+  # Leave as null/0 to initialize ATH from current price when script first runs
+  historical_ath_krw: 178000000    # Bitcoin's historical ATH in KRW (₩170M)
+                                   # Example: If BTC peaked at ₩170M in March 2024, set this
+                                   # The script will use this as the starting ATH instead of current price
+                                   # Set to 0 or null to disable (use current price as ATH)
+
+  # Capital Allocation Limits
+  max_capital_krw: 90000000        # Maximum capital to use (KRW) - SAFETY LIMIT
+                                   # Set to 0 or null to use all available funds
+                                   # Example: 10000000 = 10 million KRW max
+  reserve_cash_krw: 95000000         # Always keep this much cash (min 100k for safety)
+
+  # IMPROVEMENT #1: Crypto-Specific Crisis Threshold
+  # Crypto is more volatile than stocks, so use -5% instead of -3%
+  crisis_threshold: -5.0           # -5% daily drop triggers ALERT (vs -3% for stocks)
+  panic_threshold: 3               # 3 crises in 30 days = PANIC (vs 4 for stocks, faster reaction)
+  rolling_window_days: 30          # 30-day rolling window for crisis counting
+
+  # IMPROVEMENT #2: Gradual Rebalancing in NORMAL State
+  # More gradual rebalancing keeps more capital invested during moderate drawdowns
+  rebalancing_thresholds:          # [drawdown%, cash_ratio]
+    - [-5.0, 0.05]                 # -5% drawdown: 5% cash (vs 10% in old version)
+    - [-10.0, 0.10]                # -10% drawdown: 10% cash (vs 20%)
+    - [-15.0, 0.15]                # -15% drawdown: 15% cash (new level)
+    - [-20.0, 0.20]                # -20% drawdown: 20% cash (vs 30%)
+    - [-25.0, 0.25]                # -25% drawdown: 25% cash (new level)
+  rebalancing_max_cash: 0.30       # Maximum 30% cash in NORMAL state
+
+  # IMPROVEMENT #3: Regime-Based Stake-In Protocol
+  # Adapts buying strategy to market conditions (Bull/Neutral/Bear)
+
+  # BULL Market Protocol (Price > SMA50 > SMA200, RSI > 50)
+  # Buy faster at shallower discounts - expect quick V-shaped recovery
+  stake_bull_intervals:            # Drawdown levels (from alert ATH)
+    - -5.0
+    - -10.0
+    - -15.0
+    - -20.0
+    - -25.0
+    - -30.0
+    - -35.0
+    - -40.0
+  stake_bull_targets:              # Target asset allocation at each level
+    - 0.10                         # 10% at -5%
+    - 0.20                         # 20% at -10% (vs 5% in old version - more aggressive)
+    - 0.30                         # 30% at -15%
+    - 0.40                         # 40% at -20%
+    - 0.50                         # 50% at -25%
+    - 0.65                         # 65% at -30%
+    - 0.80                         # 80% at -35%
+    - 1.00                         # 100% at -40%
+
+  # BEAR Market Protocol (Price < SMA50 < SMA200, RSI < 50)
+  # Wait for deeper discounts - more cautious entry
+  stake_bear_intervals:
+    - -10.0                        # Wait for -10% before first buy (vs -5%)
+    - -20.0
+    - -30.0
+    - -40.0
+    - -50.0
+    - -60.0
+    - -70.0
+  stake_bear_targets:
+    - 0.10                         # Only 10% at -10% (conservative)
+    - 0.20                         # 20% at -20%
+    - 0.35                         # 35% at -30%
+    - 0.50                         # 50% at -40%
+    - 0.65                         # 65% at -50%
+    - 0.80                         # 80% at -60%
+    - 1.00                         # 100% at -70%
+
+  # NEUTRAL Market Protocol (Mixed signals)
+  # Balanced approach between Bull and Bear
+  stake_neutral_intervals:
+    - -7.5
+    - -15.0
+    - -22.5
+    - -30.0
+    - -37.5
+    - -45.0
+    - -55.0
+  stake_neutral_targets:
+    - 0.10                         # 10% at -7.5%
+    - 0.25                         # 25% at -15%
+    - 0.40                         # 40% at -22.5%
+    - 0.55                         # 55% at -30%
+    - 0.70                         # 70% at -37.5%
+    - 0.85                         # 85% at -45%
+    - 1.00                         # 100% at -55%
+
+  # IMPROVEMENT #6: Faster Crisis Exit
+  # Crypto recovers faster than stocks - exit earlier to capture upside
+  early_exit_up_days: 7            # Exit after 7 up days (vs 8 for stocks)
+
+  # IMPROVEMENT #4: Volatility-Based Position Sizing
+  # Dynamically adjust position size based on market volatility
+  use_volatility_adjustment: true  # Enable volatility-based sizing
+  target_volatility: 0.03          # 3% daily volatility target
+                                   # High vol (6%) → reduce size by 50%
+                                   # Low vol (1.5%) → increase size by 50% (max)
+
+  # Safety Limits
+  min_trade_size_krw: 5000         # Minimum trade size (5,000 KRW)
+  max_single_trade_pct: 1.00       # Maximum single trade (100% of allocation)
+
+  # Trading Mode
+  paper_trading: false             # SAFETY: true = paper trading (testing), false = REAL TRADING (use real money!)
+                                   # ⚠️  Change to false only when you're ready for real execution
+
+# --- Uranium VB Strategy Parameters (US ETFs: URA, URNM) ---
+uranium_vb:
+  budget_usd: 5000.0               # Capital budget (USD)
+  paper_trading: false               # ⚠️ SAFETY: Start with paper trading!
+
+# --- Quant Replacing the 40 Strategy Parameters ---
+quant_replacing_the_40:
+  SPY_ALLOCATION: 0.60
+  TREND_ALLOCATION: 0.40
+  SHRINK_FACTOR: 0.75
+  EQUITY_ASSET: "SPY"
+  SAFE_ASSET: "IEF"
+  INVERSE_EQUITY_ASSET: "SH"
+  SIGNAL_ASSET: "SPY"
+  EXCHANGE_CODE: "NYSE"  # Using "NYSE" for SPY
+  MIN_TRADE_VALUE: 100             # 최소 거래 금액 ($)
+  MIN_REBALANCE_PCT: 0.05          # 5% 이상 차이날 때만 리밸런싱
+  USE_T_MINUS_1_SIGNAL: true       # T-2일 시그널 사용 (Look-ahead bias 방지)
+  MAX_POSITION_SIZE: 1.0           # 최대 포지션 크기 (100%)
+  ENABLE_STOP_LOSS: false          # 손절매 (현재 미구현)
+  STOP_LOSS_PCT: -0.10             # 손절매 비율 (-10%)
+
+# --- BTC Volatility Breakthrough Strategy (Long-Only) ---
+# Larry Williams VB with Equity Momentum Allocation
+upbit_vb_strategy:
+  # Strategy Parameters (optimized from 21,660 combo grid search)
+  k_long: 0.40                     # Breakout multiplier: Open + k × ATR
+  atr_period: 7                    # ATR lookback period
+  ma_period: 5                     # Trend filter MA period
+  equity_ma_period: 40             # Equity curve MA for allocation
+
+  # Equity Momentum Allocation
+  bull_allocation: 1.00            # 100% when equity > MA(40)
+  bear_allocation: 0.30            # 30% when equity ≤ MA(40)
+
+  # Capital Limits
+  max_capital_krw: 0               # 0 = unlimited (use all available)
+  reserve_cash_krw: 100000         # Always keep ₩100,000 as reserve
+  min_order_krw: 5000              # Minimum order size
+
+  # Trading Mode
+  paper_trading: false             # LIVE trading enabled
+
+# 로깅 설정
+logging:
+  level: "INFO"                    # DEBUG, INFO, WARNING, ERROR
+  file: "daily_best_strategy_trader.log"
+  max_bytes: 10485760              # 10MB
+  backup_count: 5
+
+# 실행 모드
+execution:
+  mode: "real"                     # "real" 또는 "paper" (모의투자)
+  dry_run: false                   # true면 주문 실행 안 함 (테스트용)
+
+
