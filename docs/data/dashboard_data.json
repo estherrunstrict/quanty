@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-04-01 19:24 KST",
+  "updated_at": "2026-04-02 06:30 KST",
   "exchange_rate": 1380,
   "portfolio": {
     "total_value_krw": 77615768,
     "total_value_usd": 37961,
     "total_profit_pct": 0.4,
     "cash_krw": 14493923,
-    "cash_usd": 15413
+    "cash_usd": 10487
   },
   "strategies": [
     {
@@ -69,8 +69,19 @@
       "total_value": 5000.0,
       "cash": 5000.0,
       "profit_pct": 0.0,
-      "status": "NO DATA",
-      "regime": {},
+      "status": "CASH",
+      "regime": {
+        "GLD": "BEAR",
+        "SLV": "BEAR",
+        "GLTR": "BEAR",
+        "GDX": "BEAR",
+        "USO": "BULL",
+        "URA": "BEAR",
+        "FTGC": "BULL",
+        "CPER": "BEAR",
+        "DBA": "BULL",
+        "SIL": "BEAR"
+      },
       "holdings": [],
       "params": {
         "strategy": "VB Only",
@@ -130,11 +141,17 @@
       "currency": "USD",
       "budget": 5000.0,
       "total_value": 5000.0,
-      "cash": 5000.0,
+      "cash": 74.5,
       "profit_pct": 0.0,
-      "status": "NO DATA",
+      "status": "1 position",
       "regime": {},
-      "holdings": [],
+      "holdings": [
+        {
+          "ticker": "EFA",
+          "quantity": 50,
+          "profit_rate": 0
+        }
+      ],
       "params": {
         "strategy": "dual_momentum_modified",
         "offensive": "SPY vs EFA",
