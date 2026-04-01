@@ -33,29 +33,35 @@ function inferBadge(status) {
 
 // Load data and render
 async function init() {
+  const status = document.getElementById('last-updated');
   try {
-    const [dataResp, histResp] = await Promise.all([
-      fetch(DATA_URL),
-      fetch(HISTORY_URL).catch(() => null),
-    ]);
+    status.textContent = 'Fetching data...';
 
+    const dataResp = await fetch(DATA_URL);
     if (!dataResp.ok) {
-      document.getElementById('last-updated').textContent = 'No data yet — waiting for first daily update from server';
+      status.textContent = 'No data yet — waiting for first daily update from server';
       return;
     }
-
     const data = await dataResp.json();
-    const history = histResp && histResp.ok ? await histResp.json() : null;
 
-    try { renderOverview(data); } catch(e) { console.error('renderOverview:', e); }
-    try { renderStrategyTable(data); } catch(e) { console.error('renderStrategyTable:', e); }
-    try { renderDetailCards(data); } catch(e) { console.error('renderDetailCards:', e); }
-    try { renderAllocationChart(data); } catch(e) { console.error('renderAllocationChart:', e); }
-    try { renderMarketChart(data); } catch(e) { console.error('renderMarketChart:', e); }
+    let history = null;
+    try {
+      const histResp = await fetch(HISTORY_URL);
+      if (histResp.ok) history = await histResp.json();
+    } catch(e) { /* no history yet, ok */ }
 
-    if (history) {
-      renderEquityChart(history);
-      renderDrawdownChart(history);
+    status.textContent = 'Rendering...';
+
+    renderOverview(data);
+    renderStrategyTable(data);
+    renderDetailCards(data);
+
+    try { renderAllocationChart(data); } catch(e) { console.error('allocationChart:', e); }
+    try { renderMarketChart(data); } catch(e) { console.error('marketChart:', e); }
+
+    if (history && history.dates && history.dates.length > 1) {
+      try { renderEquityChart(history); } catch(e) { console.error('equityChart:', e); }
+      try { renderDrawdownChart(history); } catch(e) { console.error('drawdownChart:', e); }
     } else {
       document.getElementById('equity-chart').parentElement.innerHTML =
         '<p style="color:var(--text-dim);text-align:center;padding:40px">Equity history will appear after 2+ daily updates</p>';
@@ -63,9 +69,11 @@ async function init() {
         '<p style="color:var(--text-dim);text-align:center;padding:40px">Drawdown chart will appear after 2+ daily updates</p>';
     }
 
+    status.textContent = 'Last updated: ' + data.updated_at;
+
   } catch (err) {
-    console.error('Failed to load dashboard data:', err);
-    document.getElementById('last-updated').textContent = 'Error loading data: ' + err.message;
+    console.error('Dashboard error:', err);
+    status.textContent = 'Error: ' + err.message;
   }
 }
 
