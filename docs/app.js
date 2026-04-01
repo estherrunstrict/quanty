@@ -121,6 +121,8 @@ function renderDetailCards(data) {
     const cur = s.currency;
     const card = document.createElement('div');
     card.className = 'detail-card';
+    const marketType = s.name.includes('BTC') ? 'CRYPTO' : s.market;
+    card.setAttribute('data-market', marketType);
 
     let holdingsHTML = '';
     if (s.holdings && s.holdings.length > 0) {
