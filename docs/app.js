@@ -47,11 +47,11 @@ async function init() {
     const data = await dataResp.json();
     const history = histResp && histResp.ok ? await histResp.json() : null;
 
-    renderOverview(data);
-    renderStrategyTable(data);
-    renderDetailCards(data);
-    renderAllocationChart(data);
-    renderMarketChart(data);
+    try { renderOverview(data); } catch(e) { console.error('renderOverview:', e); }
+    try { renderStrategyTable(data); } catch(e) { console.error('renderStrategyTable:', e); }
+    try { renderDetailCards(data); } catch(e) { console.error('renderDetailCards:', e); }
+    try { renderAllocationChart(data); } catch(e) { console.error('renderAllocationChart:', e); }
+    try { renderMarketChart(data); } catch(e) { console.error('renderMarketChart:', e); }
 
     if (history) {
       renderEquityChart(history);
@@ -276,9 +276,10 @@ function renderDrawdownChart(history) {
 
 function renderAllocationChart(data) {
   const ctx = document.getElementById('allocation-chart').getContext('2d');
-  const labels = data.strategies.map(s => s.name);
-  const values = data.strategies.map(s => {
-    // Normalize to KRW for comparison
+  // Filter out zero-budget strategies
+  const filtered = data.strategies.filter(s => s.budget > 0);
+  const labels = filtered.map(s => s.name);
+  const values = filtered.map(s => {
     if (s.currency === 'USD') return s.budget * (data.exchange_rate || 1380);
     return s.budget;
   });
@@ -299,7 +300,7 @@ function renderAllocationChart(data) {
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          position: 'right',
+          position: 'bottom',
           labels: { color: '#e6edf3', font: { size: 11 } },
         },
       },
