@@ -1,11 +1,11 @@
 {
-  "updated_at": "2026-04-01 16:26 KST",
+  "updated_at": "2026-04-01 16:40 KST",
   "exchange_rate": 1380,
   "portfolio": {
-    "total_value_krw": 82223258,
+    "total_value_krw": 77660685,
     "total_value_usd": 37961,
-    "total_profit_pct": 22.0,
-    "cash_krw": 24149768,
+    "total_profit_pct": 0.4,
+    "cash_krw": 14538840,
     "cash_usd": 15413
   },
   "strategies": [
@@ -14,8 +14,8 @@
       "market": "KR",
       "currency": "KRW",
       "budget": 10000000,
-      "total_value": 24837078.0,
-      "cash": 14562573.0,
+      "total_value": 10274505.0,
+      "cash": 0,
       "profit_pct": 7.89,
       "status": "HOLD 139220",
       "regime": {},
@@ -36,8 +36,8 @@
       "market": "KR",
       "currency": "KRW",
       "budget": 5000000,
-      "total_value": 5000000,
-      "cash": 9587195.5,
+      "total_value": 5000000.0,
+      "cash": 4538840.0,
       "profit_pct": -0.02,
       "status": "1 position",
       "regime": {
@@ -143,12 +143,14 @@
       "name": "BTC VB",
       "market": "KR",
       "currency": "KRW",
-      "budget": 0,
-      "total_value": 0,
-      "cash": 0,
+      "budget": 10000000,
+      "total_value": 10000000,
+      "cash": 10000000,
       "profit_pct": 0.0,
-      "status": "CASH",
-      "regime": {},
+      "status": "NORMAL",
+      "regime": {
+        "BTC": "NEUTRAL"
+      },
       "holdings": [],
       "params": {
         "strategy": "upbit_vb",
