@@ -1,0 +1,104 @@
+{
+  "updated_at": "2026-04-01 23:30 KST",
+  "exchange_rate": 1380,
+  "portfolio": {
+    "total_value_krw": 45000000,
+    "total_value_usd": 32600,
+    "total_profit_pct": 0.0,
+    "cash_krw": 10048612,
+    "cash_usd": 5000
+  },
+  "strategies": [
+    {
+      "name": "Korea ETF Momentum",
+      "market": "KR",
+      "currency": "KRW",
+      "budget": 10000000,
+      "total_value": 9500000,
+      "cash": 500000,
+      "profit_pct": -5.0,
+      "status": "HOLD",
+      "regime": {"139220": "BULL", "144600": "BULL", "132030": "BULL"},
+      "holdings": [{"ticker": "139220", "quantity": 1263, "profit_rate": -2.1}],
+      "params": {"strategy": "dual_momentum", "rebalance": "monthly"}
+    },
+    {
+      "name": "Hybrid VB (KR)",
+      "market": "KR",
+      "currency": "KRW",
+      "budget": 5000000,
+      "total_value": 5000000,
+      "cash": 5000000,
+      "profit_pct": 0.0,
+      "status": "SCANNING",
+      "regime": {"069500": "BEAR", "305720": "NEUTRAL"},
+      "holdings": [],
+      "params": {"strategy": "VB + Vol-Managed", "vol_managed": true}
+    },
+    {
+      "name": "Hybrid VB (US)",
+      "market": "US",
+      "currency": "USD",
+      "budget": 5000,
+      "total_value": 5000,
+      "cash": 5000,
+      "profit_pct": 0.0,
+      "status": "SCANNING",
+      "regime": {"SPY": "BULL", "QQQ": "BULL", "GLD": "NEUTRAL"},
+      "holdings": [],
+      "params": {"strategy": "VB Only", "vol_managed": false}
+    },
+    {
+      "name": "Quant40",
+      "market": "US",
+      "currency": "USD",
+      "budget": 25165,
+      "total_value": 15000,
+      "cash": 3000,
+      "profit_pct": 8.5,
+      "status": "SPY 60%",
+      "regime": {},
+      "holdings": [{"ticker": "SPY", "quantity": 20, "profit_rate": 12.3}, {"ticker": "IEF", "quantity": 15, "profit_rate": -1.2}],
+      "params": {"strategy": "quant_replacing_40"}
+    },
+    {
+      "name": "JD Strategy",
+      "market": "US",
+      "currency": "USD",
+      "budget": 2796,
+      "total_value": 2800,
+      "cash": 500,
+      "profit_pct": 1.2,
+      "status": "NORMAL",
+      "regime": {},
+      "holdings": [{"ticker": "NVDA", "quantity": 2, "profit_rate": 5.1}],
+      "params": {"strategy": "jd_investment"}
+    },
+    {
+      "name": "Uranium VB",
+      "market": "US",
+      "currency": "USD",
+      "budget": 5000,
+      "total_value": 5200,
+      "cash": 2000,
+      "profit_pct": 4.0,
+      "status": "1 position",
+      "regime": {"URA": "BULL", "URNM": "NEUTRAL"},
+      "holdings": [{"ticker": "URA", "quantity": 30, "profit_rate": 6.8}],
+      "params": {"strategy": "vb_momentum", "k": 0.3, "atr_trail": 2.5}
+    },
+    {
+      "name": "BTC VB",
+      "market": "KR",
+      "currency": "KRW",
+      "budget": 0,
+      "total_value": 8000000,
+      "cash": 8000000,
+      "profit_pct": 15.0,
+      "status": "CASH",
+      "regime": {},
+      "holdings": [],
+      "params": {"strategy": "upbit_vb", "k_long": 0.4}
+    }
+  ]
+}

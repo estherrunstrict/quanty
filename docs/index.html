@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quanty — Auto Trading Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Quanty Dashboard</h1>
+    <p id="last-updated">Loading...</p>
+  </header>
+
+  <!-- Portfolio Overview -->
+  <section id="overview" class="card">
+    <h2>Portfolio Overview</h2>
+    <div class="metrics-grid">
+      <div class="metric">
+        <span class="metric-label">Total Value</span>
+        <span class="metric-value" id="total-value">--</span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">Total Profit</span>
+        <span class="metric-value" id="total-profit">--</span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">Cash (KRW)</span>
+        <span class="metric-value" id="cash-krw">--</span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">Cash (USD)</span>
+        <span class="metric-value" id="cash-usd">--</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Strategy Comparison Table -->
+  <section class="card">
+    <h2>Strategy Comparison</h2>
+    <div class="table-wrap">
+      <table id="strategy-table">
+        <thead>
+          <tr>
+            <th>Strategy</th>
+            <th>Market</th>
+            <th>Budget</th>
+            <th>Value</th>
+            <th>P/L %</th>
+            <th>Status</th>
+            <th>Positions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Equity Curves -->
+  <section class="card">
+    <h2>Equity Curves (Normalized)</h2>
+    <div class="chart-container">
+      <canvas id="equity-chart"></canvas>
+    </div>
+  </section>
+
+  <!-- Drawdown Chart -->
+  <section class="card">
+    <h2>Drawdown</h2>
+    <div class="chart-container">
+      <canvas id="drawdown-chart"></canvas>
+    </div>
+  </section>
+
+  <!-- Asset Allocation -->
+  <section class="card half">
+    <h2>Budget Allocation</h2>
+    <div class="chart-container-small">
+      <canvas id="allocation-chart"></canvas>
+    </div>
+  </section>
+
+  <!-- Market Split -->
+  <section class="card half">
+    <h2>Market Split</h2>
+    <div class="chart-container-small">
+      <canvas id="market-chart"></canvas>
+    </div>
+  </section>
+
+  <!-- Strategy Detail Cards -->
+  <section id="strategy-details">
+    <h2>Strategy Details</h2>
+    <div id="detail-cards"></div>
+  </section>
+
+  <footer>
+    <p>Quanty Auto Trading Dashboard &mdash; Data updates daily at 23:30 KST</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
