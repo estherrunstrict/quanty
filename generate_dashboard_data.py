@@ -74,9 +74,26 @@ def build_strategy_entry(name, market, currency, budget, result_json, extra_para
     if result_json is None:
         return entry
 
-    entry["total_value"] = result_json.get("total_value", budget)
-    entry["cash"] = result_json.get("cash_balance", 0)
-    entry["profit_pct"] = result_json.get("total_profit", 0) / budget * 100 if budget > 0 else 0
+    # Strategy-level value: use allocated_capital (budget-capped) not account-level total_value
+    allocated = result_json.get("allocated_capital", budget)
+    raw_value = result_json.get("total_value", budget)
+    # If total_value is way larger than budget, it's the account total — use allocated instead
+    if budget > 0 and raw_value > budget * 3:
+        entry["total_value"] = allocated
+    else:
+        entry["total_value"] = raw_value
+
+    # Cash: compute strategy's share (total cash * budget/account_value), or use allocated - holdings
+    raw_cash = result_json.get("cash_balance", 0)
+    holdings_value = sum(h.get("value", 0) for h in result_json.get("holdings", []))
+    if budget > 0 and raw_cash > budget * 3:
+        # Account-level cash — estimate strategy's cash as budget - holdings
+        entry["cash"] = max(0, allocated - holdings_value)
+    else:
+        entry["cash"] = raw_cash
+
+    total_profit = result_json.get("total_profit", 0)
+    entry["profit_pct"] = round(total_profit / budget * 100, 2) if budget > 0 else 0
 
     # Holdings
     holdings = []
