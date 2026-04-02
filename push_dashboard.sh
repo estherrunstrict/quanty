@@ -1,6 +1,6 @@
 #!/bin/bash
-# Push daily dashboard data to GitHub Pages
-# Cron: 30 23 * * * /bin/bash /home/ubuntu/quanty-dashboard/push_dashboard.sh >> /home/ubuntu/quanty-dashboard/push.log 2>&1
+# Push dashboard data to GitHub Pages and notify Discord
+# Cron: after KR close (16:00 KST) and US close (06:30 KST)
 
 set -e
 
@@ -20,9 +20,14 @@ $VENV_PYTHON generate_dashboard_data.py
 # Commit and push if there are changes
 if git diff --quiet docs/data/ 2>/dev/null; then
     echo "[$(date)] No changes to push."
-else
-    git add docs/data/
-    git commit -m "daily update $(TZ='Asia/Seoul' date +%Y-%m-%d)" --quiet
-    git push --quiet
-    echo "[$(date)] Dashboard updated and pushed."
+    exit 0
 fi
+
+git add docs/data/
+git commit -m "update $(TZ='Asia/Seoul' date +'%Y-%m-%d %H:%M KST')" --quiet
+git push --quiet
+echo "[$(date)] Dashboard updated and pushed."
+
+# Send Discord notification via Python (avoids bash JSON escaping issues)
+$VENV_PYTHON notify_discord.py
+echo "[$(date)] Discord notification sent."

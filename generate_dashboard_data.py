@@ -98,7 +98,7 @@ def build_strategy_entry(name, market, currency, budget, result_json, extra_para
 
     entry["profit_pct"] = round(total_profit / budget * 100, 2) if budget > 0 else 0
 
-    # Holdings
+    # Holdings — include profit field for P/L calculation
     holdings = []
     for h in result_json.get("holdings", []):
         if h.get("quantity", 0) > 0:
@@ -106,6 +106,8 @@ def build_strategy_entry(name, market, currency, budget, result_json, extra_para
                 "ticker": h.get("ticker", ""),
                 "quantity": h.get("quantity", 0),
                 "profit_rate": h.get("profit_rate", 0),
+                "profit": h.get("profit", 0),
+                "value": h.get("value", 0),
             })
     entry["holdings"] = holdings
 
@@ -374,24 +376,74 @@ def generate_dashboard_data():
     # BTC VB
     strategies.append(build_btc_vb_entry(config))
 
-    # Inject per-strategy realized P/L (realized is always in KRW from KIS)
+    # Query live KIS account data (needed for both per-strategy and account-level P/L)
+    acct = None
+    try:
+        from query_account_total import get_account_totals
+        acct = get_account_totals()
+    except Exception as e:
+        print(f"KIS account query failed: {e}")
+
+    # Per-strategy P/L: realized from KIS trades, unrealized from KIS holdings
+    # Use KIS evlu_pfls_amt for KR (in KRW), and holdings profit for US (in USD, keep as USD)
+    # Don't try to convert — just show each in its own currency and sum only at account level
+
+    # Get live holdings unrealized from KIS
+    kr_holdings_profit = {}  # {ticker: profit_krw}
+    us_holdings_profit = {}  # {ticker: profit_usd}
+    if acct:
+        try:
+            for h in acct['kr']['holdings']:
+                kr_holdings_profit[h['ticker']] = h['profit']
+        except Exception:
+            pass
+        try:
+            for h in acct['us']['holdings']:
+                us_holdings_profit[h['ticker']] = h['profit']
+        except Exception:
+            pass
+
+    # Map tickers to strategies (same as refresh_realized_pl.py)
+    TICKER_STRAT = {
+        'SPY': 'Quant40', 'IEF': 'Quant40', 'SH': 'Quant40',
+        'NVDA': 'JD Strategy', 'AAPL': 'JD Strategy', 'MSFT': 'JD Strategy',
+        'GOOGL': 'JD Strategy', 'AMZN': 'JD Strategy',
+        'EFA': 'Modified Dual Momentum', 'SHY': 'Modified Dual Momentum',
+        'TLT': 'Modified Dual Momentum', 'TIP': 'Modified Dual Momentum',
+        'LQD': 'Modified Dual Momentum', 'HYG': 'Modified Dual Momentum',
+        'BWX': 'Modified Dual Momentum', 'EMB': 'Modified Dual Momentum',
+        'GLD': 'Hybrid VB (US)', 'SLV': 'Hybrid VB (US)', 'GLTR': 'Hybrid VB (US)',
+        'GDX': 'Hybrid VB (US)', 'USO': 'Hybrid VB (US)', 'URA': 'Hybrid VB (US)',
+        'FTGC': 'Hybrid VB (US)', 'CPER': 'Hybrid VB (US)', 'DBA': 'Hybrid VB (US)',
+        'SIL': 'Hybrid VB (US)',
+        '139220': 'Korea ETF Momentum', '144600': 'Korea ETF Momentum',
+        '132030': 'Korea ETF Momentum',
+        '069500': 'Hybrid VB (KR)', '229200': 'Hybrid VB (KR)',
+        '305720': 'Hybrid VB (KR)', '091170': 'Hybrid VB (KR)',
+        '364690': 'Hybrid VB (KR)',
+    }
+
+    # Aggregate unrealized per strategy from live KIS data
+    strat_unrealized_krw = {}
+    for ticker, profit_krw in kr_holdings_profit.items():
+        strat = TICKER_STRAT.get(ticker, 'Unknown')
+        strat_unrealized_krw[strat] = strat_unrealized_krw.get(strat, 0) + profit_krw
+
+    for ticker, profit_usd in us_holdings_profit.items():
+        strat = TICKER_STRAT.get(ticker, 'Unknown')
+        # Use KIS settlement rate: get from the realized trades data if available
+        # Fallback: use EXCHANGE_RATE
+        strat_unrealized_krw[strat] = strat_unrealized_krw.get(strat, 0) + profit_usd * EXCHANGE_RATE
+
     for s in strategies:
         name = s["name"]
         realized_krw = realized_by_strategy.get(name, 0)
-        s["realized_pl_krw"] = realized_krw
+        unrealized_krw = strat_unrealized_krw.get(name, 0)
 
-        # Unrealized = current holdings value - cost basis (from profit_pct * budget)
-        # For USD strategies: convert unrealized to KRW
-        unrealized_native = s.get("total_value", s["budget"]) - s["budget"]
-        if s["currency"] == "USD":
-            unrealized_krw = unrealized_native * EXCHANGE_RATE
-        else:
-            unrealized_krw = unrealized_native
-
+        s["realized_pl_krw"] = round(realized_krw)
         s["unrealized_pl_krw"] = round(unrealized_krw)
         s["total_pl_krw"] = round(realized_krw + unrealized_krw)
 
-        # Total P/L % = total_pl_krw / (budget in KRW)
         budget_krw = s["budget"] * EXCHANGE_RATE if s["currency"] == "USD" else s["budget"]
         if budget_krw > 0:
             s["total_pl_pct"] = round(s["total_pl_krw"] / budget_krw * 100, 2)
@@ -402,8 +454,9 @@ def generate_dashboard_data():
     # = KR stocks + US stocks (KRW) + KRW cash (ONCE) + USD cash (KRW)
     # KRW 예수금 is SHARED — must not double-count between KR and US
     try:
-        from query_account_total import get_account_totals
-        acct = get_account_totals()
+        if acct is None:
+            from query_account_total import get_account_totals
+            acct = get_account_totals()
         kr_tot_evlu = acct['kr']['kr_tot_evlu']   # 예수금 + KR stocks
         us_stock_usd = acct['us']['stock_value']
         usd_cash = acct['usd_cash']

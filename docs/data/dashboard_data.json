@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-04-02 20:59 KST",
+  "updated_at": "2026-04-02 21:17 KST",
   "exchange_rate": 1380,
   "portfolio": {
-    "total_value_krw": 64222650,
+    "total_value_krw": 64221345,
     "original_deposit_krw": 65726902,
-    "total_profit_krw": -1504252,
+    "total_profit_krw": -1505557,
     "total_profit_pct": -2.29,
     "cash_krw": 10513490,
     "cash_usd": 6624
@@ -58,7 +58,9 @@
         {
           "ticker": "305720",
           "quantity": 53,
-          "profit_rate": 0.3048243854301358
+          "profit_rate": 0.3048243854301358,
+          "profit": 2779.998399999953,
+          "value": 918490.0
         }
       ],
       "params": {
@@ -66,9 +68,9 @@
         "vol_managed": true
       },
       "realized_pl_krw": -120,
-      "unrealized_pl_krw": 2780,
-      "total_pl_krw": 2660,
-      "total_pl_pct": 0.05
+      "unrealized_pl_krw": -14974,
+      "total_pl_krw": -15094,
+      "total_pl_pct": -0.3
     },
     {
       "name": "Hybrid VB (US)",
@@ -115,21 +117,25 @@
         {
           "ticker": "SH",
           "quantity": 134,
-          "profit_rate": 2.0140276324274042
+          "profit_rate": 2.0140276324274042,
+          "profit": 102.1214,
+          "value": 5172.6278
         },
         {
           "ticker": "SPY",
           "quantity": 23,
-          "profit_rate": -5.453466437482565
+          "profit_rate": -5.453466437482565,
+          "profit": -847.806038,
+          "value": 14698.38
         }
       ],
       "params": {
         "strategy": "quant_replacing_40"
       },
       "realized_pl_krw": -679939,
-      "unrealized_pl_krw": -1029045,
-      "total_pl_krw": -1708984,
-      "total_pl_pct": -4.92
+      "unrealized_pl_krw": 79941,
+      "total_pl_krw": -599998,
+      "total_pl_pct": -1.73
     },
     {
       "name": "JD Strategy",
@@ -145,16 +151,18 @@
         {
           "ticker": "NVDA",
           "quantity": 16,
-          "profit_rate": -11.871050755367763
+          "profit_rate": -11.871050755367763,
+          "profit": -360.653638,
+          "value": 2677.44
         }
       ],
       "params": {
         "strategy": "jd_investment"
       },
       "realized_pl_krw": -364547,
-      "unrealized_pl_krw": -497702,
-      "total_pl_krw": -862249,
-      "total_pl_pct": -22.35
+      "unrealized_pl_krw": -429475,
+      "total_pl_krw": -794022,
+      "total_pl_pct": -20.58
     },
     {
       "name": "Modified Dual Momentum",
@@ -170,7 +178,9 @@
         {
           "ticker": "EFA",
           "quantity": 50,
-          "profit_rate": 0
+          "profit_rate": 0,
+          "profit": 0,
+          "value": 4925.5
         }
       ],
       "params": {
@@ -179,9 +189,9 @@
         "defensive": "8 bond ETFs"
       },
       "realized_pl_krw": 0,
-      "unrealized_pl_krw": 0,
-      "total_pl_krw": 0,
-      "total_pl_pct": 0.0
+      "unrealized_pl_krw": -145583,
+      "total_pl_krw": -145583,
+      "total_pl_pct": -2.11
     },
     {
       "name": "BTC VB",
