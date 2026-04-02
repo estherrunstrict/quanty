@@ -1,11 +1,11 @@
 {
-  "updated_at": "2026-04-02 19:58 KST",
+  "updated_at": "2026-04-02 20:25 KST",
   "exchange_rate": 1380,
   "portfolio": {
-    "total_value_krw": 64262155,
+    "total_value_krw": 64207186,
     "original_deposit_krw": 65726902,
-    "total_profit_krw": -1464747,
-    "total_profit_pct": -2.23,
+    "total_profit_krw": -1519716,
+    "total_profit_pct": -2.31,
     "cash_krw": 10513490,
     "cash_usd": 6624
   },
@@ -30,7 +30,10 @@
       "params": {
         "strategy": "dual_momentum",
         "rebalance": "monthly"
-      }
+      },
+      "realized_pl_krw": -1380,
+      "total_pl_krw": 49140.0,
+      "total_pl_pct": 0.49
     },
     {
       "name": "Hybrid VB (KR)",
@@ -60,7 +63,10 @@
       "params": {
         "strategy": "VB + Vol-Managed",
         "vol_managed": true
-      }
+      },
+      "realized_pl_krw": -120,
+      "total_pl_krw": 2659.998399999924,
+      "total_pl_pct": 0.05
     },
     {
       "name": "Hybrid VB (US)",
@@ -87,7 +93,10 @@
       "params": {
         "strategy": "VB Only",
         "vol_managed": false
-      }
+      },
+      "realized_pl_krw": 0,
+      "total_pl_krw": 0.0,
+      "total_pl_pct": 0.0
     },
     {
       "name": "Quant40",
@@ -113,7 +122,10 @@
       ],
       "params": {
         "strategy": "quant_replacing_40"
-      }
+      },
+      "realized_pl_krw": -679939,
+      "total_pl_krw": -680684.684638,
+      "total_pl_pct": -2704.89
     },
     {
       "name": "JD Strategy",
@@ -134,7 +146,10 @@
       ],
       "params": {
         "strategy": "jd_investment"
-      }
+      },
+      "realized_pl_krw": -364547,
+      "total_pl_krw": -364907.653638,
+      "total_pl_pct": -13051.06
     },
     {
       "name": "Modified Dual Momentum",
@@ -157,7 +172,10 @@
         "strategy": "dual_momentum_modified",
         "offensive": "SPY vs EFA",
         "defensive": "8 bond ETFs"
-      }
+      },
+      "realized_pl_krw": 0,
+      "total_pl_krw": 0.0,
+      "total_pl_pct": 0.0
     },
     {
       "name": "BTC VB",
@@ -175,7 +193,10 @@
       "params": {
         "strategy": "upbit_vb",
         "k_long": 0.4
-      }
+      },
+      "realized_pl_krw": 0,
+      "total_pl_krw": 0,
+      "total_pl_pct": 0.0
     }
   ]
 }
