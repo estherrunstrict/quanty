@@ -1,0 +1,160 @@
+#!/usr/bin/env python3
+"""
+Query total KIS account value and compute P/L from deposit history.
+Returns account totals for dashboard integration.
+"""
+import sys, os
+
+TRADING_DIR = "/home/ubuntu/koreainvestment-autotrade"
+sys.path.insert(0, os.path.join(TRADING_DIR, "open-trading-api", "examples_llm"))
+
+
+def get_kr_account():
+    """Query KR holdings + cash from KIS domestic API."""
+    sys.path.insert(0, os.path.join(TRADING_DIR, "open-trading-api", "examples_llm", "domestic_stock", "inquire_balance"))
+    sys.path.insert(0, os.path.join(TRADING_DIR, "open-trading-api", "examples_llm", "domestic_stock", "inquire_psbl_order"))
+
+    import kis_auth as ka
+    import inquire_balance as kr_bal
+    import inquire_psbl_order
+
+    ka.auth(svr="prod")
+    acct = ka.getTREnv()
+
+    # Holdings
+    output1, _ = kr_bal.inquire_balance(
+        env_dv="real", cano=acct.my_acct, acnt_prdt_cd=acct.my_prod,
+        afhr_flpr_yn="N", inqr_dvsn="02", unpr_dvsn="01",
+        fund_sttl_icld_yn="N", fncg_amt_auto_rdpt_yn="N", prcs_dvsn="00"
+    )
+
+    holdings = []
+    stock_value = 0
+    unrealized_pl = 0
+    if output1 is not None and not output1.empty:
+        for _, row in output1.iterrows():
+            qty = int(row['hldg_qty'])
+            if qty > 0:
+                val = float(row['evlu_amt'])
+                profit = float(row.get('evlu_pfls_amt', 0))
+                rate = float(row.get('evlu_pfls_rt', 0))
+                stock_value += val
+                unrealized_pl += profit
+                holdings.append({
+                    'ticker': row['pdno'],
+                    'quantity': qty,
+                    'value': val,
+                    'profit': profit,
+                    'profit_rate': rate,
+                })
+
+    # Cash
+    df_cash = inquire_psbl_order.inquire_psbl_order(
+        env_dv="real", cano=acct.my_acct, acnt_prdt_cd=acct.my_prod,
+        pdno="005930", ord_unpr="0", ord_dvsn="01",
+        cma_evlu_amt_icld_yn="N", ovrs_icld_yn="Y"
+    )
+    cash = float(df_cash.iloc[0]['nrcvb_buy_amt']) if df_cash is not None and not df_cash.empty else 0
+
+    return {
+        'stock_value': stock_value,
+        'cash': cash,
+        'total': stock_value + cash,
+        'unrealized_pl': unrealized_pl,
+        'holdings': holdings,
+        'acct': acct,
+    }
+
+
+def get_us_account(acct):
+    """Query US holdings + cash from KIS overseas API."""
+    # Fresh imports for overseas modules
+    sys.path.insert(0, os.path.join(TRADING_DIR, "open-trading-api", "examples_llm", "overseas_stock", "inquire_balance"))
+    sys.path.insert(0, os.path.join(TRADING_DIR, "open-trading-api", "examples_llm", "overseas_stock", "inquire_psamount"))
+
+    import importlib
+    # Force reload to get the overseas version
+    if 'inquire_balance' in sys.modules:
+        del sys.modules['inquire_balance']
+    import inquire_balance as us_bal
+    import inquire_psamount
+
+    holdings = {}
+    stock_value = 0
+    unrealized_pl = 0
+
+    # Query AMEX (most of our ETFs are here)
+    try:
+        o1, _ = us_bal.inquire_balance(
+            cano=acct.my_acct, acnt_prdt_cd=acct.my_prod,
+            ovrs_excg_cd="NASD", tr_crcy_cd="USD", env_dv="real"
+        )
+        if o1 is not None and not o1.empty:
+            for _, row in o1.iterrows():
+                qty = int(row['ovrs_cblc_qty'])
+                t = row['ovrs_pdno']
+                if qty > 0 and t not in holdings:
+                    val = float(row.get('ovrs_stck_evlu_amt', 0))
+                    avg = float(row.get('frcr_pchs_amt1', 0)) / max(qty, 1)
+                    cp = val / qty if qty > 0 else 0
+                    pf = (cp - avg) * qty
+                    stock_value += val
+                    unrealized_pl += pf
+                    holdings[t] = {
+                        'ticker': t,
+                        'quantity': qty,
+                        'value': val,
+                        'avg_price': avg,
+                        'profit': pf,
+                        'profit_rate': ((cp / avg) - 1) * 100 if avg > 0 else 0,
+                    }
+    except Exception as e:
+        print(f"US balance error: {e}")
+
+    # Cash
+    try:
+        df = inquire_psamount.inquire_psamount(
+            cano=acct.my_acct, acnt_prdt_cd=acct.my_prod,
+            ovrs_excg_cd="AMEX", item_cd="SPY",
+            ovrs_ord_unpr="0", env_dv="real"
+        )
+        cash = float(df.iloc[0]['ord_psbl_frcr_amt']) if df is not None and not df.empty else 0
+    except:
+        cash = 0
+
+    return {
+        'stock_value': stock_value,
+        'cash': cash,
+        'total': stock_value + cash,
+        'unrealized_pl': unrealized_pl,
+        'holdings': list(holdings.values()),
+    }
+
+
+def get_account_totals():
+    """Get complete account totals for KR + US."""
+    kr = get_kr_account()
+    us = get_us_account(kr['acct'])
+
+    return {
+        'kr': {
+            'total': kr['total'],
+            'stock_value': kr['stock_value'],
+            'cash': kr['cash'],
+            'unrealized_pl': kr['unrealized_pl'],
+            'holdings': kr['holdings'],
+        },
+        'us': {
+            'total': us['total'],
+            'stock_value': us['stock_value'],
+            'cash': us['cash'],
+            'unrealized_pl': us['unrealized_pl'],
+            'holdings': us['holdings'],
+        },
+    }
+
+
+if __name__ == "__main__":
+    import json
+    totals = get_account_totals()
+    print(json.dumps(totals, indent=2, default=str))
