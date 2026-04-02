@@ -97,17 +97,19 @@ function renderStrategyTable(data) {
   tbody.innerHTML = '';
 
   for (const s of data.strategies) {
-    const cur = s.currency;
-    const holdingsCount = (s.holdings || []).filter(h => h.quantity > 0).length;
+    const realized = s.realized_pl_krw || 0;
+    const unrealized = s.unrealized_pl_krw || 0;
+    const totalPl = s.total_pl_krw || 0;
+    const totalPct = s.total_pl_pct || 0;
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td><strong>${s.name}</strong></td>
       <td>${s.market}</td>
-      <td>${fmtCurrency(s.budget, cur)}</td>
-      <td>${fmtCurrency(s.total_value, cur)}</td>
-      <td class="${pctClass(s.profit_pct)}">${fmtPct(s.profit_pct)}</td>
+      <td>${fmtKRW(s.currency === 'USD' ? s.budget * (data.exchange_rate || 1380) : s.budget)}</td>
+      <td class="${pctClass(realized)}">${fmtKRW(realized)}</td>
+      <td class="${pctClass(unrealized)}">${fmtKRW(unrealized)}</td>
+      <td class="${pctClass(totalPl)}"><strong>${fmtKRW(totalPl)}</strong><br><small>${fmtPct(totalPct)}</small></td>
       <td>${inferBadge(s.status)}</td>
-      <td>${holdingsCount}</td>
     `;
     tbody.appendChild(tr);
   }
@@ -162,20 +164,25 @@ function renderDetailCards(data) {
       regimeHTML += '</div>';
     }
 
+    const totalPl = s.total_pl_krw || 0;
+    const totalPct = s.total_pl_pct || 0;
+    const realized = s.realized_pl_krw || 0;
+    const unrealized = s.unrealized_pl_krw || 0;
+
     card.innerHTML = `
       <h3>${s.name} ${inferBadge(s.status)}</h3>
       <div class="metrics-grid" style="margin-bottom:8px">
         <div class="metric" style="padding:8px">
-          <span class="metric-label">Value</span>
-          <span class="metric-value" style="font-size:18px">${fmtCurrency(s.total_value, cur)}</span>
+          <span class="metric-label">Total P/L</span>
+          <span class="metric-value ${pctClass(totalPl)}" style="font-size:18px">${fmtKRW(totalPl)}<br><small>${fmtPct(totalPct)}</small></span>
         </div>
         <div class="metric" style="padding:8px">
-          <span class="metric-label">P/L</span>
-          <span class="metric-value ${pctClass(s.profit_pct)}" style="font-size:18px">${fmtPct(s.profit_pct)}</span>
+          <span class="metric-label">Realized</span>
+          <span class="metric-value ${pctClass(realized)}" style="font-size:14px">${fmtKRW(realized)}</span>
         </div>
         <div class="metric" style="padding:8px">
-          <span class="metric-label">Cash</span>
-          <span class="metric-value" style="font-size:18px">${fmtCurrency(s.cash, cur)}</span>
+          <span class="metric-label">Unrealized</span>
+          <span class="metric-value ${pctClass(unrealized)}" style="font-size:14px">${fmtKRW(unrealized)}</span>
         </div>
       </div>
       ${regimeHTML}

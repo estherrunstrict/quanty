@@ -22,7 +22,7 @@ def get_kr_account():
     acct = ka.getTREnv()
 
     # Holdings
-    output1, _ = kr_bal.inquire_balance(
+    output1, output2 = kr_bal.inquire_balance(
         env_dv="real", cano=acct.my_acct, acnt_prdt_cd=acct.my_prod,
         afhr_flpr_yn="N", inqr_dvsn="02", unpr_dvsn="01",
         fund_sttl_icld_yn="N", fncg_amt_auto_rdpt_yn="N", prcs_dvsn="00"
@@ -48,18 +48,34 @@ def get_kr_account():
                     'profit_rate': rate,
                 })
 
-    # Cash
+    # Cash — use ord_psbl_cash (actual deposit cash, not inflated nrcvb_buy_amt)
+    # nrcvb_buy_amt includes unsettled proceeds and margin — too high for asset calculation
+    # ord_psbl_cash matches KIS app's 출금가능금액
     df_cash = inquire_psbl_order.inquire_psbl_order(
         env_dv="real", cano=acct.my_acct, acnt_prdt_cd=acct.my_prod,
         pdno="005930", ord_unpr="0", ord_dvsn="01",
         cma_evlu_amt_icld_yn="N", ovrs_icld_yn="Y"
     )
-    cash = float(df_cash.iloc[0]['nrcvb_buy_amt']) if df_cash is not None and not df_cash.empty else 0
+    if df_cash is not None and not df_cash.empty:
+        row = df_cash.iloc[0]
+        cash = float(row.get('ord_psbl_cash', 0))
+        # Also get the foreign currency reuse amount (USD cash in KRW terms)
+        ovrs_reuse = float(row.get('ovrs_re_use_amt_wcrc', 0))
+    else:
+        cash = 0
+        ovrs_reuse = 0
+
+    # output2 has the real account summary that matches KIS app
+    kr_tot_evlu = 0  # tot_evlu_amt = 예수금 + KR stocks (matches KIS app's KR portion)
+    kr_deposit_cash = 0  # dnca_tot_amt = 예수금
+    if output2 is not None and not output2.empty:
+        kr_tot_evlu = float(output2.iloc[0].get('tot_evlu_amt', 0))
+        kr_deposit_cash = float(output2.iloc[0].get('dnca_tot_amt', 0))
 
     return {
         'stock_value': stock_value,
-        'cash': cash,
-        'total': stock_value + cash,
+        'cash': kr_deposit_cash,       # 예수금 from output2 (matches KIS app exactly)
+        'kr_tot_evlu': kr_tot_evlu,    # tot_evlu_amt = 예수금 + KR stocks
         'unrealized_pl': unrealized_pl,
         'holdings': holdings,
         'acct': acct,
@@ -132,25 +148,40 @@ def get_us_account(acct):
 
 
 def get_account_totals():
-    """Get complete account totals for KR + US."""
+    """
+    Get complete account totals for KR + US.
+
+    IMPORTANT: KRW 예수금 is SHARED between KR and US accounts.
+    KR balance API returns full KRW cash (including US-earmarked portion).
+    To avoid double-counting:
+      계좌총자산 = KR stocks + US stocks (KRW) + KRW cash (once) + USD cash (KRW, once)
+    NOT: KR total + US total (which double-counts KRW cash)
+    """
     kr = get_kr_account()
     us = get_us_account(kr['acct'])
 
+    # KRW cash from KR API includes the shared pool — don't add it again from US side
+    # USD cash is separate (foreign currency deposit)
+    kr_stock_value = kr['stock_value']
+    us_stock_value = us['stock_value']
+    krw_cash = kr['cash']        # Shared KRW cash (예수금) — count ONCE
+    usd_cash = us['cash']        # USD cash in USD
+
     return {
         'kr': {
-            'total': kr['total'],
-            'stock_value': kr['stock_value'],
-            'cash': kr['cash'],
+            'stock_value': kr_stock_value,
             'unrealized_pl': kr['unrealized_pl'],
             'holdings': kr['holdings'],
+            'kr_tot_evlu': kr.get('kr_tot_evlu', kr_stock_value + krw_cash),
+            'cash': krw_cash,
         },
         'us': {
-            'total': us['total'],
-            'stock_value': us['stock_value'],
-            'cash': us['cash'],
+            'stock_value': us_stock_value,
             'unrealized_pl': us['unrealized_pl'],
             'holdings': us['holdings'],
         },
+        'krw_cash': krw_cash,       # Shared KRW cash — counted once
+        'usd_cash': usd_cash,       # USD cash in USD
     }
 
 

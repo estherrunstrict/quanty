@@ -22,12 +22,18 @@ DASHBOARD_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(DASHBOARD_DIR, "docs", "data")
 CONFIG_FILE = os.path.join(TRADING_DIR, "config.yaml")
 
+# KIS API paths for live queries
+import sys
+sys.path.append(os.path.join(TRADING_DIR, "open-trading-api", "examples_llm"))
+sys.path.append(os.path.join(TRADING_DIR, "open-trading-api", "examples_llm", "domestic_stock", "inquire_balance"))
+
 STRATEGY_RESULT_FILES = {
     "quant40": os.path.join(TRADING_DIR, "strategy_results", "quant40_result.json"),
     "jd_strategy": os.path.join(TRADING_DIR, "strategy_results", "jd_strategy_result.json"),
-    "uranium_vb": os.path.join(TRADING_DIR, "strategy_results", "uranium_vb_result.json"),
+    "modified_dual_momentum": os.path.join(TRADING_DIR, "strategy_results", "modified_dual_momentum_result.json"),
     "hybrid_vb_us": os.path.join(TRADING_DIR, "strategy_results", "hybrid_vb_us_result.json"),
     "hybrid_vb_kr": os.path.join(TRADING_DIR, "strategy_results", "hybrid_vb_kr_result.json"),
+    "korea_momentum": os.path.join(TRADING_DIR, "strategy_results", "korea_etf_momentum_result.json"),
 }
 
 STATE_FILES = {
@@ -74,25 +80,22 @@ def build_strategy_entry(name, market, currency, budget, result_json, extra_para
     if result_json is None:
         return entry
 
-    # Strategy-level value: use allocated_capital (budget-capped) not account-level total_value
-    allocated = result_json.get("allocated_capital", budget)
-    raw_value = result_json.get("total_value", budget)
-    # If total_value is way larger than budget, it's the account total — use allocated instead
-    if budget > 0 and raw_value > budget * 3:
-        entry["total_value"] = allocated
-    else:
-        entry["total_value"] = raw_value
-
-    # Cash: compute strategy's share (total cash * budget/account_value), or use allocated - holdings
-    raw_cash = result_json.get("cash_balance", 0)
+    # Holdings value = sum of individual holding values (always strategy-specific)
     holdings_value = sum(h.get("value", 0) for h in result_json.get("holdings", []))
-    if budget > 0 and raw_cash > budget * 3:
-        # Account-level cash — estimate strategy's cash as budget - holdings
-        entry["cash"] = max(0, allocated - holdings_value)
-    else:
-        entry["cash"] = raw_cash
 
+    # Total profit = from result JSON (includes both realized + unrealized P/L)
     total_profit = result_json.get("total_profit", 0)
+
+    # Strategy value = budget + profit (what you'd have if you liquidated now)
+    # Cash = budget portion not currently in positions
+    if budget > 0:
+        entry["total_value"] = budget + total_profit
+        # Estimate cash: the part of budget not in holdings
+        entry["cash"] = max(0, budget + total_profit - holdings_value)
+    else:
+        entry["total_value"] = holdings_value
+        entry["cash"] = 0
+
     entry["profit_pct"] = round(total_profit / budget * 100, 2) if budget > 0 else 0
 
     # Holdings
@@ -121,11 +124,92 @@ def build_strategy_entry(name, market, currency, budget, result_json, extra_para
     return entry
 
 
-def build_korea_momentum_entry(config):
-    """Build Korea ETF Momentum entry from state file."""
-    budget = config.get("capital_management", {}).get("korea_etf_momentum", {}).get("budget_krw", 10000000)
-    state = load_json(STATE_FILES["korea_momentum"])
+def get_live_kr_holdings():
+    """Query KIS API for live Korea holdings with real-time P/L."""
+    try:
+        import kis_auth as ka
+        import inquire_balance as kr_balance
 
+        ka.auth(svr="prod")
+        acct = ka.getTREnv()
+        output1, _ = kr_balance.inquire_balance(
+            env_dv="real", cano=acct.my_acct, acnt_prdt_cd=acct.my_prod,
+            afhr_flpr_yn="N", inqr_dvsn="02", unpr_dvsn="01",
+            fund_sttl_icld_yn="N", fncg_amt_auto_rdpt_yn="N", prcs_dvsn="00"
+        )
+        holdings = {}
+        if output1 is not None and not output1.empty:
+            for _, row in output1.iterrows():
+                t = row['pdno']
+                qty = int(row['hldg_qty'])
+                if qty > 0:
+                    holdings[t] = {
+                        'ticker': t,
+                        'quantity': qty,
+                        'value': float(row['evlu_amt']),
+                        'avg_price': float(row.get('pchs_avg_pric', 0)),
+                        'profit': float(row.get('evlu_pfls_amt', 0)),
+                        'profit_rate': float(row.get('evlu_pfls_rt', 0)),
+                    }
+        return holdings
+    except Exception as e:
+        print(f"KIS live query failed: {e}")
+        return None
+
+
+def build_korea_momentum_entry(config):
+    """Build Korea ETF Momentum entry with LIVE KIS data for accurate P/L."""
+    budget = config.get("capital_management", {}).get("korea_etf_momentum", {}).get("budget_krw", 10000000)
+    kr_tickers = ["139220", "144600", "132030"]
+
+    # Try live KIS query first (most accurate, real-time P/L)
+    live = get_live_kr_holdings()
+    if live:
+        total_profit = 0
+        holdings_list = []
+        for t in kr_tickers:
+            if t in live:
+                h = live[t]
+                total_profit += h['profit']
+                holdings_list.append({
+                    'ticker': t, 'quantity': h['quantity'],
+                    'profit_rate': h['profit_rate'],
+                })
+
+        state = load_json(STATE_FILES.get("korea_momentum"))
+        target = state.get("target_ticker", "") if state else ""
+
+        return {
+            "name": "Korea ETF Momentum",
+            "market": "KR",
+            "currency": "KRW",
+            "budget": budget,
+            "total_value": budget + total_profit,
+            "cash": max(0, budget + total_profit - sum(live[t]['value'] for t in kr_tickers if t in live)),
+            "profit_pct": round(total_profit / budget * 100, 2) if budget > 0 else 0,
+            "status": f"HOLD {target}" if target and target != "CASH" else "CASH",
+            "regime": {},
+            "holdings": holdings_list,
+            "params": {"strategy": "dual_momentum", "rebalance": "monthly"},
+        }
+
+    # Fallback: result JSON
+    result = load_json(STRATEGY_RESULT_FILES.get("korea_momentum"))
+    if result:
+        entry = build_strategy_entry(
+            "Korea ETF Momentum", "KR", "KRW", budget, result,
+            {"strategy": "dual_momentum", "rebalance": "monthly"}
+        )
+        session = result.get("session_summary", {})
+        target = session.get("target_ticker")
+        if target and target != "CASH":
+            entry["status"] = f"HOLD {target}"
+        else:
+            entry["status"] = "CASH"
+        return entry
+
+    # Fallback: state file only (no P/L)
+    state = load_json(STATE_FILES.get("korea_momentum"))
     entry = {
         "name": "Korea ETF Momentum",
         "market": "KR",
@@ -139,43 +223,110 @@ def build_korea_momentum_entry(config):
         "holdings": [],
         "params": {"strategy": "dual_momentum", "rebalance": "monthly"},
     }
-
     if state:
         target = state.get("target_ticker")
-        target_name = state.get("target_name", "")
         if target and target != "CASH":
             entry["status"] = f"HOLD {target}"
-            entry["holdings"] = [{"ticker": target, "quantity": 1, "profit_rate": 0}]
         else:
             entry["status"] = "CASH"
-
     return entry
 
 
+def get_upbit_balance():
+    """Query Upbit account for KRW cash and BTC holdings."""
+    try:
+        import pyupbit
+        env = _load_env()
+        access = env.get("UPBIT_ACCESS_KEY")
+        secret = env.get("UPBIT_SECRET_KEY")
+        if not access or not secret:
+            return 0, 0, 0  # krw, btc_krw_value, btc_qty
+
+        upbit = pyupbit.Upbit(access, secret)
+        krw = float(upbit.get_balance("KRW") or 0)
+        btc_qty = float(upbit.get_balance("BTC") or 0)
+        btc_price = float(pyupbit.get_current_price("KRW-BTC") or 0)
+        btc_krw = btc_qty * btc_price
+        return krw, btc_krw, btc_qty
+    except Exception as e:
+        print(f"Upbit query failed: {e}")
+        return 0, 0, 0
+
+
+def _load_env():
+    env_path = os.path.join(TRADING_DIR, ".env")
+    env = {}
+    if os.path.exists(env_path):
+        with open(env_path) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith('#') and '=' in line:
+                    key, val = line.split('=', 1)
+                    env[key.strip()] = val.strip()
+    return env
+
+
 def build_btc_vb_entry(config):
-    """Build BTC VB entry from state."""
+    """Build BTC VB entry from Upbit account balance."""
+    state = load_json(STATE_FILES.get("btc_vb"))
+
+    # Query actual Upbit account balance
+    krw_cash, btc_value, btc_qty = get_upbit_balance()
+    total_value = krw_cash + btc_value
+    # Budget = total account value (user deposits/withdraws to adjust)
+    budget = total_value if total_value > 0 else 0
+
     entry = {
         "name": "BTC VB",
         "market": "KR",
         "currency": "KRW",
-        "budget": 0,
-        "total_value": 0,
-        "cash": 0,
+        "budget": round(budget),
+        "total_value": round(total_value),
+        "cash": round(krw_cash),
         "profit_pct": 0.0,
         "status": "CASH",
         "regime": {},
         "holdings": [],
         "params": {"strategy": "upbit_vb", "k_long": 0.4},
     }
-    # BTC VB state is complex — just show basic status
+
+    # BTC position
+    if btc_qty > 0 and btc_value > 0:
+        entry["holdings"] = [{
+            "ticker": "BTC",
+            "quantity": round(btc_qty, 8),
+            "profit_rate": 0,  # No avg price available from simple balance query
+        }]
+        entry["status"] = "HOLDING BTC"
+    else:
+        entry["status"] = "CASH"
+
+    if state:
+        regime = state.get("market_regime", "neutral")
+        entry["regime"] = {"BTC": regime.upper()} if regime else {}
+        market_state = state.get("current_state", "normal").upper()
+        if btc_qty <= 0:
+            entry["status"] = market_state
+
     return entry
 
 
 def generate_dashboard_data():
+    # Refresh realized P/L from KIS transaction history (live query)
+    try:
+        from refresh_realized_pl import refresh
+        refresh()
+    except Exception as e:
+        print(f"Realized P/L refresh failed: {e}")
+
     config = load_config()
     cap_mgmt = config.get("capital_management", {})
 
     strategies = []
+
+    # Load per-strategy realized P/L from KIS transaction history
+    realized_pl_file = os.path.join(TRADING_DIR, "strategy_results", "realized_pl_2026.json")
+    realized_by_strategy = load_json(realized_pl_file) or {}
 
     # Korea ETF Momentum (no result JSON — uses state file)
     strategies.append(build_korea_momentum_entry(config))
@@ -212,37 +363,104 @@ def generate_dashboard_data():
         {"strategy": "jd_investment"}
     ))
 
-    # Uranium VB
-    uvb_result = load_json(STRATEGY_RESULT_FILES.get("uranium_vb"))
-    budget_uvb = cap_mgmt.get("uranium_vb", {}).get("budget_usd", 5000)
+    # Modified Dual Momentum (변형 듀얼모멘텀)
+    mdm_result = load_json(STRATEGY_RESULT_FILES.get("modified_dual_momentum"))
+    budget_mdm = cap_mgmt.get("modified_dual_momentum", {}).get("budget_usd", 5000)
     strategies.append(build_strategy_entry(
-        "Uranium VB", "US", "USD", budget_uvb, uvb_result,
-        {"strategy": "vb_momentum"}
+        "Modified Dual Momentum", "US", "USD", budget_mdm, mdm_result,
+        {"strategy": "dual_momentum_modified", "offensive": "SPY vs EFA", "defensive": "8 bond ETFs"}
     ))
 
     # BTC VB
     strategies.append(build_btc_vb_entry(config))
 
-    # Portfolio totals
-    total_krw = 0
-    total_usd = 0
-    cash_krw = 0
-    cash_usd = 0
-
+    # Inject per-strategy realized P/L (realized is always in KRW from KIS)
     for s in strategies:
-        if s["currency"] == "KRW":
-            total_krw += s["total_value"]
-            cash_krw += s["cash"]
-        else:
-            total_usd += s["total_value"]
-            cash_usd += s["cash"]
+        name = s["name"]
+        realized_krw = realized_by_strategy.get(name, 0)
+        s["realized_pl_krw"] = realized_krw
 
-    total_value_krw = total_krw + total_usd * EXCHANGE_RATE
-    total_budget_krw = sum(
-        s["budget"] if s["currency"] == "KRW" else s["budget"] * EXCHANGE_RATE
-        for s in strategies
-    )
-    total_profit_pct = ((total_value_krw / total_budget_krw) - 1) * 100 if total_budget_krw > 0 else 0
+        # Unrealized = current holdings value - cost basis (from profit_pct * budget)
+        # For USD strategies: convert unrealized to KRW
+        unrealized_native = s.get("total_value", s["budget"]) - s["budget"]
+        if s["currency"] == "USD":
+            unrealized_krw = unrealized_native * EXCHANGE_RATE
+        else:
+            unrealized_krw = unrealized_native
+
+        s["unrealized_pl_krw"] = round(unrealized_krw)
+        s["total_pl_krw"] = round(realized_krw + unrealized_krw)
+
+        # Total P/L % = total_pl_krw / (budget in KRW)
+        budget_krw = s["budget"] * EXCHANGE_RATE if s["currency"] == "USD" else s["budget"]
+        if budget_krw > 0:
+            s["total_pl_pct"] = round(s["total_pl_krw"] / budget_krw * 100, 2)
+        else:
+            s["total_pl_pct"] = 0
+
+    # Account-level totals: KIS 계좌총자산
+    # = KR stocks + US stocks (KRW) + KRW cash (ONCE) + USD cash (KRW)
+    # KRW 예수금 is SHARED — must not double-count between KR and US
+    try:
+        from query_account_total import get_account_totals
+        acct = get_account_totals()
+        kr_tot_evlu = acct['kr']['kr_tot_evlu']   # 예수금 + KR stocks
+        us_stock_usd = acct['us']['stock_value']
+        usd_cash = acct['usd_cash']
+        kr_cash_real = acct['kr']['cash']        # 예수금
+
+        # 계좌총자산: KIS app uses its own FX rate (higher than market rate)
+        # We derive the effective rate from: app_total - kr_portion = US portion in KRW
+        # Then: US_KRW / US_USD = effective_rate
+        # But we don't have the app total at runtime. Use yfinance for live FX rate:
+        try:
+            import yfinance as yf
+            fx = yf.download('KRW=X', period='5d', progress=False)
+            if isinstance(fx.columns, pd.MultiIndex):
+                fx.columns = fx.columns.get_level_values(0)
+            live_rate = float(fx['Close'].iloc[-1])
+        except Exception:
+            live_rate = EXCHANGE_RATE
+
+        us_cash_real = usd_cash
+        kis_total_assets = kr_tot_evlu + (us_stock_usd + usd_cash) * live_rate
+    except Exception as e:
+        print(f"KIS account query failed: {e}")
+        kr_cash_real = 0
+        us_cash_real = 0
+        kis_total_assets = sum(
+            s["total_value"] if s["currency"] == "KRW" else s["total_value"] * EXCHANGE_RATE
+            for s in strategies
+        )
+
+    # Original deposit from deposits.json
+    deposit_file = os.path.join(DASHBOARD_DIR, "deposits.json")
+    deposits = load_json(deposit_file) or {"kis_total_original_krw": kis_total_assets}
+
+    original_krw = deposits.get("kis_total_original_krw", kis_total_assets)
+
+    # Realized P/L: read from live KIS query (generated by each dashboard update)
+    realized_pl_file = os.path.join(TRADING_DIR, "strategy_results", "realized_pl_2026.json")
+    realized_data = load_json(realized_pl_file) or {}
+    realized_loss = realized_data.get("_total", deposits.get("kis_realized_loss_krw", 0))
+
+    # Total P/L = realized (from deposits.json, updated periodically) + unrealized (live from API)
+    # Unrealized is always in KRW from KR API; US unrealized needs FX conversion
+    try:
+        kr_unrealized = acct['kr']['unrealized_pl']
+        # For US unrealized: convert USD P/L to KRW using the same rate we used for total
+        us_unrealized_usd = acct['us']['unrealized_pl']
+        # Use the rate implied by KIS app: we know original and realized, so
+        # current_total = original + realized + unrealized
+        # We just need unrealized in KRW — use a reasonable live rate
+        us_unrealized_krw = us_unrealized_usd * (live_rate if 'live_rate' in dir() else EXCHANGE_RATE)
+        total_unrealized = kr_unrealized + us_unrealized_krw
+    except Exception:
+        total_unrealized = 0
+
+    total_pl_krw = realized_loss + int(total_unrealized)
+    total_value_krw = original_krw + total_pl_krw
+    total_pl_pct = (total_pl_krw / original_krw * 100) if original_krw > 0 else 0
 
     now = datetime.now(KST)
     dashboard = {
@@ -250,10 +468,11 @@ def generate_dashboard_data():
         "exchange_rate": EXCHANGE_RATE,
         "portfolio": {
             "total_value_krw": round(total_value_krw),
-            "total_value_usd": round(total_usd),
-            "total_profit_pct": round(total_profit_pct, 1),
-            "cash_krw": round(cash_krw),
-            "cash_usd": round(cash_usd),
+            "original_deposit_krw": round(original_krw),
+            "total_profit_krw": round(total_pl_krw),
+            "total_profit_pct": round(total_pl_pct, 2),
+            "cash_krw": round(kr_cash_real),
+            "cash_usd": round(us_cash_real),
         },
         "strategies": strategies,
     }
