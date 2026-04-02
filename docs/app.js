@@ -85,8 +85,10 @@ function renderOverview(data) {
   document.getElementById('total-value').textContent = fmtKRW(totalKRW);
 
   const profitEl = document.getElementById('total-profit');
-  profitEl.textContent = fmtPct(p.total_profit_pct);
-  profitEl.className = 'metric-value ' + pctClass(p.total_profit_pct);
+  const plKrw = p.total_profit_krw || 0;
+  const plPct = p.total_profit_pct || 0;
+  profitEl.innerHTML = fmtKRW(plKrw) + '<br><small>' + fmtPct(plPct) + '</small>';
+  profitEl.className = 'metric-value ' + pctClass(plKrw);
 
   document.getElementById('cash-krw').textContent = fmtKRW(p.cash_krw);
   document.getElementById('cash-usd').textContent = fmtUSD(p.cash_usd);
