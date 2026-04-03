@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Send dashboard update notification to Discord."""
+"""Send dashboard update notification to Discord — clean, minimal format."""
 
 import json
 import os
@@ -11,6 +11,7 @@ DASHBOARD_URL = "https://estherrunstrict.github.io/quanty"
 
 
 def get_webhook_url():
+    # Try .env first
     env_path = os.path.join(TRADING_DIR, ".env")
     if os.path.exists(env_path):
         with open(env_path) as f:
@@ -18,6 +19,14 @@ def get_webhook_url():
                 line = line.strip()
                 if line.startswith("DISCORD_WEBHOOK_URL="):
                     return line.split("=", 1)[1].strip()
+    # Fallback: config.yaml
+    try:
+        import yaml
+        with open(os.path.join(TRADING_DIR, "config.yaml")) as f:
+            cfg = yaml.safe_load(f)
+        return cfg.get("DISCORD_WEBHOOK_URL")
+    except Exception:
+        pass
     return None
 
 
@@ -31,40 +40,59 @@ def main():
     with open(data_path) as f:
         data = json.load(f)
 
-    # Build summary lines — show cumulative P/L per strategy
-    lines = []
-    for s in data["strategies"]:
-        total_pl = s.get("total_pl_krw", 0)
-        total_pct = s.get("total_pl_pct", 0)
-        realized = s.get("realized_pl_krw", 0)
-        icon = "\U0001f7e2" if total_pl > 0 else ("\U0001f534" if total_pl < 0 else "\u26aa")
-        # Show total P/L in KRW with percentage
-        pl_str = f"\u20a9{total_pl:+,.0f} ({total_pct:+.1f}%)"
-        realized_str = f" [R: \u20a9{realized:+,.0f}]" if realized != 0 else ""
-        lines.append(f"{icon} **{s['name']}**: {pl_str}{realized_str}")
-
-    # Account total P/L
     p = data.get("portfolio", {})
+    rate = data.get("exchange_rate", 1380)
     total_val = p.get("total_value_krw", 0)
     original = p.get("original_deposit_krw", 0)
-    total_pl_krw = p.get("total_profit_krw", 0)
-    total_pnl = p.get("total_profit_pct", 0)
+    total_pl = p.get("total_profit_krw", 0)
+    total_pct = p.get("total_profit_pct", 0)
+    cash_krw = p.get("cash_krw", 0)
+    cash_usd = p.get("cash_usd", 0)
 
-    total_icon = "\U0001f7e2" if total_pl_krw >= 0 else "\U0001f534"
-    lines.append("")
-    lines.append(f"{total_icon} **KIS Total: \u20a9{total_val:,.0f} / P/L: \u20a9{total_pl_krw:+,.0f} ({total_pnl:+.1f}%)**")
-    lines.append(f"  Original: \u20a9{original:,.0f}")
+    dot = "▲" if total_pl >= 0 else "▼"
 
-    summary = "\n".join(lines)
-    updated_at = data.get("updated_at", "")
+    # Header line
+    lines = [
+        f"**₩{total_val:,.0f}**  {dot} ₩{total_pl:+,.0f} ({total_pct:+.1f}%)",
+        f"Cash: ₩{cash_krw:,.0f}  |  ${cash_usd:,.0f}  |  Upbit: ₩{p.get('upbit_krw', 0):,.0f}",
+        "",
+    ]
+
+    # Per-strategy
+    for s in data.get("strategies", []):
+        total = s.get("total_pl_krw", 0)
+        pct = s.get("total_pl_pct", 0)
+        realized = s.get("realized_pl_krw", 0)
+        sdot = "▲" if total >= 0 else "▼"
+
+        # Holdings inline
+        hparts = []
+        for h in s.get("holdings", [])[:3]:
+            if h.get("quantity", 0) > 0:
+                hparts.append(f"{h['ticker']}×{h['quantity']}")
+        hold_str = "  ".join(hparts) if hparts else s.get("status", "—")
+
+        r_str = f"  R:₩{realized:+,.0f}" if realized != 0 else ""
+        lines.append(f"{sdot} **{s['name']}**  ₩{total:+,.0f} ({pct:+.1f}%){r_str}")
+        lines.append(f"    {hold_str}")
+
+    lines.append(f"\n[View Dashboard]({DASHBOARD_URL})")
+
+    # Color based on P&L
+    if total_pct >= 0.5:
+        color = 0x3a8a5a
+    elif total_pct <= -2.0:
+        color = 0xa84848
+    else:
+        color = 0x4a78a8
 
     payload = {
         "embeds": [{
-            "title": "\U0001f4ca Dashboard Updated",
+            "title": f"Portfolio — {data.get('updated_at', '')}",
             "url": DASHBOARD_URL,
-            "description": f"{summary}\n\n[**View Dashboard \u2192**]({DASHBOARD_URL})",
-            "color": 3447003,
-            "footer": {"text": f"Quanty Dashboard | {updated_at}"},
+            "description": "\n".join(lines),
+            "color": color,
+            "footer": {"text": f"Deposit: ₩{original:,.0f} | FX: {rate}"},
         }]
     }
 
