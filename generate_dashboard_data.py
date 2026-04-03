@@ -576,10 +576,16 @@ def generate_dashboard_data():
         # BTC VB: realized = all trades closed (from state file), unrealized = current balance vs deposit
         if name == "BTC VB":
             s["realized_pl_krw"] = realized_by_strategy.get("BTC VB", 0)
-            # Unrealized = (current Upbit total) - (original deposit) - (realized)
-            _upbit_orig = (load_json(os.path.join(DASHBOARD_DIR, "deposits.json")) or {}).get("upbit_original_krw", 10000000)
-            s["unrealized_pl_krw"] = round(s.get("total_value", 0) - _upbit_orig - s["realized_pl_krw"])
+            # Unrealized = only when holding BTC (intraday); 0 when all cash
+            _vb_holding = (_vb_for_realized or {}).get("is_holding", False)
+            if _vb_holding:
+                _entry_amt = (_vb_for_realized or {}).get("entry_amount_krw", 0)
+                _btc_val = s.get("total_value", 0) - (s.get("cash", 0))
+                s["unrealized_pl_krw"] = round(_btc_val - _entry_amt)
+            else:
+                s["unrealized_pl_krw"] = 0
             s["total_pl_krw"] = s["realized_pl_krw"] + s["unrealized_pl_krw"]
+            _upbit_orig = (load_json(os.path.join(DASHBOARD_DIR, "deposits.json")) or {}).get("upbit_original_krw", 9987315)
             if _upbit_orig > 0:
                 s["total_pl_pct"] = round(s["total_pl_krw"] / _upbit_orig * 100, 2)
 
