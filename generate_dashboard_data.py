@@ -419,6 +419,11 @@ def generate_dashboard_data():
     realized_pl_file = os.path.join(TRADING_DIR, "strategy_results", "realized_pl_2026.json")
     realized_by_strategy = load_json(realized_pl_file) or {}
 
+    # Inject Upbit BTC VB realized P&L (not in KIS)
+    _vb_for_realized = load_json(os.path.join(TRADING_DIR, "upbit_vb_strategy_state.json"))
+    if _vb_for_realized:
+        realized_by_strategy["BTC VB"] = round(_vb_for_realized.get("total_pnl_krw", 0))
+
     # Korea ETF Momentum (no result JSON — uses state file)
     strategies.append(build_korea_momentum_entry(config))
 
@@ -567,6 +572,16 @@ def generate_dashboard_data():
             s["total_pl_pct"] = round(s["total_pl_krw"] / budget_krw * 100, 2)
         else:
             s["total_pl_pct"] = 0
+
+        # BTC VB: realized = all trades closed (from state file), unrealized = current balance vs deposit
+        if name == "BTC VB":
+            s["realized_pl_krw"] = realized_by_strategy.get("BTC VB", 0)
+            # Unrealized = (current Upbit total) - (original deposit) - (realized)
+            _upbit_orig = (load_json(os.path.join(DASHBOARD_DIR, "deposits.json")) or {}).get("upbit_original_krw", 10000000)
+            s["unrealized_pl_krw"] = round(s.get("total_value", 0) - _upbit_orig - s["realized_pl_krw"])
+            s["total_pl_krw"] = s["realized_pl_krw"] + s["unrealized_pl_krw"]
+            if _upbit_orig > 0:
+                s["total_pl_pct"] = round(s["total_pl_krw"] / _upbit_orig * 100, 2)
 
         # Win rate
         ts = trade_stats.get(name, {})
