@@ -1,104 +1,392 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quanty — Auto Trading Dashboard</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Quanty — Trading Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Newsreader:ital,opsz,wght@0,6..72,300;1,6..72,300&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#08080a;--s1:#0e0e11;--s2:#141418;--s3:#1a1a1f;
+  --bdr:#1e1e24;--bdr2:#2a2a32;
+  --tx:#e2ded8;--tx2:#8a857e;--tx3:#55524d;--tx4:#333130;
+  --ac:#c9a24d;--ac-d:#c9a24d18;
+  --g:#3a8a5a;--g-bg:#3a8a5a10;
+  --r:#a84848;--r-bg:#a8484810;
+  --bl:#4a78a8;--pu:#7a68a8;
+  --mono:'DM Mono','SF Mono',monospace;
+  --serif:'Newsreader','Georgia',serif;
+}
+html{font-size:13px}
+body{background:var(--bg);color:var(--tx);font-family:var(--mono);font-weight:300;line-height:1.55;min-height:100dvh;-webkit-font-smoothing:antialiased;padding-bottom:env(safe-area-inset-bottom,0)}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+.shell{max-width:1440px;margin:0 auto;padding:1.8rem 2.5rem}
+
+/* Header */
+.hdr{display:flex;justify-content:space-between;align-items:baseline;padding-bottom:1.2rem;border-bottom:1px solid var(--bdr);margin-bottom:1.8rem}
+.hdr h1{font-family:var(--serif);font-weight:300;font-size:1.6rem;letter-spacing:-0.03em}
+.hdr h1 em{font-style:italic;color:var(--ac)}
+.hdr-r{display:flex;gap:1.5rem;align-items:center}
+.hdr-m{font-size:.75rem;color:var(--tx3)}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--g);display:inline-block;margin-right:.4rem;animation:blink 2.5s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Strip */
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--bdr);margin-bottom:1.8rem}
+.cell{background:var(--s1);padding:1rem 1.2rem}
+.cell:hover{background:var(--s2)}
+.lbl{font-size:.6rem;text-transform:uppercase;letter-spacing:.13em;color:var(--tx4);margin-bottom:.35rem}
+.val{font-size:1.35rem;font-weight:500;letter-spacing:-.03em;white-space:nowrap}
+.sub{font-size:.72rem;color:var(--tx3);margin-top:.15rem}
+.up{color:var(--g)}.dn{color:var(--r)}.amber{color:var(--ac)}
+
+/* Strategy Table */
+.tbl-wrap{overflow-x:auto;margin-bottom:1.8rem;background:var(--s1);border:1px solid var(--bdr)}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+th{text-align:left;padding:.7rem 1rem;border-bottom:1px solid var(--bdr);color:var(--tx4);font-weight:400;font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;white-space:nowrap}
+td{padding:.65rem 1rem;border-bottom:1px solid var(--bdr);font-variant-numeric:tabular-nums;white-space:nowrap}
+tr:hover{background:var(--s2)}
+td.strat-name{font-weight:400;color:var(--tx)}
+
+/* Tags */
+.tag{font-size:.55rem;text-transform:uppercase;letter-spacing:.12em;padding:.15rem .5rem;border:1px solid var(--bdr2);color:var(--tx3);display:inline-block}
+.tag.g{border-color:var(--g);color:var(--g)}
+.tag.r{border-color:var(--r);color:var(--r)}
+.tag.y{border-color:var(--ac);color:var(--ac)}
+
+/* Charts area */
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bdr);margin-bottom:1.8rem}
+.chart-box{background:var(--s1);padding:1.2rem}
+.chart-box h3{font-family:var(--serif);font-weight:300;font-size:.95rem;margin-bottom:.8rem}
+.chart-wrap{position:relative;height:280px}
+
+/* Detail cards */
+.details{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1px;background:var(--bdr);margin-bottom:1.8rem}
+.dcard{background:var(--s1);padding:1.2rem;border-left:2px solid var(--bdr2);transition:background .2s}
+.dcard:hover{background:var(--s2)}
+.dcard.kr{border-left-color:var(--bl)}
+.dcard.us{border-left-color:var(--g)}
+.dcard.crypto{border-left-color:var(--ac)}
+.dcard-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.7rem}
+.dcard-name{font-family:var(--serif);font-size:.95rem;font-weight:300}
+.dcard-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.15rem .8rem;margin-bottom:.6rem}
+.sg-lbl{font-size:.55rem;text-transform:uppercase;letter-spacing:.1em;color:var(--tx4)}
+.sg-val{font-size:.82rem}
+.holds{border-top:1px solid var(--bdr);padding-top:.5rem}
+.h-row{display:flex;justify-content:space-between;align-items:baseline;padding:.15rem 0;font-size:.75rem}
+.h-tk{color:var(--tx);min-width:50px;font-weight:400}
+.h-det{color:var(--tx3);flex:1;text-align:right;padding:0 .6rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.h-pl{min-width:70px;text-align:right}
+.regime-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.5rem}
+
+/* Footer */
+.ftr{border-top:1px solid var(--bdr);padding-top:1rem;margin-top:1.5rem;display:flex;justify-content:space-between;color:var(--tx4);font-size:.6rem}
+
+/* Animations */
+.fi{opacity:0;transform:translateY(6px);animation:fadeIn .6s ease forwards}
+@keyframes fadeIn{to{opacity:1;transform:none}}
+.d1{animation-delay:.1s}.d2{animation-delay:.2s}.d3{animation-delay:.3s}.d4{animation-delay:.4s}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:2px}
+
+/* Mobile */
+@media(max-width:900px){
+  html{font-size:14px}
+  .shell{padding:1rem}
+  .hdr{flex-direction:column;gap:.5rem}
+  .hdr-r{width:100%;justify-content:space-between}
+  .strip{grid-template-columns:repeat(2,1fr)}
+  .charts{grid-template-columns:1fr}
+  .chart-wrap{height:220px}
+  .details{grid-template-columns:1fr}
+  .dcard-grid{grid-template-columns:repeat(2,1fr)}
+  .ftr{flex-direction:column;gap:.3rem}
+  .h-det{display:none}
+}
+@media(max-width:400px){
+  .shell{padding:.6rem}
+  .val{font-size:1.1rem}
+}
+</style>
 </head>
 <body>
-  <header>
-    <h1>Quanty Dashboard</h1>
-    <p id="last-updated">Loading...</p>
-  </header>
+<div class="shell" id="app">
+  <div style="display:flex;align-items:center;justify-content:center;min-height:50vh;flex-direction:column;gap:1rem">
+    <div style="width:18px;height:18px;border:1.5px solid var(--bdr);border-top-color:var(--ac);border-radius:50%;animation:spin .8s linear infinite"></div>
+    <span style="color:var(--tx3);font-size:.8rem">loading oracle...</span>
+  </div>
+</div>
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 
-  <!-- Portfolio Overview -->
-  <section id="overview" class="card">
-    <h2>Portfolio Overview</h2>
-    <div class="metrics-grid">
-      <div class="metric">
-        <span class="metric-label">Total Value</span>
-        <span class="metric-value" id="total-value">--</span>
+<script>
+const DATA_URL = 'data/dashboard_data.json';
+const HISTORY_URL = 'data/equity_history.json';
+const RATE = 1380;
+
+const CHART_COLORS = ['#4a78a8','#3a8a5a','#a84848','#c9a24d','#7a68a8','#a86848','#5a8a8a'];
+
+// Helpers
+const fK = v => '₩' + Math.round(v).toLocaleString();
+const fU = v => '$' + v.toLocaleString(undefined,{minimumFractionDigits:0,maximumFractionDigits:0});
+const fC = (v,c) => c==='KRW'?fK(v):fU(v);
+const fPct = v => (v>=0?'+':'')+v.toFixed(1)+'%';
+const pc = v => v>=0?'up':'dn';
+const h = (tag,cls,html) => {const el=document.createElement(tag);if(cls)el.className=cls;if(html!==undefined)el.innerHTML=html;return el};
+
+function tag(text,type){
+  const c = type==='g'?'g':type==='r'?'r':type==='y'?'y':'';
+  return `<span class="tag ${c}">${text}</span>`;
+}
+
+function inferTag(status){
+  const s=(status||'').toUpperCase();
+  if(s.includes('HOLD')||s.includes('POSITION'))return tag(status,'g');
+  if(s.includes('CASH')||s.includes('NORMAL'))return tag(status,'y');
+  if(s.includes('BEAR'))return tag(status,'r');
+  return tag(status,'');
+}
+
+// Main render
+function render(data, history){
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+
+  const p = data.portfolio;
+  const rate = data.exchange_rate || RATE;
+  const strategies = data.strategies || [];
+
+  // Header
+  const hdr = h('header','hdr fi');
+  hdr.innerHTML = `<h1>Quanty <em>Dashboard</em></h1>
+    <div class="hdr-r">
+      <span class="hdr-m"><span class="dot"></span>${strategies.length} strategies</span>
+      <span class="hdr-m">${data.updated_at}</span>
+    </div>`;
+  app.appendChild(hdr);
+
+  // ── TOTAL VALUE: Use portfolio.total_value_krw from KIS account query (authoritative)
+  // Do NOT sum per-strategy values — they double-count shared cash
+  const totalKRW = p.total_value_krw;
+  const totalPL = p.total_profit_krw;
+  const totalPLPct = p.total_profit_pct;
+
+  // Strategy-level sums (for breakdown only)
+  let krStockVal = 0, usStockValUSD = 0;
+  strategies.forEach(s => {
+    const holdVal = (s.holdings||[]).reduce((a,hh)=>a+(hh.value||0),0);
+    if(s.currency==='KRW') krStockVal += holdVal;
+    else usStockValUSD += holdVal;
+  });
+
+  // Strip
+  const strip = h('section','strip fi d1');
+  const cells = [
+    {lbl:'Total Value (KIS)',val:fK(totalKRW),sub:`Original: ${fK(p.original_deposit_krw)}`},
+    {lbl:'Total P&L',val:fK(totalPL),cls:pc(totalPL),sub:fPct(totalPLPct)},
+    {lbl:'Cash KRW',val:fK(p.cash_krw),sub:'Shared account'},
+    {lbl:'Cash USD',val:fU(p.cash_usd),sub:`~${fK(p.cash_usd*rate)}`},
+    {lbl:'KR Holdings',val:fK(krStockVal),sub:'Korea ETFs + Crypto'},
+    {lbl:'US Holdings',val:fU(usStockValUSD),sub:`~${fK(usStockValUSD*rate)}`},
+  ];
+  cells.forEach(c=>{
+    const el=h('div','cell');
+    el.innerHTML=`<div class="lbl">${c.lbl}</div><div class="val ${c.cls||''}">${c.val}</div><div class="sub">${c.sub}</div>`;
+    strip.appendChild(el);
+  });
+  app.appendChild(strip);
+
+  // Strategy comparison table
+  const tblWrap = h('div','tbl-wrap fi d2');
+  let tblHTML = `<table><thead><tr>
+    <th>Strategy</th><th>Market</th><th>Budget</th>
+    <th>Realized</th><th>Unrealized</th><th>Total P/L</th><th>Status</th>
+  </tr></thead><tbody>`;
+
+  strategies.forEach(s=>{
+    const realized = s.realized_pl_krw||0;
+    const unrealized = s.unrealized_pl_krw||0;
+    const total = s.total_pl_krw||0;
+    const pct = s.total_pl_pct||0;
+    const budgetKRW = s.currency==='USD' ? s.budget*rate : s.budget;
+
+    tblHTML += `<tr>
+      <td class="strat-name">${s.name}</td>
+      <td>${s.market}</td>
+      <td>${fK(budgetKRW)}</td>
+      <td class="${pc(realized)}">${fK(realized)}</td>
+      <td class="${pc(unrealized)}">${fK(unrealized)}</td>
+      <td class="${pc(total)}"><strong>${fK(total)}</strong> <small>${fPct(pct)}</small></td>
+      <td>${inferTag(s.status)}</td>
+    </tr>`;
+  });
+  tblHTML += '</tbody></table>';
+  tblWrap.innerHTML = tblHTML;
+  app.appendChild(tblWrap);
+
+  // Charts
+  const chartsDiv = h('div','charts fi d3');
+
+  // Equity chart
+  const eqBox = h('div','chart-box');
+  eqBox.innerHTML = '<h3>Equity Curves</h3><div class="chart-wrap"><canvas id="eq-chart"></canvas></div>';
+  chartsDiv.appendChild(eqBox);
+
+  // Drawdown chart
+  const ddBox = h('div','chart-box');
+  ddBox.innerHTML = '<h3>Drawdown</h3><div class="chart-wrap"><canvas id="dd-chart"></canvas></div>';
+  chartsDiv.appendChild(ddBox);
+
+  // Allocation
+  const alBox = h('div','chart-box');
+  alBox.innerHTML = '<h3>Budget Allocation</h3><div class="chart-wrap"><canvas id="al-chart"></canvas></div>';
+  chartsDiv.appendChild(alBox);
+
+  // Market split
+  const mkBox = h('div','chart-box');
+  mkBox.innerHTML = '<h3>Market Split</h3><div class="chart-wrap"><canvas id="mk-chart"></canvas></div>';
+  chartsDiv.appendChild(mkBox);
+
+  app.appendChild(chartsDiv);
+
+  // Detail cards
+  const details = h('div','details fi d4');
+  strategies.forEach(s=>{
+    const cur = s.currency;
+    const mkt = s.name.includes('BTC')?'crypto':s.market==='KR'?'kr':'us';
+    const card = h('div',`dcard ${mkt}`);
+
+    const totalPl = s.total_pl_krw||0;
+    const realized = s.realized_pl_krw||0;
+    const unrealized = s.unrealized_pl_krw||0;
+
+    let holdsHTML = '';
+    const hlds = (s.holdings||[]).filter(hh=>hh.quantity>0);
+    if(hlds.length){
+      holdsHTML = '<div class="holds">';
+      hlds.forEach(hh=>{
+        const pr = hh.profit_rate||0;
+        holdsHTML += `<div class="h-row">
+          <span class="h-tk">${hh.ticker}</span>
+          <span class="h-det">${hh.quantity}x${hh.value?' @ '+fC(hh.value/hh.quantity,cur):''}</span>
+          <span class="h-pl ${pc(pr)}">${fPct(pr)}</span>
+        </div>`;
+      });
+      holdsHTML += '</div>';
+    }
+
+    let regimeHTML = '';
+    if(s.regime && typeof s.regime==='object' && Object.keys(s.regime).length){
+      regimeHTML = '<div class="regime-tags">';
+      for(const[tk,r] of Object.entries(s.regime)){
+        const t = r==='BULL'?'g':r==='BEAR'?'r':'y';
+        regimeHTML += tag(`${tk}:${r}`,t)+' ';
+      }
+      regimeHTML += '</div>';
+    }
+
+    card.innerHTML = `
+      <div class="dcard-top">
+        <span class="dcard-name">${s.name}</span>
+        ${inferTag(s.status)}
       </div>
-      <div class="metric">
-        <span class="metric-label">Total Profit</span>
-        <span class="metric-value" id="total-profit">--</span>
+      <div class="dcard-grid">
+        <div><div class="sg-lbl">Total P/L</div><div class="sg-val ${pc(totalPl)}">${fK(totalPl)}</div></div>
+        <div><div class="sg-lbl">Realized</div><div class="sg-val ${pc(realized)}">${fK(realized)}</div></div>
+        <div><div class="sg-lbl">Unrealized</div><div class="sg-val ${pc(unrealized)}">${fK(unrealized)}</div></div>
       </div>
-      <div class="metric">
-        <span class="metric-label">Cash (KRW)</span>
-        <span class="metric-value" id="cash-krw">--</span>
-      </div>
-      <div class="metric">
-        <span class="metric-label">Cash (USD)</span>
-        <span class="metric-value" id="cash-usd">--</span>
-      </div>
-    </div>
-  </section>
+      ${holdsHTML}
+      ${regimeHTML}
+    `;
+    details.appendChild(card);
+  });
+  app.appendChild(details);
 
-  <!-- Strategy Comparison Table -->
-  <section class="card">
-    <h2>Strategy Comparison</h2>
-    <div class="table-wrap">
-      <table id="strategy-table">
-        <thead>
-          <tr>
-            <th>Strategy</th>
-            <th>Market</th>
-            <th>Budget</th>
-            <th>Realized</th>
-            <th>Unrealized</th>
-            <th>Total P/L</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </section>
+  // Footer
+  const ftr = h('footer','ftr fi');
+  ftr.innerHTML = `<span>quanty dashboard · oracle cloud · cron: 16:00 + 06:30 KST</span>
+    <span>FX rate: ${rate} KRW/USD · deposit: ${fK(p.original_deposit_krw)}</span>`;
+  app.appendChild(ftr);
 
-  <!-- Equity Curves -->
-  <section class="card">
-    <h2>Equity Curves (Normalized)</h2>
-    <div class="chart-container">
-      <canvas id="equity-chart"></canvas>
-    </div>
-  </section>
+  // ── Render Charts ──
+  const chartOpts = {
+    responsive:true, maintainAspectRatio:false,
+    scales:{
+      x:{ticks:{color:'#55524d',maxTicksLimit:10,font:{size:10}},grid:{color:'#1e1e24'}},
+      y:{ticks:{color:'#55524d',font:{size:10}},grid:{color:'#1e1e24'}},
+    },
+    plugins:{legend:{labels:{color:'#8a857e',font:{size:10,family:'DM Mono'},usePointStyle:true,pointStyle:'line'}}}
+  };
 
-  <!-- Drawdown Chart -->
-  <section class="card">
-    <h2>Drawdown</h2>
-    <div class="chart-container">
-      <canvas id="drawdown-chart"></canvas>
-    </div>
-  </section>
+  // Equity
+  if(history && history.dates && history.dates.length>1){
+    const eqCtx = document.getElementById('eq-chart').getContext('2d');
+    const ds = [];
+    let i=0;
+    for(const[name,vals] of Object.entries(history.strategies)){
+      ds.push({label:name,data:vals,borderColor:CHART_COLORS[i%CHART_COLORS.length],backgroundColor:'transparent',borderWidth:1.5,pointRadius:0,tension:.15});
+      i++;
+    }
+    new Chart(eqCtx,{type:'line',data:{labels:history.dates,datasets:ds},options:{...chartOpts}});
 
-  <!-- Asset Allocation -->
-  <section class="card half">
-    <h2>Budget Allocation</h2>
-    <div class="chart-container-small">
-      <canvas id="allocation-chart"></canvas>
-    </div>
-  </section>
+    // Drawdown
+    const ddCtx = document.getElementById('dd-chart').getContext('2d');
+    const dds = [];
+    i=0;
+    for(const[name,vals] of Object.entries(history.strategies)){
+      const dd=[];let peak=0;
+      for(const v of vals){peak=Math.max(peak,v);dd.push(((v-peak)/peak)*100)}
+      dds.push({label:name,data:dd,borderColor:CHART_COLORS[i%CHART_COLORS.length],backgroundColor:CHART_COLORS[i%CHART_COLORS.length]+'15',borderWidth:1,pointRadius:0,tension:.15,fill:true});
+      i++;
+    }
+    new Chart(ddCtx,{type:'line',data:{labels:history.dates,datasets:dds},options:{...chartOpts,scales:{...chartOpts.scales,y:{...chartOpts.scales.y,max:0,ticks:{...chartOpts.scales.y.ticks,callback:v=>v.toFixed(0)+'%'}}}}});
+  } else {
+    document.getElementById('eq-chart').parentElement.innerHTML='<p style="color:var(--tx3);text-align:center;padding:3rem;font-size:.8rem">Equity chart appears after 2+ daily snapshots</p>';
+    document.getElementById('dd-chart').parentElement.innerHTML='<p style="color:var(--tx3);text-align:center;padding:3rem;font-size:.8rem">Drawdown chart appears after 2+ daily snapshots</p>';
+  }
 
-  <!-- Market Split -->
-  <section class="card half">
-    <h2>Market Split</h2>
-    <div class="chart-container-small">
-      <canvas id="market-chart"></canvas>
-    </div>
-  </section>
+  // Allocation donut
+  try{
+    const alCtx = document.getElementById('al-chart').getContext('2d');
+    const filtered = strategies.filter(s=>s.budget>0);
+    const alLabels = filtered.map(s=>s.name);
+    const alVals = filtered.map(s=>s.currency==='USD'?s.budget*rate:s.budget);
+    new Chart(alCtx,{type:'doughnut',data:{labels:alLabels,datasets:[{data:alVals,backgroundColor:CHART_COLORS,borderColor:'#0e0e11',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#8a857e',font:{size:9,family:'DM Mono'}}}}}});
+  }catch(e){console.error(e)}
 
-  <!-- Strategy Detail Cards -->
-  <section id="strategy-details">
-    <h2>Strategy Details</h2>
-    <div id="detail-cards"></div>
-  </section>
+  // Market split donut
+  try{
+    const mkCtx = document.getElementById('mk-chart').getContext('2d');
+    let krT=0,usT=0;
+    strategies.forEach(s=>{if(s.market==='KR')krT+=s.total_value;else usT+=s.total_value*rate});
+    new Chart(mkCtx,{type:'doughnut',data:{labels:['Korea (KRW)','US (USD→KRW)'],datasets:[{data:[krT,usT],backgroundColor:['#4a78a8','#3a8a5a'],borderColor:'#0e0e11',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#8a857e',font:{size:10,family:'DM Mono'}}},tooltip:{callbacks:{label:ctx=>ctx.label+': '+fK(ctx.parsed)}}}}});
+  }catch(e){console.error(e)}
+}
 
-  <footer>
-    <p>Quanty Auto Trading Dashboard &mdash; Data updates daily at 23:30 KST</p>
-  </footer>
-
-  <script src="app.js"></script>
+// Load
+async function init(){
+  try{
+    const [dataRes, histRes] = await Promise.all([
+      fetch(DATA_URL),
+      fetch(HISTORY_URL).catch(()=>null)
+    ]);
+    if(!dataRes.ok) throw new Error('No data');
+    const data = await dataRes.json();
+    let history = null;
+    if(histRes && histRes.ok) history = await histRes.json();
+    render(data, history);
+  }catch(e){
+    document.getElementById('app').innerHTML=`<div style="padding:3rem;text-align:center;color:var(--tx3);font-size:.8rem">
+      Failed to load data: ${e.message}<br>Waiting for first daily update.
+    </div>`;
+  }
+}
+document.addEventListener('DOMContentLoaded', init);
+</script>
 </body>
 </html>
