@@ -45,6 +45,95 @@ STATE_FILES = {
 EXCHANGE_RATE = 1380  # KRW/USD fallback
 
 
+def compute_trade_stats_from_kis(acct_obj):
+    """Query KIS for per-trade P&L, compute win rate per strategy."""
+    import sys as _sys
+    _sys.path.insert(0, os.path.join(TRADING_DIR, 'open-trading-api', 'examples_llm', 'domestic_stock', 'inquire_period_trade_profit'))
+    _sys.path.insert(0, os.path.join(TRADING_DIR, 'open-trading-api', 'examples_llm', 'overseas_stock', 'inquire_period_profit'))
+    from datetime import datetime as _dt
+    today = _dt.now().strftime('%Y%m%d')
+
+    TICKER_STRAT = {
+        'SPY': 'Quant40', 'IEF': 'Quant40', 'SH': 'Quant40',
+        'NVDA': 'JD Strategy', 'AAPL': 'JD Strategy', 'MSFT': 'JD Strategy',
+        'GOOGL': 'JD Strategy', 'AMZN': 'JD Strategy',
+        'EFA': 'Modified Dual Momentum', 'SHY': 'Modified Dual Momentum',
+        'TLT': 'Modified Dual Momentum', 'TIP': 'Modified Dual Momentum',
+        'LQD': 'Modified Dual Momentum', 'HYG': 'Modified Dual Momentum',
+        'BWX': 'Modified Dual Momentum', 'EMB': 'Modified Dual Momentum',
+        'AGG': 'Modified Dual Momentum',
+        'GLD': 'Hybrid VB (US)', 'SLV': 'Hybrid VB (US)', 'GLTR': 'Hybrid VB (US)',
+        'GDX': 'Hybrid VB (US)', 'USO': 'Hybrid VB (US)', 'URA': 'Hybrid VB (US)',
+        'FTGC': 'Hybrid VB (US)', 'CPER': 'Hybrid VB (US)', 'DBA': 'Hybrid VB (US)',
+        'SIL': 'Hybrid VB (US)',
+        '139220': 'Korea ETF Momentum', '144600': 'Korea ETF Momentum',
+        '132030': 'Korea ETF Momentum',
+        '069500': 'Hybrid VB (KR)', '229200': 'Hybrid VB (KR)',
+        '305720': 'Hybrid VB (KR)', '091170': 'Hybrid VB (KR)',
+        '364690': 'Hybrid VB (KR)',
+    }
+
+    stats = {}
+    # Domestic
+    try:
+        import inquire_period_trade_profit as ipt
+        df1, _ = ipt.inquire_period_trade_profit(
+            cano=acct_obj.my_acct, acnt_prdt_cd=acct_obj.my_prod,
+            sort_dvsn='00', inqr_strt_dt='20260101', inqr_end_dt=today, cblc_dvsn='00',
+        )
+        if df1 is not None and not df1.empty:
+            for _, row in df1.iterrows():
+                t = row.get('pdno', '')
+                pnl = float(row.get('rlzt_pfls', 0))
+                strat = TICKER_STRAT.get(t, 'Unknown')
+                if strat not in stats:
+                    stats[strat] = {'trades': 0, 'wins': 0}
+                stats[strat]['trades'] += 1
+                if pnl > 0:
+                    stats[strat]['wins'] += 1
+    except Exception as e:
+        print(f'Trade stats domestic error: {e}')
+
+    # Overseas
+    try:
+        import inquire_period_profit as opp
+        result = opp.inquire_period_profit(
+            cano=acct_obj.my_acct, acnt_prdt_cd=acct_obj.my_prod,
+            ovrs_excg_cd='NASD', natn_cd='840', crcy_cd='USD', pdno='',
+            inqr_strt_dt='20260101', inqr_end_dt=today,
+            wcrc_frcr_dvsn_cd='01', FK200='', NK200='',
+        )
+        if result and isinstance(result, tuple) and result[0] is not None and not result[0].empty:
+            for _, row in result[0].iterrows():
+                t = row.get('ovrs_pdno', '')
+                pnl = float(row.get('ovrs_rlzt_pfls_amt', 0))
+                strat = TICKER_STRAT.get(t, 'Unknown')
+                if strat not in stats:
+                    stats[strat] = {'trades': 0, 'wins': 0}
+                stats[strat]['trades'] += 1
+                if pnl > 0:
+                    stats[strat]['wins'] += 1
+    except Exception as e:
+        print(f'Trade stats overseas error: {e}')
+
+    return stats
+
+
+def compute_mdd(values):
+    """Compute maximum drawdown from equity values. Returns negative percentage."""
+    if not values or len(values) < 2:
+        return 0.0
+    peak = values[0]
+    mdd = 0.0
+    for v in values:
+        if v > peak:
+            peak = v
+        dd = (v - peak) / peak * 100 if peak > 0 else 0
+        if dd < mdd:
+            mdd = dd
+    return round(mdd, 2)
+
+
 def load_json(path):
     try:
         with open(path, 'r') as f:
@@ -435,6 +524,35 @@ def generate_dashboard_data():
         # Fallback: use EXCHANGE_RATE
         strat_unrealized_krw[strat] = strat_unrealized_krw.get(strat, 0) + profit_usd * EXCHANGE_RATE
 
+    # Compute per-strategy win rate from KIS trade history
+    trade_stats = {}
+    try:
+        _acct_for_stats = None
+        if acct and isinstance(acct, dict):
+            # Re-auth for trade query (acct dict doesn't have getTREnv)
+            import kis_auth as ka
+            _acct_for_stats = ka.getTREnv()
+        else:
+            import kis_auth as ka
+            ka.auth(svr="prod")
+            _acct_for_stats = ka.getTREnv()
+        trade_stats = compute_trade_stats_from_kis(_acct_for_stats)
+    except Exception as e:
+        print(f"Trade stats query failed: {e}")
+
+    # BTC VB trade stats from state file (not in KIS)
+    _vb_st = load_json(os.path.join(TRADING_DIR, "upbit_vb_strategy_state.json"))
+    if _vb_st:
+        trade_stats["BTC VB"] = {
+            "trades": _vb_st.get("total_trades", 0),
+            "wins": _vb_st.get("winning_trades", 0),
+        }
+
+    # MDD sources
+    eq_history_path = os.path.join(DASHBOARD_DIR, "docs", "data", "equity_history.json")
+    eq_history = load_json(eq_history_path) or {"strategies": {}}
+    btc_vb_equity = [v for _, v in (_vb_st or {}).get("equity_history", [])]
+
     for s in strategies:
         name = s["name"]
         realized_krw = realized_by_strategy.get(name, 0)
@@ -449,6 +567,22 @@ def generate_dashboard_data():
             s["total_pl_pct"] = round(s["total_pl_krw"] / budget_krw * 100, 2)
         else:
             s["total_pl_pct"] = 0
+
+        # Win rate
+        ts = trade_stats.get(name, {})
+        s["total_trades"] = ts.get("trades", 0)
+        s["winning_trades"] = ts.get("wins", 0)
+        s["win_rate"] = round(ts["wins"] / ts["trades"] * 100, 1) if ts.get("trades", 0) > 0 else None
+
+        # MDD from equity history
+        eq_key = name.lower().replace(" ", "_").replace("(", "").replace(")", "")
+        eq_vals = eq_history.get("strategies", {}).get(eq_key, [])
+        if name == "BTC VB" and btc_vb_equity:
+            s["mdd"] = compute_mdd(btc_vb_equity)
+        elif eq_vals and len(eq_vals) >= 2:
+            s["mdd"] = compute_mdd(eq_vals)
+        else:
+            s["mdd"] = None
 
     # Account-level totals: KIS + Upbit
     # KIS: KR stocks + US stocks (KRW) + KRW cash (ONCE) + USD cash (KRW)
@@ -497,6 +631,18 @@ def generate_dashboard_data():
     # Realized P/L: read from live KIS query (generated by each dashboard update)
     realized_pl_file = os.path.join(TRADING_DIR, "strategy_results", "realized_pl_2026.json")
     realized_data = load_json(realized_pl_file) or {}
+
+    # Auto-sync Upbit VB realized P&L from state file (not tracked by KIS)
+    _vb_st = load_json(os.path.join(TRADING_DIR, "upbit_vb_strategy_state.json"))
+    if _vb_st:
+        realized_data["BTC VB"] = round(_vb_st.get("total_pnl_krw", 0))
+        realized_data["_total"] = sum(v for k, v in realized_data.items() if k != "_total")
+        try:
+            with open(realized_pl_file, "w") as _f:
+                json.dump(realized_data, _f, indent=2, ensure_ascii=False)
+        except Exception:
+            pass
+
     realized_loss = realized_data.get("_total", deposits.get("kis_realized_loss_krw", 0))
 
     # Total P/L = realized (from deposits.json, updated periodically) + unrealized (live from API)

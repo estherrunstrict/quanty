@@ -205,7 +205,7 @@ function render(data, history){
   const tblWrap = h('div','tbl-wrap fi d2');
   let tblHTML = `<table><thead><tr>
     <th>Strategy</th><th>Market</th><th>Budget</th>
-    <th>Realized</th><th>Unrealized</th><th>Total P/L</th><th>Status</th>
+    <th>Realized</th><th>Unrealized</th><th>Total P/L</th><th>WR</th><th>MDD</th><th>Status</th>
   </tr></thead><tbody>`;
 
   strategies.forEach(s=>{
@@ -222,6 +222,8 @@ function render(data, history){
       <td class="${pc(realized)}">${fK(realized)}</td>
       <td class="${pc(unrealized)}">${fK(unrealized)}</td>
       <td class="${pc(total)}"><strong>${fK(total)}</strong> <small>${fPct(pct)}</small></td>
+      <td>${s.win_rate != null ? s.win_rate.toFixed(0)+"%  ("+s.total_trades+"t)" : "\u2014"}</td>
+      <td>${s.mdd != null ? s.mdd.toFixed(1)+"%" : "\u2014"}</td>
       <td>${inferTag(s.status)}</td>
     </tr>`;
   });
@@ -299,6 +301,8 @@ function render(data, history){
         <div><div class="sg-lbl">Total P/L</div><div class="sg-val ${pc(totalPl)}">${fK(totalPl)}</div></div>
         <div><div class="sg-lbl">Realized</div><div class="sg-val ${pc(realized)}">${fK(realized)}</div></div>
         <div><div class="sg-lbl">Unrealized</div><div class="sg-val ${pc(unrealized)}">${fK(unrealized)}</div></div>
+        <div><div class="sg-lbl">Win Rate</div><div class="sg-val">${s.win_rate != null ? s.win_rate.toFixed(0)+"%  ("+s.total_trades+"t)" : "\u2014"}</div></div>
+        <div><div class="sg-lbl">MDD</div><div class="sg-val">${s.mdd != null ? s.mdd.toFixed(1)+"%" : "\u2014"}</div></div>
       </div>
       ${holdsHTML}
       ${regimeHTML}

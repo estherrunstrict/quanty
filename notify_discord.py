@@ -74,7 +74,22 @@ def main():
 
         r_str = f"  R:₩{realized:+,.0f}" if realized != 0 else ""
         lines.append(f"{sdot} **{s['name']}**  ₩{total:+,.0f} ({pct:+.1f}%){r_str}")
-        lines.append(f"    {hold_str}")
+
+        # Win rate + MDD
+        meta_parts = []
+        wr = s.get("win_rate")
+        tt = s.get("total_trades", 0)
+        if wr is not None and tt > 0:
+            meta_parts.append(f"WR:{wr:.0f}%({tt}t)")
+        mdd_val = s.get("mdd")
+        if mdd_val is not None:
+            meta_parts.append(f"MDD:{mdd_val:.1f}%")
+        meta_str = " | ".join(meta_parts)
+
+        if meta_str:
+            lines.append(f"    {hold_str}  |  {meta_str}")
+        else:
+            lines.append(f"    {hold_str}")
 
     lines.append(f"\n[View Dashboard]({DASHBOARD_URL})")
 
