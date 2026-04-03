@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-04-03 06:30 KST",
+  "updated_at": "2026-04-03 16:00 KST",
   "exchange_rate": 1380,
   "portfolio": {
-    "total_value_krw": 64363272,
+    "total_value_krw": 64713151,
     "original_deposit_krw": 65726902,
-    "total_profit_krw": -1363630,
-    "total_profit_pct": -2.07,
+    "total_profit_krw": -1013751,
+    "total_profit_pct": -1.54,
     "cash_krw": 10052270,
-    "cash_usd": 6624
+    "cash_usd": 16726
   },
   "strategies": [
     {
@@ -15,16 +15,16 @@
       "market": "KR",
       "currency": "KRW",
       "budget": 10000000,
-      "total_value": 10050520.0,
+      "total_value": 10410475.0,
       "cash": 514870.0,
-      "profit_pct": 0.51,
+      "profit_pct": 4.1,
       "status": "HOLD 139220",
       "regime": {},
       "holdings": [
         {
           "ticker": "139220",
           "quantity": 1263,
-          "profit_rate": 0.53
+          "profit_rate": 4.32
         }
       ],
       "params": {
@@ -32,45 +32,52 @@
         "rebalance": "monthly"
       },
       "realized_pl_krw": -1380,
-      "unrealized_pl_krw": 50520,
-      "total_pl_krw": 49140,
-      "total_pl_pct": 0.49
+      "unrealized_pl_krw": 410475,
+      "total_pl_krw": 409095,
+      "total_pl_pct": 4.09
     },
     {
       "name": "Hybrid VB (KR)",
       "market": "KR",
       "currency": "KRW",
       "budget": 5000000,
-      "total_value": 5002779.9984,
-      "cash": 4084289.9984,
-      "profit_pct": 0.06,
-      "status": "1 position",
+      "total_value": 4972004.9984,
+      "cash": 3421584.9984,
+      "profit_pct": -0.56,
+      "status": "2 positions",
       "regime": {
-        "069500": "BEAR",
-        "229200": "BEAR",
+        "069500": "NEUTRAL",
+        "229200": "NEUTRAL",
         "144600": "BEAR",
         "132030": "BEAR",
-        "305720": "NEUTRAL",
-        "091170": "BEAR",
-        "364690": "BEAR"
+        "091170": "NEUTRAL",
+        "364690": "NEUTRAL",
+        "305720": "NEUTRAL"
       },
       "holdings": [
         {
+          "ticker": "091170",
+          "quantity": 42,
+          "profit_rate": -2.0715001670564614,
+          "profit": -13020.0,
+          "value": 627690.0
+        },
+        {
           "ticker": "305720",
           "quantity": 53,
-          "profit_rate": 0.3048243854301358,
-          "profit": 2779.998399999953,
-          "value": 918490.0
+          "profit_rate": -1.641995786592998,
+          "profit": -14975.001600000047,
+          "value": 922730.0
         }
       ],
       "params": {
         "strategy": "VB + Vol-Managed",
         "vol_managed": true
       },
-      "realized_pl_krw": -120,
-      "unrealized_pl_krw": -14974,
-      "total_pl_krw": -15094,
-      "total_pl_pct": -0.3
+      "realized_pl_krw": -210,
+      "unrealized_pl_krw": -24959,
+      "total_pl_krw": -25169,
+      "total_pl_pct": -0.5
     },
     {
       "name": "Hybrid VB (US)",
