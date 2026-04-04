@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-04 06:30 KST",
+  "updated_at": "2026-04-04 20:07 KST",
   "exchange_rate": 1380,
   "portfolio": {
     "total_value_krw": 74637970,
@@ -86,7 +86,7 @@
       "total_trades": 3,
       "winning_trades": 0,
       "win_rate": 0.0,
-      "mdd": 0.0
+      "mdd": -0.62
     },
     {
       "name": "Hybrid VB (US)",
@@ -250,6 +250,119 @@
       "winning_trades": 2,
       "win_rate": 50.0,
       "mdd": -2.36
+    },
+    {
+      "name": "AI Market Intelligence",
+      "market": "AI",
+      "currency": "USD",
+      "budget": 0,
+      "total_value": 0,
+      "cash": 0,
+      "profit_pct": 0.0,
+      "status": "BEARISH",
+      "regime": {
+        "exposure": "REDUCE_EXPOSURE"
+      },
+      "holdings": [
+        {
+          "ticker": "EQIX",
+          "quantity": 0,
+          "profit_rate": 0,
+          "value": 0,
+          "pivot": 1016.63,
+          "stop": 924.62,
+          "score": 96
+        }
+      ],
+      "params": {
+        "strategy": "claude_trading_skills"
+      },
+      "realized_pl_krw": 0,
+      "unrealized_pl_krw": 0,
+      "total_pl_krw": 0,
+      "total_pl_pct": 0,
+      "total_trades": 0,
+      "winning_trades": 0,
+      "win_rate": null,
+      "mdd": null,
+      "ai_data": {
+        "regime": "BEARISH",
+        "exposure": "REDUCE_EXPOSURE",
+        "confidence": 60,
+        "breadth_score": 19.8,
+        "uptrend_score": 42.0,
+        "top_probability": 0,
+        "ftd_active": false,
+        "trend_pass_count": 20,
+        "vcp_count": 1,
+        "trend_passes": [
+          {
+            "symbol": "XOM",
+            "score": 8,
+            "pct_from_high": -6.3
+          },
+          {
+            "symbol": "JNJ",
+            "score": 8,
+            "pct_from_high": -2.2
+          },
+          {
+            "symbol": "WMT",
+            "score": 8,
+            "pct_from_high": -5.9
+          },
+          {
+            "symbol": "CVX",
+            "score": 8,
+            "pct_from_high": -5.8
+          },
+          {
+            "symbol": "MRK",
+            "score": 8,
+            "pct_from_high": -1.7
+          },
+          {
+            "symbol": "AMD",
+            "score": 8,
+            "pct_from_high": -17.7
+          },
+          {
+            "symbol": "CSCO",
+            "score": 8,
+            "pct_from_high": -8.4
+          },
+          {
+            "symbol": "AMAT",
+            "score": 8,
+            "pct_from_high": -11.8
+          },
+          {
+            "symbol": "CAT",
+            "score": 8,
+            "pct_from_high": -7.5
+          },
+          {
+            "symbol": "VZ",
+            "score": 8,
+            "pct_from_high": -3.9
+          }
+        ],
+        "candidates": [
+          {
+            "symbol": "EQIX",
+            "trend_score": 8,
+            "contraction_ratio": 0.46,
+            "current_price": 1000.3699951171875,
+            "pivot_price": 1016.63,
+            "stop_loss": 924.62,
+            "pct_to_pivot": 1.6,
+            "pct_from_high": 0.0,
+            "entry_price": 1016.63,
+            "stop_price": 924.62,
+            "score": 96
+          }
+        ]
+      }
     }
   ]
 }

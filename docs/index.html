@@ -215,6 +215,21 @@ function render(data, history){
     const pct = s.total_pl_pct||0;
     const budgetKRW = s.currency==='USD' ? s.budget*rate : s.budget;
 
+    if(s.market === 'AI' && s.ai_data){
+      const ai = s.ai_data;
+      const rCls = ai.regime==='BULLISH'?'up':ai.regime==='BEARISH'||ai.regime==='DANGER'?'dn':'amber';
+      tblHTML += `<tr>
+        <td class="strat-name">${s.name}</td>
+        <td>AI</td>
+        <td>\u2014</td>
+        <td colspan="3" style="text-align:center"><span class="${rCls}" style="font-weight:500">${ai.regime}</span> <small style="color:var(--tx3)">breadth ${ai.breadth_score} · uptrend ${ai.uptrend_score} · ${ai.trend_pass_count} passes · ${ai.vcp_count} VCP</small></td>
+        <td>${ai.confidence}%</td>
+        <td>\u2014</td>
+        <td>${inferTag(s.status)}</td>
+      </tr>`;
+      return;
+    }
+
     tblHTML += `<tr>
       <td class="strat-name">${s.name}</td>
       <td>${s.market}</td>
@@ -260,8 +275,53 @@ function render(data, history){
   const details = h('div','details fi d4');
   strategies.forEach(s=>{
     const cur = s.currency;
-    const mkt = s.name.includes('BTC')?'crypto':s.market==='KR'?'kr':'us';
+    const mkt = s.name.includes('BTC')?'crypto':s.market==='KR'?'kr':s.market==='AI'?'us':'us';
     const card = h('div',`dcard ${mkt}`);
+
+    // Special rendering for AI Market Intelligence
+    if(s.market === 'AI' && s.ai_data){
+      const ai = s.ai_data;
+      const regime = ai.regime||'NEUTRAL';
+      const rCls = regime==='BULLISH'?'up':regime==='BEARISH'||regime==='DANGER'?'dn':'amber';
+      const bCls = ai.breadth_score>=60?'up':ai.breadth_score>=40?'amber':'dn';
+      const uCls = ai.uptrend_score>=60?'up':ai.uptrend_score>=40?'amber':'dn';
+      const expTag = (ai.exposure||'NORMAL').includes('REDUCE')||ai.exposure==='CASH_PRIORITY'?'r':ai.exposure==='FULL_EXPOSURE'?'g':'y';
+
+      let vcpHTML = '';
+      const cands = ai.candidates||[];
+      if(cands.length){
+        vcpHTML = '<div class="holds"><div style="font-size:.55rem;text-transform:uppercase;letter-spacing:.1em;color:var(--tx4);margin-bottom:.3rem">VCP Candidates</div>';
+        cands.forEach(c=>{
+          vcpHTML += `<div class="h-row"><span class="h-tk">${c.symbol||'?'}</span><span class="h-det">pivot $${(c.pivot_price||0).toFixed(2)} / stop $${(c.stop_loss||0).toFixed(2)}</span><span class="h-pl amber">score ${c.score||0}</span></div>`;
+        });
+        vcpHTML += '</div>';
+      }
+      if(!cands.length && (ai.trend_passes||[]).length){
+        vcpHTML = '<div class="holds"><div style="font-size:.55rem;text-transform:uppercase;letter-spacing:.1em;color:var(--tx4);margin-bottom:.3rem">Trend Template Passes ('+ai.trend_pass_count+')</div>';
+        (ai.trend_passes||[]).slice(0,6).forEach(t=>{
+          vcpHTML += `<div class="h-row"><span class="h-tk">${t.symbol}</span><span class="h-det">trend ${t.score}/8</span><span class="h-pl ${t.pct_from_high>-5?'up':'amber'}">${t.pct_from_high}%</span></div>`;
+        });
+        vcpHTML += '</div>';
+      }
+
+      card.innerHTML = `
+        <div class="dcard-top">
+          <span class="dcard-name">${s.name}</span>
+          ${tag((ai.exposure||'NORMAL').replace(/_/g,' '),expTag)}
+        </div>
+        <div class="dcard-grid">
+          <div><div class="sg-lbl">Regime</div><div class="sg-val ${rCls}" style="font-weight:500">${regime}</div></div>
+          <div><div class="sg-lbl">Confidence</div><div class="sg-val">${ai.confidence||0}%</div></div>
+          <div><div class="sg-lbl">Breadth</div><div class="sg-val ${bCls}">${ai.breadth_score}/100</div></div>
+          <div><div class="sg-lbl">Uptrend</div><div class="sg-val ${uCls}">${ai.uptrend_score}/100</div></div>
+          <div><div class="sg-lbl">Trend Passes</div><div class="sg-val">${ai.trend_pass_count}/100</div></div>
+          <div><div class="sg-lbl">VCP</div><div class="sg-val">${ai.vcp_count} candidates</div></div>
+        </div>
+        ${vcpHTML}
+      `;
+      details.appendChild(card);
+      return;
+    }
 
     const totalPl = s.total_pl_krw||0;
     const realized = s.realized_pl_krw||0;
