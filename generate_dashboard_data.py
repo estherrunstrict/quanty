@@ -402,6 +402,114 @@ def build_btc_vb_entry(config):
     return entry
 
 
+def build_claude_bot_entry():
+    """Build AI Market Intelligence entry from Claude Trading Bot reports."""
+    import glob
+
+    bot_dir = os.path.join(TRADING_DIR, "claude-trading-bot", "reports")
+    entry = {
+        "name": "AI Market Intelligence",
+        "market": "AI",
+        "currency": "USD",
+        "budget": 0,
+        "total_value": 0,
+        "cash": 0,
+        "profit_pct": 0.0,
+        "status": "NO DATA",
+        "regime": {},
+        "holdings": [],
+        "params": {"strategy": "claude_trading_skills"},
+        "realized_pl_krw": 0,
+        "unrealized_pl_krw": 0,
+        "total_pl_krw": 0,
+        "total_pl_pct": 0,
+        "total_trades": None,
+        "winning_trades": None,
+        "win_rate": None,
+        "mdd": None,
+        "ai_data": {},
+    }
+
+    if not os.path.exists(bot_dir):
+        return entry
+
+    # Find latest regime report across date dirs
+    regime_data = None
+    screener_data = None
+
+    date_dirs = sorted(glob.glob(os.path.join(bot_dir, "20*")), reverse=True)
+    for dd in date_dirs[:3]:
+        if not os.path.isdir(dd):
+            continue
+        regime_files = sorted(glob.glob(os.path.join(dd, "regime_*.json")), reverse=True)
+        if regime_files and not regime_data:
+            regime_data = load_json(regime_files[0])
+        screener_files = sorted(glob.glob(os.path.join(dd, "screener_*.json")), reverse=True)
+        if screener_files and not screener_data:
+            screener_data = load_json(screener_files[0])
+        if not screener_data:
+            vcp_files = sorted(glob.glob(os.path.join(dd, "vcp_free_*.json")), reverse=True)
+            if vcp_files:
+                screener_data = load_json(vcp_files[0])
+        if regime_data:
+            break
+
+    if not regime_data:
+        return entry
+
+    signals = regime_data.get("signals", {})
+    regime_name = regime_data.get("regime", "NEUTRAL")
+    exposure = regime_data.get("exposure_recommendation", "NORMAL")
+    confidence = regime_data.get("confidence", 0)
+
+    # Screener candidates
+    candidates = []
+    trend_passes = []
+    if screener_data:
+        cands = screener_data.get("candidates", {})
+        if isinstance(cands, dict):
+            for name, data in cands.items():
+                if isinstance(data, dict):
+                    candidates.extend(data.get("candidates", [])[:10])
+                    trend_passes.extend(data.get("trend_passes", [])[:20])
+        elif isinstance(cands, list):
+            candidates = cands[:10]
+        if not trend_passes:
+            trend_passes = screener_data.get("trend_passes", [])[:20]
+
+    # Build holdings from VCP candidates
+    holdings = []
+    for c in candidates[:5]:
+        holdings.append({
+            "ticker": c.get("symbol", "?"),
+            "quantity": 0,
+            "profit_rate": 0,
+            "value": 0,
+            "pivot": c.get("pivot_price", 0),
+            "stop": c.get("stop_loss", 0),
+            "score": c.get("score", 0),
+        })
+
+    entry["status"] = regime_name
+    entry["regime"] = {"exposure": exposure}
+    entry["holdings"] = holdings
+    entry["ai_data"] = {
+        "regime": regime_name,
+        "exposure": exposure,
+        "confidence": confidence,
+        "breadth_score": signals.get("breadth_score", 0),
+        "uptrend_score": signals.get("uptrend_score", 0),
+        "top_probability": signals.get("top_probability", 0),
+        "ftd_active": signals.get("ftd_active", False),
+        "trend_pass_count": len(trend_passes),
+        "vcp_count": len(candidates),
+        "trend_passes": trend_passes[:10],
+        "candidates": candidates[:5],
+    }
+
+    return entry
+
+
 def generate_dashboard_data():
     # Refresh realized P/L from KIS transaction history (live query)
     try:
@@ -425,6 +533,9 @@ def generate_dashboard_data():
         realized_by_strategy["BTC VB"] = round(_vb_for_realized.get("total_pnl_krw", 0))
 
     # Korea ETF Momentum (no result JSON — uses state file)
+    # Claude Trading Bot (AI Market Intelligence) — top of dashboard
+    strategies.append(build_claude_bot_entry())
+
     strategies.append(build_korea_momentum_entry(config))
 
     # Hybrid VB KR
