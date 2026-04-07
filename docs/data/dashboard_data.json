@@ -1,14 +1,14 @@
 {
-  "updated_at": "2026-04-07 06:30 KST",
+  "updated_at": "2026-04-07 16:00 KST",
   "exchange_rate": 1380,
   "portfolio": {
-    "total_value_krw": 75084034,
+    "total_value_krw": 74947845,
     "original_deposit_krw": 75714217,
-    "total_profit_krw": -553532,
-    "total_profit_pct": -0.73,
+    "total_profit_krw": -589272,
+    "total_profit_pct": -0.78,
     "cash_krw": 8972750,
     "cash_usd": 0,
-    "upbit_krw": 9910664
+    "upbit_krw": 9810215
   },
   "strategies": [
     {
@@ -54,16 +54,16 @@
       "market": "KR",
       "currency": "KRW",
       "budget": 10000000,
-      "total_value": 10751485.0,
+      "total_value": 10940935.0,
       "cash": 514870.0,
-      "profit_pct": 7.51,
+      "profit_pct": 9.41,
       "status": "HOLD 139220",
       "regime": {},
       "holdings": [
         {
           "ticker": "139220",
           "quantity": 1263,
-          "profit_rate": 7.92
+          "profit_rate": 9.92
         }
       ],
       "params": {
@@ -71,9 +71,9 @@
         "rebalance": "monthly"
       },
       "realized_pl_krw": -1380,
-      "unrealized_pl_krw": 751485,
-      "total_pl_krw": 750105,
-      "total_pl_pct": 7.5,
+      "unrealized_pl_krw": 940935,
+      "total_pl_krw": 939555,
+      "total_pl_pct": 9.4,
       "total_trades": 1,
       "winning_trades": 0,
       "win_rate": 0.0,
@@ -84,12 +84,12 @@
       "market": "KR",
       "currency": "KRW",
       "budget": 5000000,
-      "total_value": 4975039.9984,
-      "cash": 3443854.9984,
-      "profit_pct": -0.5,
-      "status": "2 positions",
+      "total_value": 4994909.9984,
+      "cash": 2716764.9984,
+      "profit_pct": -0.1,
+      "status": "4 positions",
       "regime": {
-        "069500": "BEAR",
+        "069500": "NEUTRAL",
         "229200": "BEAR",
         "144600": "BEAR",
         "132030": "BEAR",
@@ -99,29 +99,43 @@
       },
       "holdings": [
         {
+          "ticker": "069500",
+          "quantity": 4,
+          "profit_rate": -2.0840819259791643,
+          "profit": -6960.0,
+          "value": 333980.0
+        },
+        {
           "ticker": "091170",
           "quantity": 42,
-          "profit_rate": -2.3053792181757404,
-          "profit": -14490.0,
-          "value": 616140.0
+          "profit_rate": -0.5679919812896728,
+          "profit": -3570.0,
+          "value": 620760.0
         },
         {
           "ticker": "305720",
           "quantity": 53,
-          "profit_rate": -1.1480264892139935,
-          "profit": -10470.001600000047,
-          "value": 915045.0
+          "profit_rate": 1.408991050159658,
+          "profit": 12849.998399999953,
+          "value": 920080.0
+        },
+        {
+          "ticker": "364690",
+          "quantity": 13,
+          "profit_rate": -1.837228041901695,
+          "profit": -7410.0,
+          "value": 403325.0
         }
       ],
       "params": {
         "strategy": "VB + Vol-Managed",
         "vol_managed": true
       },
-      "realized_pl_krw": -210,
-      "unrealized_pl_krw": 9280,
-      "total_pl_krw": 9070,
-      "total_pl_pct": 0.18,
-      "total_trades": 3,
+      "realized_pl_krw": -300,
+      "unrealized_pl_krw": -1815,
+      "total_pl_krw": -2115,
+      "total_pl_pct": -0.04,
+      "total_trades": 5,
       "winning_trades": 0,
       "win_rate": 0.0,
       "mdd": -0.62
@@ -221,11 +235,11 @@
       "params": {
         "strategy": "jd_investment"
       },
-      "realized_pl_krw": -364547,
+      "realized_pl_krw": -441997,
       "unrealized_pl_krw": -202709,
-      "total_pl_krw": -567256,
-      "total_pl_pct": -14.7,
-      "total_trades": 11,
+      "total_pl_krw": -644706,
+      "total_pl_pct": -16.71,
+      "total_trades": 12,
       "winning_trades": 0,
       "win_rate": 0.0,
       "mdd": -12.9
@@ -274,32 +288,26 @@
       "name": "BTC VB",
       "market": "KR",
       "currency": "KRW",
-      "budget": 9910664,
-      "total_value": 9910664,
-      "cash": 95072,
+      "budget": 9810215,
+      "total_value": 9810215,
+      "cash": 9810215,
       "profit_pct": 0.0,
-      "status": "HOLDING BTC",
+      "status": "NORMAL",
       "regime": {
         "BTC": "NEUTRAL"
       },
-      "holdings": [
-        {
-          "ticker": "BTC",
-          "quantity": 0.09353082,
-          "profit_rate": 0
-        }
-      ],
+      "holdings": [],
       "params": {
         "strategy": "upbit_vb",
         "k_long": 0.4
       },
-      "realized_pl_krw": -31248,
-      "unrealized_pl_krw": -40967,
-      "total_pl_krw": -72215,
-      "total_pl_pct": -0.72,
-      "total_trades": 4,
+      "realized_pl_krw": -167803,
+      "unrealized_pl_krw": 0,
+      "total_pl_krw": -167803,
+      "total_pl_pct": -1.68,
+      "total_trades": 5,
       "winning_trades": 2,
-      "win_rate": 50.0,
+      "win_rate": 40.0,
       "mdd": -2.36
     }
   ]
