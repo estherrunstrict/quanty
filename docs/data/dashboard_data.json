@@ -1,14 +1,14 @@
 {
-  "updated_at": "2026-04-09 16:00 KST",
+  "updated_at": "2026-04-10 06:30 KST",
   "exchange_rate": 1380,
   "portfolio": {
-    "total_value_krw": 77736859,
+    "total_value_krw": 77801980,
     "original_deposit_krw": 75714217,
-    "total_profit_krw": 1999780,
-    "total_profit_pct": 2.64,
+    "total_profit_krw": 2092889,
+    "total_profit_pct": 2.76,
     "cash_krw": 4221906,
     "cash_usd": 4991,
-    "upbit_krw": 10010177
+    "upbit_krw": 9982189
   },
   "strategies": [
     {
@@ -23,7 +23,17 @@
       "regime": {
         "exposure": "REDUCE_EXPOSURE"
       },
-      "holdings": [],
+      "holdings": [
+        {
+          "ticker": "EQIX",
+          "quantity": 0,
+          "profit_rate": 0,
+          "value": 0,
+          "pivot": 1050.3,
+          "stop": 925.44,
+          "score": 95
+        }
+      ],
       "params": {
         "strategy": "claude_trading_skills"
       },
@@ -39,14 +49,79 @@
         "regime": "BEARISH",
         "exposure": "REDUCE_EXPOSURE",
         "confidence": 60,
-        "breadth_score": 29.0,
-        "uptrend_score": 52.2,
+        "breadth_score": 34.8,
+        "uptrend_score": 72.7,
         "top_probability": 0,
         "ftd_active": false,
-        "trend_pass_count": 0,
-        "vcp_count": 0,
-        "trend_passes": [],
-        "candidates": []
+        "trend_pass_count": 20,
+        "vcp_count": 1,
+        "trend_passes": [
+          {
+            "symbol": "GOOGL",
+            "score": 8,
+            "pct_from_high": -7.3
+          },
+          {
+            "symbol": "XOM",
+            "score": 8,
+            "pct_from_high": -9.6
+          },
+          {
+            "symbol": "JNJ",
+            "score": 8,
+            "pct_from_high": -2.9
+          },
+          {
+            "symbol": "WMT",
+            "score": 8,
+            "pct_from_high": -3.4
+          },
+          {
+            "symbol": "CVX",
+            "score": 8,
+            "pct_from_high": -9.8
+          },
+          {
+            "symbol": "MRK",
+            "score": 8,
+            "pct_from_high": -0.4
+          },
+          {
+            "symbol": "CSCO",
+            "score": 8,
+            "pct_from_high": -3.6
+          },
+          {
+            "symbol": "GE",
+            "score": 8,
+            "pct_from_high": -9.3
+          },
+          {
+            "symbol": "AMAT",
+            "score": 8,
+            "pct_from_high": 0.0
+          },
+          {
+            "symbol": "CAT",
+            "score": 8,
+            "pct_from_high": 0.0
+          }
+        ],
+        "candidates": [
+          {
+            "symbol": "EQIX",
+            "trend_score": 8,
+            "contraction_ratio": 0.5,
+            "current_price": 1031.5699462890625,
+            "pivot_price": 1050.3,
+            "stop_loss": 925.44,
+            "pct_to_pivot": 1.8,
+            "pct_from_high": 0.0,
+            "entry_price": 1050.3,
+            "stop_price": 925.44,
+            "score": 95
+          }
+        ]
       }
     },
     {
@@ -180,34 +255,34 @@
       "market": "US",
       "currency": "USD",
       "budget": 25165.0,
-      "total_value": 25455.226491,
-      "cash": 4859.416491000004,
-      "profit_pct": 1.15,
+      "total_value": 25432.341491,
+      "cash": 4859.416491,
+      "profit_pct": 1.06,
       "status": "2 positions",
       "regime": {},
       "holdings": [
         {
           "ticker": "SH",
           "quantity": 138,
-          "profit_rate": -3.234178156454084,
-          "profit": -168.165809,
-          "value": 5031.48
+          "profit_rate": -2.982045598217391,
+          "profit": -155.055809,
+          "value": 5044.59
         },
         {
           "ticker": "SPY",
           "quantity": 23,
-          "profit_rate": 3.0345173474401395,
-          "profit": 458.3923,
-          "value": 15564.33
+          "profit_rate": 2.7962335631769486,
+          "profit": 422.3973,
+          "value": 15528.335
         }
       ],
       "params": {
         "strategy": "quant_replacing_40"
       },
       "realized_pl_krw": -717887,
-      "unrealized_pl_krw": 387817,
-      "total_pl_krw": -330070,
-      "total_pl_pct": -0.95,
+      "unrealized_pl_krw": 469706,
+      "total_pl_krw": -248181,
+      "total_pl_pct": -0.71,
       "total_trades": 9,
       "winning_trades": 5,
       "win_rate": 55.6,
@@ -218,27 +293,27 @@
       "market": "US",
       "currency": "USD",
       "budget": 2796.0,
-      "total_value": 2736.265771,
-      "cash": 517.4297710000001,
-      "profit_pct": -2.14,
+      "total_value": 2704.691723,
+      "cash": 707.3106229999999,
+      "profit_pct": -3.27,
       "status": "1 position",
       "regime": {},
       "holdings": [
         {
           "ticker": "NVDA",
-          "quantity": 12,
-          "profit_rate": -2.621566288084085,
-          "profit": -59.734229,
-          "value": 2218.836
+          "quantity": 11,
+          "profit_rate": -4.371558445899697,
+          "profit": -91.308277,
+          "value": 1997.3811
         }
       ],
       "params": {
         "strategy": "jd_investment"
       },
       "realized_pl_krw": -450437,
-      "unrealized_pl_krw": -118417,
-      "total_pl_krw": -568854,
-      "total_pl_pct": -14.74,
+      "unrealized_pl_krw": -90638,
+      "total_pl_krw": -541075,
+      "total_pl_pct": -14.02,
       "total_trades": 13,
       "winning_trades": 0,
       "win_rate": 0.0,
@@ -260,14 +335,14 @@
           "quantity": 50,
           "profit_rate": 0,
           "profit": 0,
-          "value": 5125.5
+          "value": 5056.0
         },
         {
           "ticker": "SPY",
           "quantity": 23,
           "profit_rate": 0,
           "profit": 0,
-          "value": 15556.28
+          "value": 15514.857
         }
       ],
       "params": {
@@ -276,9 +351,9 @@
         "defensive": "8 bond ETFs"
       },
       "realized_pl_krw": 0,
-      "unrealized_pl_krw": 250477,
-      "total_pl_krw": 250477,
-      "total_pl_pct": 3.63,
+      "unrealized_pl_krw": 233917,
+      "total_pl_krw": 233917,
+      "total_pl_pct": 3.39,
       "total_trades": 0,
       "winning_trades": 0,
       "win_rate": null,
@@ -288,23 +363,29 @@
       "name": "BTC VB",
       "market": "KR",
       "currency": "KRW",
-      "budget": 10010177,
-      "total_value": 10010177,
-      "cash": 10010177,
+      "budget": 9988107,
+      "total_value": 9988107,
+      "cash": 95046,
       "profit_pct": 0.0,
-      "status": "NORMAL",
+      "status": "HOLDING BTC",
       "regime": {
         "BTC": "NEUTRAL"
       },
-      "holdings": [],
+      "holdings": [
+        {
+          "ticker": "BTC",
+          "quantity": 0.09245851,
+          "profit_rate": 0
+        }
+      ],
       "params": {
         "strategy": "upbit_vb",
         "k_long": 0.4
       },
       "realized_pl_krw": 40518,
-      "unrealized_pl_krw": 0,
-      "total_pl_krw": 40518,
-      "total_pl_pct": 0.41,
+      "unrealized_pl_krw": -17116,
+      "total_pl_krw": 23402,
+      "total_pl_pct": 0.23,
       "total_trades": 6,
       "winning_trades": 3,
       "win_rate": 50.0,
