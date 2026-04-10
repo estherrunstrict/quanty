@@ -1,14 +1,14 @@
 {
-  "updated_at": "2026-04-10 16:00 KST",
+  "updated_at": "2026-04-11 06:30 KST",
   "exchange_rate": 1380,
   "portfolio": {
-    "total_value_krw": 77796358,
+    "total_value_krw": 77925785,
     "original_deposit_krw": 75714217,
-    "total_profit_krw": 2124127,
-    "total_profit_pct": 2.81,
+    "total_profit_krw": 2208790,
+    "total_profit_pct": 2.92,
     "cash_krw": 4221906,
     "cash_usd": 5029,
-    "upbit_krw": 9945329
+    "upbit_krw": 9990093
   },
   "strategies": [
     {
@@ -49,8 +49,8 @@
         "regime": "BEARISH",
         "exposure": "REDUCE_EXPOSURE",
         "confidence": 60,
-        "breadth_score": 34.8,
-        "uptrend_score": 72.7,
+        "breadth_score": 36.8,
+        "uptrend_score": 70.0,
         "top_probability": 0,
         "ftd_active": false,
         "trend_pass_count": 20,
@@ -255,34 +255,34 @@
       "market": "US",
       "currency": "USD",
       "budget": 25165.0,
-      "total_value": 25432.341491,
+      "total_value": 25530.896491,
       "cash": 4859.416491,
-      "profit_pct": 1.06,
+      "profit_pct": 1.45,
       "status": "2 positions",
       "regime": {},
       "holdings": [
         {
           "ticker": "SH",
           "quantity": 138,
-          "profit_rate": -2.982045598217391,
-          "profit": -155.055809,
-          "value": 5044.59
+          "profit_rate": -3.818064080791688,
+          "profit": -198.525809,
+          "value": 5001.12
         },
         {
           "ticker": "SPY",
           "quantity": 23,
-          "profit_rate": 2.7962335631769486,
-          "profit": 422.3973,
-          "value": 15528.335
+          "profit_rate": 3.7364267694550333,
+          "profit": 564.4223,
+          "value": 15670.36
         }
       ],
       "params": {
         "strategy": "quant_replacing_40"
       },
       "realized_pl_krw": -717887,
-      "unrealized_pl_krw": 469706,
-      "total_pl_krw": -248181,
-      "total_pl_pct": -0.71,
+      "unrealized_pl_krw": 466849,
+      "total_pl_krw": -251038,
+      "total_pl_pct": -0.72,
       "total_trades": 9,
       "winning_trades": 5,
       "win_rate": 55.6,
@@ -293,27 +293,27 @@
       "market": "US",
       "currency": "USD",
       "budget": 2796.0,
-      "total_value": 2704.691723,
+      "total_value": 2740.770623,
       "cash": 707.3106229999999,
-      "profit_pct": -3.27,
+      "profit_pct": -1.98,
       "status": "1 position",
       "regime": {},
       "holdings": [
         {
           "ticker": "NVDA",
           "quantity": 11,
-          "profit_rate": -4.371558445899697,
-          "profit": -91.308277,
-          "value": 1997.3811
+          "profit_rate": -2.644212084805066,
+          "profit": -55.229377,
+          "value": 2033.46
         }
       ],
       "params": {
         "strategy": "jd_investment"
       },
       "realized_pl_krw": -450437,
-      "unrealized_pl_krw": -90638,
-      "total_pl_krw": -541075,
-      "total_pl_pct": -14.02,
+      "unrealized_pl_krw": -18988,
+      "total_pl_krw": -469425,
+      "total_pl_pct": -12.17,
       "total_trades": 13,
       "winning_trades": 0,
       "win_rate": 0.0,
@@ -335,14 +335,14 @@
           "quantity": 50,
           "profit_rate": 0,
           "profit": 0,
-          "value": 5056.0
+          "value": 5127.5
         },
         {
           "ticker": "SPY",
           "quantity": 23,
           "profit_rate": 0,
           "profit": 0,
-          "value": 15514.857
+          "value": 15682.09
         }
       ],
       "params": {
@@ -351,9 +351,9 @@
         "defensive": "8 bond ETFs"
       },
       "realized_pl_krw": 0,
-      "unrealized_pl_krw": 233917,
-      "total_pl_krw": 233917,
-      "total_pl_pct": 3.39,
+      "unrealized_pl_krw": 249787,
+      "total_pl_krw": 249787,
+      "total_pl_pct": 3.62,
       "total_trades": 0,
       "winning_trades": 0,
       "win_rate": null,
@@ -363,23 +363,29 @@
       "name": "BTC VB",
       "market": "KR",
       "currency": "KRW",
-      "budget": 9945329,
-      "total_value": 9945329,
-      "cash": 9945329,
+      "budget": 9990093,
+      "total_value": 9990093,
+      "cash": 96059,
       "profit_pct": 0.0,
-      "status": "NORMAL",
+      "status": "HOLDING BTC",
       "regime": {
         "BTC": "NEUTRAL"
       },
-      "holdings": [],
+      "holdings": [
+        {
+          "ticker": "BTC",
+          "quantity": 0.09126243,
+          "profit_rate": 0
+        }
+      ],
       "params": {
         "strategy": "upbit_vb",
         "k_long": 0.4
       },
       "realized_pl_krw": -14449,
-      "unrealized_pl_krw": 0,
-      "total_pl_krw": -14449,
-      "total_pl_pct": -0.14,
+      "unrealized_pl_krw": 48705,
+      "total_pl_krw": 34256,
+      "total_pl_pct": 0.34,
       "total_trades": 7,
       "winning_trades": 3,
       "win_rate": 42.9,
