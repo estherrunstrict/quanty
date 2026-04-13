@@ -1,11 +1,11 @@
 {
-  "updated_at": "2026-04-13 16:00 KST",
+  "updated_at": "2026-04-14 06:30 KST",
   "exchange_rate": 1380,
   "portfolio": {
-    "total_value_krw": 77635420,
+    "total_value_krw": 77831407,
     "original_deposit_krw": 75714217,
-    "total_profit_krw": 1935413,
-    "total_profit_pct": 2.56,
+    "total_profit_krw": 2131400,
+    "total_profit_pct": 2.82,
     "cash_krw": 4221906,
     "cash_usd": 5029,
     "upbit_krw": 9973105
@@ -40,63 +40,12 @@
         "exposure": "REDUCE_EXPOSURE",
         "confidence": 60,
         "breadth_score": 36.8,
-        "uptrend_score": 70.0,
+        "uptrend_score": 70.8,
         "top_probability": 0,
         "ftd_active": false,
-        "trend_pass_count": 19,
+        "trend_pass_count": 0,
         "vcp_count": 0,
-        "trend_passes": [
-          {
-            "symbol": "GOOGL",
-            "score": 8,
-            "pct_from_high": -7.6
-          },
-          {
-            "symbol": "WMT",
-            "score": 8,
-            "pct_from_high": -5.1
-          },
-          {
-            "symbol": "MRK",
-            "score": 8,
-            "pct_from_high": -1.4
-          },
-          {
-            "symbol": "CSCO",
-            "score": 8,
-            "pct_from_high": -4.7
-          },
-          {
-            "symbol": "AMAT",
-            "score": 8,
-            "pct_from_high": 0.0
-          },
-          {
-            "symbol": "CAT",
-            "score": 8,
-            "pct_from_high": 0.0
-          },
-          {
-            "symbol": "GS",
-            "score": 8,
-            "pct_from_high": -6.5
-          },
-          {
-            "symbol": "NEE",
-            "score": 8,
-            "pct_from_high": -1.0
-          },
-          {
-            "symbol": "RTX",
-            "score": 8,
-            "pct_from_high": -5.0
-          },
-          {
-            "symbol": "COP",
-            "score": 8,
-            "pct_from_high": -8.4
-          }
-        ],
+        "trend_passes": [],
         "candidates": []
       }
     },
@@ -128,7 +77,7 @@
       "total_trades": 1,
       "winning_trades": 0,
       "win_rate": 0.0,
-      "mdd": -2.18
+      "mdd": -3.76
     },
     {
       "name": "Hybrid VB (KR)",
@@ -231,34 +180,34 @@
       "market": "US",
       "currency": "USD",
       "budget": 25165.0,
-      "total_value": 25530.896491,
+      "total_value": 25476.388791,
       "cash": 4859.416491,
-      "profit_pct": 1.45,
+      "profit_pct": 1.24,
       "status": "2 positions",
       "regime": {},
       "holdings": [
         {
           "ticker": "SH",
           "quantity": 138,
-          "profit_rate": -3.818064080791688,
-          "profit": -198.525809,
-          "value": 5001.12
+          "profit_rate": -3.313798964318303,
+          "profit": -172.305809,
+          "value": 5027.34
         },
         {
           "ticker": "SPY",
           "quantity": 23,
-          "profit_rate": 3.7364267694550333,
-          "profit": 564.4223,
-          "value": 15670.36
+          "profit_rate": 3.2020163832662965,
+          "profit": 483.6946,
+          "value": 15589.6323
         }
       ],
       "params": {
         "strategy": "quant_replacing_40"
       },
       "realized_pl_krw": -717887,
-      "unrealized_pl_krw": 466849,
-      "total_pl_krw": -251038,
-      "total_pl_pct": -0.72,
+      "unrealized_pl_krw": 609044,
+      "total_pl_krw": -108843,
+      "total_pl_pct": -0.31,
       "total_trades": 9,
       "winning_trades": 5,
       "win_rate": 55.6,
@@ -269,27 +218,27 @@
       "market": "US",
       "currency": "USD",
       "budget": 2796.0,
-      "total_value": 2740.770623,
+      "total_value": 2752.375623,
       "cash": 707.3106229999999,
-      "profit_pct": -1.98,
+      "profit_pct": -1.56,
       "status": "1 position",
       "regime": {},
       "holdings": [
         {
           "ticker": "NVDA",
           "quantity": 11,
-          "profit_rate": -2.644212084805066,
-          "profit": -55.229377,
-          "value": 2033.46
+          "profit_rate": -2.088600507941492,
+          "profit": -43.624377,
+          "value": 2045.065
         }
       ],
       "params": {
         "strategy": "jd_investment"
       },
       "realized_pl_krw": -450437,
-      "unrealized_pl_krw": -18988,
-      "total_pl_krw": -469425,
-      "total_pl_pct": -12.17,
+      "unrealized_pl_krw": -8666,
+      "total_pl_krw": -459103,
+      "total_pl_pct": -11.9,
       "total_trades": 13,
       "winning_trades": 0,
       "win_rate": 0.0,
@@ -311,14 +260,14 @@
           "quantity": 50,
           "profit_rate": 0,
           "profit": 0,
-          "value": 5127.5
+          "value": 5062.25
         },
         {
           "ticker": "SPY",
           "quantity": 23,
           "profit_rate": 0,
           "profit": 0,
-          "value": 15682.09
+          "value": 15584.34
         }
       ],
       "params": {
@@ -327,9 +276,9 @@
         "defensive": "8 bond ETFs"
       },
       "realized_pl_krw": 0,
-      "unrealized_pl_krw": 249787,
-      "total_pl_krw": 249787,
-      "total_pl_pct": 3.62,
+      "unrealized_pl_krw": 293257,
+      "total_pl_krw": 293257,
+      "total_pl_pct": 4.25,
       "total_trades": 0,
       "winning_trades": 0,
       "win_rate": null,
