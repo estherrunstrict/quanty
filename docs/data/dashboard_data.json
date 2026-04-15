@@ -1,11 +1,11 @@
 {
-  "updated_at": "2026-04-15 16:00 KST",
+  "updated_at": "2026-04-16 06:30 KST",
   "exchange_rate": 1380,
   "portfolio": {
-    "total_value_krw": 78752970,
+    "total_value_krw": 79321553,
     "original_deposit_krw": 75714217,
-    "total_profit_krw": 3182534,
-    "total_profit_pct": 4.2,
+    "total_profit_krw": 3751117,
+    "total_profit_pct": 4.95,
     "cash_krw": 9750006,
     "cash_usd": 5029,
     "upbit_krw": 9843534
@@ -39,7 +39,7 @@
         "regime": "BEARISH",
         "exposure": "REDUCE_EXPOSURE",
         "confidence": 60,
-        "breadth_score": 39.8,
+        "breadth_score": 41.8,
         "uptrend_score": 70.8,
         "top_probability": 0,
         "ftd_active": false,
@@ -83,10 +83,10 @@
       "name": "Hybrid VB (KR)",
       "market": "KR",
       "currency": "KRW",
-      "budget": 5000000,
-      "total_value": 5073995.9975,
-      "cash": 2544255.9974999996,
-      "profit_pct": 1.48,
+      "budget": 10000000,
+      "total_value": 10073995.9975,
+      "cash": 7544255.9975000005,
+      "profit_pct": 0.74,
       "status": "4 positions",
       "regime": {
         "229200": "BEAR",
@@ -134,7 +134,7 @@
       "realized_pl_krw": 40604,
       "unrealized_pl_krw": 115066,
       "total_pl_krw": 155670,
-      "total_pl_pct": 3.11,
+      "total_pl_pct": 1.56,
       "total_trades": 8,
       "winning_trades": 2,
       "win_rate": 25.0,
@@ -144,9 +144,9 @@
       "name": "Hybrid VB (US)",
       "market": "US",
       "currency": "USD",
-      "budget": 5000.0,
-      "total_value": 5000.0,
-      "cash": 5000.0,
+      "budget": 10000.0,
+      "total_value": 10000.0,
+      "cash": 10000.0,
       "profit_pct": 0.0,
       "status": "CASH",
       "regime": {
@@ -180,34 +180,27 @@
       "market": "US",
       "currency": "USD",
       "budget": 25165.0,
-      "total_value": 25611.925391,
-      "cash": 5516.196391000001,
-      "profit_pct": 1.78,
-      "status": "2 positions",
+      "total_value": 26012.8822,
+      "cash": 10715.8422,
+      "profit_pct": 3.37,
+      "status": "1 position",
       "regime": {},
       "holdings": [
         {
-          "ticker": "SH",
-          "quantity": 138,
-          "profit_rate": -4.800054044450386,
-          "profit": -249.585809,
-          "value": 4950.06
-        },
-        {
           "ticker": "SPY",
           "quantity": 22,
-          "profit_rate": 4.8204276653411595,
-          "profit": 696.5112,
-          "value": 15145.669
+          "profit_rate": 5.868038897049073,
+          "profit": 847.8822,
+          "value": 15297.04
         }
       ],
       "params": {
         "strategy": "quant_replacing_40"
       },
       "realized_pl_krw": -672328,
-      "unrealized_pl_krw": 742407,
-      "total_pl_krw": 70079,
-      "total_pl_pct": 0.2,
+      "unrealized_pl_krw": 1310341,
+      "total_pl_krw": 638013,
+      "total_pl_pct": 1.84,
       "total_trades": 10,
       "winning_trades": 6,
       "win_rate": 60.0,
@@ -218,27 +211,27 @@
       "market": "US",
       "currency": "USD",
       "budget": 2796.0,
-      "total_value": 2822.720623,
-      "cash": 707.3106230000003,
-      "profit_pct": 0.96,
+      "total_value": 2875.520623,
+      "cash": 707.3106229999999,
+      "profit_pct": 2.84,
       "status": "1 position",
       "regime": {},
       "holdings": [
         {
           "ticker": "NVDA",
           "quantity": 11,
-          "profit_rate": 1.2793009461272793,
-          "profit": 26.720623,
-          "value": 2115.41
+          "profit_rate": 3.8072019593454347,
+          "profit": 79.520623,
+          "value": 2168.21
         }
       ],
       "params": {
         "strategy": "jd_investment"
       },
       "realized_pl_krw": -450437,
-      "unrealized_pl_krw": 100630,
-      "total_pl_krw": -349807,
-      "total_pl_pct": -9.07,
+      "unrealized_pl_krw": 124050,
+      "total_pl_krw": -326387,
+      "total_pl_pct": -8.46,
       "total_trades": 13,
       "winning_trades": 0,
       "win_rate": 0.0,
@@ -248,8 +241,8 @@
       "name": "Modified Dual Momentum",
       "market": "US",
       "currency": "USD",
-      "budget": 5000.0,
-      "total_value": 5000.0,
+      "budget": 10000.0,
+      "total_value": 10000.0,
       "cash": 0,
       "profit_pct": 0.0,
       "status": "2 positions",
@@ -260,14 +253,14 @@
           "quantity": 50,
           "profit_rate": 0,
           "profit": 0,
-          "value": 5162.5
+          "value": 5169.5
         },
         {
           "ticker": "SPY",
           "quantity": 22,
           "profit_rate": 0,
           "profit": 0,
-          "value": 15140.51
+          "value": 15302.76
         }
       ],
       "params": {
@@ -276,9 +269,9 @@
         "defensive": "8 bond ETFs"
       },
       "realized_pl_krw": 0,
-      "unrealized_pl_krw": 350527,
-      "total_pl_krw": 350527,
-      "total_pl_pct": 5.08,
+      "unrealized_pl_krw": 327757,
+      "total_pl_krw": 327757,
+      "total_pl_pct": 2.38,
       "total_trades": 0,
       "winning_trades": 0,
       "win_rate": null,
