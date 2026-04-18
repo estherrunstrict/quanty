@@ -607,11 +607,28 @@ function render(data) {
   // ── Account-level data (from generate_dashboard_data.py → KIS API query)
   const portfolio = data.portfolio || {};
   const totalAsset = portfolio.total_value_krw || 0;
-  const totalProfit = portfolio.total_profit_krw || 0;
-  const totalProfitPct = portfolio.total_profit_pct || 0;
   const cashKRW = portfolio.cash_krw || 0;
   const cashUSD = portfolio.cash_usd || 0;
   const upbitKRW = portfolio.upbit_krw || 0;
+  const exchangeRate = portfolio.exchange_rate || 1380;
+
+  // ── Sum P&L from all bots (not from KIS API total)
+  let totalPnlKRW = 0;
+  let totalPnlUSD = 0;
+  data.strategies.forEach(s => {
+    const profit = s.profit || 0;
+    if (s.currency === 'KRW') {
+      totalPnlKRW += profit;
+    } else if (s.currency === 'USD') {
+      totalPnlUSD += profit;
+    } else if (s.currency === 'MULTI') {
+      totalPnlKRW += (s.kr?.profit || 0);
+      totalPnlUSD += (s.us?.profit || 0);
+    }
+  });
+  const totalPnlCombined = totalPnlKRW + totalPnlUSD * exchangeRate;
+  const originalDeposit = portfolio.original_deposit_krw || 1;
+  const totalPnlPct = totalAsset > 0 ? (totalPnlCombined / originalDeposit * 100) : 0;
 
   const realized = data.realized_pl || {};
   const realizedTotal = realized._total || 0;
@@ -622,7 +639,7 @@ function render(data) {
     { lbl: 'Total Assets', val: '₩' + Math.round(totalAsset).toLocaleString(), sub: 'KIS + Upbit combined' },
     { lbl: 'KIS Cash', val: '₩' + Math.round(cashKRW).toLocaleString(), sub: '$' + cashUSD.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' USD' },
     { lbl: 'Upbit (BTC)', val: '₩' + Math.round(upbitKRW).toLocaleString(), sub: 'Separate account' },
-    { lbl: 'Total P&L', val: fmtPnl(totalProfit, 'KRW'), cls: pnlClass(totalProfit), sub: totalProfitPct >= 0 ? '+' + totalProfitPct.toFixed(1) + '%' : totalProfitPct.toFixed(1) + '%' },
+    { lbl: 'Total P&L', val: fmtPnl(totalPnlCombined, 'KRW'), cls: pnlClass(totalPnlCombined), sub: 'KRW ' + fmtPnl(totalPnlKRW, 'KRW') + ' + USD ' + fmtPnl(totalPnlUSD, 'USD') },
     { lbl: 'Active Bots', val: data.strategies.length.toString(), sub: 'check_and_run.sh' },
   ] : [
     { lbl: 'Total Assets', val: '—', sub: 'Waiting for data update' },
