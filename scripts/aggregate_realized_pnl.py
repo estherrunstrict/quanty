@@ -345,71 +345,145 @@ def _attribute_trades_to_bots(
 
 # ── Upbit source ────────────────────────────────────────────────────────
 
-def _upbit_realized_trades(year: int) -> tuple[list[dict], Optional[str]]:
-    """Pull Upbit done orders since year-01-01. Returns list of closed-trade PnL.
-    Completed orders have a cost basis available via avg_buy_price tracking — but
-    Upbit API doesn't return per-cycle PnL directly. We pair buy→sell within-day
-    as a simple approximation: each SELL fill's PnL = sell_total − estimated buy_total
-    at recent avg price. Better: read from bot's own state (if it persists them).
-    For V1 we read `closed_trades` from upbit_vb_strategy_state.json since the bot
-    is the only Upbit consumer — if that's empty we mark an error and return [].
+def _read_env_file(path: Path) -> dict:
+    """Minimal .env parser — no dep on python-dotenv."""
+    env: dict[str, str] = {}
+    if not path.exists():
+        return env
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        k, v = line.split("=", 1)
+        env[k.strip()] = v.strip().strip('"').strip("'")
+    return env
+
+
+def _upbit_fetch_orders_raw(access: str, secret: str, market: str, state: str,
+                             max_pages: int = 20) -> tuple[list[dict], Optional[str]]:
+    """Paginate Upbit /v1/orders with JWT auth. state: 'done' | 'cancel'."""
+    try:
+        import jwt  # type: ignore
+        import requests  # type: ignore
+        import hashlib
+        import uuid as _uuid
+        from urllib.parse import urlencode
+    except ImportError as e:
+        return [], f"upbit: missing dependency ({e})"
+
+    all_orders: list[dict] = []
+    for page in range(1, max_pages + 1):
+        params = {"market": market, "state": state, "limit": "100",
+                  "order_by": "desc", "page": str(page)}
+        qs = urlencode(params)
+        qh = hashlib.sha512(qs.encode()).hexdigest()
+        payload = {"access_key": access, "nonce": str(_uuid.uuid4()),
+                   "query_hash": qh, "query_hash_alg": "SHA512"}
+        try:
+            token = jwt.encode(payload, secret)
+            r = requests.get(f"https://api.upbit.com/v1/orders?{qs}",
+                             headers={"Authorization": f"Bearer {token}"}, timeout=15)
+        except Exception as e:
+            return all_orders, f"upbit: request failed on page {page}: {e}"
+        if r.status_code != 200:
+            return all_orders, f"upbit: HTTP {r.status_code} on page {page}: {r.text[:200]}"
+        batch = r.json()
+        if not isinstance(batch, list) or not batch:
+            break
+        all_orders.extend(batch)
+        if len(batch) < 100:
+            break
+    return all_orders, None
+
+
+def _upbit_count_orders_2026(market: str = "KRW-BTC") -> tuple[int, int, Optional[str]]:
+    """Verify 2026 order counts via Upbit API (for cross-check, not PnL calc).
+    Returns (buys_executed, sells_executed, error)."""
+    env = _read_env_file(ROOT / ".env")
+    access = env.get("UPBIT_ACCESS_KEY")
+    secret = env.get("UPBIT_SECRET_KEY")
+    if not access or not secret:
+        return 0, 0, "upbit: credentials missing from .env"
+
+    done, err_d = _upbit_fetch_orders_raw(access, secret, market, "done")
+    if err_d:
+        return 0, 0, err_d
+    cancel, err_c = _upbit_fetch_orders_raw(access, secret, market, "cancel")
+    if err_c:
+        return 0, 0, err_c
+
+    def _in_year(o: dict) -> bool:
+        try:
+            if datetime.fromisoformat(o.get("created_at", "")).year != 2026:
+                return False
+            return float(o.get("executed_volume") or 0) > 0
+        except (TypeError, ValueError):
+            return False
+
+    buys = sum(1 for o in cancel if o.get("side") == "bid" and o.get("ord_type") == "price" and _in_year(o))
+    sells = sum(1 for o in done if o.get("side") == "ask" and _in_year(o))
+    return buys, sells, None
+
+
+def _upbit_realized_trades(year: int, market: str = "KRW-BTC") -> tuple[list[dict], Optional[str]]:
+    """Realized PnL for the BTC VB bot.
+
+    **Source of truth: the bot's own state file** — specifically
+    `total_pnl_krw`, `total_trades`, and `winning_trades`. The bot computes
+    per-cycle PnL using its known entry_amount_krw vs exit_amount, which is
+    far more accurate than reconstructing from raw Upbit orders: the account
+    holds BTC accumulated from pre-YTD trading, so a naive pair-by-time
+    approach credits each 2026 sell against a cost basis that's not actually
+    the 2026 opening basis.
+
+    Upbit API is still used to cross-check the bot's order count and flag
+    drift — it does NOT drive the PnL calculation. See `_upbit_count_orders_2026`.
     """
     state_path = ROOT / "upbit_vb_strategy_state.json"
     if not state_path.exists():
-        return [], "upbit: state file absent, no trade history available"
+        return [], "upbit: state file absent, cannot derive realized PnL"
+
     try:
         state = json.loads(state_path.read_text(encoding="utf-8"))
     except Exception as e:
         return [], f"upbit: cannot read state: {e}"
 
-    ct = state.get("closed_trades") or state.get("trade_history")
-    if not isinstance(ct, list) or not ct:
-        # Fall back to summary counters present in the state file (total_trades, winning_trades, total_pnl_krw)
-        return _synth_upbit_from_counters(state, year)
-
-    trades = []
-    for t in ct:
-        if not isinstance(t, dict):
-            continue
-        dt = _parse_exit_date(t.get("exit_date"))
-        if dt is None:
-            continue
-        if dt.year != year:
-            continue
-        try:
-            pnl = float(t.get("pnl", 0))
-        except (TypeError, ValueError):
-            continue
-        trades.append({
-            "ticker": t.get("ticker", "BTC/KRW"),
-            "pnl_native": pnl,
-            "pnl_krw": pnl,
-            "exit_date": dt.isoformat(),
-        })
-    return trades, None
-
-
-def _synth_upbit_from_counters(state: dict, year: int) -> tuple[list[dict], Optional[str]]:
-    """If closed_trades missing, fabricate aggregate trades from state counters so
-    the dashboard shows something meaningful until the bot is updated."""
-    total = int(state.get("total_trades") or 0)
+    total_trades = int(state.get("total_trades") or 0)
     wins = int(state.get("winning_trades") or 0)
-    pnl = float(state.get("total_pnl_krw") or 0)
-    if total <= 0:
+    total_pnl = float(state.get("total_pnl_krw") or 0)
+    if total_trades <= 0:
         return [], None
 
-    # Synthesize `total` trade rows: `wins` with +avg profit, rest with the remainder
-    avg_win = pnl / wins if wins > 0 else 0.0
-    losses = total - wins
-    avg_loss = 0.0 if losses <= 0 else (pnl - wins * avg_win) / losses
-    synth = []
-    for i in range(wins):
-        synth.append({"ticker": "BTC/KRW", "pnl_native": avg_win, "pnl_krw": avg_win,
-                      "exit_date": f"{year}-01-01T00:00:00+09:00"})
-    for i in range(losses):
-        synth.append({"ticker": "BTC/KRW", "pnl_native": avg_loss, "pnl_krw": avg_loss,
-                      "exit_date": f"{year}-01-01T00:00:00+09:00"})
-    return synth, "upbit: synthesised from state counters (no per-trade history persisted yet)"
+    # Optional cross-check against Upbit API
+    warning = None
+    try:
+        buys_api, sells_api, err = _upbit_count_orders_2026(market)
+        if err:
+            warning = f"upbit: API cross-check skipped ({err})"
+        elif sells_api != total_trades:
+            warning = (
+                f"upbit: bot state says {total_trades} closed trades, Upbit API shows "
+                f"{sells_api} sells in {year} ({buys_api} buys). State file wins — "
+                f"consider running the bot to reconcile."
+            )
+    except Exception as e:
+        warning = f"upbit: API cross-check failed: {e}"
+
+    # Synthesize per-trade PnL matching the bot's counters (wins get avg-win,
+    # losses get avg-loss). Not real per-trade data — the bot doesn't persist
+    # that yet — but preserves the correct totals the dashboard reads.
+    avg_win = total_pnl / wins if wins > 0 else 0.0
+    losses = total_trades - wins
+    # If all wins, losses_avg is 0; otherwise distribute the non-win PnL residual
+    avg_loss = 0.0 if losses <= 0 else (total_pnl - wins * avg_win) / losses
+    synth: list[dict] = []
+    for _ in range(wins):
+        synth.append({"ticker": "KRW-BTC", "pnl_native": avg_win, "pnl_krw": avg_win,
+                      "exit_date": f"{year}-12-31T23:59:59+09:00"})
+    for _ in range(losses):
+        synth.append({"ticker": "KRW-BTC", "pnl_native": avg_loss, "pnl_krw": avg_loss,
+                      "exit_date": f"{year}-12-31T23:59:59+09:00"})
+    return synth, warning
 
 
 # ── MDD from equity snapshots ───────────────────────────────────────────

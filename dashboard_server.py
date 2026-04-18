@@ -255,13 +255,29 @@ def build_dashboard_data():
     equity_hist = vb_state.get("equity_history", [])
     last_equity = equity_hist[-1][1] if equity_hist else 0
 
+    # Unrealized = mark-to-market on currently-held BTC. Zero when flat.
+    # We avoid `total_pnl_krw` here because that's cumulative REALIZED and was
+    # being surfaced as unrealized, double-counting when the Realized YTD cell
+    # landed next to it.
+    vb_unrealized = 0.0
+    if vb_state.get("is_holding") and vb_state.get("btc_amount", 0) > 0:
+        try:
+            import pyupbit  # type: ignore
+            price = pyupbit.get_current_price("KRW-BTC")
+            if price:
+                btc = float(vb_state.get("btc_amount", 0) or 0)
+                entry = float(vb_state.get("entry_amount_krw", 0) or 0)
+                vb_unrealized = btc * float(price) - entry
+        except Exception:
+            vb_unrealized = 0.0
+
     strategies.append({
         "id": "btc_vb",
         "name": "BTC Volatility Breakout",
         "currency": "KRW",
         "mode": "paper" if vb_config.get("paper_trading") else "live",
         "value": last_equity,
-        "profit": vb_state.get("total_pnl_krw", 0),
+        "profit": vb_unrealized,
         "budget": vb_config.get("max_capital_krw", 0),
         "is_holding": vb_state.get("is_holding", False),
         "total_trades": vb_state.get("total_trades", 0),
