@@ -211,6 +211,30 @@ def _get_equity_series():
     return series
 
 
+def _enrich(bucket: dict, unrealized: float, budget: float, r: dict) -> None:
+    """Merge realized-aggregator fields + compute derived metrics into bucket.
+
+    Module-level (vs nested in build_dashboard_data) so the tests can call it
+    directly with synthetic inputs — see tests/test_aggregate_realized_pnl.py.
+    """
+    bucket["unrealized_profit"] = unrealized or 0
+    bucket["realized_profit_ytd"] = r.get("realized_ytd", 0) or 0
+    bucket["realized_trades"] = r.get("trades_ytd", 0) or 0
+    bucket["wins_ytd"] = r.get("wins_ytd", 0) or 0
+    bucket["losses_ytd"] = r.get("losses_ytd", 0) or 0
+    bucket["win_rate_pct"] = r.get("win_rate_pct")   # None when no trades
+    bucket["mdd_pct"] = r.get("mdd_pct")             # None when no equity series
+    bucket["realized_source"] = r.get("source", "none")
+    bucket["cycles_ytd"] = bucket["realized_trades"]  # cycle = closed round-trip
+
+    # Derived totals
+    total_pl = (unrealized or 0) + bucket["realized_profit_ytd"]
+    bucket["total_pl_ytd"] = total_pl
+    bucket["profit_rate_ytd_pct"] = (
+        round(total_pl / budget * 100, 2) if budget and budget > 0 else None
+    )
+
+
 def build_dashboard_data():
     """Assemble full dashboard payload from all data sources."""
     config = _load_yaml(ROOT / "config.yaml")
@@ -514,25 +538,6 @@ def build_dashboard_data():
         "dual_momentum": "DUAL_MOMENTUM",
         "claude_bot": "CLAUDE_AI_BOT",
     }
-
-    def _enrich(bucket: dict, unrealized: float, budget: float, r: dict) -> None:
-        """Merge realized-aggregator fields + compute derived metrics into bucket."""
-        bucket["unrealized_profit"] = unrealized or 0
-        bucket["realized_profit_ytd"] = r.get("realized_ytd", 0) or 0
-        bucket["realized_trades"] = r.get("trades_ytd", 0) or 0
-        bucket["wins_ytd"] = r.get("wins_ytd", 0) or 0
-        bucket["losses_ytd"] = r.get("losses_ytd", 0) or 0
-        bucket["win_rate_pct"] = r.get("win_rate_pct")   # None when no trades
-        bucket["mdd_pct"] = r.get("mdd_pct")             # None when no equity series
-        bucket["realized_source"] = r.get("source", "none")
-        bucket["cycles_ytd"] = bucket["realized_trades"]  # cycle = closed round-trip
-
-        # Derived totals
-        total_pl = (unrealized or 0) + bucket["realized_profit_ytd"]
-        bucket["total_pl_ytd"] = total_pl
-        bucket["profit_rate_ytd_pct"] = (
-            round(total_pl / budget * 100, 2) if budget and budget > 0 else None
-        )
 
     for s in strategies:
         if s.get("id") == "hybrid_vb":

@@ -531,6 +531,29 @@ function realizedCell(realized, trades, currency) {
   return `<div><div class="sg-lbl">Realized YTD</div><div class="sg-val ${pnlClass(realized || 0)}">${fmtPnl(realized || 0, currency)} <span style="color:var(--tx4);font-size:0.6rem">${tradeSub}</span></div></div>`;
 }
 
+// Per-bot derived metric cells (sourced from realized_pl_{year}.json + dashboard_server _enrich).
+// Skip nulls silently — a freshly-deployed bot has no win-rate or MDD until trades land.
+function totalPlCell(totalPl, currency, label) {
+  const v = totalPl || 0;
+  return `<div><div class="sg-lbl">${label || 'Total P/L'}</div><div class="sg-val ${pnlClass(v)}">${fmtPnl(v, currency)}</div></div>`;
+}
+function profitPctCell(pct, label) {
+  if (pct === null || pct === undefined) return '';
+  const sign = pct >= 0 ? '+' : '';
+  return `<div><div class="sg-lbl">${label || 'Profit %'}</div><div class="sg-val ${pnlClass(pct)}">${sign}${pct.toFixed(2)}%</div></div>`;
+}
+function winRateCell(wr, cycles, label) {
+  if (wr === null || wr === undefined) return '';
+  return `<div><div class="sg-lbl">${label || 'Win Rate'}</div><div class="sg-val">${wr.toFixed(1)}% <span style="color:var(--tx4);font-size:0.6rem">(${cycles || 0}c)</span></div></div>`;
+}
+function mddCell(mdd, label) {
+  if (mdd === null || mdd === undefined) return '';
+  return `<div><div class="sg-lbl">${label || 'MDD'}</div><div class="sg-val dn">${mdd.toFixed(2)}%</div></div>`;
+}
+function cyclesCell(n, label) {
+  return `<div><div class="sg-lbl">${label || 'Cycles'}</div><div class="sg-val">${n || 0}</div></div>`;
+}
+
 function relTime(ts) {
   if (!ts) return '';
   const d = new Date(ts.replace(' ', 'T'));
@@ -694,7 +717,6 @@ function render(data) {
     let signalHTML = '';
 
     if (s.id === 'btc_vb') {
-      const wr = s.total_trades > 0 ? Math.round(s.winning_trades / s.total_trades * 100) : 0;
       const allocLabel = s.allocation >= 0.8 ? 'Full' : 'Reduced';
       const btcBudgetLabel = s.budget > 0 ? fmtVal(s.budget, 'KRW') : 'Unlimited';
       metricsHTML = `
@@ -702,7 +724,11 @@ function render(data) {
         <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${btcBudgetLabel}</div></div>
         <div><div class="sg-lbl">Unrealized</div><div class="sg-val ${pnlClass(s.unrealized_profit || 0)}">${fmtPnl(s.unrealized_profit || 0, 'KRW')}</div></div>
         ${realizedCell(s.realized_profit_ytd, s.realized_trades, 'KRW')}
-        <div><div class="sg-lbl">Win Rate</div><div class="sg-val">${wr}% <span style="color:var(--tx4)">(${s.total_trades || 0}t)</span></div></div>
+        ${totalPlCell(s.total_pl_ytd, 'KRW')}
+        ${profitPctCell(s.profit_rate_ytd_pct)}
+        ${winRateCell(s.win_rate_pct, s.cycles_ytd)}
+        ${mddCell(s.mdd_pct)}
+        ${cyclesCell(s.cycles_ytd)}
       `;
       const sigClass = s.is_holding ? 'long' : 'cash';
       const sigLabel = s.is_holding ? 'Holding BTC' : 'Cash — No Signal';
@@ -719,6 +745,11 @@ function render(data) {
         <div><div class="sg-lbl">Unrealized</div><div class="sg-val ${pnlClass(s.unrealized_profit || 0)}">${fmtPnl(s.unrealized_profit || 0, 'KRW')}</div></div>
         ${realizedCell(s.realized_profit_ytd, s.realized_trades, 'KRW')}
         <div><div class="sg-lbl">Target</div><div class="sg-val">${s.extra?.target_ticker || '—'}</div></div>
+        ${totalPlCell(s.total_pl_ytd, 'KRW')}
+        ${profitPctCell(s.profit_rate_ytd_pct)}
+        ${winRateCell(s.win_rate_pct, s.cycles_ytd)}
+        ${mddCell(s.mdd_pct)}
+        ${cyclesCell(s.cycles_ytd)}
       `;
       if (s.extra?.target) {
         signalHTML = `<div class="sig long">${s.extra.target}</div>`;
@@ -734,6 +765,11 @@ function render(data) {
         <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(posBudget, 'USD')}</div></div>
         <div><div class="sg-lbl">Unrealized</div><div class="sg-val ${pnlClass(s.unrealized_profit || 0)}">${fmtPnl(s.unrealized_profit || 0, 'USD')}</div></div>
         ${realizedCell(s.realized_profit_ytd, s.realized_trades, 'USD')}
+        ${totalPlCell(s.total_pl_ytd, 'USD')}
+        ${profitPctCell(s.profit_rate_ytd_pct)}
+        ${winRateCell(s.win_rate_pct, s.cycles_ytd)}
+        ${mddCell(s.mdd_pct)}
+        ${cyclesCell(s.cycles_ytd)}
       `;
       if (s.id === 'jd_strategy') {
         // JD Strategy: two badges — market state + holding state
@@ -761,18 +797,25 @@ function render(data) {
         <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(dmBudget, 'USD')}</div></div>
         <div><div class="sg-lbl">Unrealized</div><div class="sg-val ${pnlClass(s.unrealized_profit || 0)}">${fmtPnl(s.unrealized_profit || 0, 'USD')}</div></div>
         ${realizedCell(s.realized_profit_ytd, s.realized_trades, 'USD')}
+        ${totalPlCell(s.total_pl_ytd, 'USD')}
+        ${profitPctCell(s.profit_rate_ytd_pct)}
+        ${winRateCell(s.win_rate_pct, s.cycles_ytd)}
+        ${mddCell(s.mdd_pct)}
+        ${cyclesCell(s.cycles_ytd)}
       `;
     }
 
     else if (s.id === 'hybrid_vb') {
-      const krInvested = s.kr?.cost_basis || 0;
-      const usInvested = s.us?.cost_basis || 0;
-      const krUnreal = s.kr?.unrealized_profit ?? s.kr?.profit ?? 0;
-      const usUnreal = s.us?.unrealized_profit ?? s.us?.profit ?? 0;
-      const krRealized = s.kr?.realized_profit_ytd || 0;
-      const usRealized = s.us?.realized_profit_ytd || 0;
-      const krTrades = s.kr?.realized_trades || 0;
-      const usTrades = s.us?.realized_trades || 0;
+      const kr = s.kr || {};
+      const us = s.us || {};
+      const krInvested = kr.cost_basis || 0;
+      const usInvested = us.cost_basis || 0;
+      const krUnreal = kr.unrealized_profit ?? kr.profit ?? 0;
+      const usUnreal = us.unrealized_profit ?? us.profit ?? 0;
+      const krRealized = kr.realized_profit_ytd || 0;
+      const usRealized = us.realized_profit_ytd || 0;
+      const krTrades = kr.realized_trades || 0;
+      const usTrades = us.realized_trades || 0;
       const krBudget = s.budget_kr || 0;
       const usBudget = s.budget_us || 0;
       const krPct = krBudget > 0 ? Math.round(krInvested / krBudget * 100) : 0;
@@ -784,10 +827,20 @@ function render(data) {
         <div><div class="sg-lbl">KR Budget</div><div class="sg-val">${fmtVal(krBudget, 'KRW')}</div></div>
         <div><div class="sg-lbl">KR Unrealized</div><div class="sg-val ${pnlClass(krUnreal)}">${fmtPnl(krUnreal, 'KRW')}</div></div>
         ${realizedCell(krRealized, krTrades, 'KRW').replace('Realized YTD', 'KR Realized YTD')}
+        ${totalPlCell(kr.total_pl_ytd, 'KRW', 'KR Total P/L')}
+        ${profitPctCell(kr.profit_rate_ytd_pct, 'KR Profit %')}
+        ${winRateCell(kr.win_rate_pct, kr.cycles_ytd, 'KR Win Rate')}
+        ${mddCell(kr.mdd_pct, 'KR MDD')}
+        ${cyclesCell(kr.cycles_ytd, 'KR Cycles')}
         <div><div class="sg-lbl">US Invested</div><div class="sg-val">${fmtVal(usInvested, 'USD')} <span style="color:var(--tx4)">(${usPct}%)</span></div></div>
         <div><div class="sg-lbl">US Budget</div><div class="sg-val">${fmtVal(usBudget, 'USD')}</div></div>
         <div><div class="sg-lbl">US Unrealized</div><div class="sg-val ${pnlClass(usUnreal)}">${fmtPnl(usUnreal, 'USD')}</div></div>
         ${realizedCell(usRealized, usTrades, 'USD').replace('Realized YTD', 'US Realized YTD')}
+        ${totalPlCell(us.total_pl_ytd, 'USD', 'US Total P/L')}
+        ${profitPctCell(us.profit_rate_ytd_pct, 'US Profit %')}
+        ${winRateCell(us.win_rate_pct, us.cycles_ytd, 'US Win Rate')}
+        ${mddCell(us.mdd_pct, 'US MDD')}
+        ${cyclesCell(us.cycles_ytd, 'US Cycles')}
         <div><div class="sg-lbl">Positions</div><div class="sg-val">${krPos} KR · ${usPos} US</div></div>
       `;
     }
@@ -809,6 +862,11 @@ function render(data) {
         <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(cbBudget, 'USD')}</div></div>
         <div><div class="sg-lbl">Unrealized</div><div class="sg-val ${pnlClass(s.unrealized_profit || 0)}">${fmtPnl(s.unrealized_profit || 0, 'USD')}</div></div>
         ${realizedCell(s.realized_profit_ytd, s.realized_trades, 'USD')}
+        ${totalPlCell(s.total_pl_ytd, 'USD')}
+        ${profitPctCell(s.profit_rate_ytd_pct)}
+        ${winRateCell(s.win_rate_pct, s.cycles_ytd)}
+        ${mddCell(s.mdd_pct)}
+        ${cyclesCell(s.cycles_ytd)}
         <div><div class="sg-lbl">Regime</div><div class="sg-val ${regimeCls}" style="font-weight:500">${regime}</div></div>
         <div><div class="sg-lbl">Confidence</div><div class="sg-val">${ex.confidence || 0}%</div></div>
         <div><div class="sg-lbl">Breadth</div><div class="sg-val ${breadth >= 60 ? 'up' : breadth >= 40 ? 'amber' : 'dn'}">${breadth}/100</div></div>
