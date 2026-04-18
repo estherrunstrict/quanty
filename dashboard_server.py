@@ -497,9 +497,11 @@ def build_dashboard_data():
             "timestamp": cb_result.get("timestamp", "") if cb_result else (claude_regime.get("timestamp", "") if claude_regime else ""),
         })
 
-    # ── Realized P&L ──
+    # ── Realized P&L + derived metrics ──
     # Aggregated YTD view per strategy — see scripts/aggregate_realized_pnl.py.
-    # Existing "profit" fields stay as unrealized (holdings value − cost basis).
+    # "profit" stays as the unrealized view (holdings value − cost basis).
+    # New fields: realized_ytd, trades_ytd, wins_ytd, losses_ytd, win_rate_pct,
+    # mdd_pct, total_pl_ytd, profit_rate_ytd_pct.
     realized = _load_json(RESULTS_DIR / "realized_pl_2026.json") or {}
     realized_by_key = realized.get("strategies", {}) if isinstance(realized, dict) else {}
 
@@ -513,37 +515,51 @@ def build_dashboard_data():
         "claude_bot": "CLAUDE_AI_BOT",
     }
 
-    for s in strategies:
-        # Split the existing single "profit" into explicit unrealized + realized.
-        # Keep "profit" as an alias for backward compat with any older consumer.
-        s["unrealized_profit"] = s.get("profit", 0)
+    def _enrich(bucket: dict, unrealized: float, budget: float, r: dict) -> None:
+        """Merge realized-aggregator fields + compute derived metrics into bucket."""
+        bucket["unrealized_profit"] = unrealized or 0
+        bucket["realized_profit_ytd"] = r.get("realized_ytd", 0) or 0
+        bucket["realized_trades"] = r.get("trades_ytd", 0) or 0
+        bucket["wins_ytd"] = r.get("wins_ytd", 0) or 0
+        bucket["losses_ytd"] = r.get("losses_ytd", 0) or 0
+        bucket["win_rate_pct"] = r.get("win_rate_pct")   # None when no trades
+        bucket["mdd_pct"] = r.get("mdd_pct")             # None when no equity series
+        bucket["realized_source"] = r.get("source", "none")
+        bucket["cycles_ytd"] = bucket["realized_trades"]  # cycle = closed round-trip
 
+        # Derived totals
+        total_pl = (unrealized or 0) + bucket["realized_profit_ytd"]
+        bucket["total_pl_ytd"] = total_pl
+        bucket["profit_rate_ytd_pct"] = (
+            round(total_pl / budget * 100, 2) if budget and budget > 0 else None
+        )
+
+    for s in strategies:
         if s.get("id") == "hybrid_vb":
-            # Surface realized PnL on each leg even when the per-leg _result.json
-            # is absent (leg dict is {}). The realized number comes from the
-            # state-file trade history, not from the result snapshot, so it's
-            # still meaningful.
-            for leg_key, agg_key in (("kr", "HYBRID_VB_KR"), ("us", "HYBRID_VB_US")):
+            # Two independent legs (KR + US). Each leg gets its own enrichment.
+            kr_r = realized_by_key.get("HYBRID_VB_KR", {})
+            us_r = realized_by_key.get("HYBRID_VB_US", {})
+
+            for leg_key, leg_r, leg_budget_key in (
+                ("kr", kr_r, "budget_kr"),
+                ("us", us_r, "budget_us"),
+            ):
                 leg = s.get(leg_key)
                 if not isinstance(leg, dict):
                     leg = {}
-                leg_realized = realized_by_key.get(agg_key, {})
-                leg["unrealized_profit"] = leg.get("profit", 0)
-                leg["realized_profit_ytd"] = leg_realized.get("realized_ytd", 0)
-                leg["realized_trades"] = leg_realized.get("trades", 0)
+                _enrich(leg, leg.get("profit", 0), s.get(leg_budget_key, 0), leg_r)
                 s[leg_key] = leg
-            # Roll up the two legs for the top-level card total.
-            s["realized_profit_ytd_kr"] = realized_by_key.get("HYBRID_VB_KR", {}).get("realized_ytd", 0)
-            s["realized_profit_ytd_us"] = realized_by_key.get("HYBRID_VB_US", {}).get("realized_ytd", 0)
-            s["realized_trades"] = (
-                realized_by_key.get("HYBRID_VB_KR", {}).get("trades", 0)
-                + realized_by_key.get("HYBRID_VB_US", {}).get("trades", 0)
-            )
+
+            # Roll-up cycles + realized for header-style display if needed
+            s["realized_trades"] = (kr_r.get("trades_ytd", 0) or 0) + (us_r.get("trades_ytd", 0) or 0)
+            s["cycles_ytd"] = s["realized_trades"]
+            # MDD for hybrid: show worst of the two (more conservative)
+            mdds = [m for m in (kr_r.get("mdd_pct"), us_r.get("mdd_pct")) if m is not None]
+            s["mdd_pct"] = min(mdds) if mdds else None
         else:
             agg_key = REALIZED_KEY_BY_ID.get(s.get("id"))
             r = realized_by_key.get(agg_key, {}) if agg_key else {}
-            s["realized_profit_ytd"] = r.get("realized_ytd", 0)
-            s["realized_trades"] = r.get("trades", 0)
+            _enrich(s, s.get("profit", 0), s.get("budget", 0), r)
 
     # ── Save daily equity snapshot ──
     _save_equity_snapshot(strategies)

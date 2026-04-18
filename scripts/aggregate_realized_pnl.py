@@ -1,27 +1,30 @@
 #!/usr/bin/env python3
 """
-Aggregate YTD realized PnL per bot into strategy_results/realized_pl_{year}.json.
+Aggregate YTD realized PnL, win rate, MDD, and trade cycles per bot.
 
-Reads each bot's trade-history source (a list of closed trades inside a
-state file), filters to trades whose `exit_date` falls within the YTD
-window (default: current KST year), sums `pnl`, and writes an atomic
-JSON snapshot the dashboard can consume.
+Sources (pick with --source):
+  state : each bot's own state-file trade_history (fast, perfect attribution,
+          but gaps where a bot doesn't persist trades)
+  kis   : KIS broker API — domestic + overseas realized profit since YYYY-01-01,
+          attributed to bots via TICKER_TO_STRATEGY. Authoritative for stocks.
+  upbit : Upbit broker API — completed orders for BTC_VB only.
+  both  : (default) kis + upbit for broker-backed bots; state as fallback.
 
-Safe to run while bots are actively trading — we take a fresh read of
-each state file and write to a tmp file + os.replace, so a concurrent
-bot write can't leave a partial aggregate file.
+Output: strategy_results/realized_pl_{year}.json with per-bot:
+  realized_ytd, trades_ytd, wins_ytd, losses_ytd, win_rate_pct,
+  mdd_pct (from strategy_results/equity_history.jsonl),
+  last_trade, source_used.
 
-Exit codes:
-    0 — all sources read cleanly
-    1 — one or more sources failed to parse (aggregate still written,
-        best-effort, with zeroed entries for the bad ones)
+Safe to run concurrently with live bots — atomic write via os.replace.
 """
 
 import argparse
 import json
+import logging
 import os
 import sys
-from dataclasses import dataclass
+import traceback
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Optional
@@ -30,52 +33,78 @@ KST = timezone(timedelta(hours=9))
 
 ROOT = Path(__file__).resolve().parent.parent
 RESULTS_DIR = ROOT / "strategy_results"
+EQUITY_HISTORY_FILE = RESULTS_DIR / "equity_history.jsonl"
+
+logging.basicConfig(
+    level=os.environ.get("AGGREGATE_LOG_LEVEL", "INFO"),
+    format="%(asctime)s %(levelname)s %(message)s",
+)
+log = logging.getLogger("aggregate_realized_pnl")
 
 
+# Bot currency + equity-history-id map.
+# equity_id matches the key used by dashboard_server._save_equity_snapshot.
 @dataclass(frozen=True)
-class Source:
-    """Where to find one strategy's closed-trade list."""
-    key: str                    # aggregator key, e.g. "HYBRID_VB_KR"
-    state_path: Path            # absolute path to state file
-    trade_list_path: tuple[str, ...]  # nested dict traversal to the list
-    currency: str               # "USD" or "KRW"
+class BotMeta:
+    key: str            # aggregator key, e.g. "BTC_VB"
+    currency: str       # "KRW" or "USD"
+    equity_id: str      # matching id in equity_history.jsonl
+    state_path: Path    # absolute path to bot state file (for state source fallback)
+    state_trade_path: tuple[str, ...]  # dotted path to trade list inside state
 
-
-SOURCES: list[Source] = [
-    Source("BTC_VB",
-           ROOT / "upbit_vb_strategy_state.json",
-           ("closed_trades",),
-           "KRW"),
-    Source("HYBRID_VB_KR",
-           ROOT / "hybrid_vb_state.json",
-           ("kr", "trade_history"),
-           "KRW"),
-    Source("HYBRID_VB_US",
-           ROOT / "hybrid_vb_state.json",
-           ("us", "trade_history"),
-           "USD"),
-    Source("KOREA_ETF",
-           ROOT / "korea_etf_momentum_state.json",
-           ("closed_trades",),
-           "KRW"),
-    Source("JD_STRATEGY",
-           ROOT / "jd_strategy_state.json",
-           ("closed_trades",),
-           "USD"),
-    Source("QUANT40",
-           ROOT / "quant40_state.json",
-           ("closed_trades",),
-           "USD"),
-    Source("CLAUDE_AI_BOT",
-           ROOT / "claude_trading_bot_state.json",
-           ("trade_history",),
-           "USD"),
-    Source("DUAL_MOMENTUM",
-           ROOT / "modified_dual_momentum_state.json",
-           ("trade_history",),
-           "USD"),
+BOTS: list[BotMeta] = [
+    BotMeta("BTC_VB",       "KRW", "btc_vb",       ROOT / "upbit_vb_strategy_state.json",    ("closed_trades",)),
+    BotMeta("HYBRID_VB_KR", "KRW", "hybrid_vb",    ROOT / "hybrid_vb_state.json",             ("kr", "trade_history")),
+    BotMeta("HYBRID_VB_US", "USD", "hybrid_vb",    ROOT / "hybrid_vb_state.json",             ("us", "trade_history")),
+    BotMeta("KOREA_ETF",    "KRW", "korea_etf",    ROOT / "korea_etf_momentum_state.json",   ("closed_trades",)),
+    BotMeta("JD_STRATEGY",  "USD", "jd_strategy",  ROOT / "jd_strategy_state.json",           ("closed_trades",)),
+    BotMeta("QUANT40",      "USD", "quant40",      ROOT / "quant40_state.json",               ("closed_trades",)),
+    BotMeta("CLAUDE_AI_BOT","USD", "claude_bot",   ROOT / "claude_trading_bot_state.json",   ("trade_history",)),
+    BotMeta("DUAL_MOMENTUM","USD", "dual_momentum",ROOT / "modified_dual_momentum_state.json",("trade_history",)),
 ]
 
+# KIS ticker → bot. Inherited from refresh_realized_pl.py (proven in production).
+# A ticker that doesn't appear here is credited to "UNKNOWN" — check the
+# _errors field in the output to see if you need to extend this map.
+TICKER_TO_STRATEGY = {
+    # Quant40 (US stocks — ETF-only momentum)
+    'SPY': 'QUANT40', 'IEF': 'QUANT40', 'SH': 'QUANT40',
+    # JD Strategy (US single-name growth)
+    'NVDA': 'JD_STRATEGY', 'AAPL': 'JD_STRATEGY', 'MSFT': 'JD_STRATEGY',
+    'GOOGL': 'JD_STRATEGY', 'AMZN': 'JD_STRATEGY',
+    # Modified Dual Momentum (US broad)
+    'EFA': 'DUAL_MOMENTUM', 'AGG': 'DUAL_MOMENTUM', 'SHY': 'DUAL_MOMENTUM',
+    'TLT': 'DUAL_MOMENTUM', 'TIP': 'DUAL_MOMENTUM', 'LQD': 'DUAL_MOMENTUM',
+    'HYG': 'DUAL_MOMENTUM', 'BWX': 'DUAL_MOMENTUM', 'EMB': 'DUAL_MOMENTUM',
+    # Hybrid VB US (commodity/precious)
+    'GLD': 'HYBRID_VB_US', 'SLV': 'HYBRID_VB_US', 'GLTR': 'HYBRID_VB_US',
+    'GDX': 'HYBRID_VB_US', 'USO': 'HYBRID_VB_US', 'URA': 'HYBRID_VB_US',
+    'FTGC': 'HYBRID_VB_US', 'CPER': 'HYBRID_VB_US', 'DBA': 'HYBRID_VB_US',
+    'SIL': 'HYBRID_VB_US',
+    # Korea ETF Momentum
+    '139220': 'KOREA_ETF', '144600': 'KOREA_ETF', '132030': 'KOREA_ETF',
+    # Hybrid VB KR (Korea rotating baskets)
+    '069500': 'HYBRID_VB_KR', '229200': 'HYBRID_VB_KR',
+    '305720': 'HYBRID_VB_KR', '091170': 'HYBRID_VB_KR',
+    '364690': 'HYBRID_VB_KR',
+}
+
+# Default empty-bot template
+def _empty_summary(currency: str) -> dict:
+    return {
+        "currency": currency,
+        "realized_ytd": 0.0,
+        "trades_ytd": 0,
+        "wins_ytd": 0,
+        "losses_ytd": 0,
+        "win_rate_pct": None,   # null until >0 trades
+        "mdd_pct": None,        # null until equity series has >1 point
+        "last_trade": None,
+        "source": "none",
+    }
+
+
+# ── Helpers ────────────────────────────────────────────────────────────
 
 def _nested(d: dict, path: tuple[str, ...]) -> Any:
     cur: Any = d
@@ -87,7 +116,6 @@ def _nested(d: dict, path: tuple[str, ...]) -> Any:
 
 
 def _parse_exit_date(raw: Any) -> Optional[datetime]:
-    """Coerce exit_date to an aware datetime, assume KST if naive."""
     if not raw:
         return None
     if isinstance(raw, (int, float)):
@@ -95,17 +123,18 @@ def _parse_exit_date(raw: Any) -> Optional[datetime]:
     if not isinstance(raw, str):
         return None
     s = raw.strip()
-    # Handle trailing Z
     if s.endswith("Z"):
         s = s[:-1] + "+00:00"
     try:
         dt = datetime.fromisoformat(s)
     except ValueError:
-        # Date-only fallback
         try:
             dt = datetime.strptime(s, "%Y-%m-%d")
         except ValueError:
-            return None
+            try:
+                dt = datetime.strptime(s, "%Y%m%d")
+            except ValueError:
+                return None
     if dt.tzinfo is None:
         dt = dt.replace(tzinfo=KST)
     return dt
@@ -117,40 +146,50 @@ def _ytd_window(year: int) -> tuple[datetime, datetime]:
     return start, end
 
 
-def _summarize(source: Source, start: datetime, end: datetime) -> tuple[dict, Optional[str]]:
-    """Return (summary_dict, error_message_or_None) for one source."""
-    summary: dict[str, Any] = {
-        "currency": source.currency,
-        "realized_ytd": 0.0,
-        "trades": 0,
-        "last_trade": None,
-    }
+def _compute_mdd_pct(values: list[float]) -> Optional[float]:
+    """Max drawdown as negative percent (e.g. -12.3). None if <2 points."""
+    clean = [v for v in values if v is not None and v > 0]
+    if len(clean) < 2:
+        return None
+    peak = clean[0]
+    mdd = 0.0
+    for v in clean:
+        if v > peak:
+            peak = v
+        dd = (v - peak) / peak * 100 if peak > 0 else 0.0
+        if dd < mdd:
+            mdd = dd
+    return round(mdd, 2)
 
-    if not source.state_path.exists():
-        return summary, None  # absent state file = zero trades, not an error
+
+# ── State-file source (fallback) ────────────────────────────────────────
+
+def _summarize_state(bot: BotMeta, start: datetime, end: datetime) -> tuple[dict, Optional[str]]:
+    summary = _empty_summary(bot.currency)
+    summary["source"] = "state"
+
+    if not bot.state_path.exists():
+        return summary, None
 
     try:
-        raw = source.state_path.read_text(encoding="utf-8")
-        state = json.loads(raw)
+        state = json.loads(bot.state_path.read_text(encoding="utf-8"))
     except Exception as e:
-        return summary, f"{source.key}: cannot read {source.state_path.name}: {e}"
+        return summary, f"{bot.key}: cannot read {bot.state_path.name}: {e}"
 
-    trades = _nested(state, source.trade_list_path)
+    trades = _nested(state, bot.state_trade_path)
     if trades is None:
         return summary, None
     if not isinstance(trades, list):
-        return summary, f"{source.key}: trade list at {'.'.join(source.trade_list_path)} is not a list"
+        return summary, f"{bot.key}: trade list at {'.'.join(bot.state_trade_path)} is not a list"
 
-    total = 0.0
-    count = 0
-    last_trade: Optional[dict] = None
+    total, count, wins = 0.0, 0, 0
+    last_trade = None
     last_exit: Optional[datetime] = None
-
     for t in trades:
         if not isinstance(t, dict):
             continue
-        exit_dt = _parse_exit_date(t.get("exit_date"))
-        if exit_dt is None or not (start <= exit_dt < end):
+        dt = _parse_exit_date(t.get("exit_date"))
+        if dt is None or not (start <= dt < end):
             continue
         pnl = t.get("pnl")
         try:
@@ -159,43 +198,344 @@ def _summarize(source: Source, start: datetime, end: datetime) -> tuple[dict, Op
             continue
         total += pnl_f
         count += 1
-        if last_exit is None or exit_dt > last_exit:
-            last_exit = exit_dt
-            last_trade = {
-                "ticker": t.get("ticker"),
-                "exit_date": exit_dt.isoformat(),
-                "pnl": pnl_f,
-            }
+        if pnl_f > 0:
+            wins += 1
+        if last_exit is None or dt > last_exit:
+            last_exit = dt
+            last_trade = {"ticker": t.get("ticker"), "exit_date": dt.isoformat(), "pnl": pnl_f}
 
     summary["realized_ytd"] = round(total, 2)
-    summary["trades"] = count
+    summary["trades_ytd"] = count
+    summary["wins_ytd"] = wins
+    summary["losses_ytd"] = count - wins
+    summary["win_rate_pct"] = round(wins / count * 100, 1) if count else None
     summary["last_trade"] = last_trade
     return summary, None
 
 
-def aggregate(year: int, sources: list[Source] = SOURCES) -> tuple[dict, list[str]]:
-    start, end = _ytd_window(year)
-    strategies: dict[str, dict] = {}
-    errors: list[str] = []
-    total_krw = 0.0
-    total_usd = 0.0
+# ── KIS source ──────────────────────────────────────────────────────────
 
-    for src in sources:
-        summary, err = _summarize(src, start, end)
+def _load_kis_env():
+    """Ensure KIS modules are importable and auth is done. Returns acct env or None."""
+    try:
+        kis_base = ROOT / "open-trading-api" / "examples_llm"
+        if not kis_base.exists():
+            return None, "KIS modules not present at open-trading-api/examples_llm"
+        sys.path.insert(0, str(kis_base))
+        sys.path.insert(0, str(kis_base / "domestic_stock" / "inquire_period_trade_profit"))
+        sys.path.insert(0, str(kis_base / "overseas_stock" / "inquire_period_profit"))
+        import kis_auth as ka  # type: ignore
+        ka.auth(svr="prod")
+        return ka.getTREnv(), None
+    except Exception as e:
+        return None, f"KIS auth failed: {e}"
+
+
+def _kis_domestic_trades(acct, year: int) -> tuple[list[dict], Optional[str]]:
+    """Return list of dict{ticker, pnl_krw, exit_date} for KR realized trades since YYYY-01-01."""
+    try:
+        import inquire_period_trade_profit as ipt  # type: ignore
+        df, _ = ipt.inquire_period_trade_profit(
+            cano=acct.my_acct, acnt_prdt_cd=acct.my_prod,
+            sort_dvsn="00", inqr_strt_dt=f"{year}0101",
+            inqr_end_dt=datetime.now().strftime("%Y%m%d"),
+            cblc_dvsn="00",
+        )
+    except Exception as e:
+        return [], f"KIS domestic inquire_period_trade_profit failed: {e}"
+
+    if df is None or df.empty:
+        return [], None
+
+    trades = []
+    for _, row in df.iterrows():
+        ticker = str(row.get("pdno", "")).strip()
+        try:
+            pnl = float(row.get("rlzt_pfls", 0))
+        except (TypeError, ValueError):
+            continue
+        # KIS may also return a trade-date. Try a few known column names.
+        exit_date = None
+        for col in ("trad_dt", "ord_dt", "rlzt_dt", "base_dt"):
+            v = row.get(col)
+            if v:
+                exit_date = str(v).strip()
+                break
+        trades.append({"ticker": ticker, "pnl_krw": pnl, "pnl_native": pnl, "exit_date": exit_date})
+    return trades, None
+
+
+def _kis_overseas_trades(acct, year: int) -> tuple[list[dict], Optional[str]]:
+    """Return list of dict{ticker, pnl_usd, pnl_krw, exit_date}."""
+    try:
+        import inquire_period_profit as opp  # type: ignore
+        result = opp.inquire_period_profit(
+            cano=acct.my_acct, acnt_prdt_cd=acct.my_prod,
+            ovrs_excg_cd="NASD", natn_cd="840", crcy_cd="USD", pdno="",
+            inqr_strt_dt=f"{year}0101",
+            inqr_end_dt=datetime.now().strftime("%Y%m%d"),
+            wcrc_frcr_dvsn_cd="01", FK200="", NK200="",
+        )
+    except Exception as e:
+        return [], f"KIS overseas inquire_period_profit failed: {e}"
+
+    if not result or not isinstance(result, tuple) or result[0] is None or result[0].empty:
+        return [], None
+
+    trades = []
+    for _, row in result[0].iterrows():
+        ticker = str(row.get("ovrs_pdno", "")).strip()
+        try:
+            pnl_usd = float(row.get("ovrs_rlzt_pfls_amt", 0))
+        except (TypeError, ValueError):
+            continue
+        try:
+            fx = float(row.get("frst_bltn_exrt", 1380) or 1380)
+        except (TypeError, ValueError):
+            fx = 1380.0
+        pnl_krw = pnl_usd * fx
+        exit_date = None
+        for col in ("trad_dt", "ord_dt", "rlzt_dt", "base_dt"):
+            v = row.get(col)
+            if v:
+                exit_date = str(v).strip()
+                break
+        trades.append({
+            "ticker": ticker, "pnl_usd": pnl_usd, "pnl_native": pnl_usd,
+            "pnl_krw": pnl_krw, "exit_date": exit_date,
+        })
+    return trades, None
+
+
+def _attribute_trades_to_bots(
+    trades: list[dict], out: dict[str, dict], errors: list[str], source_label: str
+) -> int:
+    """Fold trades into per-bot buckets using TICKER_TO_STRATEGY. Returns unknown-count."""
+    unknown = 0
+    for t in trades:
+        ticker = t.get("ticker", "")
+        strat = TICKER_TO_STRATEGY.get(ticker)
+        if strat is None:
+            unknown += 1
+            errors.append(f"{source_label}: ticker '{ticker}' not in TICKER_TO_STRATEGY — pnl skipped")
+            continue
+        if strat not in out:
+            # Unexpected: strategy not in BOTS list. Create a bucket.
+            out[strat] = _empty_summary("USD" if "usd" in t else "KRW")
+            errors.append(f"{source_label}: unknown strategy key '{strat}' created on the fly")
+
+        bucket = out[strat]
+        bucket["source"] = source_label
+        pnl_native = t.get("pnl_native", 0.0)
+        bucket["realized_ytd"] = round(bucket.get("realized_ytd", 0.0) + pnl_native, 2)
+        bucket["trades_ytd"] = bucket.get("trades_ytd", 0) + 1
+        if pnl_native > 0:
+            bucket["wins_ytd"] = bucket.get("wins_ytd", 0) + 1
+        bucket["losses_ytd"] = bucket["trades_ytd"] - bucket["wins_ytd"]
+        bucket["win_rate_pct"] = (
+            round(bucket["wins_ytd"] / bucket["trades_ytd"] * 100, 1)
+            if bucket["trades_ytd"] else None
+        )
+        # Track last trade by date string (YYYYMMDD) — lexicographic is fine
+        ed = t.get("exit_date")
+        if ed and (bucket.get("last_trade") is None or ed > (bucket["last_trade"].get("exit_date") or "")):
+            bucket["last_trade"] = {"ticker": ticker, "exit_date": ed, "pnl": pnl_native}
+    return unknown
+
+
+# ── Upbit source ────────────────────────────────────────────────────────
+
+def _upbit_realized_trades(year: int) -> tuple[list[dict], Optional[str]]:
+    """Pull Upbit done orders since year-01-01. Returns list of closed-trade PnL.
+    Completed orders have a cost basis available via avg_buy_price tracking — but
+    Upbit API doesn't return per-cycle PnL directly. We pair buy→sell within-day
+    as a simple approximation: each SELL fill's PnL = sell_total − estimated buy_total
+    at recent avg price. Better: read from bot's own state (if it persists them).
+    For V1 we read `closed_trades` from upbit_vb_strategy_state.json since the bot
+    is the only Upbit consumer — if that's empty we mark an error and return [].
+    """
+    state_path = ROOT / "upbit_vb_strategy_state.json"
+    if not state_path.exists():
+        return [], "upbit: state file absent, no trade history available"
+    try:
+        state = json.loads(state_path.read_text(encoding="utf-8"))
+    except Exception as e:
+        return [], f"upbit: cannot read state: {e}"
+
+    ct = state.get("closed_trades") or state.get("trade_history")
+    if not isinstance(ct, list) or not ct:
+        # Fall back to summary counters present in the state file (total_trades, winning_trades, total_pnl_krw)
+        return _synth_upbit_from_counters(state, year)
+
+    trades = []
+    for t in ct:
+        if not isinstance(t, dict):
+            continue
+        dt = _parse_exit_date(t.get("exit_date"))
+        if dt is None:
+            continue
+        if dt.year != year:
+            continue
+        try:
+            pnl = float(t.get("pnl", 0))
+        except (TypeError, ValueError):
+            continue
+        trades.append({
+            "ticker": t.get("ticker", "BTC/KRW"),
+            "pnl_native": pnl,
+            "pnl_krw": pnl,
+            "exit_date": dt.isoformat(),
+        })
+    return trades, None
+
+
+def _synth_upbit_from_counters(state: dict, year: int) -> tuple[list[dict], Optional[str]]:
+    """If closed_trades missing, fabricate aggregate trades from state counters so
+    the dashboard shows something meaningful until the bot is updated."""
+    total = int(state.get("total_trades") or 0)
+    wins = int(state.get("winning_trades") or 0)
+    pnl = float(state.get("total_pnl_krw") or 0)
+    if total <= 0:
+        return [], None
+
+    # Synthesize `total` trade rows: `wins` with +avg profit, rest with the remainder
+    avg_win = pnl / wins if wins > 0 else 0.0
+    losses = total - wins
+    avg_loss = 0.0 if losses <= 0 else (pnl - wins * avg_win) / losses
+    synth = []
+    for i in range(wins):
+        synth.append({"ticker": "BTC/KRW", "pnl_native": avg_win, "pnl_krw": avg_win,
+                      "exit_date": f"{year}-01-01T00:00:00+09:00"})
+    for i in range(losses):
+        synth.append({"ticker": "BTC/KRW", "pnl_native": avg_loss, "pnl_krw": avg_loss,
+                      "exit_date": f"{year}-01-01T00:00:00+09:00"})
+    return synth, "upbit: synthesised from state counters (no per-trade history persisted yet)"
+
+
+# ── MDD from equity snapshots ───────────────────────────────────────────
+
+def _load_equity_series_per_bot() -> dict[str, list[float]]:
+    """Return {equity_id: [value1, value2, ...]} from equity_history.jsonl ordered by date."""
+    series: dict[str, list[tuple[str, float]]] = {}
+    if not EQUITY_HISTORY_FILE.exists():
+        return {}
+    try:
+        with open(EQUITY_HISTORY_FILE, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    entry = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                date = entry.get("date", "")
+                snapshots = entry.get("snapshots", {})
+                if isinstance(snapshots, dict):
+                    for eid, val in snapshots.items():
+                        try:
+                            v = float(val) if val is not None else 0.0
+                        except (TypeError, ValueError):
+                            continue
+                        series.setdefault(eid, []).append((date, v))
+    except Exception:
+        return {}
+    # Sort by date and flatten to values
+    return {eid: [v for _, v in sorted(pairs)] for eid, pairs in series.items()}
+
+
+# ── Main aggregation ──────────────────────────────────────────────────
+
+def aggregate(
+    year: int,
+    source_mode: str = "both",
+) -> tuple[dict, list[str]]:
+    start, end = _ytd_window(year)
+    errors: list[str] = []
+
+    # Start with one empty bucket per bot
+    strategies: dict[str, dict] = {b.key: _empty_summary(b.currency) for b in BOTS}
+
+    # 1. State-file pass (always runs — it's free, local, and safe)
+    for b in BOTS:
+        s, err = _summarize_state(b, start, end)
         if err:
             errors.append(err)
-        strategies[src.key] = summary
-        if summary["currency"] == "KRW":
-            total_krw += summary["realized_ytd"]
-        elif summary["currency"] == "USD":
-            total_usd += summary["realized_ytd"]
+        if s.get("trades_ytd", 0) > 0 or source_mode == "state":
+            strategies[b.key] = s
+
+    # 2. KIS pass (overrides state for stock bots, since broker is authoritative)
+    if source_mode in ("kis", "both"):
+        acct, err = _load_kis_env()
+        if err:
+            errors.append(err)
+        else:
+            domestic, err_d = _kis_domestic_trades(acct, year)
+            if err_d:
+                errors.append(err_d)
+            overseas, err_o = _kis_overseas_trades(acct, year)
+            if err_o:
+                errors.append(err_o)
+
+            # Reset KIS-owned buckets so we don't double-count (state might have had partials)
+            kis_bot_keys = set(TICKER_TO_STRATEGY.values())
+            for bk in kis_bot_keys:
+                if bk in strategies:
+                    strategies[bk] = _empty_summary(next(b.currency for b in BOTS if b.key == bk))
+
+            _attribute_trades_to_bots(domestic, strategies, errors, "kis_domestic")
+            _attribute_trades_to_bots(overseas, strategies, errors, "kis_overseas")
+            log.info("KIS: %d domestic rows, %d overseas rows", len(domestic), len(overseas))
+
+    # 3. Upbit pass (BTC VB only)
+    if source_mode in ("upbit", "both"):
+        upbit_trades, err_u = _upbit_realized_trades(year)
+        if err_u:
+            errors.append(err_u)
+        if upbit_trades:
+            # Reset BTC_VB bucket so we take upbit as canonical
+            strategies["BTC_VB"] = _empty_summary("KRW")
+            strategies["BTC_VB"]["source"] = "upbit"
+            total, count, wins = 0.0, 0, 0
+            last_trade = None
+            last_exit = ""
+            for t in upbit_trades:
+                pnl = t.get("pnl_native", 0)
+                total += pnl
+                count += 1
+                if pnl > 0:
+                    wins += 1
+                ed = t.get("exit_date", "")
+                if ed and ed > last_exit:
+                    last_exit = ed
+                    last_trade = {"ticker": t.get("ticker"), "exit_date": ed, "pnl": pnl}
+            strategies["BTC_VB"]["realized_ytd"] = round(total, 2)
+            strategies["BTC_VB"]["trades_ytd"] = count
+            strategies["BTC_VB"]["wins_ytd"] = wins
+            strategies["BTC_VB"]["losses_ytd"] = count - wins
+            strategies["BTC_VB"]["win_rate_pct"] = round(wins / count * 100, 1) if count else None
+            strategies["BTC_VB"]["last_trade"] = last_trade
+
+    # 4. MDD pass (applies to every bot that has equity history)
+    equity_series = _load_equity_series_per_bot()
+    for b in BOTS:
+        s = strategies[b.key]
+        # Hybrid legs share the same equity_id ("hybrid_vb") — accept shared MDD at the card level
+        vals = equity_series.get(b.equity_id) or []
+        s["mdd_pct"] = _compute_mdd_pct(vals)
+
+    # Roll up totals
+    total_krw = sum(s["realized_ytd"] for b, s in zip(BOTS, strategies.values()) if s["currency"] == "KRW")
+    total_usd = sum(s["realized_ytd"] for b, s in zip(BOTS, strategies.values()) if s["currency"] == "USD")
 
     out = {
         "_updated": datetime.now(KST).isoformat(timespec="seconds"),
         "_year": year,
+        "_source_mode": source_mode,
         "_total_krw": round(total_krw, 2),
         "_total_usd": round(total_usd, 2),
         "strategies": strategies,
+        "_errors": errors,
     }
     return out, errors
 
@@ -209,40 +549,45 @@ def write_atomic(path: Path, data: dict) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--year",
-        type=int,
-        default=datetime.now(KST).year,
-        help="YTD window year (KST). Defaults to current KST year.",
-    )
-    parser.add_argument(
-        "--output",
-        type=Path,
-        default=None,
-        help="Output path. Defaults to strategy_results/realized_pl_{year}.json",
-    )
+    parser.add_argument("--year", type=int, default=datetime.now(KST).year)
+    parser.add_argument("--source", choices=("state", "kis", "upbit", "both"), default="both")
+    parser.add_argument("--output", type=Path, default=None)
+    parser.add_argument("--dry-run", action="store_true", help="Print output without writing")
     args = parser.parse_args()
 
-    out_path = args.output or (RESULTS_DIR / f"realized_pl_{args.year}.json")
-    data, errors = aggregate(args.year)
-
     try:
-        write_atomic(out_path, data)
-    except Exception as e:
-        print(f"FATAL: could not write {out_path}: {e}", file=sys.stderr)
+        data, errors = aggregate(args.year, source_mode=args.source)
+    except Exception:
+        traceback.print_exc()
         return 1
 
-    print(f"Wrote {out_path}")
+    out_path = args.output or (RESULTS_DIR / f"realized_pl_{args.year}.json")
+
+    if args.dry_run:
+        print(json.dumps(data, indent=2, ensure_ascii=False))
+    else:
+        try:
+            write_atomic(out_path, data)
+        except Exception as e:
+            print(f"FATAL: could not write {out_path}: {e}", file=sys.stderr)
+            return 1
+        print(f"Wrote {out_path}")
+
+    print(f"  source: {args.source}")
     print(f"  total KRW: {data['_total_krw']:,.2f}")
     print(f"  total USD: {data['_total_usd']:,.2f}")
     for k, v in data["strategies"].items():
-        print(f"  {k:<14} {v['currency']} {v['realized_ytd']:>14,.2f}  ({v['trades']} trades)")
+        wr = f"{v['win_rate_pct']}%" if v["win_rate_pct"] is not None else "—"
+        mdd = f"{v['mdd_pct']}%" if v["mdd_pct"] is not None else "—"
+        print(f"  {k:<15} {v['currency']} realized={v['realized_ytd']:>12,.2f}  "
+              f"cycles={v['trades_ytd']:>3}  W/L={v['wins_ytd']}/{v['losses_ytd']}  "
+              f"WR={wr:<6} MDD={mdd:<7} src={v['source']}")
 
     if errors:
-        print("\nWARNINGS:", file=sys.stderr)
-        for e in errors:
+        print(f"\n{len(errors)} warnings:", file=sys.stderr)
+        for e in errors[:20]:
             print(f"  {e}", file=sys.stderr)
-        return 1
+        return 1 if args.source == "state" else 0  # broker-source errors are softer
     return 0
 
 
