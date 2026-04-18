@@ -338,6 +338,14 @@ elif $is_usa_time; then
             sleep 300
             echo "Generating integrated portfolio summary..."
             $VENV_PYTHON "$SCRIPT_DIR/portfolio_summary.py" 2>>"$SCRIPT_DIR/portfolio_summary_stderr.log"
+
+            # Refresh realized-PnL YTD aggregate (per-bot → strategy_results/realized_pl_YYYY.json).
+            # Reads each bot's trade-history state file; atomic write, safe during live trading.
+            echo "Aggregating realized PnL..."
+            $VENV_PYTHON "$SCRIPT_DIR/scripts/aggregate_realized_pnl.py" \
+                >>"$SCRIPT_DIR/aggregate_realized_pnl.log" \
+                2>>"$SCRIPT_DIR/aggregate_realized_pnl_stderr.log" \
+                || echo "WARN: realized PnL aggregator exited non-zero (see aggregate_realized_pnl_stderr.log)"
         ) &
     fi
 else # This block handles the weekend.
