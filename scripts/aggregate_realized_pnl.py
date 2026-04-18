@@ -72,7 +72,7 @@ SOURCES: list[Source] = [
            "USD"),
     Source("DUAL_MOMENTUM",
            ROOT / "modified_dual_momentum_state.json",
-           ("closed_trades",),
+           ("trade_history",),
            "USD"),
 ]
 
