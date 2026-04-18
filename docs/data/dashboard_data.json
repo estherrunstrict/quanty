@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-18 22:23 KST",
+  "updated_at": "2026-04-18 20:55 KST",
   "portfolio": {
     "total_value_krw": 83532208,
     "original_deposit_krw": 75714217,
@@ -11,8 +11,8 @@
     "exchange_rate": 1472.6
   },
   "meta": {
-    "timestamp": "2026-04-18T22:23:29.141823+09:00",
-    "kst": "2026-04-18 22:23 KST",
+    "timestamp": "2026-04-18T20:55:15.925951+09:00",
+    "kst": "2026-04-18 20:55 KST",
     "equity_start": "2026-01-01"
   },
   "strategies": [
@@ -36,10 +36,7 @@
         "ma_period": 5,
         "equity_days": 34
       },
-      "stale_hours": 13.388998904691801,
-      "unrealized_profit": 59747.316229632124,
-      "realized_profit_ytd": 0.0,
-      "realized_trades": 0
+      "stale_hours": 11.918661374383502
     },
     {
       "id": "korea_etf",
@@ -67,11 +64,8 @@
         "target_ticker": "139220",
         "rebalance_day": false
       },
-      "stale_hours": 37.3858570432663,
-      "timestamp": "2026-04-17T09:00:20.048692+09:00",
-      "unrealized_profit": 3018570.0,
-      "realized_profit_ytd": 0.0,
-      "realized_trades": 0
+      "stale_hours": 35.915519505209396,
+      "timestamp": "2026-04-17T09:00:20.048692+09:00"
     },
     {
       "id": "quant40",
@@ -100,11 +94,8 @@
         "signal": "\u26aa Neutral (2/4)",
         "regime": ""
       },
-      "stale_hours": 23.889186299509472,
-      "timestamp": "2026-04-17T22:30:08.063521",
-      "unrealized_profit": 1087.9022,
-      "realized_profit_ytd": 0.0,
-      "realized_trades": 0
+      "stale_hours": 22.418848765889802,
+      "timestamp": "2026-04-17T22:30:08.063521"
     },
     {
       "id": "jd_strategy",
@@ -134,11 +125,8 @@
         "regime": "EASING",
         "is_holding": true
       },
-      "stale_hours": 23.87953589141369,
-      "timestamp": "2026-04-17T22:30:42.500497",
-      "unrealized_profit": 102.091475,
-      "realized_profit_ytd": 0.0,
-      "realized_trades": 0
+      "stale_hours": 22.40919835779402,
+      "timestamp": "2026-04-17T22:30:42.500497"
     },
     {
       "id": "dual_momentum",
@@ -170,11 +158,8 @@
         "mode_label": "offensive",
         "rebalance_day": false
       },
-      "stale_hours": 23.871481619146135,
-      "timestamp": "2026-04-17T22:31:11.801153",
-      "unrealized_profit": 0,
-      "realized_profit_ytd": 0.0,
-      "realized_trades": 0
+      "stale_hours": 22.4011440677113,
+      "timestamp": "2026-04-17T22:31:11.801153"
     },
     {
       "id": "hybrid_vb",
@@ -240,10 +225,7 @@
         },
         "heat": 0.010407321403552803,
         "dd": 0.0,
-        "open_positions": 4,
-        "unrealized_profit": 154590.99749999994,
-        "realized_profit_ytd": 46701.0,
-        "realized_trades": 2
+        "open_positions": 4
       },
       "us": {
         "value": 0,
@@ -264,10 +246,7 @@
         },
         "heat": 0,
         "dd": 0,
-        "open_positions": 0,
-        "unrealized_profit": 0,
-        "realized_profit_ytd": 0.0,
-        "realized_trades": 0
+        "open_positions": 0
       },
       "holdings": [
         {
@@ -348,11 +327,7 @@
         },
         "us": {}
       },
-      "stale_hours": 37.3704501489136,
-      "unrealized_profit": 0,
-      "realized_profit_ytd_kr": 46701.0,
-      "realized_profit_ytd_us": 0.0,
-      "realized_trades": 2
+      "stale_hours": 35.900112587544655
     },
     {
       "id": "claude_bot",
@@ -444,11 +419,8 @@
         "trend_pass_count": 13,
         "vcp_count": 0
       },
-      "stale_hours": 23.85652209420999,
-      "timestamp": "2026-04-17T22:32:05.656948",
-      "unrealized_profit": 0,
-      "realized_profit_ytd": 0.0,
-      "realized_trades": 0
+      "stale_hours": 22.386184502243996,
+      "timestamp": "2026-04-17T22:32:05.656948"
     }
   ],
   "equity_series": {
@@ -652,64 +624,12 @@
     ]
   },
   "realized_pl": {
-    "_updated": "2026-04-18T22:19:44+09:00",
-    "_year": 2026,
-    "_total_krw": 46701.0,
-    "_total_usd": 0.0,
-    "strategies": {
-      "BTC_VB": {
-        "currency": "KRW",
-        "realized_ytd": 0.0,
-        "trades": 0,
-        "last_trade": null
-      },
-      "HYBRID_VB_KR": {
-        "currency": "KRW",
-        "realized_ytd": 46701.0,
-        "trades": 2,
-        "last_trade": {
-          "ticker": "305720",
-          "exit_date": "2026-04-13T09:01:04.224999+09:00",
-          "pnl": 26793.0
-        }
-      },
-      "HYBRID_VB_US": {
-        "currency": "USD",
-        "realized_ytd": 0.0,
-        "trades": 0,
-        "last_trade": null
-      },
-      "KOREA_ETF": {
-        "currency": "KRW",
-        "realized_ytd": 0.0,
-        "trades": 0,
-        "last_trade": null
-      },
-      "JD_STRATEGY": {
-        "currency": "USD",
-        "realized_ytd": 0.0,
-        "trades": 0,
-        "last_trade": null
-      },
-      "QUANT40": {
-        "currency": "USD",
-        "realized_ytd": 0.0,
-        "trades": 0,
-        "last_trade": null
-      },
-      "CLAUDE_AI_BOT": {
-        "currency": "USD",
-        "realized_ytd": 0.0,
-        "trades": 0,
-        "last_trade": null
-      },
-      "DUAL_MOMENTUM": {
-        "currency": "USD",
-        "realized_ytd": 0.0,
-        "trades": 0,
-        "last_trade": null
-      }
-    }
+    "Hybrid VB (KR)": 40604,
+    "Korea ETF Momentum": -1380,
+    "JD Strategy": -441105,
+    "Quant40": -1122173,
+    "_total": -1623069,
+    "BTC VB": -99015
   },
   "feed": [
     {
