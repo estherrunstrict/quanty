@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Oracle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Newsreader:ital,opsz,wght@0,6..72,300;1,6..72,300&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════════
+   ORACLE DASHBOARD
+   Aesthetic: Dark brutalist-minimal. Monochrome canvas,
+   single amber accent. Newsreader serif for hierarchy,
+   DM Mono for data. Dense but breathable.
+   ══════════════════════════════════════════════════════ */
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #08080a;
+  --s1: #0e0e11;
+  --s2: #141418;
+  --s3: #1a1a1f;
+  --s4: #222228;
+  --border: #1e1e24;
+  --border-h: #2a2a32;
+  --tx: #e2ded8;
+  --tx2: #8a857e;
+  --tx3: #55524d;
+  --tx4: #333130;
+  --accent: #c9a24d;
+  --accent-d: #c9a24d18;
+  --g: #3a8a5a;
+  --g-bg: #3a8a5a10;
+  --r: #a84848;
+  --r-bg: #a8484810;
+  --blue: #4a78a8;
+  --purple: #7a68a8;
+  --mono: 'DM Mono', 'SF Mono', 'Menlo', monospace;
+  --serif: 'Newsreader', 'Georgia', serif;
+  --safe-b: env(safe-area-inset-bottom, 0px);
+}
+
+html { font-size: 13px; }
+
+body {
+  background: var(--bg);
+  color: var(--tx);
+  font-family: var(--mono);
+  font-weight: 300;
+  line-height: 1.55;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: var(--safe-b);
+}
+
+/* Grain */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+a { color: var(--accent); text-decoration: none; }
+
+.shell {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1.8rem 2.5rem;
+}
+
+/* ── Loading State ── */
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.loading-state .spinner {
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-state span { color: var(--tx3); font-size: 0.8rem; }
+
+/* ── Header ── */
+.hdr {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+
+.hdr h1 {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 1.6rem;
+  letter-spacing: -0.03em;
+}
+
+.hdr h1 em { font-style: italic; color: var(--accent); }
+
+.hdr-right {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.live-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--g);
+  display: inline-block;
+  margin-right: 0.4rem;
+  animation: blink 2.5s ease infinite;
+}
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.hdr-meta { font-size: 0.75rem; color: var(--tx3); }
+
+.refresh-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--tx3);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.05em;
+}
+
+.refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── Metric Strip ── */
+.strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  margin-bottom: 2rem;
+}
+
+.strip .cell {
+  background: var(--s1);
+  padding: 1rem 1.2rem;
+}
+
+.strip .cell:hover { background: var(--s2); }
+
+.cell .lbl {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: var(--tx4);
+  margin-bottom: 0.35rem;
+}
+
+.cell .val {
+  font-size: 1.35rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+
+.cell .sub {
+  font-size: 0.72rem;
+  color: var(--tx3);
+  margin-top: 0.15rem;
+}
+
+.up { color: var(--g); }
+.dn { color: var(--r); }
+.amber { color: var(--accent); }
+
+/* ── Grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 2rem;
+}
+
+/* ── Strategy Rows ── */
+.strats { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
+
+.strat {
+  background: var(--s1);
+  padding: 1.3rem 1.4rem;
+  transition: background 0.2s;
+}
+
+.strat:hover { background: var(--s2); }
+
+.strat-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.8rem;
+}
+
+.strat-name {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 300;
+}
+
+.tag {
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  padding: 0.15rem 0.55rem;
+  border: 1px solid var(--border-h);
+  color: var(--tx3);
+}
+
+.tag.live { border-color: var(--g); color: var(--g); }
+.tag.paper { border-color: var(--accent); color: var(--accent); }
+.tag.stale { border-color: var(--r); color: var(--r); }
+
+.strat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.2rem 1.2rem;
+}
+
+.sg-lbl {
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--tx4);
+}
+
+.sg-val { font-size: 0.88rem; }
+
+/* Holdings table */
+.holds {
+  margin-top: 0.8rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--border);
+}
+
+.hold-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.2rem 0;
+  font-size: 0.8rem;
+}
+
+.hold-tk { color: var(--tx); min-width: 55px; font-weight: 400; }
+.hold-det { color: var(--tx3); flex: 1; text-align: right; padding: 0 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hold-pl { min-width: 80px; text-align: right; }
+
+/* Signal badge */
+.sig {
+  display: inline-block;
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 0.2rem 0.6rem;
+  margin-top: 0.7rem;
+}
+
+.sig.long { background: var(--g-bg); border: 1px solid var(--g); color: var(--g); }
+.sig.cash { background: var(--accent-d); border: 1px solid var(--accent); color: var(--accent); }
+.sig.bear { background: var(--r-bg); border: 1px solid var(--r); color: var(--r); }
+
+/* ── Sparkline Charts ── */
+.sparkline-wrap {
+  margin-top: 0.6rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+.sparkline-svg {
+  width: 100%;
+  height: 50px;
+  display: block;
+}
+.sparkline-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.55rem;
+  color: var(--tx3);
+  margin-top: 0.15rem;
+  padding: 0 2px;
+}
+
+/* ── Feed ── */
+.feed { overflow: hidden; }
+
+.feed-hdr {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--tx4);
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.msgs { display: flex; flex-direction: column; gap: 0.4rem; }
+
+.msg {
+  background: var(--s1);
+  border-left: 2px solid var(--border-h);
+  padding: 0.85rem 1rem;
+  transition: background 0.2s;
+}
+
+.msg:hover { background: var(--s2); }
+
+.msg.t-buy { border-left-color: var(--g); }
+.msg.t-sell { border-left-color: var(--r); }
+.msg.t-signal { border-left-color: var(--accent); }
+.msg.t-session { border-left-color: var(--purple); }
+.msg.t-portfolio { border-left-color: var(--blue); }
+.msg.t-error { border-left-color: var(--r); }
+
+.msg-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+
+.msg-tag {
+  font-size: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--tx4);
+}
+
+.msg.t-buy .msg-tag { color: var(--g); }
+.msg.t-sell .msg-tag { color: var(--r); }
+.msg.t-signal .msg-tag { color: var(--accent); }
+.msg.t-error .msg-tag { color: var(--r); }
+
+.msg-ts { font-size: 0.6rem; color: var(--tx4); }
+
+.msg-title {
+  font-size: 0.82rem;
+  font-weight: 400;
+  margin-bottom: 0.25rem;
+  line-height: 1.3;
+}
+
+.msg-body {
+  font-size: 0.72rem;
+  color: var(--tx3);
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.msg-src {
+  font-size: 0.55rem;
+  color: var(--tx4);
+  margin-top: 0.4rem;
+  padding-top: 0.3rem;
+  border-top: 1px solid var(--border);
+}
+
+/* ── Footer ── */
+.ftr {
+  border-top: 1px solid var(--border);
+  padding-top: 1.2rem;
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+  color: var(--tx4);
+  font-size: 0.6rem;
+  letter-spacing: 0.04em;
+}
+
+/* ── Transitions ── */
+.fade-in {
+  opacity: 0;
+  transform: translateY(6px);
+  animation: fi 0.6s ease forwards;
+}
+
+@keyframes fi { to { opacity: 1; transform: none; } }
+
+.d1 { animation-delay: 0.1s; }
+.d2 { animation-delay: 0.2s; }
+.d3 { animation-delay: 0.3s; }
+.d4 { animation-delay: 0.4s; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-h); border-radius: 2px; }
+
+/* ═══════════════════ MOBILE ═══════════════════ */
+@media (max-width: 900px) {
+  html { font-size: 14px; }
+
+  .shell { padding: 1rem 1rem; }
+
+  .hdr { flex-direction: column; gap: 0.6rem; margin-bottom: 1.2rem; padding-bottom: 0.8rem; }
+  .hdr h1 { font-size: 1.4rem; }
+  .hdr-right { width: 100%; justify-content: space-between; }
+
+  .strip { grid-template-columns: repeat(2, 1fr); }
+  .cell .val { font-size: 1.15rem; }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  /* Swappable sections with tabs on mobile */
+  .mob-tabs {
+    display: flex;
+    gap: 1px;
+    background: var(--border);
+    margin-bottom: 1.2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .mob-tab {
+    flex: 1;
+    background: var(--s1);
+    border: none;
+    color: var(--tx3);
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 0.7rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .mob-tab.active {
+    background: var(--s2);
+    color: var(--accent);
+  }
+
+  .mob-section { display: none; }
+  .mob-section.active { display: block; }
+
+  .strat { padding: 1rem; }
+  .strat-name { font-size: 0.95rem; }
+
+  .strat-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.15rem 0.8rem;
+  }
+
+  .hold-row { font-size: 0.75rem; }
+  .hold-det { display: none; }
+
+  .msg { padding: 0.7rem 0.8rem; }
+  .msg-title { font-size: 0.78rem; }
+
+  .ftr { flex-direction: column; gap: 0.3rem; }
+}
+
+/* Very small phones */
+@media (max-width: 400px) {
+  .shell { padding: 0.8rem 0.6rem; }
+  .strip { grid-template-columns: 1fr 1fr; }
+  .cell .val { font-size: 1rem; }
+  .strat-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* Desktop: hide mobile tabs */
+@media (min-width: 901px) {
+  .mob-tabs { display: none; }
+  .mob-section { display: block !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="shell" id="app">
+  <div class="loading-state" id="loader">
+    <div class="spinner"></div>
+    <span>connecting to oracle...</span>
+  </div>
+</div>
+
+<script>
+// ═══ Helpers ═══════════════════════════════════════════════
+const $ = s => document.querySelector(s);
+const h = (tag, cls, html) => {
+  const el = document.createElement(tag);
+  if (cls) el.className = cls;
+  if (html !== undefined) el.innerHTML = html;
+  return el;
+};
+
+function sym(currency) { return currency === 'KRW' ? '₩' : '$'; }
+
+function fmtVal(v, currency) {
+  if (currency === 'KRW') return '₩' + Math.round(v).toLocaleString();
+  return '$' + v.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+}
+
+function fmtPnl(v, currency) {
+  const s = currency === 'KRW'
+    ? '₩' + (v >= 0 ? '+' : '') + Math.round(v).toLocaleString()
+    : '$' + (v >= 0 ? '+' : '') + v.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  return s;
+}
+
+function pnlClass(v) { return v >= 0 ? 'up' : 'dn'; }
+
+function relTime(ts) {
+  if (!ts) return '';
+  const d = new Date(ts.replace(' ', 'T'));
+  const now = new Date();
+  const diff = (now - d) / 1000 / 60;
+  if (diff < 60) return Math.round(diff) + 'm ago';
+  if (diff < 1440) return Math.round(diff / 60) + 'h ago';
+  return Math.round(diff / 1440) + 'd ago';
+}
+
+function shortTime(ts) {
+  if (!ts) return '';
+  // Handle "2026-04-03 09:00:05" format
+  const parts = ts.split(' ');
+  if (parts.length >= 2) return parts[1].substring(0, 5);
+  return ts;
+}
+
+// ═══ Sparkline Charts ═════════════════════════════════════
+function renderSparkline(series, width = 280, height = 60) {
+  // series: [[date, value], ...] — must have >= 2 points
+  if (!series || series.length < 2) return '';
+
+  const values = series.map(p => p[1]);
+  const dates = series.map(p => p[0]);
+  const minV = Math.min(...values);
+  const maxV = Math.max(...values);
+  const range = maxV - minV || 1;
+  const pad = 2;
+
+  const points = values.map((v, i) => {
+    const x = pad + (i / (values.length - 1)) * (width - pad * 2);
+    const y = pad + (1 - (v - minV) / range) * (height - pad * 2);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  });
+
+  const firstVal = values[0];
+  const lastVal = values[values.length - 1];
+  const pctChange = firstVal !== 0 ? ((lastVal / firstVal - 1) * 100) : 0;
+  const color = pctChange >= 0 ? 'var(--g)' : 'var(--r)';
+  const fillColor = pctChange >= 0 ? 'var(--g-bg)' : 'var(--r-bg)';
+
+  // Create gradient fill path
+  const fillPoints = `${pad},${height - pad} ${points.join(' ')} ${width - pad},${height - pad}`;
+
+  const startLabel = dates[0].substring(5); // MM-DD
+  const endLabel = dates[dates.length - 1].substring(5);
+
+  return `
+    <div class="sparkline-wrap">
+      <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" class="sparkline-svg">
+        <polygon points="${fillPoints}" fill="${fillColor}" />
+        <polyline points="${points.join(' ')}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round" />
+        <circle cx="${points[points.length - 1].split(',')[0]}" cy="${points[points.length - 1].split(',')[1]}" r="2.5" fill="${color}" />
+      </svg>
+      <div class="sparkline-meta">
+        <span>${startLabel}</span>
+        <span class="${pctChange >= 0 ? 'up' : 'dn'}">${pctChange >= 0 ? '+' : ''}${pctChange.toFixed(1)}%</span>
+        <span>${endLabel}</span>
+      </div>
+    </div>
+  `;
+}
+
+// ═══ Render ═══════════════════════════════════════════════
+function render(data) {
+  const app = $('#app');
+  app.innerHTML = '';
+
+  // ── Header
+  const hdr = h('header', 'hdr fade-in');
+  hdr.innerHTML = `
+    <h1>Automation <em>Oracle</em></h1>
+    <div class="hdr-right">
+      <span class="hdr-meta"><span class="live-dot"></span>${data.strategies.length} strategies</span>
+      <span class="hdr-meta">${data.meta.kst}</span>
+      <button class="refresh-btn" onclick="load()">Refresh</button>
+    </div>
+  `;
+  app.appendChild(hdr);
+
+  // ── Account-level data (from generate_dashboard_data.py → KIS API query)
+  const portfolio = data.portfolio || {};
+  const totalAsset = portfolio.total_value_krw || 0;
+  const cashKRW = portfolio.cash_krw || 0;
+  const cashUSD = portfolio.cash_usd || 0;
+  const upbitKRW = portfolio.upbit_krw || 0;
+  const exchangeRate = portfolio.exchange_rate || 1380;
+
+  // ── Sum P&L from all bots (not from KIS API total)
+  let totalPnlKRW = 0;
+  let totalPnlUSD = 0;
+  data.strategies.forEach(s => {
+    const profit = s.profit || 0;
+    if (s.currency === 'KRW') {
+      totalPnlKRW += profit;
+    } else if (s.currency === 'USD') {
+      totalPnlUSD += profit;
+    } else if (s.currency === 'MULTI') {
+      totalPnlKRW += (s.kr?.profit || 0);
+      totalPnlUSD += (s.us?.profit || 0);
+    }
+  });
+  const totalPnlCombined = totalPnlKRW + totalPnlUSD * exchangeRate;
+  const originalDeposit = portfolio.original_deposit_krw || 1;
+  const totalPnlPct = totalAsset > 0 ? (totalPnlCombined / originalDeposit * 100) : 0;
+
+  const realized = data.realized_pl || {};
+  const realizedTotal = realized._total || 0;
+
+  // ── Strip
+  const strip = h('section', 'strip fade-in d1');
+  const stripData = totalAsset > 0 ? [
+    { lbl: 'Total Assets', val: '₩' + Math.round(totalAsset).toLocaleString(), sub: 'KIS + Upbit combined' },
+    { lbl: 'KIS Cash', val: '₩' + Math.round(cashKRW).toLocaleString(), sub: '$' + cashUSD.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' USD' },
+    { lbl: 'Upbit (BTC)', val: '₩' + Math.round(upbitKRW).toLocaleString(), sub: 'Separate account' },
+    { lbl: 'Total P&L', val: fmtPnl(totalPnlCombined, 'KRW'), cls: pnlClass(totalPnlCombined), sub: 'KRW ' + fmtPnl(totalPnlKRW, 'KRW') + ' + USD ' + fmtPnl(totalPnlUSD, 'USD') },
+    { lbl: 'Active Bots', val: data.strategies.length.toString(), sub: 'check_and_run.sh' },
+  ] : [
+    { lbl: 'Total Assets', val: '—', sub: 'Waiting for data update' },
+    { lbl: 'Active Bots', val: data.strategies.length.toString(), sub: 'check_and_run.sh' },
+  ];
+  stripData.forEach(d => {
+    const cell = h('div', 'cell');
+    cell.innerHTML = `<div class="lbl">${d.lbl}</div><div class="val ${d.cls || ''}">${d.val}</div><div class="sub">${d.sub}</div>`;
+    strip.appendChild(cell);
+  });
+  app.appendChild(strip);
+
+  // ── Mobile Tabs
+  const mobTabs = h('div', 'mob-tabs');
+  mobTabs.innerHTML = `<button class="mob-tab active" data-tab="strats">Strategies</button><button class="mob-tab" data-tab="feed">Feed</button>`;
+  app.appendChild(mobTabs);
+
+  // Tab logic
+  mobTabs.querySelectorAll('.mob-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      mobTabs.querySelectorAll('.mob-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.mob-section').forEach(s => s.classList.remove('active'));
+      document.querySelector(`.mob-section[data-section="${btn.dataset.tab}"]`)?.classList.add('active');
+    });
+  });
+
+  // ── Grid
+  const grid = h('div', 'grid');
+
+  // ── Strategies
+  const stratsWrap = h('div', 'mob-section active', '');
+  stratsWrap.dataset.section = 'strats';
+  const strats = h('section', 'strats fade-in d2');
+
+  data.strategies.forEach(s => {
+    const card = h('div', 'strat');
+    const isStale = (s.stale_hours || 0) > 6;
+    const modeTag = isStale ? 'stale' : (s.mode === 'paper' ? 'paper' : 'live');
+    const modeLabel = isStale ? 'Stale' : (s.mode === 'paper' ? 'Paper' : 'Live');
+
+    let metricsHTML = '';
+    let holdingsHTML = '';
+    let signalHTML = '';
+
+    if (s.id === 'btc_vb') {
+      const wr = s.total_trades > 0 ? Math.round(s.winning_trades / s.total_trades * 100) : 0;
+      const allocLabel = s.allocation >= 0.8 ? 'Full' : 'Reduced';
+      const btcBudgetLabel = s.budget > 0 ? fmtVal(s.budget, 'KRW') : 'Unlimited';
+      metricsHTML = `
+        <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(s.value, 'KRW')}</div></div>
+        <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${btcBudgetLabel}</div></div>
+        <div><div class="sg-lbl">Cum. P&L</div><div class="sg-val ${pnlClass(s.profit || 0)}">${fmtPnl(s.profit || 0, 'KRW')}</div></div>
+        <div><div class="sg-lbl">Win Rate</div><div class="sg-val">${wr}% <span style="color:var(--tx4)">(${s.total_trades || 0}t)</span></div></div>
+      `;
+      const sigClass = s.is_holding ? 'long' : 'cash';
+      const sigLabel = s.is_holding ? 'Holding BTC' : 'Cash — No Signal';
+      signalHTML = `<div class="sig ${sigClass}">${sigLabel}</div>`;
+    }
+
+    else if (s.id === 'korea_etf') {
+      const ketfBudget = s.budget || 0;
+      const ketfInvested = s.cost_basis || 0;
+      const ketfPct = ketfBudget > 0 ? Math.round(ketfInvested / ketfBudget * 100) : 0;
+      metricsHTML = `
+        <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(ketfInvested, 'KRW')}</div></div>
+        <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(ketfBudget, 'KRW')} <span style="color:var(--tx4)">(${ketfPct}%)</span></div></div>
+        <div><div class="sg-lbl">P&L</div><div class="sg-val ${pnlClass(s.profit || 0)}">${fmtPnl(s.profit || 0, 'KRW')}</div></div>
+        <div><div class="sg-lbl">Target</div><div class="sg-val">${s.extra?.target_ticker || '—'}</div></div>
+      `;
+      if (s.extra?.target) {
+        signalHTML = `<div class="sig long">${s.extra.target}</div>`;
+      }
+    }
+
+    else if (s.id === 'quant40' || s.id === 'jd_strategy') {
+      const posBudget = s.budget || 0;
+      const posInvested = s.cost_basis || 0;
+      const posPct = posBudget > 0 ? Math.round(posInvested / posBudget * 100) : 0;
+      metricsHTML = `
+        <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(posInvested, 'USD')} <span style="color:var(--tx4)">(${posPct}%)</span></div></div>
+        <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(posBudget, 'USD')}</div></div>
+        <div><div class="sg-lbl">P&L</div><div class="sg-val ${pnlClass(s.profit || 0)}">${fmtPnl(s.profit || 0, 'USD')}</div></div>
+      `;
+      if (s.id === 'jd_strategy') {
+        // JD Strategy: two badges — market state + holding state
+        const stateMap = { 'NORMAL': 'cash', 'ALERT': 'bear', 'PANIC': 'bear' };
+        const stateCls = stateMap[s.extra?.state] || 'cash';
+        const stateLabel = s.extra?.signal || s.extra?.state || 'UNKNOWN';
+        const holdCls = s.extra?.is_holding ? 'long' : 'cash';
+        const holdLabel = s.extra?.is_holding ? 'LONG' : 'CASH';
+        // Show holding tickers if any
+        const holdTickers = (s.holdings || []).map(h => h.ticker).join(', ');
+        const holdFull = s.extra?.is_holding && holdTickers ? `LONG ${holdTickers}` : holdLabel;
+        signalHTML = `<div class="sig ${stateCls}" style="font-size:0.5rem">${stateLabel.substring(0, 60)}</div> <div class="sig ${holdCls}" style="font-size:0.5rem">${holdFull}</div>`;
+      } else if (s.extra?.signal) {
+        const sigCls = s.extra.regime === 'bullish' ? 'long' : (s.extra.regime === 'bearish' ? 'bear' : 'cash');
+        signalHTML = `<div class="sig ${sigCls}" style="font-size:0.5rem">${s.extra.signal.substring(0, 60)}</div>`;
+      }
+    }
+
+    else if (s.id === 'dual_momentum') {
+      const dmBudget = s.budget || 0;
+      const dmInvested = s.cost_basis || 0;
+      const dmPct = dmBudget > 0 ? Math.round(dmInvested / dmBudget * 100) : 0;
+      metricsHTML = `
+        <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(dmInvested, 'USD')} <span style="color:var(--tx4)">(${dmPct}%)</span></div></div>
+        <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(dmBudget, 'USD')}</div></div>
+        <div><div class="sg-lbl">P&L</div><div class="sg-val ${pnlClass(s.profit || 0)}">${fmtPnl(s.profit || 0, 'USD')}</div></div>
+      `;
+    }
+
+    else if (s.id === 'hybrid_vb') {
+      const krInvested = s.kr?.cost_basis || 0;
+      const usInvested = s.us?.cost_basis || 0;
+      const krPnl = s.kr?.profit || 0;
+      const usPnl = s.us?.profit || 0;
+      const krBudget = s.budget_kr || 0;
+      const usBudget = s.budget_us || 0;
+      const krPct = krBudget > 0 ? Math.round(krInvested / krBudget * 100) : 0;
+      const usPct = usBudget > 0 ? Math.round(usInvested / usBudget * 100) : 0;
+      const krPos = Object.keys(s.open_positions?.kr || {}).length;
+      const usPos = Object.keys(s.open_positions?.us || {}).length;
+      metricsHTML = `
+        <div><div class="sg-lbl">KR Invested</div><div class="sg-val">${fmtVal(krInvested, 'KRW')} <span style="color:var(--tx4)">(${krPct}%)</span></div></div>
+        <div><div class="sg-lbl">KR Budget</div><div class="sg-val">${fmtVal(krBudget, 'KRW')}</div></div>
+        <div><div class="sg-lbl">US Invested</div><div class="sg-val">${fmtVal(usInvested, 'USD')} <span style="color:var(--tx4)">(${usPct}%)</span></div></div>
+        <div><div class="sg-lbl">US Budget</div><div class="sg-val">${fmtVal(usBudget, 'USD')}</div></div>
+        <div><div class="sg-lbl">KR P&L</div><div class="sg-val ${pnlClass(krPnl)}">${fmtPnl(krPnl, 'KRW')}</div></div>
+        <div><div class="sg-lbl">Positions</div><div class="sg-val">${krPos} KR · ${usPos} US</div></div>
+      `;
+    }
+
+    else if (s.id === 'claude_bot') {
+      const ex = s.extra || {};
+      const regime = ex.regime || 'NEUTRAL';
+      const regimeColors = { 'BULLISH': 'up', 'RECOVERY': '', 'NEUTRAL': 'amber', 'CAUTIOUS': 'amber', 'BEARISH': 'dn', 'DANGER': 'dn' };
+      const regimeCls = regimeColors[regime] || '';
+      const breadth = ex.breadth_score || 0;
+      const uptrend = ex.uptrend_score || 0;
+      const trendPasses = ex.trend_pass_count || 0;
+      const vcpCount = ex.vcp_count || 0;
+      const cbBudget = s.budget || 0;
+      const cbInvested = s.cost_basis || 0;
+      const cbPct = cbBudget > 0 ? Math.round(cbInvested / cbBudget * 100) : 0;
+      metricsHTML = `
+        <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(cbInvested, 'USD')} <span style="color:var(--tx4)">(${cbPct}%)</span></div></div>
+        <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(cbBudget, 'USD')}</div></div>
+        <div><div class="sg-lbl">P&L</div><div class="sg-val ${pnlClass(s.profit || 0)}">${fmtPnl(s.profit || 0, 'USD')}</div></div>
+        <div><div class="sg-lbl">Regime</div><div class="sg-val ${regimeCls}" style="font-weight:500">${regime}</div></div>
+        <div><div class="sg-lbl">Confidence</div><div class="sg-val">${ex.confidence || 0}%</div></div>
+        <div><div class="sg-lbl">Breadth</div><div class="sg-val ${breadth >= 60 ? 'up' : breadth >= 40 ? 'amber' : 'dn'}">${breadth}/100</div></div>
+        <div><div class="sg-lbl">Uptrend</div><div class="sg-val ${uptrend >= 60 ? 'up' : uptrend >= 40 ? 'amber' : 'dn'}">${uptrend}/100</div></div>
+        <div><div class="sg-lbl">Trend Passes</div><div class="sg-val">${trendPasses}/100</div></div>
+        <div><div class="sg-lbl">VCP Candidates</div><div class="sg-val">${vcpCount}</div></div>
+      `;
+      // Show exposure recommendation as signal badge
+      const expMap = { 'FULL_EXPOSURE': 'long', 'NORMAL': 'cash', 'SELECTIVE_LONGS': 'cash', 'REDUCE_EXPOSURE': 'bear', 'CASH_PRIORITY': 'bear' };
+      const expCls = expMap[ex.exposure] || 'cash';
+      signalHTML = `<div class="sig ${expCls}" style="font-size:0.5rem">${(ex.exposure || 'NORMAL').replace(/_/g, ' ')}</div>`;
+
+      // Show VCP candidates + trend passes as holdings
+      const cands = ex.screener_candidates || [];
+      const passes = ex.trend_passes || [];
+      if (cands.length > 0) {
+        const rows = cands.slice(0, 5).map(c => {
+          const sym = c.symbol || c.ticker || '?';
+          const price = c.current_price || c.pivot_price || 0;
+          const score = c.score || c.total_score || 0;
+          return `<div class="hold-row">
+            <span class="hold-tk">${sym}</span>
+            <span class="hold-det">VCP pivot $${(c.pivot_price||0).toFixed(2)} / stop $${(c.stop_loss||0).toFixed(2)}</span>
+            <span class="hold-pl amber">score ${score}</span>
+          </div>`;
+        }).join('');
+        holdingsHTML = `<div class="holds"><div style="font-size:0.58rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--tx4);margin-bottom:0.3rem">VCP Candidates</div>${rows}</div>`;
+      } else if (passes.length > 0) {
+        const rows = passes.slice(0, 6).map(t => {
+          return `<div class="hold-row">
+            <span class="hold-tk">${t.symbol}</span>
+            <span class="hold-det">trend ${t.score}/8</span>
+            <span class="hold-pl ${t.pct_from_high > -5 ? 'up' : 'amber'}">${t.pct_from_high}%</span>
+          </div>`;
+        }).join('');
+        holdingsHTML = `<div class="holds"><div style="font-size:0.58rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--tx4);margin-bottom:0.3rem">Trend Template Passes (${passes.length})</div>${rows}</div>`;
+      }
+    }
+
+    // Holdings
+    const holdings = (s.id === 'hybrid_vb') ? s.holdings : (s.holdings || []);
+    if (holdings.length > 0) {
+      const rows = holdings.slice(0, 5).map(hld => {
+        const cur = hld.currency || s.currency || 'USD';
+        const pnl = hld.profit || 0;
+        const pRate = hld.profit_rate ? ` (${hld.profit_rate >= 0 ? '+' : ''}${hld.profit_rate.toFixed(1)}%)` : '';
+        return `<div class="hold-row">
+          <span class="hold-tk">${hld.ticker}</span>
+          <span class="hold-det">${hld.quantity || 0} × ${sym(cur)}${(hld.current_price || hld.avg_price || 0).toLocaleString(undefined, cur === 'KRW' ? {maximumFractionDigits:0} : {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+          <span class="hold-pl ${pnlClass(pnl)}">${fmtPnl(pnl, cur)}${pRate}</span>
+        </div>`;
+      }).join('');
+      holdingsHTML = `<div class="holds">${rows}</div>`;
+    }
+
+    // Open positions for Hybrid VB
+    if (s.id === 'hybrid_vb') {
+      const ops = s.open_positions || {};
+      let posRows = '';
+      for (const [market, positions] of Object.entries(ops)) {
+        for (const [ticker, pos] of Object.entries(positions)) {
+          const cur = market === 'kr' ? 'KRW' : 'USD';
+          posRows += `<div class="hold-row">
+            <span class="hold-tk">${ticker}</span>
+            <span class="hold-det">${pos.shares}sh @ ${sym(cur)}${Math.round(pos.entry_price).toLocaleString()} · stop ${sym(cur)}${Math.round(pos.stop_price).toLocaleString()}</span>
+            <span class="hold-pl" style="color:var(--tx3)">${market.toUpperCase()}</span>
+          </div>`;
+        }
+      }
+      if (posRows) {
+        holdingsHTML = `<div class="holds">${posRows}</div>`;
+      }
+    }
+
+    // Sparkline chart from equity_series
+    let chartHTML = '';
+    const eqSeries = data.equity_series || {};
+    const chartId = s.id;
+    if (eqSeries[chartId] && eqSeries[chartId].length >= 2) {
+      chartHTML = renderSparkline(eqSeries[chartId]);
+    }
+
+    card.innerHTML = `
+      <div class="strat-top">
+        <span class="strat-name">${s.name}</span>
+        <span class="tag ${modeTag}">${modeLabel}</span>
+      </div>
+      <div class="strat-grid">${metricsHTML}</div>
+      ${chartHTML}
+      ${holdingsHTML}
+      ${signalHTML}
+    `;
+    strats.appendChild(card);
+  });
+
+  stratsWrap.appendChild(strats);
+  grid.appendChild(stratsWrap);
+
+  // ── Feed
+  const feedWrap = h('div', 'mob-section', '');
+  feedWrap.dataset.section = 'feed';
+  const feed = h('aside', 'feed fade-in d3');
+  feed.innerHTML = `<div class="feed-hdr">Activity Feed</div>`;
+
+  const msgs = h('div', 'msgs');
+
+  if (data.feed && data.feed.length > 0) {
+    data.feed.forEach(ev => {
+      const typeMap = {
+        'trade_buy': 't-buy', 'trade_sell': 't-sell',
+        'signal': 't-signal', 'session': 't-session',
+        'portfolio': 't-portfolio', 'error': 't-error'
+      };
+      const tagMap = {
+        'trade_buy': 'Buy', 'trade_sell': 'Sell',
+        'signal': 'Signal', 'session': 'Session',
+        'portfolio': 'Portfolio', 'error': 'Error'
+      };
+
+      const cls = typeMap[ev.type] || 't-session';
+      const tag = tagMap[ev.type] || ev.type;
+
+      const m = h('div', `msg ${cls}`);
+      m.innerHTML = `
+        <div class="msg-top">
+          <span class="msg-tag">${tag}</span>
+          <span class="msg-ts">${shortTime(ev.timestamp)}</span>
+        </div>
+        <div class="msg-title">${ev.title}</div>
+        <div class="msg-body">${ev.body || ''}</div>
+        <div class="msg-src">${ev.source || ''} · ${relTime(ev.timestamp)}</div>
+      `;
+      msgs.appendChild(m);
+    });
+  } else {
+    msgs.innerHTML = '<div class="msg"><div class="msg-body">No recent events. Logs may not be accessible from this host.</div></div>';
+  }
+
+  feed.appendChild(msgs);
+  feedWrap.appendChild(feed);
+  grid.appendChild(feedWrap);
+
+  app.appendChild(grid);
+
+  // ── Footer
+  const ftr = h('footer', 'ftr fade-in d4');
+  ftr.innerHTML = `
+    <span>automation oracle · oracle cloud · 193.123.246.52</span>
+    <span>auto-refresh 60s · cron: check_and_run.sh</span>
+  `;
+  app.appendChild(ftr);
+}
+
+// ═══ Data Fetching ════════════════════════════════════════
+let refreshTimer = null;
+
+async function load() {
+  try {
+    const res = await fetch('/api/data');
+    if (!res.ok) throw new Error(res.status);
+    const data = await res.json();
+    render(data);
+  } catch (e) {
+    // If /api/data fails, render with demo data message
+    const app = $('#app');
+    if ($('#loader')) {
+      app.innerHTML = `
+        <header class="hdr fade-in">
+          <h1>Automation <em>Oracle</em></h1>
+          <div class="hdr-right">
+            <span class="hdr-meta">Offline</span>
+            <button class="refresh-btn" onclick="load()">Retry</button>
+          </div>
+        </header>
+        <div style="padding:3rem 0;text-align:center;color:var(--tx3);font-size:0.8rem">
+          Could not reach /api/data<br>
+          Run: <code style="color:var(--accent)">python3 dashboard_server.py</code>
+        </div>
+      `;
+    }
+  }
+
+  // Auto-refresh every 60s
+  clearTimeout(refreshTimer);
+  refreshTimer = setTimeout(load, 60000);
+}
+
+load();
+</script>
+
+</body>
+</html>
