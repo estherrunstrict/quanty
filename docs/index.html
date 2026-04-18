@@ -604,37 +604,28 @@ function render(data) {
   `;
   app.appendChild(hdr);
 
-  // ── Compute totals
-  let totalKRW = 0, totalUSD = 0, totalPnlKRW = 0, totalPnlUSD = 0;
-  let totalTrades = 0;
-
-  data.strategies.forEach(s => {
-    if (s.currency === 'KRW') {
-      totalKRW += s.value || 0;
-      totalPnlKRW += s.profit || 0;
-    } else if (s.currency === 'USD') {
-      totalUSD += (s.value || 0) + (s.cash || 0);
-      totalPnlUSD += s.profit || 0;
-    } else if (s.currency === 'MULTI') {
-      // Hybrid VB
-      totalKRW += (s.kr?.value || 0);
-      totalPnlKRW += (s.kr?.profit || 0);
-      totalUSD += (s.us?.value || 0);
-      totalPnlUSD += (s.us?.profit || 0);
-    }
-    totalTrades += s.total_trades || 0;
-  });
+  // ── Account-level data (from generate_dashboard_data.py → KIS API query)
+  const portfolio = data.portfolio || {};
+  const totalAsset = portfolio.total_value_krw || 0;
+  const totalProfit = portfolio.total_profit_krw || 0;
+  const totalProfitPct = portfolio.total_profit_pct || 0;
+  const cashKRW = portfolio.cash_krw || 0;
+  const cashUSD = portfolio.cash_usd || 0;
+  const upbitKRW = portfolio.upbit_krw || 0;
 
   const realized = data.realized_pl || {};
   const realizedTotal = realized._total || 0;
 
   // ── Strip
   const strip = h('section', 'strip fade-in d1');
-  const stripData = [
-    { lbl: 'KRW Portfolio', val: '₩' + Math.round(totalKRW).toLocaleString(), sub: 'Crypto + Korea ETF' },
-    { lbl: 'USD Portfolio', val: '$' + totalUSD.toLocaleString(undefined, {maximumFractionDigits: 0}), sub: 'US strategies combined' },
-    { lbl: 'Unrealized P&L', val: fmtPnl(totalPnlKRW, 'KRW'), cls: pnlClass(totalPnlKRW), sub: fmtPnl(totalPnlUSD, 'USD') + ' USD' },
-    { lbl: 'Realized YTD', val: '₩' + Math.round(realizedTotal).toLocaleString(), cls: pnlClass(realizedTotal), sub: '2026 cumulative' },
+  const stripData = totalAsset > 0 ? [
+    { lbl: 'Total Assets', val: '₩' + Math.round(totalAsset).toLocaleString(), sub: 'KIS + Upbit combined' },
+    { lbl: 'KIS Cash', val: '₩' + Math.round(cashKRW).toLocaleString(), sub: '$' + cashUSD.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' USD' },
+    { lbl: 'Upbit (BTC)', val: '₩' + Math.round(upbitKRW).toLocaleString(), sub: 'Separate account' },
+    { lbl: 'Total P&L', val: fmtPnl(totalProfit, 'KRW'), cls: pnlClass(totalProfit), sub: totalProfitPct >= 0 ? '+' + totalProfitPct.toFixed(1) + '%' : totalProfitPct.toFixed(1) + '%' },
+    { lbl: 'Active Bots', val: data.strategies.length.toString(), sub: 'check_and_run.sh' },
+  ] : [
+    { lbl: 'Total Assets', val: '—', sub: 'Waiting for data update' },
     { lbl: 'Active Bots', val: data.strategies.length.toString(), sub: 'check_and_run.sh' },
   ];
   stripData.forEach(d => {
@@ -714,7 +705,6 @@ function render(data) {
       metricsHTML = `
         <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(posInvested, 'USD')} <span style="color:var(--tx4)">(${posPct}%)</span></div></div>
         <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(posBudget, 'USD')}</div></div>
-        <div><div class="sg-lbl">Cash</div><div class="sg-val">${fmtVal(s.cash || 0, 'USD')}</div></div>
         <div><div class="sg-lbl">P&L</div><div class="sg-val ${pnlClass(s.profit || 0)}">${fmtPnl(s.profit || 0, 'USD')}</div></div>
       `;
       if (s.id === 'jd_strategy') {
@@ -741,7 +731,6 @@ function render(data) {
       metricsHTML = `
         <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(dmInvested, 'USD')} <span style="color:var(--tx4)">(${dmPct}%)</span></div></div>
         <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(dmBudget, 'USD')}</div></div>
-        <div><div class="sg-lbl">Cash</div><div class="sg-val">${fmtVal(s.cash || 0, 'USD')}</div></div>
         <div><div class="sg-lbl">P&L</div><div class="sg-val ${pnlClass(s.profit || 0)}">${fmtPnl(s.profit || 0, 'USD')}</div></div>
       `;
     }
@@ -782,7 +771,6 @@ function render(data) {
       metricsHTML = `
         <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(cbInvested, 'USD')} <span style="color:var(--tx4)">(${cbPct}%)</span></div></div>
         <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(cbBudget, 'USD')}</div></div>
-        <div><div class="sg-lbl">Cash</div><div class="sg-val">${fmtVal(s.cash || 0, 'USD')}</div></div>
         <div><div class="sg-lbl">P&L</div><div class="sg-val ${pnlClass(s.profit || 0)}">${fmtPnl(s.profit || 0, 'USD')}</div></div>
         <div><div class="sg-lbl">Regime</div><div class="sg-val ${regimeCls}" style="font-weight:500">${regime}</div></div>
         <div><div class="sg-lbl">Confidence</div><div class="sg-val">${ex.confidence || 0}%</div></div>

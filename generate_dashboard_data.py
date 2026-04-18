@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Generate dashboard_data.json from live dashboard_server API."""
+"""Generate dashboard_data.json from live dashboard_server API + KIS account query."""
 
 import json
 import os
+import sys
 import urllib.request
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -11,11 +12,92 @@ KST = ZoneInfo("Asia/Seoul")
 DASHBOARD_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(DASHBOARD_DIR, "docs", "data")
 API_URL = "http://localhost:8077/api/data"
+TRADING_DIR = "/home/ubuntu/koreainvestment-autotrade"
+DEPOSITS_FILE = os.path.join(DASHBOARD_DIR, "deposits.json")
+
+sys.path.insert(0, DASHBOARD_DIR)
+sys.path.insert(0, os.path.join(TRADING_DIR, "open-trading-api", "examples_llm"))
+
+
+def get_portfolio():
+    """Query KIS API for real account totals + Upbit."""
+    try:
+        from query_account_total import get_account_totals
+        totals = get_account_totals()
+
+        kr = totals["kr"]
+        us = totals["us"]
+        krw_cash = totals["krw_cash"]       # Shared KRW cash — count once
+        usd_cash = totals["usd_cash"]       # USD cash in USD
+
+        # Exchange rate from KIS
+        exchange_rate = 1380
+        try:
+            import kis_auth as ka
+            import inquire_psamount
+            ka.auth(svr="prod")
+            acct = ka.getTREnv()
+            df = inquire_psamount.inquire_psamount(
+                cano=acct.my_acct, acnt_prdt_cd=acct.my_prod,
+                ovrs_excg_cd="NASD", item_cd="AAPL",
+                ovrs_ord_unpr="0", env_dv="real"
+            )
+            if df is not None and not df.empty:
+                rate = float(df.iloc[0].get("exrt", 0))
+                if rate > 0:
+                    exchange_rate = rate
+        except Exception:
+            pass
+
+        # Upbit (BTC) — separate account
+        upbit_equity = 0
+        vb_state_file = os.path.join(TRADING_DIR, "upbit_vb_strategy_state.json")
+        if os.path.exists(vb_state_file):
+            with open(vb_state_file) as f:
+                vb = json.load(f)
+            eq = vb.get("equity_history", [])
+            if eq:
+                upbit_equity = eq[-1][1]
+
+        # Total KIS assets = KR stocks + KRW cash (once) + US stocks (KRW) + USD cash (KRW)
+        kis_total = (kr["stock_value"] + krw_cash
+                     + us["stock_value"] * exchange_rate
+                     + usd_cash * exchange_rate)
+
+        total_value = kis_total + upbit_equity
+
+        # Original deposit
+        original_deposit = 75714217  # fallback
+        if os.path.exists(DEPOSITS_FILE):
+            with open(DEPOSITS_FILE) as f:
+                dep = json.load(f)
+                original_deposit = dep.get("kis_total_original_krw", 65726902) + dep.get("upbit_original_krw", 9987315)
+
+        total_profit = total_value - original_deposit
+        total_pct = (total_profit / original_deposit * 100) if original_deposit > 0 else 0
+
+        return {
+            "total_value_krw": round(total_value),
+            "original_deposit_krw": original_deposit,
+            "total_profit_krw": round(total_profit),
+            "total_profit_pct": round(total_pct, 2),
+            "cash_krw": round(krw_cash),
+            "cash_usd": round(usd_cash, 2),
+            "upbit_krw": round(upbit_equity),
+            "exchange_rate": exchange_rate,
+        }
+    except Exception as e:
+        print("  Portfolio query failed: {}".format(e))
+        import traceback
+        traceback.print_exc()
+        return {}
+
 
 def main():
     now = datetime.now(KST)
     print("[{}] Generating dashboard data...".format(now.strftime("%H:%M:%S KST")))
 
+    # Fetch live data from dashboard server API
     try:
         raw = urllib.request.urlopen(API_URL, timeout=30).read()
         api_data = json.loads(raw)
@@ -24,8 +106,17 @@ def main():
         print("  ERROR: Could not fetch from {}: {}".format(API_URL, e))
         return
 
+    # Get real account totals from KIS API
+    portfolio = get_portfolio()
+    if portfolio:
+        print("  Account total: W{:,.0f}".format(portfolio.get("total_value_krw", 0)))
+    else:
+        print("  WARNING: Portfolio query failed, using empty portfolio")
+
+    # Merge
     output = {
         "updated_at": now.strftime("%Y-%m-%d %H:%M KST"),
+        "portfolio": portfolio,
     }
     output.update(api_data)
 
@@ -44,6 +135,7 @@ def main():
         print("  Wrote {}".format(eq_file))
 
     print("[{}] Done.".format(datetime.now(KST).strftime("%H:%M:%S KST")))
+
 
 if __name__ == "__main__":
     main()
