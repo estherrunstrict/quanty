@@ -497,6 +497,49 @@ def build_dashboard_data():
             "timestamp": cb_result.get("timestamp", "") if cb_result else (claude_regime.get("timestamp", "") if claude_regime else ""),
         })
 
+    # ── Realized P&L ──
+    # Aggregated YTD view per strategy — see scripts/aggregate_realized_pnl.py.
+    # Existing "profit" fields stay as unrealized (holdings value − cost basis).
+    realized = _load_json(RESULTS_DIR / "realized_pl_2026.json") or {}
+    realized_by_key = realized.get("strategies", {}) if isinstance(realized, dict) else {}
+
+    # Dashboard id → aggregator key
+    REALIZED_KEY_BY_ID = {
+        "btc_vb": "BTC_VB",
+        "korea_etf": "KOREA_ETF",
+        "quant40": "QUANT40",
+        "jd_strategy": "JD_STRATEGY",
+        "dual_momentum": "DUAL_MOMENTUM",
+        "claude_bot": "CLAUDE_AI_BOT",
+    }
+
+    for s in strategies:
+        # Split the existing single "profit" into explicit unrealized + realized.
+        # Keep "profit" as an alias for backward compat with any older consumer.
+        s["unrealized_profit"] = s.get("profit", 0)
+
+        if s.get("id") == "hybrid_vb":
+            for leg_key, agg_key in (("kr", "HYBRID_VB_KR"), ("us", "HYBRID_VB_US")):
+                leg = s.get(leg_key) or {}
+                if leg:
+                    leg_realized = realized_by_key.get(agg_key, {})
+                    leg["unrealized_profit"] = leg.get("profit", 0)
+                    leg["realized_profit_ytd"] = leg_realized.get("realized_ytd", 0)
+                    leg["realized_trades"] = leg_realized.get("trades", 0)
+                    s[leg_key] = leg
+            # Roll up the two legs for the top-level card total.
+            s["realized_profit_ytd_kr"] = realized_by_key.get("HYBRID_VB_KR", {}).get("realized_ytd", 0)
+            s["realized_profit_ytd_us"] = realized_by_key.get("HYBRID_VB_US", {}).get("realized_ytd", 0)
+            s["realized_trades"] = (
+                realized_by_key.get("HYBRID_VB_KR", {}).get("trades", 0)
+                + realized_by_key.get("HYBRID_VB_US", {}).get("trades", 0)
+            )
+        else:
+            agg_key = REALIZED_KEY_BY_ID.get(s.get("id"))
+            r = realized_by_key.get(agg_key, {}) if agg_key else {}
+            s["realized_profit_ytd"] = r.get("realized_ytd", 0)
+            s["realized_trades"] = r.get("trades", 0)
+
     # ── Save daily equity snapshot ──
     _save_equity_snapshot(strategies)
 
@@ -508,9 +551,6 @@ def build_dashboard_data():
         btc_series = [[d, v] for d, v in equity_hist if d >= EQUITY_START_DATE]
         if btc_series:
             equity_series["btc_vb"] = btc_series
-
-    # ── Realized P&L ──
-    realized = _load_json(RESULTS_DIR / "realized_pl_2026.json") or {}
 
     # ── Log Events ──
     feed_events = []
