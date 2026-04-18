@@ -523,6 +523,14 @@ function fmtPnl(v, currency) {
 
 function pnlClass(v) { return v >= 0 ? 'up' : 'dn'; }
 
+// Realized YTD cell — only rendered when the bot has closed at least one trade YTD.
+// Intentionally silent on zero-trade bots so cards don't fill with meaningless zeros.
+function realizedCell(realized, trades, currency) {
+  if (!trades || trades <= 0) return '';
+  const tradeSub = trades === 1 ? '(1 trade)' : `(${trades} trades)`;
+  return `<div><div class="sg-lbl">Realized YTD</div><div class="sg-val ${pnlClass(realized || 0)}">${fmtPnl(realized || 0, currency)} <span style="color:var(--tx4);font-size:0.6rem">${tradeSub}</span></div></div>`;
+}
+
 function relTime(ts) {
   if (!ts) return '';
   const d = new Date(ts.replace(' ', 'T'));
@@ -692,7 +700,8 @@ function render(data) {
       metricsHTML = `
         <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(s.value, 'KRW')}</div></div>
         <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${btcBudgetLabel}</div></div>
-        <div><div class="sg-lbl">Cum. P&L</div><div class="sg-val ${pnlClass(s.profit || 0)}">${fmtPnl(s.profit || 0, 'KRW')}</div></div>
+        <div><div class="sg-lbl">Unrealized</div><div class="sg-val ${pnlClass(s.unrealized_profit || 0)}">${fmtPnl(s.unrealized_profit || 0, 'KRW')}</div></div>
+        ${realizedCell(s.realized_profit_ytd, s.realized_trades, 'KRW')}
         <div><div class="sg-lbl">Win Rate</div><div class="sg-val">${wr}% <span style="color:var(--tx4)">(${s.total_trades || 0}t)</span></div></div>
       `;
       const sigClass = s.is_holding ? 'long' : 'cash';
@@ -707,7 +716,8 @@ function render(data) {
       metricsHTML = `
         <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(ketfInvested, 'KRW')}</div></div>
         <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(ketfBudget, 'KRW')} <span style="color:var(--tx4)">(${ketfPct}%)</span></div></div>
-        <div><div class="sg-lbl">P&L</div><div class="sg-val ${pnlClass(s.profit || 0)}">${fmtPnl(s.profit || 0, 'KRW')}</div></div>
+        <div><div class="sg-lbl">Unrealized</div><div class="sg-val ${pnlClass(s.unrealized_profit || 0)}">${fmtPnl(s.unrealized_profit || 0, 'KRW')}</div></div>
+        ${realizedCell(s.realized_profit_ytd, s.realized_trades, 'KRW')}
         <div><div class="sg-lbl">Target</div><div class="sg-val">${s.extra?.target_ticker || '—'}</div></div>
       `;
       if (s.extra?.target) {
@@ -722,7 +732,8 @@ function render(data) {
       metricsHTML = `
         <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(posInvested, 'USD')} <span style="color:var(--tx4)">(${posPct}%)</span></div></div>
         <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(posBudget, 'USD')}</div></div>
-        <div><div class="sg-lbl">P&L</div><div class="sg-val ${pnlClass(s.profit || 0)}">${fmtPnl(s.profit || 0, 'USD')}</div></div>
+        <div><div class="sg-lbl">Unrealized</div><div class="sg-val ${pnlClass(s.unrealized_profit || 0)}">${fmtPnl(s.unrealized_profit || 0, 'USD')}</div></div>
+        ${realizedCell(s.realized_profit_ytd, s.realized_trades, 'USD')}
       `;
       if (s.id === 'jd_strategy') {
         // JD Strategy: two badges — market state + holding state
@@ -748,15 +759,20 @@ function render(data) {
       metricsHTML = `
         <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(dmInvested, 'USD')} <span style="color:var(--tx4)">(${dmPct}%)</span></div></div>
         <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(dmBudget, 'USD')}</div></div>
-        <div><div class="sg-lbl">P&L</div><div class="sg-val ${pnlClass(s.profit || 0)}">${fmtPnl(s.profit || 0, 'USD')}</div></div>
+        <div><div class="sg-lbl">Unrealized</div><div class="sg-val ${pnlClass(s.unrealized_profit || 0)}">${fmtPnl(s.unrealized_profit || 0, 'USD')}</div></div>
+        ${realizedCell(s.realized_profit_ytd, s.realized_trades, 'USD')}
       `;
     }
 
     else if (s.id === 'hybrid_vb') {
       const krInvested = s.kr?.cost_basis || 0;
       const usInvested = s.us?.cost_basis || 0;
-      const krPnl = s.kr?.profit || 0;
-      const usPnl = s.us?.profit || 0;
+      const krUnreal = s.kr?.unrealized_profit ?? s.kr?.profit ?? 0;
+      const usUnreal = s.us?.unrealized_profit ?? s.us?.profit ?? 0;
+      const krRealized = s.kr?.realized_profit_ytd || 0;
+      const usRealized = s.us?.realized_profit_ytd || 0;
+      const krTrades = s.kr?.realized_trades || 0;
+      const usTrades = s.us?.realized_trades || 0;
       const krBudget = s.budget_kr || 0;
       const usBudget = s.budget_us || 0;
       const krPct = krBudget > 0 ? Math.round(krInvested / krBudget * 100) : 0;
@@ -766,9 +782,12 @@ function render(data) {
       metricsHTML = `
         <div><div class="sg-lbl">KR Invested</div><div class="sg-val">${fmtVal(krInvested, 'KRW')} <span style="color:var(--tx4)">(${krPct}%)</span></div></div>
         <div><div class="sg-lbl">KR Budget</div><div class="sg-val">${fmtVal(krBudget, 'KRW')}</div></div>
+        <div><div class="sg-lbl">KR Unrealized</div><div class="sg-val ${pnlClass(krUnreal)}">${fmtPnl(krUnreal, 'KRW')}</div></div>
+        ${realizedCell(krRealized, krTrades, 'KRW').replace('Realized YTD', 'KR Realized YTD')}
         <div><div class="sg-lbl">US Invested</div><div class="sg-val">${fmtVal(usInvested, 'USD')} <span style="color:var(--tx4)">(${usPct}%)</span></div></div>
         <div><div class="sg-lbl">US Budget</div><div class="sg-val">${fmtVal(usBudget, 'USD')}</div></div>
-        <div><div class="sg-lbl">KR P&L</div><div class="sg-val ${pnlClass(krPnl)}">${fmtPnl(krPnl, 'KRW')}</div></div>
+        <div><div class="sg-lbl">US Unrealized</div><div class="sg-val ${pnlClass(usUnreal)}">${fmtPnl(usUnreal, 'USD')}</div></div>
+        ${realizedCell(usRealized, usTrades, 'USD').replace('Realized YTD', 'US Realized YTD')}
         <div><div class="sg-lbl">Positions</div><div class="sg-val">${krPos} KR · ${usPos} US</div></div>
       `;
     }
@@ -788,7 +807,8 @@ function render(data) {
       metricsHTML = `
         <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(cbInvested, 'USD')} <span style="color:var(--tx4)">(${cbPct}%)</span></div></div>
         <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(cbBudget, 'USD')}</div></div>
-        <div><div class="sg-lbl">P&L</div><div class="sg-val ${pnlClass(s.profit || 0)}">${fmtPnl(s.profit || 0, 'USD')}</div></div>
+        <div><div class="sg-lbl">Unrealized</div><div class="sg-val ${pnlClass(s.unrealized_profit || 0)}">${fmtPnl(s.unrealized_profit || 0, 'USD')}</div></div>
+        ${realizedCell(s.realized_profit_ytd, s.realized_trades, 'USD')}
         <div><div class="sg-lbl">Regime</div><div class="sg-val ${regimeCls}" style="font-weight:500">${regime}</div></div>
         <div><div class="sg-lbl">Confidence</div><div class="sg-val">${ex.confidence || 0}%</div></div>
         <div><div class="sg-lbl">Breadth</div><div class="sg-val ${breadth >= 60 ? 'up' : breadth >= 40 ? 'amber' : 'dn'}">${breadth}/100</div></div>
@@ -947,26 +967,33 @@ let refreshTimer = null;
 
 async function load() {
   try {
-    const [res, histRes] = await Promise.all([
-      fetch('data/dashboard_data.json'),
-      fetch('data/equity_history.json').catch(()=>null)
-    ]);
+    const res = await fetch('/api/data');
     if (!res.ok) throw new Error(res.status);
     const data = await res.json();
-    if (histRes && histRes.ok) {
-      const eqData = await histRes.json();
-      if (!data.equity_series) data.equity_series = eqData;
-    }
     render(data);
   } catch (e) {
-    const app = document.querySelector('#app');
-    const loader = document.querySelector('#loader');
-    if (loader) {
-      app.innerHTML = '<header class="hdr fade-in"><h1>Automation <em>Oracle</em></h1></header>' +
-        '<div style="padding:3rem 0;text-align:center;color:var(--tx3);font-size:0.8rem">' +
-        'Dashboard data not available. Updated daily after market close.</div>';
+    // If /api/data fails, render with demo data message
+    const app = $('#app');
+    if ($('#loader')) {
+      app.innerHTML = `
+        <header class="hdr fade-in">
+          <h1>Automation <em>Oracle</em></h1>
+          <div class="hdr-right">
+            <span class="hdr-meta">Offline</span>
+            <button class="refresh-btn" onclick="load()">Retry</button>
+          </div>
+        </header>
+        <div style="padding:3rem 0;text-align:center;color:var(--tx3);font-size:0.8rem">
+          Could not reach /api/data<br>
+          Run: <code style="color:var(--accent)">python3 dashboard_server.py</code>
+        </div>
+      `;
     }
   }
+
+  // Auto-refresh every 60s
+  clearTimeout(refreshTimer);
+  refreshTimer = setTimeout(load, 60000);
 }
 
 load();
