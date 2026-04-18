@@ -694,9 +694,10 @@ function render(data) {
 
     else if (s.id === 'korea_etf') {
       const ketfBudget = s.budget || 0;
-      const ketfPct = ketfBudget > 0 ? Math.round((s.value || 0) / ketfBudget * 100) : 0;
+      const ketfInvested = s.cost_basis || 0;
+      const ketfPct = ketfBudget > 0 ? Math.round(ketfInvested / ketfBudget * 100) : 0;
       metricsHTML = `
-        <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(s.value, 'KRW')}</div></div>
+        <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(ketfInvested, 'KRW')}</div></div>
         <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(ketfBudget, 'KRW')} <span style="color:var(--tx4)">(${ketfPct}%)</span></div></div>
         <div><div class="sg-lbl">P&L</div><div class="sg-val ${pnlClass(s.profit || 0)}">${fmtPnl(s.profit || 0, 'KRW')}</div></div>
         <div><div class="sg-lbl">Target</div><div class="sg-val">${s.extra?.target_ticker || '—'}</div></div>
@@ -708,10 +709,10 @@ function render(data) {
 
     else if (s.id === 'quant40' || s.id === 'jd_strategy') {
       const posBudget = s.budget || 0;
-      const posValue = s.value || 0;
-      const posPct = posBudget > 0 ? Math.round(posValue / posBudget * 100) : 0;
+      const posInvested = s.cost_basis || 0;
+      const posPct = posBudget > 0 ? Math.round(posInvested / posBudget * 100) : 0;
       metricsHTML = `
-        <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(posValue, 'USD')} <span style="color:var(--tx4)">(${posPct}%)</span></div></div>
+        <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(posInvested, 'USD')} <span style="color:var(--tx4)">(${posPct}%)</span></div></div>
         <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(posBudget, 'USD')}</div></div>
         <div><div class="sg-lbl">Cash</div><div class="sg-val">${fmtVal(s.cash || 0, 'USD')}</div></div>
         <div><div class="sg-lbl">P&L</div><div class="sg-val ${pnlClass(s.profit || 0)}">${fmtPnl(s.profit || 0, 'USD')}</div></div>
@@ -735,10 +736,10 @@ function render(data) {
 
     else if (s.id === 'dual_momentum') {
       const dmBudget = s.budget || 0;
-      const dmValue = s.value || 0;
-      const dmPct = dmBudget > 0 ? Math.round(dmValue / dmBudget * 100) : 0;
+      const dmInvested = s.cost_basis || 0;
+      const dmPct = dmBudget > 0 ? Math.round(dmInvested / dmBudget * 100) : 0;
       metricsHTML = `
-        <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(dmValue, 'USD')} <span style="color:var(--tx4)">(${dmPct}%)</span></div></div>
+        <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(dmInvested, 'USD')} <span style="color:var(--tx4)">(${dmPct}%)</span></div></div>
         <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(dmBudget, 'USD')}</div></div>
         <div><div class="sg-lbl">Cash</div><div class="sg-val">${fmtVal(s.cash || 0, 'USD')}</div></div>
         <div><div class="sg-lbl">P&L</div><div class="sg-val ${pnlClass(s.profit || 0)}">${fmtPnl(s.profit || 0, 'USD')}</div></div>
@@ -746,20 +747,20 @@ function render(data) {
     }
 
     else if (s.id === 'hybrid_vb') {
-      const krVal = s.kr?.value || 0;
-      const usVal = s.us?.value || 0;
+      const krInvested = s.kr?.cost_basis || 0;
+      const usInvested = s.us?.cost_basis || 0;
       const krPnl = s.kr?.profit || 0;
       const usPnl = s.us?.profit || 0;
       const krBudget = s.budget_kr || 0;
       const usBudget = s.budget_us || 0;
-      const krPct = krBudget > 0 ? Math.round(krVal / krBudget * 100) : 0;
-      const usPct = usBudget > 0 ? Math.round(usVal / usBudget * 100) : 0;
+      const krPct = krBudget > 0 ? Math.round(krInvested / krBudget * 100) : 0;
+      const usPct = usBudget > 0 ? Math.round(usInvested / usBudget * 100) : 0;
       const krPos = Object.keys(s.open_positions?.kr || {}).length;
       const usPos = Object.keys(s.open_positions?.us || {}).length;
       metricsHTML = `
-        <div><div class="sg-lbl">KR Invested</div><div class="sg-val">${fmtVal(krVal, 'KRW')} <span style="color:var(--tx4)">(${krPct}%)</span></div></div>
+        <div><div class="sg-lbl">KR Invested</div><div class="sg-val">${fmtVal(krInvested, 'KRW')} <span style="color:var(--tx4)">(${krPct}%)</span></div></div>
         <div><div class="sg-lbl">KR Budget</div><div class="sg-val">${fmtVal(krBudget, 'KRW')}</div></div>
-        <div><div class="sg-lbl">US Invested</div><div class="sg-val">${fmtVal(usVal, 'USD')} <span style="color:var(--tx4)">(${usPct}%)</span></div></div>
+        <div><div class="sg-lbl">US Invested</div><div class="sg-val">${fmtVal(usInvested, 'USD')} <span style="color:var(--tx4)">(${usPct}%)</span></div></div>
         <div><div class="sg-lbl">US Budget</div><div class="sg-val">${fmtVal(usBudget, 'USD')}</div></div>
         <div><div class="sg-lbl">KR P&L</div><div class="sg-val ${pnlClass(krPnl)}">${fmtPnl(krPnl, 'KRW')}</div></div>
         <div><div class="sg-lbl">Positions</div><div class="sg-val">${krPos} KR · ${usPos} US</div></div>
@@ -776,10 +777,10 @@ function render(data) {
       const trendPasses = ex.trend_pass_count || 0;
       const vcpCount = ex.vcp_count || 0;
       const cbBudget = s.budget || 0;
-      const cbValue = s.value || 0;
-      const cbPct = cbBudget > 0 ? Math.round(cbValue / cbBudget * 100) : 0;
+      const cbInvested = s.cost_basis || 0;
+      const cbPct = cbBudget > 0 ? Math.round(cbInvested / cbBudget * 100) : 0;
       metricsHTML = `
-        <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(cbValue, 'USD')} <span style="color:var(--tx4)">(${cbPct}%)</span></div></div>
+        <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(cbInvested, 'USD')} <span style="color:var(--tx4)">(${cbPct}%)</span></div></div>
         <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(cbBudget, 'USD')}</div></div>
         <div><div class="sg-lbl">Cash</div><div class="sg-val">${fmtVal(s.cash || 0, 'USD')}</div></div>
         <div><div class="sg-lbl">P&L</div><div class="sg-val ${pnlClass(s.profit || 0)}">${fmtPnl(s.profit || 0, 'USD')}</div></div>
