@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-18 23:17 KST",
+  "updated_at": "2026-04-18 23:26 KST",
   "portfolio": {
     "total_value_krw": 83532208,
     "original_deposit_krw": 75714217,
@@ -11,8 +11,8 @@
     "exchange_rate": 1472.6
   },
   "meta": {
-    "timestamp": "2026-04-18T23:17:18.118089+09:00",
-    "kst": "2026-04-18 23:17 KST",
+    "timestamp": "2026-04-18T23:26:11.561357+09:00",
+    "kst": "2026-04-18 23:26 KST",
     "equity_start": "2026-01-01"
   },
   "strategies": [
@@ -22,7 +22,7 @@
       "currency": "KRW",
       "mode": "live",
       "value": 9843533.9827787,
-      "profit": 59747.316229632124,
+      "profit": 0.0,
       "budget": 0,
       "is_holding": false,
       "total_trades": 10,
@@ -36,8 +36,8 @@
         "ma_period": 5,
         "equity_days": 34
       },
-      "stale_hours": 14.285936910510063,
-      "unrealized_profit": 59747.316229632124,
+      "stale_hours": 14.43411503467295,
+      "unrealized_profit": 0,
       "realized_profit_ytd": 59747.32,
       "realized_trades": 10,
       "wins_ytd": 5,
@@ -46,7 +46,7 @@
       "mdd_pct": null,
       "realized_source": "upbit",
       "cycles_ytd": 10,
-      "total_pl_ytd": 119494.63622963213,
+      "total_pl_ytd": 59747.32,
       "profit_rate_ytd_pct": null
     },
     {
@@ -75,7 +75,7 @@
         "target_ticker": "139220",
         "rebalance_day": false
       },
-      "stale_hours": 38.28279504299164,
+      "stale_hours": 38.43097319271829,
       "timestamp": "2026-04-17T09:00:20.048692+09:00",
       "unrealized_profit": 3018570.0,
       "realized_profit_ytd": -1380.0,
@@ -116,7 +116,7 @@
         "signal": "\u26aa Neutral (2/4)",
         "regime": ""
       },
-      "stale_hours": 24.78612429810895,
+      "stale_hours": 24.93430246975687,
       "timestamp": "2026-04-17T22:30:08.063521",
       "unrealized_profit": 1087.9022,
       "realized_profit_ytd": -738.04,
@@ -158,7 +158,7 @@
         "regime": "EASING",
         "is_holding": true
       },
-      "stale_hours": 24.776473898092906,
+      "stale_hours": 24.92465206530359,
       "timestamp": "2026-04-17T22:30:42.500497",
       "unrealized_profit": 102.091475,
       "realized_profit_ytd": -298.72,
@@ -202,7 +202,7 @@
         "mode_label": "offensive",
         "rebalance_day": false
       },
-      "stale_hours": 24.76841960940096,
+      "stale_hours": 24.91659779522154,
       "timestamp": "2026-04-17T22:31:11.801153",
       "unrealized_profit": 0,
       "realized_profit_ytd": 0,
@@ -404,7 +404,7 @@
         },
         "us": {}
       },
-      "stale_hours": 38.267388130625086,
+      "stale_hours": 38.41556632366445,
       "realized_trades": 8,
       "cycles_ytd": 8,
       "mdd_pct": null
@@ -499,7 +499,7 @@
         "trend_pass_count": 13,
         "vcp_count": 0
       },
-      "stale_hours": 24.753460050821303,
+      "stale_hours": 24.901638409429125,
       "timestamp": "2026-04-17T22:32:05.656948",
       "unrealized_profit": 0,
       "realized_profit_ytd": 0,
@@ -715,7 +715,7 @@
     ]
   },
   "realized_pl": {
-    "_updated": "2026-04-18T22:55:22+09:00",
+    "_updated": "2026-04-18T23:25:40+09:00",
     "_year": 2026,
     "_source_mode": "both",
     "_total_krw": 98971.32,
@@ -730,8 +730,8 @@
         "win_rate_pct": 50.0,
         "mdd_pct": null,
         "last_trade": {
-          "ticker": "BTC/KRW",
-          "exit_date": "2026-01-01T00:00:00+09:00",
+          "ticker": "KRW-BTC",
+          "exit_date": "2026-12-31T23:59:59+09:00",
           "pnl": 11949.463245926425
         },
         "source": "upbit"
@@ -823,7 +823,7 @@
       }
     },
     "_errors": [
-      "upbit: synthesised from state counters (no per-trade history persisted yet)"
+      "upbit: bot state says 10 closed trades, Upbit API shows 11 sells in 2026 (22 buys). State file wins \u2014 consider running the bot to reconcile."
     ]
   },
   "feed": [
