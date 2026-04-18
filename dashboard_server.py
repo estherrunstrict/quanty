@@ -519,14 +519,19 @@ def build_dashboard_data():
         s["unrealized_profit"] = s.get("profit", 0)
 
         if s.get("id") == "hybrid_vb":
+            # Surface realized PnL on each leg even when the per-leg _result.json
+            # is absent (leg dict is {}). The realized number comes from the
+            # state-file trade history, not from the result snapshot, so it's
+            # still meaningful.
             for leg_key, agg_key in (("kr", "HYBRID_VB_KR"), ("us", "HYBRID_VB_US")):
-                leg = s.get(leg_key) or {}
-                if leg:
-                    leg_realized = realized_by_key.get(agg_key, {})
-                    leg["unrealized_profit"] = leg.get("profit", 0)
-                    leg["realized_profit_ytd"] = leg_realized.get("realized_ytd", 0)
-                    leg["realized_trades"] = leg_realized.get("trades", 0)
-                    s[leg_key] = leg
+                leg = s.get(leg_key)
+                if not isinstance(leg, dict):
+                    leg = {}
+                leg_realized = realized_by_key.get(agg_key, {})
+                leg["unrealized_profit"] = leg.get("profit", 0)
+                leg["realized_profit_ytd"] = leg_realized.get("realized_ytd", 0)
+                leg["realized_trades"] = leg_realized.get("trades", 0)
+                s[leg_key] = leg
             # Roll up the two legs for the top-level card total.
             s["realized_profit_ytd_kr"] = realized_by_key.get("HYBRID_VB_KR", {}).get("realized_ytd", 0)
             s["realized_profit_ytd_us"] = realized_by_key.get("HYBRID_VB_US", {}).get("realized_ytd", 0)
