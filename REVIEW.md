@@ -384,3 +384,51 @@ at `58e5ef1` after WIP stashed as `stash@{0}`).
 6. **REVIEW.md architectural risks above are unaddressed.** Scope here was feature + wiring only. The top-5 risks (shell-script timing gates, state-file races, log-parsing brittleness, numeric precision in money arithmetic, framework/legacy drift) each deserve their own PR.
 
 7. **Deploy step (for reviewer):** Per `CLAUDE.md`, this repo mirrors to `ubuntu@193.123.246.52:/home/ubuntu/koreainvestment-autotrade/`. Files to `scp` after merge: `scripts/aggregate_realized_pnl.py`, `dashboard_server.py`, `dashboard.html`, `check_and_run.sh`. Cron picks up the new aggregator call on next invocation; no service restart needed.
+
+---
+
+## What shipped — Phase 3 (per-card derived metrics)
+
+Five new cells per strategy card surface the metrics the unified
+aggregator already produces: **Total P/L**, **Profit %**, **Win Rate**,
+**MDD**, and **Cycles**. Hybrid VB renders KR and US legs independently
+(prefix `KR `/`US `).
+
+### Commits (most recent first)
+
+| SHA | Subject |
+|-----|---------|
+| `b71c573` | test: coverage for KIS-disabled fallback, unknown ticker, hybrid legs, dashboard_server enrichment |
+| `5818e13` | feat(dashboard): Total P/L + Profit % + Win Rate + MDD + Cycles per card |
+
+GH Pages mirror (separate repo `estherrunstrict/quanty`):
+
+| SHA | Subject |
+|-----|---------|
+| `58369a5` | data: refresh with new metric fields |
+| `b440ca7` | feat(dashboard): Total P/L + Profit % + Win Rate + MDD + Cycles per card |
+
+### Files changed
+
+- `dashboard.html` — five new render helpers (`totalPlCell`, `profitPctCell`, `winRateCell`, `mddCell`, `cyclesCell`); each card branch (`btc_vb`, `korea_etf`, `quant40`/`jd_strategy`, `dual_momentum`, `hybrid_vb`, `claude_bot`) appends the new cells. BTC VB's hand-rolled WR cell (using `s.winning_trades / s.total_trades`) replaced with the unified `winRateCell` that reads `s.win_rate_pct` from the aggregator.
+- `dashboard_server.py` — `_enrich()` lifted from a closure inside `build_dashboard_data()` to module scope so it can be unit-tested directly.
+- `tests/test_aggregate_realized_pnl.py` — six new tests (13 total). Coverage for: state fallback when KIS auth fails, unknown ticker error reporting, two-leg hybrid VB attribution from one shared state file, `_enrich` derived totals, zero-budget edge case, empty realized dict.
+- `docs/index.html` (GH Pages repo) — same patch as `dashboard.html`.
+- `docs/data/dashboard_data.json` (GH Pages repo) — refreshed snapshot containing the new fields.
+
+### Test status
+
+`python3 -m pytest tests/` — **102 passed, 1 skipped**. 6 new tests added, no regressions.
+
+### Known gaps
+
+- **MDD column shows `—` for every bot.** `_compute_mdd_pct` requires ≥2 daily snapshots in `strategy_results/equity_history.jsonl`. The dashboard server only just started writing snapshots, so the series is too short for a meaningful drawdown. Once a few weeks of snapshots accumulate, the cell will populate automatically — no code change required.
+- **`btc_vb.profit_rate_ytd_pct`** is `null` because BTC VB's budget is set to `0` (config sentinel for "unlimited"). The cell is silently skipped; intentional — a profit % over an undefined denominator would be misleading.
+- **`mdd_pct` for hybrid_vb shares one equity_id (`hybrid_vb`)** between KR and US legs, so per-leg MDD is identical. Splitting requires a small change to `dashboard_server._save_equity_snapshot` to emit per-leg snapshot keys (already does — `hybrid_vb_kr` / `hybrid_vb_us`); the aggregator just needs to pick those up. Logged as a follow-up for Phase 4.
+
+### Verify (for the user)
+
+1. **Local dashboard**: `python3 dashboard_server.py` then open `http://localhost:8077/`. Each card should now show Total P/L, Profit %, Win Rate, MDD, Cycles in addition to the existing Invested / Budget Cap / Unrealized / Realized YTD cells. MDD will show `—` (not yet) on every card; that is expected (see Known gaps).
+2. **Live public dashboard**: <https://estherrunstrict.github.io/quanty/>. Same five cells should render. Spot-check on the BTC VB card (`Win Rate 50.0% (10c)`, `Cycles 10`) and the Korea ETF card (`Profit % +30.17%`).
+3. **Hybrid VB card**: confirm both `KR Total P/L`, `KR Profit %`, `KR Win Rate`, `KR Cycles`, and the matching `US ` prefixed cells appear. Live values: `KR Profit % +1.95%`, `KR Win Rate 25.0% (8c)`, US side mostly empty until trades land.
+4. **Tests**: `python3 -m pytest tests/` should report 102 passed, 1 skipped.
