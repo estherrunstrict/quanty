@@ -113,6 +113,42 @@ def main():
     else:
         print("  WARNING: Portfolio query failed, using empty portfolio")
 
+    # Override portfolio total_profit_krw to match the dashboard's Total P/L
+    # (sum of per-bot unrealized + realized YTD). The raw account-level
+    # total_value - original_deposit mixes in FX drift and top-ups, so
+    # Discord was showing a number different from the dashboard strip.
+    if portfolio:
+        rate = portfolio.get("exchange_rate", 1380)
+        unreal_krw = unreal_usd = 0.0
+        real_krw = real_usd = 0.0
+        for s in api_data.get("strategies", []):
+            cur = s.get("currency")
+            if cur == "KRW":
+                unreal_krw += s.get("unrealized_profit") or s.get("profit") or 0
+                real_krw   += s.get("realized_profit_ytd") or 0
+            elif cur == "USD":
+                unreal_usd += s.get("unrealized_profit") or s.get("profit") or 0
+                real_usd   += s.get("realized_profit_ytd") or 0
+            elif cur == "MULTI":
+                kr = s.get("kr") or {}
+                us = s.get("us") or {}
+                unreal_krw += kr.get("unrealized_profit") or kr.get("profit") or 0
+                unreal_usd += us.get("unrealized_profit") or us.get("profit") or 0
+                real_krw   += kr.get("realized_profit_ytd") or 0
+                real_usd   += us.get("realized_profit_ytd") or 0
+        unreal_combined = unreal_krw + unreal_usd * rate
+        real_combined   = real_krw   + real_usd   * rate
+        total_pnl = unreal_combined + real_combined
+        original = portfolio.get("original_deposit_krw") or 1
+        portfolio["unrealized_krw"]    = round(unreal_combined)
+        portfolio["realized_krw"]      = round(real_combined)
+        portfolio["unrealized_native"] = {"krw": round(unreal_krw), "usd": round(unreal_usd, 2)}
+        portfolio["realized_native"]   = {"krw": round(real_krw),   "usd": round(real_usd, 2)}
+        portfolio["total_profit_krw"]  = round(total_pnl)
+        portfolio["total_profit_pct"]  = round(total_pnl / original * 100, 2) if original > 0 else 0
+        print("  Matched dashboard P/L: realized W{:+,.0f} + unrealized W{:+,.0f} = W{:+,.0f}".format(
+            real_combined, unreal_combined, total_pnl))
+
     # Merge
     output = {
         "updated_at": now.strftime("%Y-%m-%d %H:%M KST"),
