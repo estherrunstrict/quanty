@@ -280,6 +280,145 @@ a { color: var(--accent); text-decoration: none; }
 .sig.cash { background: var(--accent-d); border: 1px solid var(--accent); color: var(--accent); }
 .sig.bear { background: var(--r-bg); border: 1px solid var(--r); color: var(--r); }
 
+/* ── Strategy Comparison Chart ── */
+.cmp {
+  margin-bottom: 2rem;
+  padding: 1.4rem 1.5rem;
+  background: var(--s1);
+  border: 1px solid var(--border);
+}
+.cmp-hdr { margin-bottom: 1rem; }
+.cmp-title {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.cmp-sub {
+  font-size: 0.7rem;
+  color: var(--tx3);
+  margin-top: 0.25rem;
+}
+.cmp-chart {
+  display: flex;
+  gap: 0.4rem;
+  align-items: stretch;
+}
+.cmp-y-axis {
+  position: relative;
+  width: 46px;
+  flex-shrink: 0;
+  height: 300px;
+}
+.cmp-y-axis span {
+  position: absolute;
+  right: 4px;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: var(--tx4);
+  transform: translateY(-50%);
+  white-space: nowrap;
+}
+.cmp-plot {
+  flex: 1;
+  position: relative;
+  height: 300px;
+}
+.cmp-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.cmp-x-axis {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  margin-top: 4px;
+  height: 14px;
+}
+.cmp-x-axis span {
+  position: absolute;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: var(--tx4);
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.cmp-tooltip {
+  position: absolute;
+  top: 4px;
+  background: var(--s3);
+  border: 1px solid var(--border-h);
+  padding: 0.5rem 0.7rem;
+  pointer-events: none;
+  z-index: 10;
+  min-width: 200px;
+}
+.cmp-tt-date {
+  font-family: var(--mono);
+  color: var(--tx2);
+  font-size: 0.62rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.3rem;
+  margin-bottom: 0.35rem;
+}
+.cmp-tt-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.1rem 0;
+  font-family: var(--serif);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+.cmp-tt-pct {
+  font-family: var(--mono);
+  margin-left: auto;
+  font-size: 0.7rem;
+}
+.cmp-legend {
+  margin-top: 1.6rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.32rem;
+}
+.cmp-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-family: var(--serif);
+  font-size: 0.85rem;
+}
+.cmp-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 3px;
+  flex-shrink: 0;
+}
+.cmp-name { flex: 1; }
+.cmp-pct {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  min-width: 84px;
+  text-align: right;
+}
+.cmp-meta {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--tx3);
+  min-width: 110px;
+  text-align: right;
+}
+.cmp-detail {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--tx4);
+}
+
 /* ── Sparkline Charts ── */
 .sparkline-wrap {
   margin-top: 0.6rem;
@@ -456,6 +595,13 @@ a { color: var(--accent); text-decoration: none; }
   .mob-section { display: none; }
   .mob-section.active { display: block; }
 
+  .cmp { padding: 1rem; }
+  .cmp-y-axis { height: 200px; width: 38px; }
+  .cmp-plot { height: 200px; }
+  .cmp-legend-row { flex-wrap: wrap; gap: 0.4rem; }
+  .cmp-pct { min-width: 70px; }
+  .cmp-meta { min-width: 0; flex-basis: 100%; text-align: left; padding-left: 22px; }
+
   .strat { padding: 1rem; }
   .strat-name { font-size: 0.95rem; }
 
@@ -618,6 +764,208 @@ function renderSparkline(series, width = 280, height = 60) {
   `;
 }
 
+// ═══ Strategy Comparison Chart ═══════════════════════════
+// Overlays all 7 bots' YTD equity curves normalized to % return from each bot's
+// own first snapshot. Mixed currencies (KRW/USD) are sidestepped because
+// % return is currency-agnostic. Bots with <2 points or a zero base value
+// are listed in the legend as "insufficient data" but skipped from the plot.
+function buildComparisonChart(equitySeries, strategies) {
+  const seriesMeta = {
+    btc_vb:        { name: 'BTC Volatility Breakout', stratId: 'btc_vb',        color: '#c9a24d' },
+    korea_etf:     { name: 'Korea ETF Momentum',      stratId: 'korea_etf',     color: '#3a8a5a' },
+    quant40:       { name: 'US Quant40',              stratId: 'quant40',       color: '#4a78a8' },
+    jd_strategy:   { name: 'JD Strategy',             stratId: 'jd_strategy',   color: '#a84848' },
+    dual_momentum: { name: 'Dual Momentum',           stratId: 'dual_momentum', color: '#7a68a8' }, // sole purple by spec
+    hybrid_vb_kr:  { name: 'Hybrid VB (KR)',          stratId: 'hybrid_vb',     sub: 'kr', color: '#c9a24d99' },
+    hybrid_vb_us:  { name: 'Hybrid VB (US)',          stratId: 'hybrid_vb',     sub: 'us', color: '#4a78a899' },
+  };
+
+  const stratIndex = {};
+  (strategies || []).forEach(s => { stratIndex[s.id] = s; });
+
+  const allDates = new Set();
+  const prepared = Object.keys(seriesMeta).map(key => {
+    const meta = seriesMeta[key];
+    const raw = (equitySeries || {})[key] || [];
+    const strat = stratIndex[meta.stratId] || {};
+    const sub = meta.sub ? (strat[meta.sub] || {}) : strat;
+    const wr = sub.win_rate_pct;
+    const cycles = sub.cycles_ytd;
+    const entry = {
+      key, name: meta.name, color: meta.color,
+      wr, cycles, points: [], finalPct: null, insufficient: false,
+    };
+    if (raw.length < 2 || !raw[0][1]) {
+      entry.insufficient = true;
+      return entry;
+    }
+    const base = raw[0][1];
+    raw.forEach(([date, value]) => {
+      const pct = (value / base - 1) * 100;
+      entry.points.push({ date, pct });
+      allDates.add(date);
+    });
+    entry.finalPct = entry.points[entry.points.length - 1].pct;
+    return entry;
+  });
+
+  const dateList = [...allDates].sort();
+  if (dateList.length < 2) return null;
+  const dateToIdx = {};
+  dateList.forEach((d, i) => { dateToIdx[d] = i; });
+
+  let minY = 0, maxY = 0;
+  prepared.forEach(p => {
+    if (p.insufficient) return;
+    p.points.forEach(pt => {
+      if (pt.pct < minY) minY = pt.pct;
+      if (pt.pct > maxY) maxY = pt.pct;
+    });
+  });
+  const padY = ((maxY - minY) || 10) * 0.05;
+  const yLo = minY - padY;
+  const yHi = maxY + padY;
+
+  // SVG uses an internal 1000x1000 coordinate space; CSS stretches it to fill
+  // the .cmp-plot box. vector-effect="non-scaling-stroke" keeps line weight
+  // consistent under non-uniform scaling.
+  const VB = 1000;
+  const xFor = (idx) => (idx / (dateList.length - 1)) * VB;
+  const yFor = (pct) => (1 - (pct - yLo) / (yHi - yLo)) * VB;
+
+  const zeroLine = (yLo <= 0 && yHi >= 0)
+    ? `<line x1="0" y1="${yFor(0).toFixed(1)}" x2="${VB}" y2="${yFor(0).toFixed(1)}" stroke="var(--tx4)" stroke-width="0.5" stroke-dasharray="4,4" vector-effect="non-scaling-stroke"/>`
+    : '';
+
+  const linesSvg = prepared.filter(p => !p.insufficient).map(p => {
+    const pts = p.points.map(pt => `${xFor(dateToIdx[pt.date]).toFixed(1)},${yFor(pt.pct).toFixed(1)}`).join(' ');
+    return `<polyline data-key="${p.key}" points="${pts}" fill="none" stroke="${p.color}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`;
+  }).join('');
+
+  const cursor = `<line class="cmp-cursor" x1="0" y1="0" x2="0" y2="${VB}" stroke="var(--tx2)" stroke-width="0.5" stroke-dasharray="3,3" vector-effect="non-scaling-stroke" style="display:none"/>`;
+  const overlay = `<rect class="cmp-overlay" x="0" y="0" width="${VB}" height="${VB}" fill="transparent" pointer-events="all"/>`;
+
+  // Y-axis labels: top, zero (if in range), bottom — HTML overlay so text
+  // doesn't get distorted by the SVG's non-uniform stretch.
+  const yLabels = [];
+  const fmtPct = v => (v >= 0 ? '+' : '') + v.toFixed(0) + '%';
+  yLabels.push({ pct: yHi, top: 0 });
+  if (yLo < 0 && yHi > 0) yLabels.push({ pct: 0, top: ((yHi - 0) / (yHi - yLo)) * 100 });
+  yLabels.push({ pct: yLo, top: 100 });
+  const yAxisHTML = yLabels.map(l =>
+    `<span style="top:${l.top.toFixed(2)}%">${fmtPct(l.pct)}</span>`
+  ).join('');
+
+  // X-axis: 4-5 evenly spaced date ticks (MM-DD).
+  const tickCount = Math.min(5, dateList.length);
+  const tickIdxs = [];
+  for (let i = 0; i < tickCount; i++) {
+    tickIdxs.push(Math.round(i * (dateList.length - 1) / (tickCount - 1)));
+  }
+  const xAxisHTML = [...new Set(tickIdxs)].map(i => {
+    const left = (i / (dateList.length - 1)) * 100;
+    return `<span style="left:${left.toFixed(2)}%">${dateList[i].substring(5)}</span>`;
+  }).join('');
+
+  // Legend: sort by final % desc; insufficient-data rows pinned to bottom.
+  const sorted = [...prepared].sort((a, b) => {
+    if (a.insufficient !== b.insufficient) return a.insufficient ? 1 : -1;
+    if (a.insufficient) return 0;
+    return b.finalPct - a.finalPct;
+  });
+  const legendHTML = sorted.map(p => {
+    if (p.insufficient) {
+      return `<div class="cmp-legend-row"><span class="cmp-swatch" style="background:${p.color}"></span><span class="cmp-name">${p.name}</span><span class="cmp-detail">— insufficient data</span></div>`;
+    }
+    const pctStr = (p.finalPct >= 0 ? '+' : '') + p.finalPct.toFixed(2) + '%';
+    const pctCls = p.finalPct >= 0 ? 'up' : 'dn';
+    const wrPart = (p.wr === null || p.wr === undefined) ? '' : `, ${p.wr.toFixed(0)}% WR`;
+    const metaStr = `(${p.cycles || 0}c${wrPart})`;
+    return `<div class="cmp-legend-row"><span class="cmp-swatch" style="background:${p.color}"></span><span class="cmp-name">${p.name}</span><span class="cmp-pct ${pctCls}">${pctStr}</span><span class="cmp-meta">${metaStr}</span></div>`;
+  }).join('');
+
+  const section = h('section', 'cmp fade-in d1');
+  section.innerHTML = `
+    <div class="cmp-hdr">
+      <h2 class="cmp-title">Strategy Comparison · 2026 YTD</h2>
+      <div class="cmp-sub">% return from each bot's first equity snapshot</div>
+    </div>
+    <div class="cmp-chart">
+      <div class="cmp-y-axis">${yAxisHTML}</div>
+      <div class="cmp-plot">
+        <svg class="cmp-svg" viewBox="0 0 ${VB} ${VB}" preserveAspectRatio="none">
+          ${zeroLine}
+          ${linesSvg}
+          ${cursor}
+          ${overlay}
+        </svg>
+        <div class="cmp-x-axis">${xAxisHTML}</div>
+        <div class="cmp-tooltip" style="display:none"></div>
+      </div>
+    </div>
+    <div class="cmp-legend">${legendHTML}</div>
+  `;
+
+  // Hover: snap a vertical cursor to the nearest unified date and show a
+  // tooltip listing each bot that has a sample on that date.
+  const svgEl = section.querySelector('.cmp-svg');
+  const overlayEl = section.querySelector('.cmp-overlay');
+  const cursorEl = section.querySelector('.cmp-cursor');
+  const tooltipEl = section.querySelector('.cmp-tooltip');
+  const plotEl = section.querySelector('.cmp-plot');
+
+  overlayEl.addEventListener('mousemove', (e) => {
+    const rect = svgEl.getBoundingClientRect();
+    if (!rect.width) return;
+    const xVB = (e.clientX - rect.left) / rect.width * VB;
+    let nearestIdx = 0, nearestDist = Infinity;
+    for (let i = 0; i < dateList.length; i++) {
+      const px = xFor(i);
+      const d = Math.abs(px - xVB);
+      if (d < nearestDist) { nearestDist = d; nearestIdx = i; }
+    }
+    const date = dateList[nearestIdx];
+    const cursorX = xFor(nearestIdx);
+    cursorEl.setAttribute('x1', cursorX);
+    cursorEl.setAttribute('x2', cursorX);
+    cursorEl.style.display = '';
+
+    const rows = prepared
+      .filter(p => !p.insufficient)
+      .map(p => {
+        const pt = p.points.find(x => x.date === date);
+        if (!pt) return null;
+        return { name: p.name, color: p.color, pct: pt.pct };
+      })
+      .filter(Boolean)
+      .sort((a, b) => b.pct - a.pct);
+
+    if (!rows.length) {
+      tooltipEl.style.display = 'none';
+      return;
+    }
+
+    tooltipEl.innerHTML = `<div class="cmp-tt-date">${date}</div>` + rows.map(r => {
+      const sign = r.pct >= 0 ? '+' : '';
+      return `<div class="cmp-tt-row"><span class="cmp-swatch" style="background:${r.color}"></span><span>${r.name}</span><span class="cmp-tt-pct ${r.pct >= 0 ? 'up' : 'dn'}">${sign}${r.pct.toFixed(2)}%</span></div>`;
+    }).join('');
+
+    const plotRect = plotEl.getBoundingClientRect();
+    const cursorPx = (cursorX / VB) * rect.width + (rect.left - plotRect.left);
+    tooltipEl.style.display = '';
+    const ttW = tooltipEl.offsetWidth;
+    const overflowsRight = cursorPx + 12 + ttW > plotRect.width - 4;
+    tooltipEl.style.left = (overflowsRight ? cursorPx - ttW - 12 : cursorPx + 12) + 'px';
+  });
+
+  overlayEl.addEventListener('mouseleave', () => {
+    cursorEl.style.display = 'none';
+    tooltipEl.style.display = 'none';
+  });
+
+  return section;
+}
+
 // ═══ Render ═══════════════════════════════════════════════
 function render(data) {
   const app = $('#app');
@@ -686,6 +1034,10 @@ function render(data) {
     strip.appendChild(cell);
   });
   app.appendChild(strip);
+
+  // ── Strategy Comparison Chart (overlay of all bots' YTD % returns)
+  const cmp = buildComparisonChart(data.equity_series || {}, data.strategies || []);
+  if (cmp) app.appendChild(cmp);
 
   // ── Mobile Tabs
   const mobTabs = h('div', 'mob-tabs');
