@@ -191,11 +191,11 @@ def _save_equity_snapshot(strategies, exchange_rate=1380.0):
 
     for s in strategies:
         sid = s.get("id", "")
-        if sid in ("btc_vb", "claude_bot"):
-            # btc_vb: own state-file equity series, don't duplicate.
-            # claude_bot: analysis-only when in BEARISH; total P/L is still meaningful, fall through.
-            if sid == "btc_vb":
-                continue
+        # All bots — including btc_vb — go through the same realized+unrealized
+        # path so the comparison chart matches each card's Total P/L cell.
+        # (BTC VB previously had a special equity_history-based series that
+        # tracked a different baseline and reported a loss while the card
+        # showed a profit.)
 
         if sid == "hybrid_vb":
             for leg in ("kr", "us"):
@@ -651,16 +651,9 @@ def build_dashboard_data():
     _save_equity_snapshot(strategies, exchange_rate=fx_now)
 
     # ── Total P/L history per bot for the comparison chart ──
+    # Every bot (btc_vb included) goes through equity_history.jsonl, so the
+    # chart and the per-card Total P/L always agree.
     equity_series = _get_equity_series()
-
-    # BTC VB has its own per-bot equity_history list in upbit_vb_strategy_state.json
-    # which is full account equity (cash + BTC). Convert it to a Total P/L series
-    # the same shape as the others — first point as baseline, deltas afterward.
-    if equity_hist:
-        btc_series_eq = [[d, v] for d, v in equity_hist if d >= EQUITY_START_DATE]
-        if btc_series_eq and len(btc_series_eq) >= 1:
-            base = btc_series_eq[0][1]
-            equity_series["btc_vb"] = [[d, round(v - base, 2)] for d, v in btc_series_eq]
 
     # ── Log Events ──
     feed_events = []
