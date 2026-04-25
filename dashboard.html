@@ -795,17 +795,15 @@ function buildComparisonChart(equitySeries, strategies) {
       key, name: meta.name, color: meta.color,
       wr, cycles, points: [], finalPct: null, insufficient: false,
     };
-    if (raw.length < 2 || !raw[0][1]) {
+    if (raw.length < 2) {
       entry.insufficient = true;
       return entry;
     }
-    const base = raw[0][1];
-    raw.forEach(([date, value]) => {
-      const pct = (value / base - 1) * 100;
-      entry.points.push({ date, pct });
+    raw.forEach(([date, val]) => {
+      entry.points.push({ date, val });
       allDates.add(date);
     });
-    entry.finalPct = entry.points[entry.points.length - 1].pct;
+    entry.finalVal = entry.points[entry.points.length - 1].val;
     return entry;
   });
 
@@ -818,11 +816,14 @@ function buildComparisonChart(equitySeries, strategies) {
   prepared.forEach(p => {
     if (p.insufficient) return;
     p.points.forEach(pt => {
-      if (pt.pct < minY) minY = pt.pct;
-      if (pt.pct > maxY) maxY = pt.pct;
+      if (pt.val < minY) minY = pt.val;
+      if (pt.val > maxY) maxY = pt.val;
     });
   });
-  const padY = ((maxY - minY) || 10) * 0.05;
+  // Always include zero so positive/negative are both visible against the axis.
+  if (minY > 0) minY = 0;
+  if (maxY < 0) maxY = 0;
+  const padY = ((maxY - minY) || 100000) * 0.08;
   const yLo = minY - padY;
   const yHi = maxY + padY;
 
@@ -831,29 +832,36 @@ function buildComparisonChart(equitySeries, strategies) {
   // consistent under non-uniform scaling.
   const VB = 1000;
   const xFor = (idx) => (idx / (dateList.length - 1)) * VB;
-  const yFor = (pct) => (1 - (pct - yLo) / (yHi - yLo)) * VB;
+  const yFor = (val) => (1 - (val - yLo) / (yHi - yLo)) * VB;
 
   const zeroLine = (yLo <= 0 && yHi >= 0)
     ? `<line x1="0" y1="${yFor(0).toFixed(1)}" x2="${VB}" y2="${yFor(0).toFixed(1)}" stroke="var(--tx4)" stroke-width="0.5" stroke-dasharray="4,4" vector-effect="non-scaling-stroke"/>`
     : '';
 
   const linesSvg = prepared.filter(p => !p.insufficient).map(p => {
-    const pts = p.points.map(pt => `${xFor(dateToIdx[pt.date]).toFixed(1)},${yFor(pt.pct).toFixed(1)}`).join(' ');
+    const pts = p.points.map(pt => `${xFor(dateToIdx[pt.date]).toFixed(1)},${yFor(pt.val).toFixed(1)}`).join(' ');
     return `<polyline data-key="${p.key}" points="${pts}" fill="none" stroke="${p.color}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`;
   }).join('');
 
   const cursor = `<line class="cmp-cursor" x1="0" y1="0" x2="0" y2="${VB}" stroke="var(--tx2)" stroke-width="0.5" stroke-dasharray="3,3" vector-effect="non-scaling-stroke" style="display:none"/>`;
   const overlay = `<rect class="cmp-overlay" x="0" y="0" width="${VB}" height="${VB}" fill="transparent" pointer-events="all"/>`;
 
-  // Y-axis labels: top, zero (if in range), bottom — HTML overlay so text
-  // doesn't get distorted by the SVG's non-uniform stretch.
+  // KRW formatter: ₩+50K / ₩+1.2M / ₩-3K — compact, signed, never floats.
+  const fmtKrw = (v) => {
+    const sign = v >= 0 ? '+' : '−';
+    const a = Math.abs(v);
+    if (a >= 1e6) return '₩' + sign + (a / 1e6).toFixed(1) + 'M';
+    if (a >= 1e3) return '₩' + sign + Math.round(a / 1e3) + 'K';
+    return '₩' + sign + Math.round(a);
+  };
+
+  // Y-axis labels: top, zero (if in range), bottom.
   const yLabels = [];
-  const fmtPct = v => (v >= 0 ? '+' : '') + v.toFixed(0) + '%';
-  yLabels.push({ pct: yHi, top: 0 });
-  if (yLo < 0 && yHi > 0) yLabels.push({ pct: 0, top: ((yHi - 0) / (yHi - yLo)) * 100 });
-  yLabels.push({ pct: yLo, top: 100 });
+  yLabels.push({ val: yHi, top: 0 });
+  if (yLo < 0 && yHi > 0) yLabels.push({ val: 0, top: ((yHi - 0) / (yHi - yLo)) * 100 });
+  yLabels.push({ val: yLo, top: 100 });
   const yAxisHTML = yLabels.map(l =>
-    `<span style="top:${l.top.toFixed(2)}%">${fmtPct(l.pct)}</span>`
+    `<span style="top:${l.top.toFixed(2)}%">${fmtKrw(l.val)}</span>`
   ).join('');
 
   // X-axis: 4-5 evenly spaced date ticks (MM-DD).
@@ -867,28 +875,28 @@ function buildComparisonChart(equitySeries, strategies) {
     return `<span style="left:${left.toFixed(2)}%">${dateList[i].substring(5)}</span>`;
   }).join('');
 
-  // Legend: sort by final % desc; insufficient-data rows pinned to bottom.
+  // Legend: sort by final value desc; insufficient-data rows pinned to bottom.
   const sorted = [...prepared].sort((a, b) => {
     if (a.insufficient !== b.insufficient) return a.insufficient ? 1 : -1;
     if (a.insufficient) return 0;
-    return b.finalPct - a.finalPct;
+    return b.finalVal - a.finalVal;
   });
   const legendHTML = sorted.map(p => {
     if (p.insufficient) {
       return `<div class="cmp-legend-row"><span class="cmp-swatch" style="background:${p.color}"></span><span class="cmp-name">${p.name}</span><span class="cmp-detail">— insufficient data</span></div>`;
     }
-    const pctStr = (p.finalPct >= 0 ? '+' : '') + p.finalPct.toFixed(2) + '%';
-    const pctCls = p.finalPct >= 0 ? 'up' : 'dn';
+    const valStr = fmtKrw(p.finalVal);
+    const valCls = p.finalVal >= 0 ? 'up' : 'dn';
     const wrPart = (p.wr === null || p.wr === undefined) ? '' : `, ${p.wr.toFixed(0)}% WR`;
     const metaStr = `(${p.cycles || 0}c${wrPart})`;
-    return `<div class="cmp-legend-row"><span class="cmp-swatch" style="background:${p.color}"></span><span class="cmp-name">${p.name}</span><span class="cmp-pct ${pctCls}">${pctStr}</span><span class="cmp-meta">${metaStr}</span></div>`;
+    return `<div class="cmp-legend-row"><span class="cmp-swatch" style="background:${p.color}"></span><span class="cmp-name">${p.name}</span><span class="cmp-pct ${valCls}">${valStr}</span><span class="cmp-meta">${metaStr}</span></div>`;
   }).join('');
 
   const section = h('section', 'cmp fade-in d1');
   section.innerHTML = `
     <div class="cmp-hdr">
       <h2 class="cmp-title">Strategy Comparison · 2026 YTD</h2>
-      <div class="cmp-sub">% return from each bot's first equity snapshot</div>
+      <div class="cmp-sub">Total P/L (realized + unrealized) per bot, in KRW</div>
     </div>
     <div class="cmp-chart">
       <div class="cmp-y-axis">${yAxisHTML}</div>
@@ -935,10 +943,10 @@ function buildComparisonChart(equitySeries, strategies) {
       .map(p => {
         const pt = p.points.find(x => x.date === date);
         if (!pt) return null;
-        return { name: p.name, color: p.color, pct: pt.pct };
+        return { name: p.name, color: p.color, val: pt.val };
       })
       .filter(Boolean)
-      .sort((a, b) => b.pct - a.pct);
+      .sort((a, b) => b.val - a.val);
 
     if (!rows.length) {
       tooltipEl.style.display = 'none';
@@ -946,8 +954,7 @@ function buildComparisonChart(equitySeries, strategies) {
     }
 
     tooltipEl.innerHTML = `<div class="cmp-tt-date">${date}</div>` + rows.map(r => {
-      const sign = r.pct >= 0 ? '+' : '';
-      return `<div class="cmp-tt-row"><span class="cmp-swatch" style="background:${r.color}"></span><span>${r.name}</span><span class="cmp-tt-pct ${r.pct >= 0 ? 'up' : 'dn'}">${sign}${r.pct.toFixed(2)}%</span></div>`;
+      return `<div class="cmp-tt-row"><span class="cmp-swatch" style="background:${r.color}"></span><span>${r.name}</span><span class="cmp-tt-pct ${r.val >= 0 ? 'up' : 'dn'}">${fmtKrw(r.val)}</span></div>`;
     }).join('');
 
     const plotRect = plotEl.getBoundingClientRect();

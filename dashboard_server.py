@@ -160,27 +160,66 @@ def _load_equity_history():
     return history
 
 
-def _save_equity_snapshot(strategies):
-    """Append today's equity snapshot to history file (one entry per day)."""
+def _save_equity_snapshot(strategies, exchange_rate=1380.0):
+    """Append today's per-bot Total P/L snapshot.
+
+    Records realized + unrealized in KRW per bot. Avoids the shared-cash
+    double-count bug from the prior schema (which surfaced as bots
+    apparently growing 50-200% when shared USD cash moved). Total P/L is
+    well-defined per bot and tracks the bot's actual contribution to
+    portfolio value.
+
+    Schema (per row, JSONL):
+      {"date":"YYYY-MM-DD",
+       "bot_id":{"realized_krw":float,"unrealized_krw":float,
+                 "total_pl_krw":float,"native":"USD"|"KRW"}}
+
+    BTC VB uses its own equity_history list inside upbit_vb_strategy_state.json,
+    so we don't snapshot it here — the dashboard server merges it back in
+    via the existing equity_hist path.
+    """
     today = _get_et_now().strftime("%Y-%m-%d")
 
-    # Check if today already recorded
     history = _load_equity_history()
     if history and history[-1].get("date") == today:
         return  # already saved today
 
+    def _to_krw(amt, currency):
+        return float(amt) if currency == "KRW" else float(amt) * exchange_rate
+
     snapshot = {"date": today}
+
     for s in strategies:
         sid = s.get("id", "")
+        if sid in ("btc_vb", "claude_bot"):
+            # btc_vb: own state-file equity series, don't duplicate.
+            # claude_bot: analysis-only when in BEARISH; total P/L is still meaningful, fall through.
+            if sid == "btc_vb":
+                continue
+
         if sid == "hybrid_vb":
-            snapshot["hybrid_vb_kr"] = s.get("kr", {}).get("value", 0)
-            snapshot["hybrid_vb_us"] = s.get("us", {}).get("value", 0)
-        elif sid == "claude_bot":
-            continue  # analysis-only, no portfolio value
-        else:
-            val = s.get("value", 0)
-            cash = s.get("cash", 0)
-            snapshot[sid] = val + cash if sid in ("quant40", "jd_strategy", "dual_momentum") else val
+            for leg in ("kr", "us"):
+                ld = s.get(leg) or {}
+                cur = "KRW" if leg == "kr" else "USD"
+                realized = ld.get("realized_profit_ytd") or 0
+                unrealized = ld.get("unrealized_profit") or ld.get("profit") or 0
+                snapshot[f"hybrid_vb_{leg}"] = {
+                    "realized_krw": round(_to_krw(realized, cur), 2),
+                    "unrealized_krw": round(_to_krw(unrealized, cur), 2),
+                    "total_pl_krw": round(_to_krw(realized + unrealized, cur), 2),
+                    "native": cur,
+                }
+            continue
+
+        cur = s.get("currency", "KRW")
+        realized = s.get("realized_profit_ytd") or 0
+        unrealized = s.get("unrealized_profit") or s.get("profit") or 0
+        snapshot[sid] = {
+            "realized_krw": round(_to_krw(realized, cur), 2),
+            "unrealized_krw": round(_to_krw(unrealized, cur), 2),
+            "total_pl_krw": round(_to_krw(realized + unrealized, cur), 2),
+            "native": cur,
+        }
 
     try:
         with open(EQUITY_HISTORY_FILE, "a") as f:
@@ -190,7 +229,17 @@ def _save_equity_snapshot(strategies):
 
 
 def _get_equity_series():
-    """Return equity history as {strategy_id: [[date, value], ...]} starting from EQUITY_START_DATE."""
+    """Return Total P/L history as {strategy_id: [[date, total_pl_krw], ...]}.
+
+    Reads the new per-bot snapshot schema (realized_krw + unrealized_krw +
+    total_pl_krw). Each series gets a synthetic ${EQUITY_START_DATE} baseline
+    of 0 prepended (YTD P/L is zero by definition on Jan 1) so the comparison
+    chart can render even on the day after a schema reset, when only one
+    real snapshot exists.
+
+    Legacy-shape rows (bot:scalar instead of bot:dict) are skipped because
+    they don't represent meaningful per-bot equity — see commit log.
+    """
     history = _load_equity_history()
     series = {}
 
@@ -201,12 +250,19 @@ def _get_equity_series():
         for key, val in entry.items():
             if key == "date":
                 continue
-            if key not in series:
-                series[key] = []
-            try:
-                series[key].append([date, float(val)])
-            except (ValueError, TypeError):
-                pass
+            if isinstance(val, dict):
+                pl = val.get("total_pl_krw")
+                if pl is None:
+                    continue
+                series.setdefault(key, []).append([date, float(pl)])
+            # else: legacy scalar row, skip silently.
+
+    # Prepend a synthetic Jan 1 baseline at ₩0. We only do this when the
+    # bot has at least one real snapshot — otherwise we'd create a flat
+    # zero line that's worse than no line.
+    for key, pts in series.items():
+        if pts and pts[0][0] != EQUITY_START_DATE:
+            pts.insert(0, [EQUITY_START_DATE, 0.0])
 
     return series
 
@@ -582,17 +638,29 @@ def build_dashboard_data():
             r = realized_by_key.get(agg_key, {}) if agg_key else {}
             _enrich(s, s.get("profit", 0), s.get("budget", 0), r)
 
-    # ── Save daily equity snapshot ──
-    _save_equity_snapshot(strategies)
+    # ── Save daily Total P/L snapshot per bot ──
+    # Use the FX rate the rest of the API was built against so KRW conversions
+    # are consistent with the strip's totals.
+    fx_now = 1380.0
+    try:
+        # Defer to whatever generate_dashboard_data.py uses for the strip — keep
+        # the snapshot in lock-step with the visible numbers.
+        fx_now = float(config.get('fallback_exchange_rate') or fx_now)
+    except Exception:
+        pass
+    _save_equity_snapshot(strategies, exchange_rate=fx_now)
 
-    # ── Equity history for charts ──
+    # ── Total P/L history per bot for the comparison chart ──
     equity_series = _get_equity_series()
 
-    # Also include BTC VB equity_history from its state file
+    # BTC VB has its own per-bot equity_history list in upbit_vb_strategy_state.json
+    # which is full account equity (cash + BTC). Convert it to a Total P/L series
+    # the same shape as the others — first point as baseline, deltas afterward.
     if equity_hist:
-        btc_series = [[d, v] for d, v in equity_hist if d >= EQUITY_START_DATE]
-        if btc_series:
-            equity_series["btc_vb"] = btc_series
+        btc_series_eq = [[d, v] for d, v in equity_hist if d >= EQUITY_START_DATE]
+        if btc_series_eq and len(btc_series_eq) >= 1:
+            base = btc_series_eq[0][1]
+            equity_series["btc_vb"] = [[d, round(v - base, 2)] for d, v in btc_series_eq]
 
     # ── Log Events ──
     feed_events = []
