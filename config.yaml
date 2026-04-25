@@ -69,8 +69,14 @@ capital_management:
     budget_usd: 25165.0            # Quant40 Strategy 고정 투자금액 (USD)
   jd_strategy:
     budget_usd: 2796.0             # JD Strategy 고정 투자금액 (USD)
-  uranium_vb:
-    budget_usd: 5000.0             # Uranium VB Strategy 고정 투자금액 (USD)
+  modified_dual_momentum:
+    budget_usd: 20000.0            # Modified Dual Momentum — raised 2026-04-22 ($10K → $20K)
+  hybrid_vb_us:
+    budget_usd: 20000.0            # Hybrid VB US (USD) — raised 2026-04-22 ($10K → $20K)
+  hybrid_vb_kr:
+    budget_krw: 27600000           # Hybrid VB Korea (KRW) — raised 2026-04-22 (₩10M → ₩27.6M ≈ $20K @ 1380)
+  claude_trading_bot:
+    budget_usd: 20000.0            # Claude AI Trading Bot — raised 2026-04-22 ($3K → $20K)
 
 # --- Dual Strategy Settings (US Bots coordination) ---
 dual_strategy:
