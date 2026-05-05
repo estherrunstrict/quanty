@@ -1,18 +1,18 @@
 {
-  "updated_at": "2026-05-05 06:30 KST",
+  "updated_at": "2026-05-05 16:00 KST",
   "portfolio": {
-    "total_value_krw": 131856655,
+    "total_value_krw": 131872717,
     "original_deposit_krw": 75714217,
-    "total_profit_krw": 4675343,
-    "total_profit_pct": 6.17,
+    "total_profit_krw": 4692305,
+    "total_profit_pct": 6.2,
     "cash_krw": 17568333,
     "cash_usd": 6579.95,
-    "upbit_krw": 9784223,
+    "upbit_krw": 9800286,
     "exchange_rate": 1484.8,
-    "unrealized_krw": 5524061,
+    "unrealized_krw": 5541023,
     "realized_krw": -848718,
     "unrealized_native": {
-      "krw": 3320558,
+      "krw": 3337520,
       "usd": 1484.04
     },
     "realized_native": {
@@ -21,8 +21,8 @@
     }
   },
   "meta": {
-    "timestamp": "2026-05-05T06:30:01.756831+09:00",
-    "kst": "2026-05-05 06:30 KST",
+    "timestamp": "2026-05-05T16:00:05.252423+09:00",
+    "kst": "2026-05-05 16:00 KST",
     "equity_start": "2026-01-01"
   },
   "strategies": [
@@ -31,23 +31,23 @@
       "name": "BTC Volatility Breakout",
       "currency": "KRW",
       "mode": "live",
-      "value": 9784223.33915671,
-      "profit": 0.0,
+      "value": 9800285.96555971,
+      "profit": 16962.377052087337,
       "budget": 0,
-      "is_holding": false,
+      "is_holding": true,
       "total_trades": 12,
       "winning_trades": 6,
       "allocation": 0.3,
-      "last_run": "2026-05-04",
+      "last_run": "2026-05-05",
       "holdings": [],
       "extra": {
         "k": 0.4,
         "atr_period": 7,
         "ma_period": 5,
-        "equity_days": 50
+        "equity_days": 51
       },
-      "stale_hours": 1.497961767382092,
-      "unrealized_profit": 0,
+      "stale_hours": 5.150967802868949,
+      "unrealized_profit": 16962.377052087337,
       "realized_profit_ytd": -125119.6,
       "realized_trades": 12,
       "wins_ytd": 0,
@@ -56,7 +56,7 @@
       "mdd_pct": null,
       "realized_source": "upbit",
       "cycles_ytd": 12,
-      "total_pl_ytd": -125119.6,
+      "total_pl_ytd": -108157.22294791267,
       "profit_rate_ytd_pct": null
     },
     {
@@ -64,7 +64,7 @@
       "name": "Korea ETF Momentum",
       "currency": "KRW",
       "mode": "live",
-      "value": 12636315.0,
+      "value": 12377400.0,
       "cost_basis": 9485130.0,
       "profit": 2892270.0,
       "budget": 10000000,
@@ -85,10 +85,10 @@
       "extra": {
         "target": "TIGER 200 Construction",
         "target_ticker": "139220",
-        "rebalance_day": true
+        "rebalance_day": false
       },
-      "stale_hours": 21.496029812693596,
-      "timestamp": "2026-05-04T09:00:16.039923+09:00",
+      "stale_hours": 6.996619397997856,
+      "timestamp": "2026-05-05T09:00:17.384370+09:00",
       "unrealized_profit": 2892270.0,
       "realized_profit_ytd": -1380.0,
       "realized_trades": 1,
@@ -100,7 +100,7 @@
       "cycles_ytd": 1,
       "total_pl_ytd": 2890890.0,
       "profit_rate_ytd_pct": 28.91,
-      "unrealized_drift_at_mtm": -258915.0
+      "unrealized_drift_at_mtm": 0.0
     },
     {
       "id": "quant40",
@@ -131,7 +131,7 @@
         "signal": "\ud83d\udfe2 Strong Bullish (4/4)",
         "regime": ""
       },
-      "stale_hours": 7.997966557211346,
+      "stale_hours": 17.49893102745215,
       "timestamp": "2026-05-04T22:30:09.068053",
       "unrealized_profit": 1398.05,
       "realized_profit_ytd": -738.04,
@@ -176,7 +176,7 @@
         "regime": "EASING",
         "is_holding": true
       },
-      "stale_hours": 7.988660819398032,
+      "stale_hours": 17.48962547083696,
       "timestamp": "2026-05-04T22:30:42.159565",
       "unrealized_profit": 85.99,
       "realized_profit_ytd": -298.72,
@@ -206,7 +206,7 @@
         "mode_label": "offensive",
         "rebalance_day": false
       },
-      "stale_hours": 7.98038008802467,
+      "stale_hours": 17.481344946622848,
       "timestamp": "2026-05-04T22:31:12.379799",
       "unrealized_profit": 0,
       "realized_profit_ytd": 171.31,
@@ -437,7 +437,7 @@
         },
         "us": {}
       },
-      "stale_hours": 7.972419056031439,
+      "stale_hours": 17.473384296033117,
       "realized_trades": 19,
       "cycles_ytd": 19,
       "mdd_pct": null
@@ -466,7 +466,7 @@
         "trend_pass_count": 0,
         "vcp_count": 0
       },
-      "stale_hours": 7.965271278553539,
+      "stale_hours": 17.466237501303354,
       "timestamp": "2026-05-04T22:32:06.773405",
       "unrealized_profit": 0,
       "realized_profit_ytd": 0,
@@ -518,6 +518,10 @@
       [
         "2026-05-04",
         -125119.6
+      ],
+      [
+        "2026-05-05",
+        -108157.22
       ]
     ],
     "korea_etf": [
@@ -556,6 +560,10 @@
       [
         "2026-05-04",
         3149805.0
+      ],
+      [
+        "2026-05-05",
+        2890890.0
       ]
     ],
     "quant40": [
@@ -593,6 +601,10 @@
       ],
       [
         "2026-05-04",
+        991571.68
+      ],
+      [
+        "2026-05-05",
         991571.68
       ]
     ],
@@ -632,6 +644,10 @@
       [
         "2026-05-04",
         -278915.28
+      ],
+      [
+        "2026-05-05",
+        -278915.28
       ]
     ],
     "dual_momentum": [
@@ -669,6 +685,10 @@
       ],
       [
         "2026-05-04",
+        236407.8
+      ],
+      [
+        "2026-05-05",
         236407.8
       ]
     ],
@@ -708,6 +728,10 @@
       [
         "2026-05-04",
         -26020.0
+      ],
+      [
+        "2026-05-05",
+        -26020.0
       ]
     ],
     "hybrid_vb_us": [
@@ -745,6 +769,10 @@
       ],
       [
         "2026-05-04",
+        0.0
+      ],
+      [
+        "2026-05-05",
         0.0
       ]
     ],
@@ -784,11 +812,15 @@
       [
         "2026-05-04",
         0.0
+      ],
+      [
+        "2026-05-05",
+        0.0
       ]
     ]
   },
   "realized_pl": {
-    "_updated": "2026-05-05T05:03:04+09:00",
+    "_updated": "2026-05-05T16:00:04+09:00",
     "_year": 2026,
     "_source_mode": "both",
     "_total_krw": 436302.4,
@@ -896,10 +928,38 @@
       }
     },
     "_errors": [
-      "upbit: bot state says 12 closed trades, Upbit API shows 13 sells in 2026 (24 buys). State file wins \u2014 consider running the bot to reconcile."
+      "upbit: bot state says 12 closed trades, Upbit API shows 13 sells in 2026 (25 buys). State file wins \u2014 consider running the bot to reconcile."
     ]
   },
   "feed": [
+    {
+      "type": "trade_buy",
+      "title": "Market Buy Filled",
+      "body": "MARKET BUY filled: 0.02437257 BTC at ~\u20a9119,400,000 (pre: 0.00000000, post: 0.02437257)",
+      "source": "VB_Strategy",
+      "timestamp": "2026-05-05 10:51:01"
+    },
+    {
+      "type": "session",
+      "title": "Session Complete",
+      "body": "Done.",
+      "source": "VB_Strategy",
+      "timestamp": "2026-05-05 10:51:01"
+    },
+    {
+      "type": "trade_buy",
+      "title": "Breakout Triggered",
+      "body": "BREAKOUT! \u20a9119,400,000 \u2265 \u20a9119,397,371",
+      "source": "VB_Strategy",
+      "timestamp": "2026-05-05 10:50:55"
+    },
+    {
+      "type": "trade_buy",
+      "title": "Breakout Triggered",
+      "body": "Step 7: Breakout triggered! Placing market buy for \u20a92,910,086...",
+      "source": "VB_Strategy",
+      "timestamp": "2026-05-05 10:50:55"
+    },
     {
       "type": "signal",
       "title": "LONG Signal Active",
@@ -1081,35 +1141,7 @@
       "body": "Done.",
       "source": "VB_Strategy",
       "timestamp": "2026-05-01 05:01:05"
-    },
-    {
-      "type": "signal",
-      "title": "NO SIGNAL \u2014 Bearish",
-      "body": "Step 3: Close < MA(5) \u2192 NO SIGNAL (bearish). Sitting in cash.",
-      "source": "VB_Strategy",
-      "timestamp": "2026-05-01 05:01:03"
-    },
-    {
-      "type": "session",
-      "title": "Daily Run Started",
-      "body": "BTC VB Strategy \u2014 Daily Run 2026-05-01",
-      "source": "VB_Strategy",
-      "timestamp": "2026-05-01 05:00:03"
-    },
-    {
-      "type": "session",
-      "title": "Session Complete",
-      "body": "Done.",
-      "source": "VB_Strategy",
-      "timestamp": "2026-04-30 05:01:05"
-    },
-    {
-      "type": "signal",
-      "title": "NO SIGNAL \u2014 Bearish",
-      "body": "Step 3: Close < MA(5) \u2192 NO SIGNAL (bearish). Sitting in cash.",
-      "source": "VB_Strategy",
-      "timestamp": "2026-04-30 05:01:04"
     }
   ],
-  "mark_to_market_at": "2026-05-05 06:30 KST"
+  "mark_to_market_at": "2026-05-05 16:00 KST"
 }
