@@ -1276,7 +1276,7 @@ function render(data) {
       const rows = holdings.slice(0, 5).map(hld => {
         const cur = hld.currency || s.currency || 'USD';
         const pnl = hld.profit || 0;
-        const pRate = hld.profit_rate ? ` (${hld.profit_rate >= 0 ? '+' : ''}${hld.profit_rate.toFixed(1)}%)` : '';
+        const pRate = (typeof hld.profit_rate === 'number') ? ` (${hld.profit_rate >= 0 ? '+' : ''}${hld.profit_rate.toFixed(1)}%)` : '';
         return `<div class="hold-row">
           <span class="hold-tk">${hld.ticker}</span>
           <span class="hold-det">${hld.quantity || 0} × ${sym(cur)}${(hld.current_price || hld.avg_price || 0).toLocaleString(undefined, cur === 'KRW' ? {maximumFractionDigits:0} : {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
