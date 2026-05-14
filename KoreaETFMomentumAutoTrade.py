@@ -120,9 +120,14 @@ def _load_allocation_override():
             if ts:
                 override_time = datetime.fromisoformat(ts)
                 now = datetime.now(override_time.tzinfo or KST)
-                age_hours = (now - override_time).total_seconds() / 3600
-                if age_hours > 2:
-                    logger.warning(f"Second Level override is {age_hours:.1f}h old — using default 1.0")
+                # SecondLevelBot runs at ~15:55 ET (= ~04:55-05:55 KST next morning).
+                # Korea ETF bot runs at 09:00 KST — 4h gap is structural, not stale.
+                # Treat override as stale only when it is from a prior KST calendar date.
+                override_kst_date = override_time.astimezone(KST).date()
+                now_kst_date = now.astimezone(KST).date()
+                if override_kst_date < now_kst_date:
+                    age_hours = (now - override_time).total_seconds() / 3600
+                    logger.warning(f"Second Level override is {age_hours:.1f}h old (prior day) — using default 1.0")
                     return 1.0
             mult = data.get('allocation_multiplier', 1.0)
             regime = data.get('regime', 'NEUTRAL')
@@ -147,6 +152,7 @@ def load_state():
             # Backfill keys added in later versions
             state.setdefault('paper_holdings', {})
             state.setdefault('paper_cash', None)
+            state.setdefault('target_qty', 0)  # shares owned by THIS bot (not combined account balance)
             return state
         except Exception as e:
             logger.error(f"State file corrupted ({e}), backing up and resetting")
@@ -159,6 +165,7 @@ def load_state():
         'last_rebalance_month': None,  # None = first run, triggers initial rebalance
         'target_ticker': None,
         'target_name': None,
+        'target_qty': 0,       # shares owned by THIS bot — not the full account balance
         'paper_holdings': {},  # {ticker: quantity} — used only in paper_trading mode
         'paper_cash': None,    # simulated cash balance for paper trading
     }
@@ -537,6 +544,7 @@ def main():
             current_qty = qty
             break
         holdings = {}  # not used in paper mode
+        multi_holdings_conflict = False
 
         # Seed paper cash from real account on the very first paper run
         if state.get('paper_cash') is None:
@@ -546,15 +554,24 @@ def main():
             logger.info(f"[PAPER] First run — seeding paper cash from real account: {cash:,.0f}")
         cash = state['paper_cash']
     else:
-        holdings = get_holdings(my_acct, my_prod, tickers)
+        # Scope the holdings query to only the ticker this bot currently owns per state.
+        # Other bots (e.g., HybridVB) may hold tickers that overlap with our universe —
+        # querying the full universe would produce false multi-holdings conflicts.
+        # On the very first run (no state target yet), scan the full universe to discover
+        # any pre-existing position.
+        state_target = state.get('target_ticker')
+        check_tickers = [state_target] if state_target else tickers
+        holdings = get_holdings(my_acct, my_prod, check_tickers)
         cash = get_cash_balance(my_acct, my_prod, tickers[0])
-        # Multi-holding guard: abort if multiple ETFs are held (inconsistent state)
+        # Multi-holding guard (should be unreachable in normal operation now that we scope
+        # by state, but kept as a safety net for the first-run discovery path).
         nonzero_live = {t: h for t, h in holdings.items() if h['quantity'] > 0}
-        if len(nonzero_live) > 1:
-            _msg = f"[LIVE] Inconsistent state: multiple holdings {list(nonzero_live.keys())}. Manual fix required."
+        multi_holdings_conflict = len(nonzero_live) > 1
+        if multi_holdings_conflict:
+            _msg = f"[LIVE] Inconsistent state: multiple holdings {list(nonzero_live.keys())}. Manual fix required before next rebalance."
             logger.error(_msg)
             notifier.send_error("Multiple Holdings Detected", _msg)
-            return
+            # Don't hard-abort — reporting still runs; trade execution is blocked below.
         current_holding = None
         current_qty = 0
         for t, h in holdings.items():
@@ -562,6 +579,14 @@ def main():
                 current_holding = t
                 current_qty = h['quantity']
                 break
+
+        # One-time migration: if state has no target_qty yet, infer it from live balance.
+        # This is safe at migration time because the current target (139220) is not in
+        # HybridVB's universe, so the live qty is exclusively ours.
+        if current_holding and state.get('target_qty', 0) == 0 and current_holding == state.get('target_ticker'):
+            state['target_qty'] = current_qty
+            logger.info(f"[LIVE] Inferred target_qty={current_qty} from live holdings (one-time state migration)")
+            save_state(state)
 
     prefix = "[PAPER] " if paper_trading else ""
     logger.info(f"{prefix}Current holding: {current_holding} ({current_qty} shares)")
@@ -675,19 +700,36 @@ def main():
 
     # Execute trades
     if rebalance and needs_trade and not paper_trading:
+        if multi_holdings_conflict:
+            logger.error("Trade execution blocked — multiple holdings inconsistency. Sell the extra position manually first.")
+            notifier.send_error(
+                "Trade Execution Blocked",
+                f"Multiple holdings detected: {list(nonzero_live.keys())}. "
+                "Sell the non-target position manually, then the bot will resume at next rebalance."
+            )
+            return
         logger.info("=== Executing rebalance trades ===")
         trades_executed = []
 
         # Step 1: Sell current holding if different from target
         sell_succeeded = True  # Assume no sell needed unless one is attempted
         if current_holding and current_holding != target_ticker:
-            # Re-fetch holdings to get fresh quantity right before selling
-            fresh_holdings = get_holdings(my_acct, my_prod, tickers)
-            if current_holding in fresh_holdings and fresh_holdings[current_holding]['quantity'] > 0:
-                current_qty = fresh_holdings[current_holding]['quantity']
+            # Re-fetch to get fresh live qty, but sell only THIS bot's tracked quantity.
+            # Another bot (e.g., HybridVB) may also hold current_holding — selling the
+            # raw live balance would destroy its position. Use min(state_qty, live_qty).
+            fresh_holdings = get_holdings(my_acct, my_prod, [current_holding])
+            live_qty = fresh_holdings.get(current_holding, {}).get('quantity', current_qty)
+            state_qty = state.get('target_qty', 0)
+            if state_qty > 0:
+                current_qty = min(state_qty, live_qty)
+                logger.info(f"Sell qty: state={state_qty}, live={live_qty} → {current_qty} (cross-bot protection)")
+            else:
+                current_qty = live_qty  # migration fallback — no other bot owns this ticker at init
+                logger.warning(f"Sell qty: state_qty=0 (fallback to live={live_qty})")
             logger.info(f"Selling {current_holding}: {current_qty} shares")
             success = place_order("sell", my_acct, my_prod, current_holding, current_qty)
             if success:
+                state['target_qty'] = 0  # sold out; buy block will set to buy_qty if a buy follows
                 trades_executed.append({
                     'action': 'SELL', 'ticker': current_holding,
                     'quantity': current_qty, 'name': etfs.get(current_holding, '')
@@ -726,6 +768,7 @@ def main():
                     logger.info(f"Buying {target_ticker}: {buy_qty} shares @ ~{price:,.0f}")
                     success = place_order("buy", my_acct, my_prod, target_ticker, buy_qty)
                     if success:
+                        state['target_qty'] = buy_qty  # record THIS bot's owned quantity
                         trades_executed.append({
                             'action': 'BUY', 'ticker': target_ticker,
                             'quantity': buy_qty, 'name': target_name,

@@ -131,14 +131,18 @@ def load_allocation_override():
         if os.path.exists(override_path):
             with open(override_path) as f:
                 data = json.load(f)
-            # Staleness check: reject if older than 2 hours
+            # Staleness check: SecondLevelBot runs at ~15:55 ET (04:55-05:55 KST next morning),
+            # bots run at 09:00-09:01 KST — 4h gap is structural. Only treat as stale when
+            # the override is from a prior KST calendar date.
             ts = data.get('timestamp', '')
             if ts:
                 override_time = datetime.fromisoformat(ts)
                 now = datetime.now(override_time.tzinfo or KST)
-                age_hours = (now - override_time).total_seconds() / 3600
-                if age_hours > 2:
-                    logger.warning(f"Second Level override is {age_hours:.1f}h old — using default 1.0")
+                override_kst_date = override_time.astimezone(KST).date()
+                now_kst_date = now.astimezone(KST).date()
+                if override_kst_date < now_kst_date:
+                    age_hours = (now - override_time).total_seconds() / 3600
+                    logger.warning(f"Second Level override is {age_hours:.1f}h old (prior day) — using default 1.0")
                     return 1.0, 'NEUTRAL', 0
             mult = data.get('allocation_multiplier', 1.0)
             regime = data.get('regime', 'NEUTRAL')
@@ -400,12 +404,19 @@ def get_holdings_us(my_acct, my_prod, tickers, exchange_map):
 
 
 def get_cash_us(my_acct, my_prod):
-    """Get available USD cash."""
+    """Get available USD cash.
+
+    SPY is on NYSE Arca, which KIS classifies as AMEX. Querying it under
+    NASD returns APBN0746 ('상품이 없습니다'), the function falls back to 0,
+    and the bot can't size any position — see incident 2026-05-03 (the
+    bot ran daily for weeks without ever entering a trade because every
+    breakout failed the heat check on portfolio_value=0).
+    """
     try:
         import inquire_psamount
         df = inquire_psamount.inquire_psamount(
             cano=my_acct, acnt_prdt_cd=my_prod,
-            ovrs_excg_cd="NASD", item_cd="SPY",
+            ovrs_excg_cd="AMEX", item_cd="SPY",
             ovrs_ord_unpr="0", env_dv="real"
         )
         if df is not None and not df.empty:
@@ -420,7 +431,7 @@ def place_order_us(side, my_acct, my_prod, ticker, exchange, quantity, price):
     logger.info(f"Placing {side.upper()}: {ticker} x {quantity} @ ~${price:.2f}")
     try:
         import order as us_order
-        order_price = str(round(price * (1.01 if side == 'buy' else 0.99), 2))
+        order_price = str(round(price * (1.03 if side == 'buy' else 0.95), 2))
         df_order = us_order.order(
             cano=my_acct, acnt_prdt_cd=my_prod,
             ovrs_excg_cd=exchange, pdno=ticker,
@@ -620,6 +631,7 @@ def _run_session(market, tickers, exchange_map, get_holdings_fn, get_cash_fn,
     logger.info(f"DD: {cur_dd:.1%}, DD Scale: {dd_scale:.2f}")
 
     trades_executed = []
+    just_exited_today = set()  # tickers exited this run — block same-script re-entry
 
     # --- EXIT LOOP ---
     for t in list(open_positions.keys()):
@@ -665,6 +677,7 @@ def _run_session(market, tickers, exchange_map, get_holdings_fn, get_cash_fn,
             'exit_price': exit_price, 'shares': shares, 'pnl': pnl, 'reason': reason,
         })
         del open_positions[t]
+        just_exited_today.add(t)  # block re-entry in entry loop below
 
     # Refresh cash after exits
     if trades_executed and not paper_trading:
@@ -682,6 +695,9 @@ def _run_session(market, tickers, exchange_map, get_holdings_fn, get_cash_fn,
 
     for t in tickers:
         if t in open_positions or t not in ohlc_data:
+            continue
+        if t in just_exited_today:  # don't sell-then-buy the same ticker on the same bar
+            logger.info(f"  {t}: skipped — exited this run, no same-day re-entry")
             continue
 
         df = ohlc_data[t]
@@ -758,6 +774,61 @@ def _run_session(market, tickers, exchange_map, get_holdings_fn, get_cash_fn,
             'currency': currency,
             'reason': f'VB breakout ({REGIME_LABELS[regime]}, k={k_val:.2f}, vol_mult={vol_mult:.2f})'
         })
+
+    # --- Fill reconciliation -------------------------------------------------
+    # entry_price was set to breakout_level (a theoretical trigger, not the actual fill).
+    # KR market orders fill at current market — gaps over breakout on strong opens.
+    # US limit orders fill at <= breakout*1.01 or not at all.
+    # Re-anchor entry/peak/stop to the broker's pchs_avg_pric so stop_price reflects
+    # designed risk distance below ACTUAL cost basis. Also rolls back positions
+    # whose orders were accepted but never filled (qty==0 at broker).
+    new_keys = {t for t, pos in open_positions.items() if pos.get('entry_date') == now.isoformat()}
+    if new_keys and not paper_trading:
+        time.sleep(5)  # let broker register the fill
+        try:
+            if market == 'us':
+                fresh_holdings = get_holdings_fn(my_acct, my_prod, list(new_keys), exchange_map)
+            else:
+                fresh_holdings = get_holdings_fn(my_acct, my_prod, list(new_keys))
+        except Exception as e:
+            logger.warning(f"Fill reconciliation skipped — get_holdings failed: {e}")
+            fresh_holdings = None
+
+        if fresh_holdings is not None:
+            for t in list(new_keys):
+                pos = open_positions[t]
+                h = fresh_holdings.get(t)
+                broker_qty = h.get('quantity', 0) if h else 0
+                if broker_qty == 0:
+                    logger.warning(f"  {t}: BUY accepted but broker shows qty=0 — rolling back position")
+                    del open_positions[t]
+                    trades_executed[:] = [tr for tr in trades_executed
+                                          if not (tr['action'] == 'BUY' and tr['ticker'] == t)]
+                    continue
+                actual_fill = float(h.get('avg_price', 0))
+                if actual_fill <= 0:
+                    continue
+                if broker_qty != pos['shares']:
+                    logger.warning(f"  {t}: partial fill — recorded {pos['shares']} shares, broker has {broker_qty}")
+                    pos['shares'] = broker_qty
+                df = ohlc_data.get(t)
+                if df is None:
+                    continue
+                atr_series = calc_atr(df, params['atr_period'])
+                atr_val = float(atr_series.iloc[-1]) if not pd.isna(atr_series.iloc[-1]) else 0
+                if atr_val <= 0:
+                    continue
+                old_entry = pos['entry_price']
+                new_stop = actual_fill - params['atr_stop_init'] * atr_val
+                gap_pct = (actual_fill / old_entry - 1.0) * 100 if old_entry > 0 else 0
+                logger.info(
+                    f"  {t}: fill-reconcile — breakout={currency_sym}{old_entry:,.2f} → "
+                    f"avg_price={currency_sym}{actual_fill:,.2f} ({gap_pct:+.2f}%), "
+                    f"stop {currency_sym}{pos['stop_price']:,.2f} → {currency_sym}{new_stop:,.2f}"
+                )
+                pos['entry_price'] = actual_fill
+                pos['peak_price'] = actual_fill
+                pos['stop_price'] = new_stop
 
     # --- Save state ---
     mkt_state['open_positions'] = open_positions
