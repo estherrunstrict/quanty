@@ -81,10 +81,11 @@ TICKER_TO_STRATEGY = {
     'GDX': 'HYBRID_VB_US', 'USO': 'HYBRID_VB_US', 'URA': 'HYBRID_VB_US',
     'FTGC': 'HYBRID_VB_US', 'CPER': 'HYBRID_VB_US', 'DBA': 'HYBRID_VB_US',
     'SIL': 'HYBRID_VB_US',
-    # Korea ETF Momentum
-    '139220': 'KOREA_ETF', '144600': 'KOREA_ETF', '132030': 'KOREA_ETF',
-    # Hybrid VB KR (Korea rotating baskets)
+    # Korea ETF Momentum (139220 only — 144600/132030 overlap with HybridVB KR)
+    '139220': 'KOREA_ETF',
+    # Hybrid VB KR (Korea rotating baskets; 144600/132030 shared but HybridVB is canonical holder)
     '069500': 'HYBRID_VB_KR', '229200': 'HYBRID_VB_KR',
+    '144600': 'HYBRID_VB_KR', '132030': 'HYBRID_VB_KR',
     '305720': 'HYBRID_VB_KR', '091170': 'HYBRID_VB_KR',
     '364690': 'HYBRID_VB_KR',
 }
