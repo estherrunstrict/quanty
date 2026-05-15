@@ -724,8 +724,18 @@ def main():
                 current_qty = min(state_qty, live_qty)
                 logger.info(f"Sell qty: state={state_qty}, live={live_qty} → {current_qty} (cross-bot protection)")
             else:
-                current_qty = live_qty  # migration fallback — no other bot owns this ticker at init
-                logger.warning(f"Sell qty: state_qty=0 (fallback to live={live_qty})")
+                # state_qty=0 means migration didn't fire (state lost / first run with stray holding).
+                # For shared tickers (144600, 132030) the live qty may belong to HybridVB — refuse to sell.
+                logger.error(
+                    f"Sell aborted: state_qty=0 for {current_holding}. "
+                    f"Live shows {live_qty} but ownership unverified. Manually set target_qty in state file."
+                )
+                notifier.send_error(
+                    "KEM Sell Blocked",
+                    f"state_qty=0 for {current_holding} (live={live_qty}). "
+                    f"Possible cross-bot conflict — manually set target_qty before next run."
+                )
+                return
             logger.info(f"Selling {current_holding}: {current_qty} shares")
             success = place_order("sell", my_acct, my_prod, current_holding, current_qty)
             if success:
@@ -892,10 +902,14 @@ def main():
             footer=f"PAPER TRADING | {now_kst.strftime('%Y-%m-%d %H:%M')} KST"
         )
     else:
-        # Scope to KEM's own ticker only — avoids picking up HybridVB's shared holdings
+        # Scope to KEM's own ticker only — avoids picking up HybridVB's shared holdings.
+        # When state has no target (first run) or target is 'CASH', skip the holdings
+        # query: KEM isn't holding anything attributable to itself.
         state_target = state.get('target_ticker')
-        query_tickers = [state_target] if state_target else tickers[:1]
-        final_holdings = get_holdings(my_acct, my_prod, query_tickers)
+        if state_target and state_target != 'CASH':
+            final_holdings = get_holdings(my_acct, my_prod, [state_target])
+        else:
+            final_holdings = {}
 
         kem_holdings_value = 0
         holdings_text = "None"
