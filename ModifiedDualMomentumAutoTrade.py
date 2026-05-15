@@ -287,7 +287,7 @@ def get_cash_usd(my_acct, my_prod):
 def place_order(side, my_acct, my_prod, ticker, quantity, price):
     logger.info(f"Placing {side.upper()}: {ticker} x {quantity} @ ~${price:.2f}")
     try:
-        order_price = str(round(price * (1.01 if side == 'buy' else 0.99), 2))
+        order_price = str(round(price * (1.03 if side == 'buy' else 0.95), 2))
         exchange = EXCHANGE_MAP.get(ticker, 'AMEX')
         df_order = order.order(
             cano=my_acct, acnt_prdt_cd=my_prod,
@@ -351,15 +351,15 @@ def execute_rebalance(targets, my_acct, my_prod, holdings, cash, budget, paper_t
     for ticker, h in holdings.items():
         if ticker not in targets and h['quantity'] > 0:
             logger.info(f"SELL {ticker}: {h['quantity']} shares (not in target)")
+            sell_price = h['value'] / h['quantity'] if h['quantity'] > 0 else 0
             if not paper_trading:
-                price = h['value'] / h['quantity'] if h['quantity'] > 0 else 0
-                success = place_order("sell", my_acct, my_prod, ticker, h['quantity'], price)
+                success = place_order("sell", my_acct, my_prod, ticker, h['quantity'], sell_price)
                 if not success:
                     logger.error(f"Failed to sell {ticker}")
                     continue
             trades.append({
                 'action': 'SELL', 'ticker': ticker,
-                'quantity': h['quantity'], 'value': h['value'],
+                'quantity': h['quantity'], 'price': sell_price, 'value': h['value'],
             })
 
     # Step 2: Wait for sells to settle
@@ -385,7 +385,7 @@ def execute_rebalance(targets, my_acct, my_prod, holdings, cash, budget, paper_t
                         place_order("sell", my_acct, my_prod, ticker, sell_qty, price)
                     trades.append({
                         'action': 'SELL', 'ticker': ticker,
-                        'quantity': sell_qty, 'value': sell_qty * price,
+                        'quantity': sell_qty, 'price': price, 'value': sell_qty * price,
                     })
 
     # Refresh cash after trims

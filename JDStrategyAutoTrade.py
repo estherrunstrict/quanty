@@ -1088,7 +1088,7 @@ class JDStrategyTrader:
             return {'status': 'paper_trade', 'ticker': ticker, 'quantity': quantity, 'price': price}
 
         try:
-            order_price = str(round(price * (1.01 if side == 'buy' else 0.99), 2))
+            order_price = str(round(price * (1.03 if side == 'buy' else 0.95), 2))
             exchange = self.asset_exchange_map.get(ticker, "NASD")
 
             df_order = order.order(

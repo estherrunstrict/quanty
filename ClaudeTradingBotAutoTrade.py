@@ -341,7 +341,7 @@ def place_order(side, my_acct, my_prod, ticker, quantity, price):
     logger.info(f"Placing {side.upper()}: {ticker} x {quantity} @ ~${price:.2f}")
     try:
         # Use limit order with 1% slippage allowance
-        order_price = str(round(price * (1.01 if side == 'buy' else 0.99), 2))
+        order_price = str(round(price * (1.03 if side == 'buy' else 0.95), 2))
         exchange = EXCHANGE_MAP.get(ticker, 'NASD')
         df_order = order.order(
             cano=my_acct, acnt_prdt_cd=my_prod,

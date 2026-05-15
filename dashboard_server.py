@@ -19,7 +19,10 @@ import http.server
 import json
 import os
 import re
+import subprocess
 import sys
+import threading
+import time as _time
 import yaml
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
@@ -29,6 +32,67 @@ ROOT = Path(__file__).parent
 RESULTS_DIR = ROOT / "strategy_results"
 EQUITY_HISTORY_FILE = RESULTS_DIR / "equity_history.jsonl"
 EQUITY_START_DATE = "2026-01-01"
+REALIZED_PL_FILE = RESULTS_DIR / "realized_pl_2026.json"
+AGG_SCRIPT = ROOT / "scripts" / "aggregate_realized_pnl.py"
+
+# Bot state files. The dashboard treats the newest mtime among these as the
+# "authoritative-data-changed-at" timestamp; if it's newer than the realized
+# aggregator's output, the cache is stale and we re-run the aggregator before
+# serving. Add new bots here so they get the same self-heal coverage.
+BOT_STATE_FILES = (
+    ROOT / "upbit_vb_strategy_state.json",
+    ROOT / "hybrid_vb_state.json",
+    ROOT / "korea_etf_momentum_state.json",
+    ROOT / "jd_strategy_state.json",
+    ROOT / "quant40_state.json",
+    ROOT / "claude_trading_bot_state.json",
+    ROOT / "modified_dual_momentum_state.json",
+)
+
+# Cooldown so a burst of dashboard requests can't trigger overlapping
+# aggregator runs. 30s is short enough that a fresh trade surfaces almost
+# immediately, long enough to absorb tab-refresh storms.
+_AGG_REFRESH_MIN_INTERVAL_SEC = 30
+_AGG_REFRESH_TIMEOUT_SEC = 60
+_agg_lock = threading.Lock()
+_agg_last_run = 0.0
+
+# ── Ticker → canonical-owner map ────────────────────────────────────────
+# Two bots share one KIS broker account. When more than one bot's strategy
+# config targets the same ticker (e.g. SPY is in both Quant40 and Modified
+# Dual Momentum's universes), each bot reads the broker balance and writes
+# the same shares into its own result file — the dashboard then double-counts
+# them. We use the aggregator's TICKER_TO_STRATEGY map (which is also the
+# realized-PnL attribution source of truth) to keep each ticker on exactly
+# one bot. See _dedupe_ticker_collisions().
+sys.path.insert(0, str(ROOT))
+try:
+    from scripts.aggregate_realized_pnl import TICKER_TO_STRATEGY as _TICKER_TO_AGG_KEY
+except Exception:
+    _TICKER_TO_AGG_KEY = {}
+
+# Aggregator key → (dashboard strategy id, leg-or-None).
+# Hybrid VB has two legs in the dashboard's nested shape; the aggregator
+# splits them by suffix, so we resolve to the leg here.
+_AGG_KEY_TO_DASHBOARD = {
+    "BTC_VB":         ("btc_vb",        None),
+    "QUANT40":        ("quant40",       None),
+    "JD_STRATEGY":    ("jd_strategy",   None),
+    "DUAL_MOMENTUM":  ("dual_momentum", None),
+    "KOREA_ETF":      ("korea_etf",     None),
+    "CLAUDE_AI_BOT":  ("claude_bot",    None),
+    "HYBRID_VB_KR":   ("hybrid_vb",     "kr"),
+    "HYBRID_VB_US":   ("hybrid_vb",     "us"),
+}
+
+# ticker → (dashboard_id, leg) tuple. Tickers absent from this map are
+# uncontested — keep them on whatever bot reports them.
+TICKER_OWNER = {
+    t: _AGG_KEY_TO_DASHBOARD[k]
+    for t, k in _TICKER_TO_AGG_KEY.items()
+    if k in _AGG_KEY_TO_DASHBOARD
+}
+
 KST = timezone(timedelta(hours=9))
 def _get_et_now():
     """Get current Eastern Time (auto EDT/EST)."""
@@ -65,6 +129,62 @@ def _file_age_hours(path):
         return (datetime.now().timestamp() - mtime) / 3600
     except Exception:
         return 999
+
+
+def _newest_bot_state_mtime():
+    newest = 0.0
+    for p in BOT_STATE_FILES:
+        try:
+            m = p.stat().st_mtime
+            if m > newest:
+                newest = m
+        except OSError:
+            continue
+    return newest
+
+
+def _ensure_realized_fresh():
+    """Read-through cache for the realized-PnL aggregator output.
+
+    Compares mtime of realized_pl_2026.json against the newest bot state
+    file; if any state has changed since the last aggregator run, re-runs
+    the aggregator inline before serving. Bounded by a 30s cooldown so
+    request bursts can't pile up overlapping runs.
+
+    This closes the drift window between bot trade → state save and the
+    next scheduled aggregator cron. Without it, a bot that trades outside
+    a cron window leaves the dashboard reporting yesterday's PnL — see
+    incident 2026-04-28 (BTC sold at a loss; dashboard kept showing the
+    pre-trade profit until the next US-window aggregator run).
+    """
+    global _agg_last_run
+    try:
+        realized_mtime = REALIZED_PL_FILE.stat().st_mtime
+    except OSError:
+        realized_mtime = 0.0
+    state_mtime = _newest_bot_state_mtime()
+    if state_mtime <= realized_mtime:
+        return  # cache is fresh
+
+    now = _time.monotonic()
+    if not _agg_lock.acquire(blocking=False):
+        return  # another request is already refreshing
+    try:
+        if now - _agg_last_run < _AGG_REFRESH_MIN_INTERVAL_SEC:
+            return
+        try:
+            subprocess.run(
+                [sys.executable, str(AGG_SCRIPT)],
+                cwd=str(ROOT),
+                capture_output=True,
+                timeout=_AGG_REFRESH_TIMEOUT_SEC,
+                check=False,
+            )
+        except Exception:
+            pass
+        _agg_last_run = _time.monotonic()
+    finally:
+        _agg_lock.release()
 
 
 def _parse_log_events(log_path, max_lines=500):
@@ -181,8 +301,6 @@ def _save_equity_snapshot(strategies, exchange_rate=1380.0):
     today = _get_et_now().strftime("%Y-%m-%d")
 
     history = _load_equity_history()
-    if history and history[-1].get("date") == today:
-        return  # already saved today
 
     def _to_krw(amt, currency):
         return float(amt) if currency == "KRW" else float(amt) * exchange_rate
@@ -221,11 +339,28 @@ def _save_equity_snapshot(strategies, exchange_rate=1380.0):
             "native": cur,
         }
 
+    # Idempotent today-row replace. If today already has a row that matches
+    # the new snapshot exactly, skip the write. Otherwise rewrite the file
+    # atomically with all prior days plus the fresh today row at the end.
+    # This ensures the daily snapshot tracks the latest realized+unrealized
+    # values rather than locking in the first save of the day.
+    existing_today = next((e for e in history if e.get("date") == today), None)
+    if existing_today == snapshot:
+        return
+
+    other_rows = [e for e in history if e.get("date") != today]
+    tmp_path = EQUITY_HISTORY_FILE.with_suffix(".tmp")
     try:
-        with open(EQUITY_HISTORY_FILE, "a") as f:
+        with open(tmp_path, "w") as f:
+            for entry in other_rows:
+                f.write(json.dumps(entry, default=str) + "\n")
             f.write(json.dumps(snapshot, default=str) + "\n")
+        os.replace(tmp_path, EQUITY_HISTORY_FILE)
     except Exception:
-        pass
+        try:
+            tmp_path.unlink()
+        except OSError:
+            pass
 
 
 def _get_equity_series():
@@ -241,8 +376,10 @@ def _get_equity_series():
     they don't represent meaningful per-bot equity — see commit log.
     """
     history = _load_equity_history()
-    series = {}
+    by_key_date: dict[str, dict[str, float]] = {}
 
+    # Last-write-wins per (key, date). Tolerates legacy duplicate rows for
+    # the same date from before _save_equity_snapshot became idempotent.
     for entry in history:
         date = entry.get("date", "")
         if date < EQUITY_START_DATE:
@@ -254,17 +391,82 @@ def _get_equity_series():
                 pl = val.get("total_pl_krw")
                 if pl is None:
                     continue
-                series.setdefault(key, []).append([date, float(pl)])
+                by_key_date.setdefault(key, {})[date] = float(pl)
             # else: legacy scalar row, skip silently.
 
-    # Prepend a synthetic Jan 1 baseline at ₩0. We only do this when the
-    # bot has at least one real snapshot — otherwise we'd create a flat
-    # zero line that's worse than no line.
-    for key, pts in series.items():
+    series: dict[str, list] = {}
+    for key, by_date in by_key_date.items():
+        pts = [[d, v] for d, v in sorted(by_date.items())]
+        # Prepend a synthetic Jan 1 baseline at ₩0. Only when the bot has at
+        # least one real snapshot — otherwise we'd create a flat zero line
+        # that's worse than no line.
         if pts and pts[0][0] != EQUITY_START_DATE:
             pts.insert(0, [EQUITY_START_DATE, 0.0])
+        series[key] = pts
 
     return series
+
+
+def _holdings_aggregates(holdings):
+    """Recompute (value, cost_basis, profit) from a holdings list."""
+    val = sum((h.get("value") or 0) for h in holdings)
+    cost = sum(((h.get("avg_price") or 0) * (h.get("quantity") or 0)) for h in holdings)
+    prof = sum((h.get("profit") or 0) for h in holdings)
+    return val, cost, prof
+
+
+def _dedupe_ticker_collisions(strategies):
+    """Remove cross-bot duplicate holdings using TICKER_OWNER as ground truth.
+
+    A holding stays on a bot iff the bot is the canonical owner of its ticker
+    (per the aggregator's TICKER_TO_STRATEGY map) — or the ticker is absent
+    from the map (uncontested). Otherwise the holding is dropped from this
+    bot. After dropping, we recompute the bot's value/cost_basis/profit so
+    downstream code (_enrich, total_pl_ytd, equity snapshots) sees the
+    deduped totals.
+
+    btc_vb has no shared-broker risk and is skipped. hybrid_vb dedupes per
+    leg (kr/us) and re-rolls the top-level holdings list as the union.
+    """
+    if not TICKER_OWNER:
+        return  # map import failed; fail-open rather than silently dropping data
+
+    def _belongs(ticker, sid, leg):
+        owner = TICKER_OWNER.get(ticker)
+        return owner is None or owner == (sid, leg)
+
+    for s in strategies:
+        sid = s.get("id")
+        if sid == "btc_vb":
+            continue
+        if sid == "hybrid_vb":
+            for leg_key in ("kr", "us"):
+                leg = s.get(leg_key)
+                if not isinstance(leg, dict):
+                    continue
+                holdings = leg.get("holdings") or []
+                kept = [h for h in holdings if _belongs(h.get("ticker"), sid, leg_key)]
+                if len(kept) != len(holdings):
+                    leg["holdings"] = kept
+                    val, cost, prof = _holdings_aggregates(kept)
+                    leg["value"] = round(val, 2)
+                    leg["cost_basis"] = round(cost, 2)
+                    leg["profit"] = round(prof, 2)
+            # Rebuild the strategy-level rollup so anything iterating
+            # s["holdings"] sees the deduped union.
+            kr_h = (s.get("kr") or {}).get("holdings") or []
+            us_h = (s.get("us") or {}).get("holdings") or []
+            s["holdings"] = [*kr_h, *us_h]
+            continue
+
+        holdings = s.get("holdings") or []
+        kept = [h for h in holdings if _belongs(h.get("ticker"), sid, None)]
+        if len(kept) != len(holdings):
+            s["holdings"] = kept
+            val, cost, prof = _holdings_aggregates(kept)
+            s["value"] = round(val, 2)
+            s["cost_basis"] = round(cost, 2)
+            s["profit"] = round(prof, 2)
 
 
 def _enrich(bucket: dict, unrealized: float, budget: float, r: dict) -> None:
@@ -293,6 +495,10 @@ def _enrich(bucket: dict, unrealized: float, budget: float, r: dict) -> None:
 
 def build_dashboard_data():
     """Assemble full dashboard payload from all data sources."""
+    # Self-heal stale realized-PnL cache before any data is read. Cheap when
+    # everything is already fresh (single mtime compare).
+    _ensure_realized_fresh()
+
     config = _load_yaml(ROOT / "config.yaml")
 
     def _cost_basis(holdings):
@@ -592,6 +798,14 @@ def build_dashboard_data():
             "stale_hours": _file_age_hours(RESULTS_DIR / "claude_trading_bot_result.json") if cb_result else (claude_regime.get("_file_age", 999) if claude_regime else 999),
             "timestamp": cb_result.get("timestamp", "") if cb_result else (claude_regime.get("timestamp", "") if claude_regime else ""),
         })
+
+    # ── De-duplicate cross-bot ticker collisions ──
+    # Two bots can target the same ticker (e.g. SPY targeted by both Quant40
+    # and Dual Momentum). Both share one KIS account, so each bot's result
+    # file lists the same broker position — without this step the dashboard
+    # double-counts. Use TICKER_OWNER (sourced from the aggregator's
+    # TICKER_TO_STRATEGY map) to keep each ticker on its canonical bot only.
+    _dedupe_ticker_collisions(strategies)
 
     # ── Realized P&L + derived metrics ──
     # Aggregated YTD view per strategy — see scripts/aggregate_realized_pnl.py.

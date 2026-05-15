@@ -246,7 +246,7 @@ def place_order(side, my_acct, my_prod, ticker, quantity, price):
     """Place buy/sell order via KIS API."""
     logger.info(f"Placing {side.upper()}: {ticker} x {quantity} @ ~${price:.2f}")
     try:
-        order_price = str(round(price * (1.01 if side == 'buy' else 0.99), 2))
+        order_price = str(round(price * (1.03 if side == 'buy' else 0.95), 2))
         exchange = EXCHANGE_MAP.get(ticker, "AMEX")
         df_order = order.order(
             cano=my_acct, acnt_prdt_cd=my_prod,

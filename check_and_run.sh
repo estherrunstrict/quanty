@@ -78,6 +78,18 @@ if [ "$ny_hour_early" -eq 16 ] && [ "$ny_minute_early" -eq 0 ]; then
         touch "$UPBIT_VB_STATE_FILE"
         echo "Upbit VB trader started at US close. State file created."
         echo "Check logs: tail -f $SCRIPT_DIR/upbit_vb_strategy.log"
+
+        # Refresh realized-PnL aggregate after the BTC sell+state-save settles.
+        # Without this, the dashboard shows stale realized P&L until the US
+        # window's aggregator run (~6.5h later) — see incident 2026-04-28.
+        (
+            sleep 180
+            echo "Aggregating realized PnL (post BTC VB)..."
+            $VENV_PYTHON "$SCRIPT_DIR/scripts/aggregate_realized_pnl.py" \
+                >>"$SCRIPT_DIR/aggregate_realized_pnl.log" \
+                2>>"$SCRIPT_DIR/aggregate_realized_pnl_stderr.log" \
+                || echo "WARN: realized PnL aggregator exited non-zero (see aggregate_realized_pnl_stderr.log)"
+        ) &
     else
         echo "Upbit VB trader has already been run today."
     fi
