@@ -892,16 +892,18 @@ def main():
             footer=f"PAPER TRADING | {now_kst.strftime('%Y-%m-%d %H:%M')} KST"
         )
     else:
-        final_holdings = get_holdings(my_acct, my_prod, tickers)
-        final_cash = get_cash_balance(my_acct, my_prod, tickers[0])
+        # Scope to KEM's own ticker only — avoids picking up HybridVB's shared holdings
+        state_target = state.get('target_ticker')
+        query_tickers = [state_target] if state_target else tickers[:1]
+        final_holdings = get_holdings(my_acct, my_prod, query_tickers)
 
-        total_value = final_cash
+        kem_holdings_value = 0
         holdings_text = "None"
         if final_holdings:
             h_lines = []
             for t, h in final_holdings.items():
                 if h['quantity'] > 0:
-                    total_value += h['value']
+                    kem_holdings_value += h['value']
                     pnl_emoji = "+" if h['profit'] >= 0 else ""
                     h_lines.append(
                         f"{etfs.get(t, t)}: {h['quantity']}shares "
@@ -910,11 +912,15 @@ def main():
             if h_lines:
                 holdings_text = "\n".join(h_lines)
 
+        # Estimated KEM cash = budget minus invested; full account cash is shared with HybridVB
+        final_cash = max(0, budget_krw - kem_holdings_value)
+        total_value = kem_holdings_value + final_cash
+
         notifier._send(
             title="Session Complete",
             fields=[
                 {"name": "Total Value", "value": f"{total_value:,.0f}", "inline": True},
-                {"name": "Cash", "value": f"{final_cash:,.0f}", "inline": True},
+                {"name": "KEM Cash (est.)", "value": f"{final_cash:,.0f}", "inline": True},
                 {"name": "Holdings", "value": holdings_text, "inline": False},
             ],
             color=notifier.COLORS['info'],
