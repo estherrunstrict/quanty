@@ -65,17 +65,25 @@ def get_kr_account():
         cash = 0
         ovrs_reuse = 0
 
-    # output2 has the real account summary that matches KIS app
-    kr_tot_evlu = 0  # tot_evlu_amt = 예수금 + KR stocks (matches KIS app's KR portion)
-    kr_deposit_cash = 0  # dnca_tot_amt = 예수금
+    # output2 has the real account summary that matches KIS app.
+    # We need prvs_rcdl_excc_amt (가수도정산금액 / provisional reconciliation), not
+    # dnca_tot_amt, because dnca only reflects already-settled deposit cash —
+    # when the bot sells today, those proceeds don't appear in dnca until T+2,
+    # so total assets get understated by today's pending KR settlement amount
+    # (matches tot_evlu_amt = scts_evlu_amt + prvs_rcdl_excc_amt in KIS app).
+    kr_tot_evlu = 0  # tot_evlu_amt = KR stocks + prvs_rcdl_excc_amt (KIS app KR view)
+    kr_deposit_cash = 0  # dnca_tot_amt = 예수금 (already-settled deposit only)
+    kr_settled_cash = 0  # prvs_rcdl_excc_amt = settled + today's pending settlements
     if output2 is not None and not output2.empty:
         kr_tot_evlu = float(output2.iloc[0].get('tot_evlu_amt', 0))
         kr_deposit_cash = float(output2.iloc[0].get('dnca_tot_amt', 0))
+        kr_settled_cash = float(output2.iloc[0].get('prvs_rcdl_excc_amt', kr_deposit_cash))
 
     return {
         'stock_value': stock_value,
-        'cash': kr_deposit_cash,       # 예수금 from output2 (matches KIS app exactly)
-        'kr_tot_evlu': kr_tot_evlu,    # tot_evlu_amt = 예수금 + KR stocks
+        'cash': kr_settled_cash,       # prvs_rcdl_excc_amt — settled cash incl. today's KR pending
+        'deposit_cash': kr_deposit_cash,  # dnca_tot_amt — for display only (KIS app's 예수금)
+        'kr_tot_evlu': kr_tot_evlu,    # tot_evlu_amt = KR stocks + prvs_rcdl_excc_amt
         'unrealized_pl': unrealized_pl,
         'holdings': holdings,
         'acct': acct,
@@ -138,9 +146,29 @@ def get_us_account(acct):
     except:
         cash = 0
 
+    # Unsettled US sells — proceeds from US stock sales pending T+3 settlement.
+    # These are gone from `stock_value` (positions closed) but haven't landed in
+    # `cash` (still settling), so without this line the dashboard underreports
+    # total assets by the settlement-in-flight amount. ustl_sll_amt_smtl is
+    # already in KRW (KIS converts at the trade-day rate).
+    unsettled_sell_krw = 0
+    try:
+        sys.path.insert(0, os.path.join(TRADING_DIR, "open-trading-api", "examples_llm", "overseas_stock", "inquire_present_balance"))
+        import inquire_present_balance as ipb
+        _, _, o3 = ipb.inquire_present_balance(
+            cano=acct.my_acct, acnt_prdt_cd=acct.my_prod,
+            wcrc_frcr_dvsn_cd="02", natn_cd="840", tr_mket_cd="00",
+            inqr_dvsn_cd="00", env_dv="real"
+        )
+        if o3 is not None and not o3.empty:
+            unsettled_sell_krw = float(o3.iloc[0].get('ustl_sll_amt_smtl', 0) or 0)
+    except Exception as e:
+        print(f"inquire_present_balance failed (unsettled US sells will be 0): {e}")
+
     return {
         'stock_value': stock_value,
         'cash': cash,
+        'unsettled_sell_krw': unsettled_sell_krw,
         'total': stock_value + cash,
         'unrealized_pl': unrealized_pl,
         'holdings': list(holdings.values()),
@@ -174,14 +202,17 @@ def get_account_totals():
             'holdings': kr['holdings'],
             'kr_tot_evlu': kr.get('kr_tot_evlu', kr_stock_value + krw_cash),
             'cash': krw_cash,
+            'deposit_cash': kr.get('deposit_cash', krw_cash),  # dnca_tot_amt for display
         },
         'us': {
             'stock_value': us_stock_value,
             'unrealized_pl': us['unrealized_pl'],
             'holdings': us['holdings'],
+            'unsettled_sell_krw': us.get('unsettled_sell_krw', 0),
         },
-        'krw_cash': krw_cash,       # Shared KRW cash — counted once
-        'usd_cash': usd_cash,       # USD cash in USD
+        'krw_cash': krw_cash,                                    # prvs_rcdl_excc_amt — settled cash incl. KR pending
+        'usd_cash': usd_cash,                                    # USD cash in USD
+        'unsettled_us_sell_krw': us.get('unsettled_sell_krw', 0),  # US T+3 pending sales in KRW
     }
 
 
