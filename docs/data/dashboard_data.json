@@ -1,20 +1,20 @@
 {
-  "updated_at": "2026-05-19 16:00 KST",
+  "updated_at": "2026-05-20 06:30 KST",
   "portfolio": {
-    "total_value_krw": 142680731,
+    "total_value_krw": 142466797,
     "original_deposit_krw": 75714217,
-    "total_profit_krw": 3737213,
-    "total_profit_pct": 4.94,
+    "total_profit_krw": 3523279,
+    "total_profit_pct": 4.65,
     "cash_krw": 69292321,
     "cash_usd": 6112.16,
     "unsettled_us_sell_krw": 0,
     "upbit_krw": 9838830,
     "exchange_rate": 1503.4,
-    "unrealized_krw": 5427927,
+    "unrealized_krw": 5213993,
     "realized_krw": -1690714,
     "unrealized_native": {
       "krw": 1641900,
-      "usd": 2518.31
+      "usd": 2376.01
     },
     "realized_native": {
       "krw": -505644,
@@ -22,8 +22,8 @@
     }
   },
   "meta": {
-    "timestamp": "2026-05-19T16:00:05.248105+09:00",
-    "kst": "2026-05-19 16:00 KST",
+    "timestamp": "2026-05-20T06:30:02.406662+09:00",
+    "kst": "2026-05-20 06:30 KST",
     "equity_start": "2026-01-01"
   },
   "strategies": [
@@ -39,15 +39,15 @@
       "total_trades": 14,
       "winning_trades": 8,
       "allocation": 0.3,
-      "last_run": "2026-05-19",
+      "last_run": "2026-05-20",
       "holdings": [],
       "extra": {
         "k": 0.4,
         "atr_period": 7,
         "ma_period": 5,
-        "equity_days": 65
+        "equity_days": 66
       },
-      "stale_hours": 10.98335199561384,
+      "stale_hours": 1.4823597824573518,
       "unrealized_profit": 0,
       "realized_profit_ytd": -87008.98,
       "realized_trades": 14,
@@ -88,7 +88,7 @@
         "target_ticker": "139220",
         "rebalance_day": false
       },
-      "stale_hours": 6.997012133598328,
+      "stale_hours": 21.496207253601817,
       "timestamp": "2026-05-19T09:00:15.993558+09:00",
       "unrealized_profit": 1641900.0,
       "realized_profit_ytd": -1380.0,
@@ -108,22 +108,22 @@
       "name": "US Quant40",
       "currency": "USD",
       "mode": "live",
-      "value": 25151.5,
+      "value": 24988.64,
       "cost_basis": 23026.8898,
-      "cash": 29449.825005848663,
-      "profit": 2087.21,
+      "cash": 33529.938067980765,
+      "profit": 1919.93,
       "holdings": [
         {
           "ticker": "SPY",
           "quantity": 34,
-          "value": 25114.1,
+          "value": 24946.82,
           "avg_price": 677.2614647058824,
-          "current_price": 738.65,
-          "profit": 2087.21,
-          "profit_krw": 3176122.3735506595,
-          "profit_rate": 9.06,
+          "current_price": 733.73,
+          "profit": 1919.93,
+          "profit_krw": 2967735.7983485837,
+          "profit_rate": 8.34,
           "currency": "USD",
-          "live_price": 738.65,
+          "live_price": 733.73,
           "mark_to_market": true
         }
       ],
@@ -132,9 +132,9 @@
         "signal": "\ud83d\udfe2 Strong Bullish (4/4)",
         "regime": ""
       },
-      "stale_hours": 17.4991632048289,
-      "timestamp": "2026-05-18T22:30:08.250298",
-      "unrealized_profit": 2087.21,
+      "stale_hours": 7.998215169443024,
+      "timestamp": "2026-05-19T22:30:08.766382",
+      "unrealized_profit": 1919.93,
       "realized_profit_ytd": -738.04,
       "realized_trades": 11,
       "wins_ytd": 6,
@@ -143,30 +143,30 @@
       "mdd_pct": null,
       "realized_source": "kis_overseas",
       "cycles_ytd": 11,
-      "total_pl_ytd": 1349.17,
-      "profit_rate_ytd_pct": 5.36,
-      "unrealized_drift_at_mtm": -37.4
+      "total_pl_ytd": 1181.89,
+      "profit_rate_ytd_pct": 4.7,
+      "unrealized_drift_at_mtm": -41.82
     },
     {
       "id": "jd_strategy",
       "name": "JD Strategy",
       "currency": "USD",
       "mode": "live",
-      "value": 2065.77,
+      "value": 1978.65,
       "cost_basis": 1708.92767,
-      "cash": 29458.430276048413,
-      "profit": 291.95,
+      "cash": 33561.14827742698,
+      "profit": 276.56,
       "holdings": [
         {
           "ticker": "NVDA",
           "quantity": 9,
-          "value": 2000.88,
+          "value": 1985.49,
           "avg_price": 189.88085222222222,
-          "current_price": 222.32000000000002,
-          "profit": 291.95,
-          "profit_rate": 17.08,
-          "profit_krw": 533293.7138853833,
-          "live_price": 222.32000000000002,
+          "current_price": 220.61,
+          "profit": 276.56,
+          "profit_rate": 16.18,
+          "profit_krw": 407572.0020301281,
+          "live_price": 220.61,
           "mark_to_market": true
         }
       ],
@@ -177,9 +177,9 @@
         "regime": "EASING",
         "is_holding": true
       },
-      "stale_hours": 17.489568054278692,
-      "timestamp": "2026-05-18T22:30:42.483269",
-      "unrealized_profit": 291.95,
+      "stale_hours": 7.988791687157419,
+      "timestamp": "2026-05-19T22:30:42.326755",
+      "unrealized_profit": 276.56,
       "realized_profit_ytd": -271.36,
       "realized_trades": 15,
       "wins_ytd": 2,
@@ -188,9 +188,9 @@
       "mdd_pct": null,
       "realized_source": "kis_overseas",
       "cycles_ytd": 15,
-      "total_pl_ytd": 20.59,
-      "profit_rate_ytd_pct": 0.74,
-      "unrealized_drift_at_mtm": -64.89
+      "total_pl_ytd": 5.2,
+      "profit_rate_ytd_pct": 0.19,
+      "unrealized_drift_at_mtm": 6.84
     },
     {
       "id": "dual_momentum",
@@ -199,7 +199,7 @@
       "mode": "live",
       "value": 0,
       "cost_basis": 0,
-      "cash": 225.85,
+      "cash": 6112.16,
       "profit": 0,
       "holdings": [],
       "budget": 20000.0,
@@ -207,8 +207,8 @@
         "mode_label": "offensive",
         "rebalance_day": false
       },
-      "stale_hours": 17.481532352632946,
-      "timestamp": "2026-05-18T22:31:11.721744",
+      "stale_hours": 7.980591378874249,
+      "timestamp": "2026-05-19T22:31:12.213871",
       "unrealized_profit": 0,
       "realized_profit_ytd": 171.31,
       "realized_trades": 1,
@@ -300,20 +300,20 @@
         "unrealized_drift_at_mtm": 0.0
       },
       "us": {
-        "value": 1608.09,
+        "value": 1682.78,
         "cost_basis": 1503.0389,
-        "profit": 139.15,
+        "profit": 179.52,
         "holdings": [
           {
             "ticker": "USO",
             "quantity": 11,
-            "value": 1642.19,
+            "value": 1682.56,
             "avg_price": 136.6399,
-            "current_price": 149.29,
-            "profit": 139.15,
-            "profit_rate": 9.26,
+            "current_price": 152.96,
+            "profit": 179.52,
+            "profit_rate": 11.94,
             "currency": "USD",
-            "live_price": 149.29,
+            "live_price": 152.96,
             "mark_to_market": true
           }
         ],
@@ -329,10 +329,10 @@
           "SIL": "BEAR",
           "USO": "BULL"
         },
-        "heat": 0.13409648080089862,
-        "dd": -0.7696756955324541,
+        "heat": 0.03154929993046772,
+        "dd": -0.02103442104635216,
         "open_positions": 1,
-        "unrealized_profit": 139.15,
+        "unrealized_profit": 179.52,
         "realized_profit_ytd": 49.83,
         "realized_trades": 2,
         "wins_ytd": 1,
@@ -341,9 +341,9 @@
         "mdd_pct": null,
         "realized_source": "kis_overseas",
         "cycles_ytd": 2,
-        "total_pl_ytd": 188.98,
-        "profit_rate_ytd_pct": 0.77,
-        "unrealized_drift_at_mtm": 34.1
+        "total_pl_ytd": 229.35,
+        "profit_rate_ytd_pct": 1.15,
+        "unrealized_drift_at_mtm": -0.11
       },
       "holdings": [
         {
@@ -389,11 +389,11 @@
         {
           "ticker": "USO",
           "quantity": 11,
-          "value": 1608.09,
+          "value": 1682.78,
           "avg_price": 136.6399,
-          "current_price": 146.19000244140625,
-          "profit": 105.05112685546862,
-          "profit_rate": 6.989248705104623,
+          "current_price": 152.97000122070312,
+          "profit": 179.63111342773425,
+          "profit_rate": 11.951195237045042,
           "currency": "USD"
         }
       ],
@@ -404,13 +404,13 @@
             "entry_date": "2026-05-11T09:31:33.920784-04:00",
             "entry_price": 136.6399,
             "shares": 11,
-            "stop_price": 129.99357305254256,
-            "peak_price": 146.19000244140625,
+            "stop_price": 137.06466048104423,
+            "peak_price": 152.97000122070312,
             "risk_amount": 245.9249
           }
         }
       },
-      "stale_hours": 6.9822525556219945,
+      "stale_hours": 7.972535069717301,
       "realized_trades": 42,
       "cycles_ytd": 42,
       "mdd_pct": null
@@ -422,7 +422,7 @@
       "mode": "live",
       "value": 0,
       "cost_basis": 0,
-      "cash": 225.85,
+      "cash": 6112.16,
       "profit": 0,
       "holdings": [],
       "budget": 20000.0,
@@ -431,7 +431,7 @@
         "exposure": "REDUCE_EXPOSURE",
         "confidence": 60,
         "breadth_score": 32.4,
-        "uptrend_score": 15.9,
+        "uptrend_score": 18.0,
         "top_probability": 0,
         "ftd_active": false,
         "screener_candidates": [],
@@ -439,8 +439,8 @@
         "trend_pass_count": 0,
         "vcp_count": 0
       },
-      "stale_hours": 17.466597435805532,
-      "timestamp": "2026-05-18T22:32:05.489496",
+      "stale_hours": 7.965612185729874,
+      "timestamp": "2026-05-19T22:32:06.149568",
       "unrealized_profit": 0,
       "realized_profit_ytd": 0,
       "realized_trades": 0,
@@ -698,7 +698,7 @@
       ],
       [
         "2026-05-19",
-        1913466.88
+        1688720.08
       ]
     ],
     "jd_strategy": [
@@ -780,7 +780,7 @@
       ],
       [
         "2026-05-19",
-        117965.61
+        -2259.99
       ]
     ],
     "dual_momentum": [
@@ -1026,7 +1026,7 @@
       ],
       [
         "2026-05-19",
-        213735.96
+        316656.34
       ]
     ],
     "claude_bot": [
@@ -1113,7 +1113,7 @@
     ]
   },
   "realized_pl": {
-    "_updated": "2026-05-19T16:00:04+09:00",
+    "_updated": "2026-05-20T05:03:04+09:00",
     "_year": 2026,
     "_source_mode": "both",
     "_total_krw": -505643.98,
@@ -1225,6 +1225,27 @@
     ]
   },
   "feed": [
+    {
+      "type": "session",
+      "title": "Session Complete",
+      "body": "Done.",
+      "source": "VB_Strategy",
+      "timestamp": "2026-05-20 05:01:05"
+    },
+    {
+      "type": "signal",
+      "title": "NO SIGNAL \u2014 Bearish",
+      "body": "Step 3: Close < MA(5) \u2192 NO SIGNAL (bearish). Sitting in cash.",
+      "source": "VB_Strategy",
+      "timestamp": "2026-05-20 05:01:04"
+    },
+    {
+      "type": "session",
+      "title": "Daily Run Started",
+      "body": "BTC VB Strategy \u2014 Daily Run 2026-05-20",
+      "source": "VB_Strategy",
+      "timestamp": "2026-05-20 05:00:03"
+    },
     {
       "type": "session",
       "title": "Session Complete",
@@ -1413,28 +1434,7 @@
       "body": "Step 3: Close < MA(5) \u2192 NO SIGNAL (bearish). Sitting in cash.",
       "source": "VB_Strategy",
       "timestamp": "2026-05-14 05:01:04"
-    },
-    {
-      "type": "session",
-      "title": "Daily Run Started",
-      "body": "BTC VB Strategy \u2014 Daily Run 2026-05-14",
-      "source": "VB_Strategy",
-      "timestamp": "2026-05-14 05:00:03"
-    },
-    {
-      "type": "signal",
-      "title": "No Breakout Today",
-      "body": "No breakout within 1433 minutes. Target was \u20a9120,446,657",
-      "source": "VB_Strategy",
-      "timestamp": "2026-05-14 04:54:24"
-    },
-    {
-      "type": "session",
-      "title": "Session Complete",
-      "body": "Done.",
-      "source": "VB_Strategy",
-      "timestamp": "2026-05-14 04:54:24"
     }
   ],
-  "mark_to_market_at": "2026-05-19 16:00 KST"
+  "mark_to_market_at": "2026-05-20 06:30 KST"
 }
