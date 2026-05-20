@@ -765,35 +765,24 @@ function renderSparkline(series, width = 280, height = 60) {
 
 // ═══ Render ═══════════════════════════════════════════════
 // ═══ Strategy Comparison Chart ═══════════════════════════
-// Overlays all 7 bots' YTD equity curves normalized to % return from each bot's
-// own first snapshot. Mixed currencies (KRW/USD) are sidestepped because
-// % return is currency-agnostic. Bots with <2 points or a zero base value
-// are listed in the legend as "insufficient data" but skipped from the plot.
-function buildComparisonChart(equitySeries, strategies) {
+// Three portfolio-level lines in KRW: Realized P&L, Unrealized P&L, and
+// Total (sum). Each point sums that component across all bots on that date.
+// `strategies` is accepted but unused — kept for call-site stability.
+function buildComparisonChart(aggregateSeries, _strategies) {
+  // Order matters: later entries render on top of earlier ones in SVG.
   const seriesMeta = {
-    btc_vb:        { name: 'BTC Volatility Breakout', stratId: 'btc_vb',        color: '#c9a24d' },
-    korea_etf:     { name: 'Korea ETF Momentum',      stratId: 'korea_etf',     color: '#3a8a5a' },
-    quant40:       { name: 'US Quant40',              stratId: 'quant40',       color: '#4a78a8' },
-    jd_strategy:   { name: 'JD Strategy',             stratId: 'jd_strategy',   color: '#a84848' },
-    dual_momentum: { name: 'Dual Momentum',           stratId: 'dual_momentum', color: '#7a68a8' }, // sole purple by spec
-    hybrid_vb_kr:  { name: 'Hybrid VB (KR)',          stratId: 'hybrid_vb',     sub: 'kr', color: '#c9a24d99' },
-    hybrid_vb_us:  { name: 'Hybrid VB (US)',          stratId: 'hybrid_vb',     sub: 'us', color: '#4a78a899' },
+    realized:   { name: 'Realized P&L',   color: '#3a8a5a' },
+    unrealized: { name: 'Unrealized P&L', color: '#4a78a8' },
+    total:      { name: 'Total P&L',      color: '#c9a24d' },
   };
-
-  const stratIndex = {};
-  (strategies || []).forEach(s => { stratIndex[s.id] = s; });
 
   const allDates = new Set();
   const prepared = Object.keys(seriesMeta).map(key => {
     const meta = seriesMeta[key];
-    const raw = (equitySeries || {})[key] || [];
-    const strat = stratIndex[meta.stratId] || {};
-    const sub = meta.sub ? (strat[meta.sub] || {}) : strat;
-    const wr = sub.win_rate_pct;
-    const cycles = sub.cycles_ytd;
+    const raw = (aggregateSeries || {})[key] || [];
     const entry = {
       key, name: meta.name, color: meta.color,
-      wr, cycles, points: [], finalPct: null, insufficient: false,
+      points: [], finalVal: 0, insufficient: false,
     };
     if (raw.length < 2) {
       entry.insufficient = true;
@@ -887,16 +876,14 @@ function buildComparisonChart(equitySeries, strategies) {
     }
     const valStr = fmtKrw(p.finalVal);
     const valCls = p.finalVal >= 0 ? 'up' : 'dn';
-    const wrPart = (p.wr === null || p.wr === undefined) ? '' : `, ${p.wr.toFixed(0)}% WR`;
-    const metaStr = `(${p.cycles || 0}c${wrPart})`;
-    return `<div class="cmp-legend-row"><span class="cmp-swatch" style="background:${p.color}"></span><span class="cmp-name">${p.name}</span><span class="cmp-pct ${valCls}">${valStr}</span><span class="cmp-meta">${metaStr}</span></div>`;
+    return `<div class="cmp-legend-row"><span class="cmp-swatch" style="background:${p.color}"></span><span class="cmp-name">${p.name}</span><span class="cmp-pct ${valCls}">${valStr}</span></div>`;
   }).join('');
 
   const section = h('section', 'cmp fade-in d1');
   section.innerHTML = `
     <div class="cmp-hdr">
-      <h2 class="cmp-title">Strategy Comparison · 2026 YTD</h2>
-      <div class="cmp-sub">Total P/L (realized + unrealized) per bot, in KRW</div>
+      <h2 class="cmp-title">Portfolio P&L · 2026 YTD</h2>
+      <div class="cmp-sub">Realized · Unrealized · Total, summed across all bots, in KRW</div>
     </div>
     <div class="cmp-chart">
       <div class="cmp-y-axis">${yAxisHTML}</div>
@@ -1042,8 +1029,8 @@ function render(data) {
   });
   app.appendChild(strip);
 
-  // ── Strategy Comparison Chart (overlay of all bots' YTD % returns)
-  const cmp = buildComparisonChart(data.equity_series || {}, data.strategies || []);
+  // ── Portfolio P&L Chart (Realized / Unrealized / Total, summed across bots)
+  const cmp = buildComparisonChart(data.equity_series_aggregate || {}, data.strategies || []);
   if (cmp) app.appendChild(cmp);
 
 
