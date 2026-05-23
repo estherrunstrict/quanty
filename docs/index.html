@@ -1007,6 +1007,7 @@ function render(data) {
     <div class="hdr-right">
       <span class="hdr-meta"><span class="live-dot"></span>${data.strategies.length} strategies</span>
       <span class="hdr-meta">${data.meta.kst}</span>
+      <a class="refresh-btn" href="decision.html" style="text-decoration:none">→ Decision Center</a>
       <button class="refresh-btn" onclick="load()">Refresh</button>
     </div>
   `;
@@ -1426,7 +1427,8 @@ async function load() {
     const app = document.querySelector('#app');
     const loader = document.querySelector('#loader');
     if (loader) {
-      app.innerHTML = '<header class="hdr fade-in"><h1>Automation <em>Oracle</em></h1></header>' +
+      app.innerHTML = '<header class="hdr fade-in"><h1>Automation <em>Oracle</em></h1>' +
+        '<div class="hdr-right"><a class="refresh-btn" href="decision.html" style="text-decoration:none">→ Decision Center</a></div></header>' +
         '<div style="padding:3rem 0;text-align:center;color:var(--tx3);font-size:0.8rem">' +
         'Dashboard data not available. Updated daily after market close.</div>';
     }
