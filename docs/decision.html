@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Quanty — Decision Center</title>
+<style>
+:root {
+  --bg: #0b0d10;
+  --panel: #14181d;
+  --panel-2: #1a1f25;
+  --line: #232a32;
+  --line-strong: #2f3743;
+  --text: #e6e9ee;
+  --muted: #8a93a0;
+  --dim: #5f6772;
+  --green: #5edc8e;
+  --red: #ff6b6b;
+  --amber: #f7b955;
+  --blue: #6ea8ff;
+  --purple: #b388ff;
+  --pill-bg: #22272e;
+  --shadow: 0 1px 0 rgba(255,255,255,0.03), 0 4px 16px rgba(0,0,0,0.5);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); }
+body { font: 14px/1.5 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Inter, system-ui, sans-serif; }
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+
+.shell { max-width: 1280px; margin: 0 auto; padding: 24px 20px 96px; }
+
+/* ------ Header ------ */
+.hdr {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.hdr h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.hdr .sub {
+  font-size: 12px;
+  color: var(--muted);
+  margin-left: 12px;
+}
+.refresh {
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.refresh:hover { background: var(--panel-2); }
+
+/* ------ Hero ------ */
+.hero {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.hero .card { padding: 16px; }
+.hero .lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.hero .val { font-size: 22px; font-weight: 600; margin-top: 6px; letter-spacing: -0.01em; }
+.hero .delta { font-size: 12px; margin-top: 4px; color: var(--muted); }
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+.section { margin-bottom: 28px; }
+.section h2 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin: 0 0 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section h2 .count {
+  background: var(--pill-bg);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* ------ Decision row ------ */
+.decision-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 880px) {
+  .decision-row { grid-template-columns: 1fr; }
+  .hero { grid-template-columns: 1fr 1fr; }
+}
+
+/* ------ Memo cards ------ */
+.memo {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.memo:last-child { border-bottom: 0; }
+.memo .lhs { min-width: 0; }
+.memo .title { font-weight: 500; margin-bottom: 2px; }
+.memo .meta { font-size: 12px; color: var(--muted); }
+.memo .meta .badge { margin-right: 6px; }
+.memo .rhs { flex-shrink: 0; }
+.memo .rhs a { font-size: 12px; color: var(--blue); white-space: nowrap; }
+.memo .empty {
+  padding: 16px;
+  color: var(--dim);
+  font-style: italic;
+}
+
+/* ------ Alerts ------ */
+.alert {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.alert:last-child { border-bottom: 0; }
+.alert .icon {
+  width: 6px;
+  flex-shrink: 0;
+  align-self: stretch;
+  border-radius: 3px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+.alert.warn .icon { background: var(--amber); }
+.alert.error .icon { background: var(--red); }
+.alert.info .icon { background: var(--blue); }
+.alert .title { font-weight: 500; }
+.alert .body { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.alert .empty {
+  padding: 16px;
+  color: var(--dim);
+  font-style: italic;
+}
+
+/* ------ Badges ------ */
+.badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: var(--pill-bg);
+  color: var(--text);
+  vertical-align: middle;
+}
+.badge.keep { background: rgba(94, 220, 142, 0.14); color: var(--green); }
+.badge.watch { background: rgba(247, 185, 85, 0.14); color: var(--amber); }
+.badge.retire { background: rgba(255, 107, 107, 0.14); color: var(--red); }
+.badge.retired { background: rgba(255, 107, 107, 0.08); color: #cf6b6b; }
+.badge.live { background: rgba(94, 220, 142, 0.14); color: var(--green); }
+.badge.paused { background: rgba(247, 185, 85, 0.14); color: var(--amber); }
+.badge.kill { background: rgba(255, 107, 107, 0.14); color: var(--red); }
+.badge.promote { background: rgba(94, 220, 142, 0.14); color: var(--green); }
+.badge.allocate { background: rgba(110, 168, 255, 0.14); color: var(--blue); }
+.badge.risk-cap { background: rgba(247, 185, 85, 0.14); color: var(--amber); }
+
+/* ------ Scorecard table ------ */
+.scorecard { overflow-x: auto; }
+.scorecard table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.scorecard th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  text-transform: uppercase;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line-strong);
+  white-space: nowrap;
+}
+.scorecard td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+.scorecard tr:last-child td { border-bottom: 0; }
+.scorecard tr:hover td { background: rgba(255, 255, 255, 0.02); }
+.scorecard .bot-name { font-weight: 500; }
+.scorecard .bot-name a { color: var(--text); }
+.scorecard .num { text-align: right; font-variant-numeric: tabular-nums; }
+.scorecard .pos { color: var(--green); }
+.scorecard .neg { color: var(--red); }
+.scorecard .dim { color: var(--muted); }
+.scorecard .schedule { color: var(--muted); font-size: 12px; }
+
+/* ------ Queue blocks ------ */
+.queue {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+}
+.queue:last-child { border-bottom: 0; }
+.queue .title { font-weight: 500; }
+.queue .meta { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+/* ------ Constraints panel ------ */
+.constraints { padding: 14px; }
+.constraints .row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  padding: 5px 0;
+  border-bottom: 1px dotted var(--line);
+}
+.constraints .row:last-child { border-bottom: 0; }
+.constraints .row .v { color: var(--text); font-weight: 500; }
+.constraints .row .l { color: var(--muted); }
+
+/* ------ Footer / op-link ------ */
+.footer {
+  text-align: center;
+  font-size: 12px;
+  color: var(--dim);
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+</style>
+</head>
+
+<body>
+<div class="shell">
+
+  <div class="hdr">
+    <div>
+      <h1>Quanty · Decision Center</h1>
+      <span class="sub" id="hdr-sub">Loading…</span>
+    </div>
+    <button class="refresh" onclick="load()">Refresh</button>
+  </div>
+
+  <!-- Hero portfolio numbers from dashboard_data.json -->
+  <div class="hero">
+    <div class="card">
+      <div class="lbl">Total Portfolio (KRW)</div>
+      <div class="val mono" id="hero-total">—</div>
+      <div class="delta" id="hero-pl">—</div>
+    </div>
+    <div class="card">
+      <div class="lbl">Live bots</div>
+      <div class="val" id="hero-live">—</div>
+      <div class="delta" id="hero-live-sub">—</div>
+    </div>
+    <div class="card">
+      <div class="lbl">Open decisions</div>
+      <div class="val" id="hero-decisions">—</div>
+      <div class="delta">awaiting your call</div>
+    </div>
+    <div class="card">
+      <div class="lbl">Active alerts</div>
+      <div class="val" id="hero-alerts">—</div>
+      <div class="delta" id="hero-alerts-sub">—</div>
+    </div>
+  </div>
+
+  <!-- Decision row: open memos + alerts -->
+  <div class="section decision-row">
+    <div>
+      <h2>Open decisions <span class="count" id="cnt-decisions">0</span></h2>
+      <div class="card" id="decisions-card"></div>
+    </div>
+    <div>
+      <h2>Health alerts <span class="count" id="cnt-alerts">0</span></h2>
+      <div class="card" id="alerts-card"></div>
+    </div>
+  </div>
+
+  <!-- Per-bot scorecard -->
+  <div class="section">
+    <h2>Per-bot scorecard</h2>
+    <div class="card scorecard">
+      <table>
+        <thead>
+          <tr>
+            <th>Bot</th>
+            <th>Status</th>
+            <th>Verdict</th>
+            <th class="num">Period P&amp;L</th>
+            <th class="num">Peak-to-trough</th>
+            <th class="num">Worst day</th>
+            <th class="num" title="Backtest max drawdown (%). Stored positive — 16.6 means -16.6%.">BT MDD</th>
+            <th class="num" title="Backtest Sharpe ratio.">BT Sharpe</th>
+            <th class="num">Age</th>
+            <th>Paper</th>
+          </tr>
+        </thead>
+        <tbody id="scorecard-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Queues + constraints -->
+  <div class="section decision-row">
+    <div>
+      <h2>Promotion queue <span class="count" id="cnt-promotion">0</span></h2>
+      <div class="card" id="promotion-card"></div>
+    </div>
+    <div>
+      <h2>Retirement queue <span class="count" id="cnt-retirement">0</span></h2>
+      <div class="card" id="retirement-card"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Portfolio constraints (from purpose.md)</h2>
+    <div class="card constraints" id="constraints-card"></div>
+  </div>
+
+  <div class="footer">
+    Wiki: <a href="https://github.com/estherrunstrict/quanty/tree/main" target="_blank" rel="noopener">estherrunstrict/quanty</a>
+    · Operational view: <a href="../index.html">legacy dashboard</a>
+    · Data: <a href="data/decisions.json" target="_blank">decisions.json</a> + <a href="data/dashboard_data.json" target="_blank">dashboard_data.json</a>
+    <div id="footer-meta"></div>
+  </div>
+
+</div>
+
+<script>
+const WIKI_BASE = "https://github.com/estherrunstrict/quanty/tree/main";
+// Repo files use `:` separator in GitHub URLs. For now, link to a placeholder.
+// Adjust `WIKI_LINK_PREFIX` once the wiki is committed to a public repo.
+const WIKI_LINK_PREFIX = null; // null → render slugs as plain text
+
+const fmtKRW = (n) => {
+  if (n === null || n === undefined) return "—";
+  const sign = n < 0 ? "-" : "";
+  return sign + "₩" + Math.abs(Math.round(n)).toLocaleString();
+};
+const fmtNum = (n) => {
+  if (n === null || n === undefined) return "—";
+  return Math.round(n).toLocaleString();
+};
+const cls = (n) => (n === null || n === undefined || n === 0) ? "dim" : (n > 0 ? "pos" : "neg");
+
+function botLink(slug, label) {
+  if (!slug) return label || "—";
+  const text = label || slug;
+  if (!WIKI_LINK_PREFIX) return `<span>${text}</span>`;
+  return `<a href="${WIKI_LINK_PREFIX}/wiki/bots/${slug}.md" target="_blank" rel="noopener">${text}</a>`;
+}
+
+function memoLink(wikiPath) {
+  if (!wikiPath) return "";
+  if (!WIKI_LINK_PREFIX) {
+    // Render the relative path so the user knows where to look
+    return `<span class="mono">${wikiPath}</span>`;
+  }
+  return `<a href="${WIKI_LINK_PREFIX}/${wikiPath}" target="_blank" rel="noopener">open memo →</a>`;
+}
+
+async function load() {
+  document.getElementById("hdr-sub").textContent = "Loading…";
+  try {
+    const [dash, dec] = await Promise.all([
+      fetch("data/dashboard_data.json", { cache: "no-store" }).then((r) => r.ok ? r.json() : null),
+      fetch("data/decisions.json", { cache: "no-store" }).then((r) => r.ok ? r.json() : null),
+    ]);
+    if (!dec) {
+      document.getElementById("hdr-sub").textContent = "ERROR: decisions.json not found. Run wiki/tools/generate_decisions_json.py.";
+      return;
+    }
+    render(dash, dec);
+  } catch (e) {
+    document.getElementById("hdr-sub").textContent = `ERROR: ${e}`;
+  }
+}
+
+function render(dash, dec) {
+  // Header sub
+  const tsLocal = new Date(dec.generated_at).toLocaleString();
+  const dashUpdated = dash?.updated_at || "—";
+  document.getElementById("hdr-sub").textContent =
+    `Wiki data: ${tsLocal} · Operational data: ${dashUpdated}`;
+
+  // Hero
+  const port = dash?.portfolio || {};
+  document.getElementById("hero-total").textContent = fmtKRW(port.total_value_krw);
+  const pl = port.total_profit_krw;
+  const plEl = document.getElementById("hero-pl");
+  if (pl !== null && pl !== undefined) {
+    plEl.innerHTML =
+      `<span class="${cls(pl)}">${fmtKRW(pl)}</span>` +
+      (port.total_profit_pct !== undefined ? ` (${port.total_profit_pct >= 0 ? "+" : ""}${port.total_profit_pct.toFixed(2)}%)` : "");
+  } else {
+    plEl.textContent = "—";
+  }
+
+  const live = Object.values(dec.bot_verdicts).filter((b) => b.status === "live").length;
+  const paused = Object.values(dec.bot_verdicts).filter((b) => b.status === "paused").length;
+  const retired = Object.values(dec.bot_verdicts).filter((b) => b.status === "retired").length;
+  document.getElementById("hero-live").textContent = live;
+  document.getElementById("hero-live-sub").textContent =
+    `${paused} paused · ${retired} retired`;
+
+  document.getElementById("hero-decisions").textContent = dec.open_decisions.length;
+
+  const alertsByLevel = dec.alerts.reduce((a, x) => { a[x.level] = (a[x.level] || 0) + 1; return a; }, {});
+  document.getElementById("hero-alerts").textContent = dec.alerts.length;
+  document.getElementById("hero-alerts-sub").textContent =
+    Object.entries(alertsByLevel).map(([k, v]) => `${v} ${k}`).join(" · ") || "none";
+
+  // Open decisions
+  document.getElementById("cnt-decisions").textContent = dec.open_decisions.length;
+  const decEl = document.getElementById("decisions-card");
+  if (dec.open_decisions.length === 0) {
+    decEl.innerHTML = `<div class="memo"><div class="empty">No memos awaiting approval.</div></div>`;
+  } else {
+    decEl.innerHTML = dec.open_decisions
+      .map((m) => `
+        <div class="memo">
+          <div class="lhs">
+            <div class="title">${m.title}</div>
+            <div class="meta">
+              <span class="badge ${m.decision_type}">${m.decision_type}</span>
+              target: ${botLink(m.target, m.target)}
+              · proposed by ${m.proposed_by}
+              ${m.effective_date ? `· effective ${m.effective_date}` : ""}
+            </div>
+          </div>
+          <div class="rhs">${memoLink(m.wiki_path)}</div>
+        </div>`)
+      .join("");
+  }
+
+  // Alerts
+  document.getElementById("cnt-alerts").textContent = dec.alerts.length;
+  const alEl = document.getElementById("alerts-card");
+  if (dec.alerts.length === 0) {
+    alEl.innerHTML = `<div class="alert"><div class="empty">All clear.</div></div>`;
+  } else {
+    alEl.innerHTML = dec.alerts
+      .map((a) => `
+        <div class="alert ${a.level}">
+          <div class="icon"></div>
+          <div>
+            <div class="title">${a.title}</div>
+            <div class="body">${a.body}</div>
+          </div>
+        </div>`)
+      .join("");
+  }
+
+  // Scorecard
+  const sorted = Object.entries(dec.bot_verdicts).sort(([, a], [, b]) => {
+    const order = { live: 0, paused: 1, retired: 2 };
+    return (order[a.status] ?? 9) - (order[b.status] ?? 9);
+  });
+  const fmtPct = (n) => (n === null || n === undefined) ? "—" : `-${n.toFixed(1)}%`;
+  const fmtSharpe = (n) => (n === null || n === undefined) ? "—" : n.toFixed(2);
+  document.getElementById("scorecard-body").innerHTML = sorted
+    .map(([slug, b]) => `
+      <tr>
+        <td class="bot-name">${botLink(slug, b.title)}</td>
+        <td><span class="badge ${b.status}">${b.status}</span></td>
+        <td>${b.verdict ? `<span class="badge ${b.verdict}">${b.verdict}</span>` : "—"}</td>
+        <td class="num ${cls(b.period_pl_krw)}">${fmtKRW(b.period_pl_krw)}</td>
+        <td class="num ${cls(b.mdd_pl_krw ? -b.mdd_pl_krw : 0)}">${b.mdd_pl_krw ? "-" + fmtKRW(b.mdd_pl_krw).replace("-", "") : "—"}</td>
+        <td class="num ${cls(b.worst_day_krw)}">${fmtKRW(b.worst_day_krw)}</td>
+        <td class="num dim" title="${b.backtest_window || ''}">${fmtPct(b.backtest_mdd)}</td>
+        <td class="num dim">${fmtSharpe(b.backtest_sharpe)}</td>
+        <td class="num ${(b.days_since_update !== null && b.days_since_update > 3) ? "neg" : "dim"}">${b.days_since_update !== null ? b.days_since_update.toFixed(1) + "d" : "—"}</td>
+        <td class="dim">${b.paper_source || "—"}</td>
+      </tr>`)
+    .join("");
+
+  // Promotion queue
+  const promo = dec.candidate_pipeline.filter(
+    (c) => c.status === "paper-trading" || c.status === "promotion-pending"
+  );
+  document.getElementById("cnt-promotion").textContent = promo.length;
+  const promoEl = document.getElementById("promotion-card");
+  promoEl.innerHTML = promo.length === 0
+    ? `<div class="queue"><div class="empty">No candidates in paper-trading.</div></div>`
+    : promo.map((c) => `
+        <div class="queue">
+          <div class="title">${c.title} <span class="badge live">${c.status}</span></div>
+          <div class="meta">paper: ${c.paper_source} · ${c.promotion_criteria || "(no criteria set)"}</div>
+        </div>`).join("");
+
+  // Retirement queue — bots with verdict=retire (excluding already-retired)
+  // Plus open kill decision targets.
+  const retCandidates = Object.entries(dec.bot_verdicts)
+    .filter(([, b]) => b.verdict === "retire" && b.status !== "retired");
+  document.getElementById("cnt-retirement").textContent = retCandidates.length;
+  const retEl = document.getElementById("retirement-card");
+  retEl.innerHTML = retCandidates.length === 0
+    ? `<div class="queue"><div class="empty">No active bots flagged for retirement.</div></div>`
+    : retCandidates.map(([slug, b]) => `
+        <div class="queue">
+          <div class="title">${b.title} <span class="badge ${b.status}">${b.status}</span></div>
+          <div class="meta">Capital ${b.capital_allocated_pct ?? "—"}% · last update ${b.days_since_update !== null ? b.days_since_update.toFixed(1) + "d ago" : "unknown"}</div>
+        </div>`).join("");
+
+  // Constraints
+  const c = dec.portfolio_constraints || {};
+  document.getElementById("constraints-card").innerHTML = `
+    <div class="row"><span class="l">Target annual return</span><span class="v">${c.target_annual_return_pct}%</span></div>
+    <div class="row"><span class="l">Max portfolio MDD</span><span class="v">${c.max_portfolio_mdd_pct}%</span></div>
+    <div class="row"><span class="l">Target Sharpe</span><span class="v">${c.target_sharpe}</span></div>
+    <div class="row"><span class="l">Max single bot allocation</span><span class="v">${c.max_single_bot_pct}%</span></div>
+    <div class="row"><span class="l">Max leverage</span><span class="v">${c.max_leverage}×</span></div>
+  `;
+
+  // Footer
+  const win = dec.timeseries_window || {};
+  document.getElementById("footer-meta").textContent =
+    `Time-series window: ${win.start || "—"} → ${win.end || "—"} · ${win.bots_covered?.length || 0} bots covered`;
+}
+
+load();
+</script>
+</body>
+</html>
