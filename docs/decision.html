@@ -383,6 +383,20 @@ code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; 
     </div>
   </div>
 
+  <!-- Portfolio metrics -->
+  <div class="section">
+    <h2>Portfolio metrics <span class="count" id="portfolio-window">—</span></h2>
+    <div class="card constraints" id="portfolio-metrics-card"></div>
+  </div>
+
+  <!-- Correlation matrix -->
+  <div class="section">
+    <h2>Bot correlation matrix</h2>
+    <div class="card scorecard" id="corr-card">
+      <table id="corr-table"><thead></thead><tbody></tbody></table>
+    </div>
+  </div>
+
   <!-- Queues + constraints -->
   <div class="section decision-row">
     <div>
@@ -574,11 +588,19 @@ function render(dash, dec, disc) {
   const promoEl = document.getElementById("promotion-card");
   promoEl.innerHTML = promo.length === 0
     ? `<div class="queue"><div class="empty">No candidates in paper-trading.</div></div>`
-    : promo.map((c) => `
+    : promo.map((c) => {
+        const stalledBadge = c.health === "paper-stalled"
+          ? `<span class="badge retire" title="status=paper-trading but paper_trading_since is null. Runner not deployed.">STALLED</span>`
+          : "";
+        const sinceBit = c.paper_trading_since
+          ? `since ${c.paper_trading_since}`
+          : `<span class="dim">no start date</span>`;
+        return `
         <div class="queue">
-          <div class="title">${c.title} <span class="badge live">${c.status}</span></div>
-          <div class="meta">paper: ${c.paper_source} · ${c.promotion_criteria || "(no criteria set)"}</div>
-        </div>`).join("");
+          <div class="title">${c.title} <span class="badge live">${c.status}</span> ${stalledBadge}</div>
+          <div class="meta">paper: ${c.paper_source} · ${sinceBit} · ${c.promotion_criteria || "(no criteria set)"}</div>
+        </div>`;
+      }).join("");
 
   // Retirement queue — bots with verdict=retire (excluding already-retired)
   // Plus open kill decision targets.
@@ -593,6 +615,50 @@ function render(dash, dec, disc) {
           <div class="title">${b.title} <span class="badge ${b.status}">${b.status}</span></div>
           <div class="meta">Capital ${b.capital_allocated_pct ?? "—"}% · last update ${b.days_since_update !== null ? b.days_since_update.toFixed(1) + "d ago" : "unknown"}</div>
         </div>`).join("");
+
+  // Portfolio metrics
+  const pm = dec.portfolio_metrics || null;
+  const pmCard = document.getElementById("portfolio-metrics-card");
+  const pmWindow = document.getElementById("portfolio-window");
+  if (!pm || pm.days_observed === undefined || pm.days_observed < 3) {
+    pmWindow.textContent = "insufficient data";
+    pmCard.innerHTML = `<div class="row" style="padding:14px;color:var(--dim);font-style:italic">Not enough history to compute portfolio metrics (need ≥ 3 daily observations).</div>`;
+  } else {
+    const pmp = pm.portfolio || {};
+    const lc = pm.low_confidence ? `<span class="badge watch" style="margin-left:8px" title="Less than 60 daily observations — Sharpe and VaR estimates are wide.">low confidence (n=${pm.days_observed})</span>` : `<span class="badge keep" style="margin-left:8px">n=${pm.days_observed}</span>`;
+    pmWindow.innerHTML = `${pm.window_start} → ${pm.window_end} ${lc}`;
+    const f2 = (x) => (x === null || x === undefined) ? "—" : (Number(x).toFixed(2));
+    const fkrw = (x) => (x === null || x === undefined) ? "—" : ((x < 0 ? "-" : "") + "₩" + Math.abs(Math.round(x)).toLocaleString());
+    const sharpeCls = (x) => (x === null || x === undefined) ? "" : (x > 0 ? "pos" : "neg");
+    pmCard.innerHTML = `
+      <div class="row"><span class="l">Portfolio Sharpe (annualized)</span><span class="v ${sharpeCls(pmp.sharpe_annualized)}">${f2(pmp.sharpe_annualized)} <span class="dim">[95% CI: ${f2(pmp.sharpe_ci_low_95)} … ${f2(pmp.sharpe_ci_high_95)}]</span></span></div>
+      <div class="row"><span class="l">Daily P&L (mean / std)</span><span class="v">${fkrw(pmp.daily_pnl_krw_mean)} / ${fkrw(pmp.daily_pnl_krw_std)}</span></div>
+      <div class="row"><span class="l">VaR (95%, 1 day)</span><span class="v neg">${fkrw(pmp.var_95_1d_krw)}</span></div>
+      <div class="row"><span class="l">Diversification ratio</span><span class="v" title="(Σ |wᵢ| · σᵢ) / σ_portfolio. > 1 = diversifying; ~1 = bots are fungible. Currently low because cash/upbit/unsettled hold majority of portfolio and some bot values report as 0 in dashboard_data.">${f2(pmp.diversification_ratio)}</span></div>
+      <div class="row"><span class="l">Effective number of bets</span><span class="v">${f2(pmp.effective_n_bets)}</span></div>
+    `;
+
+    // Correlation matrix
+    const cm = pm.correlation_matrix || {};
+    const slugs = Object.keys(cm);
+    const corrTable = document.getElementById("corr-table");
+    if (slugs.length === 0) {
+      corrTable.innerHTML = `<tbody><tr><td style="padding:14px;color:var(--dim);font-style:italic">No correlation data — needs ≥ 2 bots with overlapping daily P&L.</td></tr></tbody>`;
+    } else {
+      const corrCls = (v) => {
+        if (v === null || v === undefined) return "dim";
+        if (Math.abs(v) >= 0.7) return "neg";   // strong correlation = bad diversification
+        if (Math.abs(v) >= 0.3) return "warn";
+        return "pos";
+      };
+      const header = `<thead><tr><th></th>${slugs.map((s) => `<th class="num">${s}</th>`).join("")}</tr></thead>`;
+      const rows = slugs.map((row) => `<tr><td class="bot-name">${row}</td>${slugs.map((col) => {
+        const v = (cm[row] || {})[col];
+        return `<td class="num ${corrCls(v)}">${v === null || v === undefined ? "—" : v.toFixed(2)}</td>`;
+      }).join("")}</tr>`).join("");
+      corrTable.innerHTML = header + `<tbody>${rows}</tbody>`;
+    }
+  }
 
   // Constraints
   const c = dec.portfolio_constraints || {};

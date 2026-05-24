@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-05-25T07:51:18.974798+09:00",
+  "generated_at": "2026-05-25T08:19:34.476771+09:00",
   "stats": {
-    "total": 86,
-    "queued": 4,
+    "total": 93,
+    "queued": 11,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-05-25T07:51:18.974696+09:00",
+    "last_gc_at": "2026-05-25T08:19:34.476652+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -2477,6 +2477,204 @@
       "matched_keywords": [
         "factor",
         "cross-sectional"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2605.09712",
+      "source": "arxiv",
+      "title": "Quantifying the Risk-Return Tradeoff in Forecasting",
+      "authors": [
+        "Philippe Goulet Coulombe"
+      ],
+      "abstract": "Average forecast accuracy is not the same as forecast reliability. I treat forecast loss differentials relative to a benchmark as a return series. I then evaluate these returns using risk-adjusted performance measures from finance, including the Sharpe ratio, Sortino ratio, Omega ratio, and drawdown-based metrics. I also introduce the Edge Ratio capturing a model's propensity to deliver uniquely informative predictions relative to the forecasting frontier. I apply this framework to U.S. macroeconomic forecasting, comparing econometric benchmarks, machine learning models, a foundation model (TabPFN), and the Survey of Professional Forecasters. While it is often feasible to beat professional forecasters in terms of average accuracy, it is much harder to beat them on a risk-adjusted basis. They rarely exhibit catastrophic failures and often achieve high Edge Ratios, plausibly reflecting the value of contextual judgment. Nonetheless, selected machine learning methods deliver attractive risk profiles for specific targets. The framework naturally extends to meta-analyses across targets, horizons, and samples, illustrated with a density forecast evaluation and the M4 competition.",
+      "categories": [
+        "econ.EM",
+        "q-fin.PM",
+        "stat.ML"
+      ],
+      "url": "https://arxiv.org/abs/2605.09712v1",
+      "pdf_url": "https://arxiv.org/pdf/2605.09712v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-05-10",
+      "discovered": "2026-05-25",
+      "matched_keywords": [
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2604.19476",
+      "source": "arxiv",
+      "title": "Cross-Stock Predictability via LLM-Augmented Semantic Networks",
+      "authors": [
+        "Yikuan Huang",
+        "Zheqi Fan",
+        "Kaiqi Hu",
+        "Yifan Ye"
+      ],
+      "abstract": "Text-based financial networks are increasingly used to study cross-stock return predictability. A common approach constructs links from similarities in firms' disclosure embeddings, but such networks often contain spurious edges because textual proximity does not necessarily imply economic connection. We propose a two-stage framework that first builds a sparse candidate graph from 10-K embeddings and then uses a large language model to classify and filter candidate edges according to their economic relations. The refined graph is used to aggregate pair-level mean-reversion signals into stock-level trading signals with relation-aware and distance-based weights. In a backtest on S&P 500 constituents from 2011 to 2019, LLM-based edge filtering improves the long-short Sharpe ratio from 0.742 to 0.820 and reduces maximum drawdown from $-$10.47% to $-$7.85%. These results suggest that LLM-based reasoning can improve the economic fidelity of text-derived financial networks and strengthen cross-stock predictability.",
+      "categories": [
+        "q-fin.PM",
+        "q-fin.GN",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2604.19476v2",
+      "pdf_url": "https://arxiv.org/pdf/2604.19476v2",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-04-21",
+      "discovered": "2026-05-25",
+      "matched_keywords": [
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2605.17724",
+      "source": "arxiv",
+      "title": "Sequential Structure in Intraday Futures Data: LSTM vs Gradient Boosting on MNQ",
+      "authors": [
+        "Mathias Mesfin"
+      ],
+      "abstract": "This paper compares gradient boosting and long short-term memory (LSTM) architectures for intraday directional prediction in Micro E-Mini Nasdaq 100 futures (MNQ). Motivated by recent foundation-model research on financial candlestick data, including the Kronos architecture, we test whether five-minute OHLCV bar sequences contain exploitable sequential predictive structure at the scale of a single instrument dataset. Using 944 trading days from 2021-2025, four model configurations are evaluated under strict expanding-window walk-forward validation across three out-of-sample periods. The target variable is whether the session close exceeds the 10:30 AM open by more than ten points. No configuration produces statistically significant out-of-sample accuracy above the 51.8% base rate. Combined OOS accuracies range from 50.00% to 50.89% across gradient boosting variants, while the LSTM achieves 50.59%. Permutation tests yield p-values of 0.135 for the best gradient boosting model and 0.515 for the LSTM, indicating no statistically significant predictive edge. Feature importance instability across walk-forward folds suggests noise fitting rather than stable structural signal capture. The results indicate that four years of single-instrument five-minute OHLCV data are insufficient for reliable sequential ML-based intraday forecasting. The primary contribution is a documented evaluation of a Kronos-inspired architecture on a constrained real-world dataset, providing an empirical lower bound on data scale requirements for sequential financial ML.",
+      "categories": [
+        "q-fin.TR",
+        "cs.LG",
+        "q-fin.CP",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2605.17724v1",
+      "pdf_url": "https://arxiv.org/pdf/2605.17724v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-05-18",
+      "discovered": "2026-05-25",
+      "matched_keywords": [
+        "walk-forward"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2605.10400",
+      "source": "arxiv",
+      "title": "Resolution-Aware Perpetual Futures on Binary Prediction Markets: An Empirical Risk-Design Framework Using Polymarket Data",
+      "authors": [
+        "Maksym Nechepurenko"
+      ],
+      "abstract": "We develop and counterfactually evaluate a resolution-aware risk-design framework (PIRAP) for perpetual futures whose underlying tracks a single binary prediction-market probability through resolution. The framework specifies six components: an index estimator combining mid-price, depth-weighted mid, and time-decayed VWAP; jump-aware tiered margin sized against bounded-event terminal-collapse magnitude; leverage compression schedule contracting toward resolution; resolution-aware funding rule with boundary-aware correction; a multi-stage halt protocol; and an eligibility framework. Two formal non-portability propositions establish that standard basis-only funding paired with continuous-vol static margin fails on bounded-event underlyings. Empirical evaluation uses Polymarket's PMXT v2 archive for 2026-04-21 to 2026-04-27 (13,298-market analysis sample passing adequacy gates from 61,087 ingested; 13,115 resolved within the empirical window for E3). E1 evaluates two pre-registered stylized facts; E2 conducts counterfactual replay across three engine configurations; E3 isolates the resolution-zone protocol's contribution. Results are mixed. Five pre-registered floors: stylized-fact floors (boundary depth asymmetry, terminal-jump magnitude) PASS; welfare-side directional floors (final-hour liquidation -6%, drawdown -5.1% pooled, median PnL +14%) two FAIL one PASS; E3 mechanic floors (final-hour liquidation -80% by halt construction PASS; bad-debt frequency +2.4% FAIL). Three of five materiality floors fail: the framework as specified does not validate deployment, but the empirical record establishes a halt-versus-margin scope distinction (halt addresses execution-channel risk; terminal-jump bad-debt remains margin-side) and documents a pre-emption trade-off constraining the dynamic-margin component. The paper concludes with structural recommendations and explicit non-deployable status.",
+      "categories": [
+        "q-fin.TR",
+        "q-fin.GN",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2605.10400v1",
+      "pdf_url": "https://arxiv.org/pdf/2605.10400v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-05-11",
+      "discovered": "2026-05-25",
+      "matched_keywords": [
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2605.01300",
+      "source": "arxiv",
+      "title": "Visibility graphs can make money in financial markets",
+      "authors": [
+        "Rafał Rak"
+      ],
+      "abstract": "Traditional technical analysis indicators, although widely used by market participants, are often not sufficiently effective. We propose the Visibility Graphs Relative Strength Index (VGRSI), based on backward visibility relations in the price of a financial instrument. Rescaled to the 0--100 range, it can generate profitable trading signals. The performance of the indicator was evaluated using an automated trading strategy based on a 30-day optimisation window and a 7-day test window for three instruments representing different asset classes: DJI30, EUR/USD and XAU/USD over the 2024--2025 period (503 trading days). The strategy based on VGRSI signals generated a profit of USD~146,000 for DJI30, USD~69,000 for EUR/USD, and USD~125,000 for XAU/USD. This gives a total result of USD$\\sim$340,000, which corresponds to an average profit of USD$\\sim$676 per trading day, with a fixed investment of USD~1,000 to open a single trade. For all three assets, the strategy generated substantial profits while maintaining a moderate drawdown (10--18\\% relative to a portfolio value of USD~10,000), a relatively low trading intensity (3.3--4.8 trades per day) and high Sharpe ratio values (2.55--3.6). These results indicate that VGRSI constitutes a promising technical analysis tool that goes beyond the classical trend-following approach by exploiting the geometric properties of asset price fluctuations.",
+      "categories": [
+        "cs.CE",
+        "physics.data-an",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2605.01300v1",
+      "pdf_url": "https://arxiv.org/pdf/2605.01300v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-05-02",
+      "discovered": "2026-05-25",
+      "matched_keywords": [
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2604.15531",
+      "source": "arxiv",
+      "title": "Spurious Predictability in Financial Machine Learning",
+      "authors": [
+        "Sotirios D. Nikolopoulos"
+      ],
+      "abstract": "Adaptive specification search generates statistically significant backtests even under martingale-difference nulls. We introduce a falsification audit testing complete predictive workflows against synthetic reference classes, including zero-predictability environments and microstructure placebos. Workflows generating significant walk-forward evidence in these environments are falsified. For passing workflows, we quantify selection-induced performance inflation using an absolute magnitude gap linking optimized in-sample evidence to disjoint walk-forward realizations, adjusted for effective multiplicity. Simulations validate extreme-value scaling under correlated searches and demonstrate detection power under genuine structure. Empirical case studies confirm that many apparent findings represent methodological artifacts rather than genuine predictability.",
+      "categories": [
+        "q-fin.ST",
+        "stat.ME",
+        "stat.ML"
+      ],
+      "url": "https://arxiv.org/abs/2604.15531v1",
+      "pdf_url": "https://arxiv.org/pdf/2604.15531v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-04-16",
+      "discovered": "2026-05-25",
+      "matched_keywords": [
+        "walk-forward"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2604.28124",
+      "source": "arxiv",
+      "title": "Measuring the risk or reducing it, that is the question: is risk measurement necessary for risk reduction?",
+      "authors": [
+        "Pierpaolo Uberti"
+      ],
+      "abstract": "In this research, starting from a widely accepted definition of risk, we support the idea that risk reduction is a more realistic objective than risk minimization, which represents a theoretical utopia. Furthermore, significant risk reduction can be achieved without relying on risk measurement and risk minimization. To this end, we propose a generalization of the numerical rank and the condition number of a matrix, specifically the return matrix in this application. This generalization considers the entire matrix spectrum instead of focusing only on the smallest eigenvalue, as the condition number does. The approach directly provides an order among a finite number of risky scenarios. Risk reduction is obtained by identifying the riskiest scenarios and reducing investment exposures corresponding to them. The validity of this theoretical proposal is supported by a comprehensive experiment performed on real data. The capacity of the proposed approach to effectively reduce risk is proven by measuring the variability of out-of-sample returns for benchmark portfolios-constructed by minimizing standard risk measures-compared to the strategy of reducing exposure in high-risk scenarios. Finally, preventing large losses with limited active management-thereby controlling the impact of transaction costs-not only reduces risk but also preserves the average return and, consequently, the portfolio's Sharpe ratio.",
+      "categories": [
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2604.28124v1",
+      "pdf_url": "https://arxiv.org/pdf/2604.28124v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-04-30",
+      "discovered": "2026-05-25",
+      "matched_keywords": [
+        "transaction cost"
       ],
       "status": "queued",
       "ingested_into": null,
