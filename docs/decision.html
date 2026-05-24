@@ -67,7 +67,7 @@ code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; 
 /* ------ Hero ------ */
 .hero {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr;
   gap: 12px;
   margin-bottom: 24px;
 }
@@ -134,6 +134,47 @@ code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; 
 .memo .rhs { flex-shrink: 0; }
 .memo .rhs a { font-size: 12px; color: var(--blue); white-space: nowrap; }
 .memo .empty {
+  padding: 16px;
+  color: var(--dim);
+  font-style: italic;
+}
+
+/* ------ Papers ------ */
+.paper {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+}
+.paper:last-child { border-bottom: 0; }
+.paper .title {
+  font-weight: 500;
+  cursor: pointer;
+}
+.paper .meta {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.paper .meta .kw {
+  background: var(--pill-bg);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+.paper .abstract {
+  display: none;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.5;
+  padding: 8px 10px;
+  background: var(--panel-2);
+  border-radius: 6px;
+}
+.paper.expanded .abstract { display: block; }
+.paper .empty {
   padding: 16px;
   color: var(--dim);
   font-style: italic;
@@ -291,6 +332,11 @@ code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; 
       <div class="val" id="hero-alerts">—</div>
       <div class="delta" id="hero-alerts-sub">—</div>
     </div>
+    <div class="card">
+      <div class="lbl">New papers queued</div>
+      <div class="val" id="hero-papers">—</div>
+      <div class="delta" id="hero-papers-sub">queue.json</div>
+    </div>
   </div>
 
   <!-- Decision row: open memos + alerts -->
@@ -303,6 +349,12 @@ code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; 
       <h2>Health alerts <span class="count" id="cnt-alerts">0</span></h2>
       <div class="card" id="alerts-card"></div>
     </div>
+  </div>
+
+  <!-- New Papers (from discovery pipeline) -->
+  <div class="section">
+    <h2>New Papers <span class="count" id="cnt-papers">0</span></h2>
+    <div class="card" id="papers-card"></div>
   </div>
 
   <!-- Per-bot scorecard -->
@@ -391,21 +443,22 @@ function memoLink(wikiPath) {
 async function load() {
   document.getElementById("hdr-sub").textContent = "Loading…";
   try {
-    const [dash, dec] = await Promise.all([
+    const [dash, dec, disc] = await Promise.all([
       fetch("data/dashboard_data.json", { cache: "no-store" }).then((r) => r.ok ? r.json() : null),
       fetch("data/decisions.json", { cache: "no-store" }).then((r) => r.ok ? r.json() : null),
+      fetch("data/discovery_queue.json", { cache: "no-store" }).then((r) => r.ok ? r.json() : null).catch(() => null),
     ]);
     if (!dec) {
       document.getElementById("hdr-sub").textContent = "ERROR: decisions.json not found. Run wiki/tools/generate_decisions_json.py.";
       return;
     }
-    render(dash, dec);
+    render(dash, dec, disc);
   } catch (e) {
     document.getElementById("hdr-sub").textContent = `ERROR: ${e}`;
   }
 }
 
-function render(dash, dec) {
+function render(dash, dec, disc) {
   // Header sub
   const tsLocal = new Date(dec.generated_at).toLocaleString();
   const dashUpdated = dash?.updated_at || "—";
@@ -545,6 +598,38 @@ function render(dash, dec) {
   const win = dec.timeseries_window || {};
   document.getElementById("footer-meta").textContent =
     `Time-series window: ${win.start || "—"} → ${win.end || "—"} · ${win.bots_covered?.length || 0} bots covered`;
+
+  // Discovery — new papers
+  const discQueue = (disc && disc.queue) || [];
+  const queuedPapers = discQueue.filter((p) => p.status === "queued");
+  document.getElementById("cnt-papers").textContent = queuedPapers.length;
+  document.getElementById("hero-papers").textContent = queuedPapers.length;
+  if (disc && disc.stats) {
+    const s = disc.stats;
+    document.getElementById("hero-papers-sub").textContent =
+      `${s.summarized || 0} summarized · ${s.ingested || 0} ingested`;
+  }
+
+  const papersEl = document.getElementById("papers-card");
+  if (queuedPapers.length === 0) {
+    papersEl.innerHTML = `<div class="paper"><div class="empty">No new papers in the queue.</div></div>`;
+  } else {
+    papersEl.innerHTML = queuedPapers.map((p, i) => `
+      <div class="paper" id="paper-${i}">
+        <div class="title" onclick="document.getElementById('paper-${i}').classList.toggle('expanded')">
+          ${p.title}
+        </div>
+        <div class="meta">
+          <span>${p.published || "—"}</span>
+          <span>·</span>
+          <span>${(p.authors || []).slice(0, 3).join(", ")}${(p.authors || []).length > 3 ? " et al." : ""}</span>
+          ${(p.categories || []).map((c) => `<span class="kw">${c}</span>`).join("")}
+          ${(p.matched_keywords || []).map((k) => `<span class="kw">${k}</span>`).join("")}
+          <a href="${p.url}" target="_blank" rel="noopener" style="margin-left:auto">source ↗</a>
+        </div>
+        <div class="abstract">${p.abstract || "(no abstract)"}</div>
+      </div>`).join("");
+  }
 }
 
 load();
