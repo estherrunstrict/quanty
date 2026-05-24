@@ -374,6 +374,8 @@ code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; 
             <th class="num">Worst day</th>
             <th class="num" title="Backtest max drawdown (%). Stored positive — 16.6 means -16.6%.">BT MDD</th>
             <th class="num" title="Backtest Sharpe ratio.">BT Sharpe</th>
+            <th class="num" title="Realized annualized Sharpe from equity_history.jsonl (daily P&L). Hover for 95% CI lower bound. Wide bands at small n.">R Sharpe</th>
+            <th class="num" title="Realized Sharpe ÷ backtest Sharpe. 1.0 = matches backtest. Red ≥ 0.3 below 1.0, amber 0.3–0.7 below, dim near 1.0.">Decay</th>
             <th class="num">Age</th>
             <th>Paper</th>
           </tr>
@@ -563,6 +565,16 @@ function render(dash, dec, disc) {
     if (n >= 30) return "warn";  // approaching
     return "dim";
   };
+  // Decay = realized Sharpe / backtest Sharpe. 1.0 = matches backtest.
+  // ≥ 0.3 below 1.0 (i.e. ≤ 0.7) → red ("neg"); 0.3–0.7 below 1.0 (0.7–1.0)
+  // → amber ("warn"); near 1.0 (1.0 ± 0.1) → dim. Negative or above 1.1
+  // also surface as warn/dim respectively. Negative realized Sharpe → red.
+  const decayCls = (d) => {
+    if (d === null || d === undefined) return "dim";
+    if (d <= 0.7) return "neg";
+    if (d <= 0.9) return "warn";
+    return "dim";
+  };
   document.getElementById("scorecard-body").innerHTML = sorted
     .map(([slug, b]) => `
       <tr>
@@ -575,6 +587,8 @@ function render(dash, dec, disc) {
         <td class="num ${cls(b.worst_day_krw)}">${fmtKRW(b.worst_day_krw)}</td>
         <td class="num dim" title="${b.backtest_window || ''}">${fmtPct(b.backtest_mdd)}</td>
         <td class="num dim">${fmtSharpe(b.backtest_sharpe)}</td>
+        <td class="num ${cls(b.realized_sharpe_annualized)}" title="${b.realized_sharpe_ci_low_95 !== null && b.realized_sharpe_ci_low_95 !== undefined ? '95% CI lower bound: ' + b.realized_sharpe_ci_low_95.toFixed(2) + ' (Lo 2002, n=' + (b.days_observed ?? '?') + ')' : 'No realized Sharpe — need ≥3 daily observations'}">${fmtSharpe(b.realized_sharpe_annualized)}</td>
+        <td class="num ${decayCls(b.sharpe_decay)}" title="realized / backtest. 1.0 = matches backtest, lower = decay.">${fmtSharpe(b.sharpe_decay)}</td>
         <td class="num ${(b.days_since_update !== null && b.days_since_update > 3) ? "neg" : "dim"}">${b.days_since_update !== null ? b.days_since_update.toFixed(1) + "d" : "—"}</td>
         <td class="dim">${b.paper_source || "—"}</td>
       </tr>`)
@@ -630,12 +644,44 @@ function render(dash, dec, disc) {
     const f2 = (x) => (x === null || x === undefined) ? "—" : (Number(x).toFixed(2));
     const fkrw = (x) => (x === null || x === undefined) ? "—" : ((x < 0 ? "-" : "") + "₩" + Math.abs(Math.round(x)).toLocaleString());
     const sharpeCls = (x) => (x === null || x === undefined) ? "" : (x > 0 ? "pos" : "neg");
+    // Per-regime sub-section. When regime_source == "not_available", show an
+    // explanatory note pointing at the unsegmented "?" bucket.
+    const regimes = pm.per_regime || {};
+    const regimeSource = pm.regime_source || "not_available";
+    let regimeHtml = "";
+    const regimeKeys = Object.keys(regimes);
+    if (regimeKeys.length > 0) {
+      const noteHtml = regimeSource === "not_available"
+        ? `<div class="row"><span class="l" style="font-style:italic;color:var(--dim)">Regime tagging awaiting SPY price feed; all data currently in unsegmented bucket.</span></div>`
+        : "";
+      // Stable order: Bull, Bear, ?
+      const order = { "Bull": 0, "Bear": 1, "?": 2 };
+      const sortedRegimes = regimeKeys.sort((a, b) =>
+        (order[a] ?? 9) - (order[b] ?? 9) || a.localeCompare(b)
+      );
+      const labelFor = (k) => k === "?" ? "Unsegmented (?)" : k;
+      const regimeRows = sortedRegimes.map((k) => {
+        const r = regimes[k] || {};
+        const rp = r.portfolio || {};
+        return `<div class="row">
+          <span class="l">${labelFor(k)} <span class="dim">· ${r.days || 0}d</span></span>
+          <span class="v ${sharpeCls(rp.sharpe)}">Sharpe ${f2(rp.sharpe)} <span class="dim">· VaR ${fkrw(rp.var_95_1d_krw)}</span></span>
+        </div>`;
+      }).join("");
+      regimeHtml = `
+        <div class="row" style="border-bottom:1px solid var(--line-strong);margin-top:6px;padding-top:10px"><span class="l" style="font-weight:600;text-transform:uppercase;font-size:11px;letter-spacing:0.06em;color:var(--muted)">Per-regime</span><span class="v dim mono">${regimeSource}</span></div>
+        ${noteHtml}
+        ${regimeRows}
+      `;
+    }
+
     pmCard.innerHTML = `
       <div class="row"><span class="l">Portfolio Sharpe (annualized)</span><span class="v ${sharpeCls(pmp.sharpe_annualized)}">${f2(pmp.sharpe_annualized)} <span class="dim">[95% CI: ${f2(pmp.sharpe_ci_low_95)} … ${f2(pmp.sharpe_ci_high_95)}]</span></span></div>
       <div class="row"><span class="l">Daily P&L (mean / std)</span><span class="v">${fkrw(pmp.daily_pnl_krw_mean)} / ${fkrw(pmp.daily_pnl_krw_std)}</span></div>
       <div class="row"><span class="l">VaR (95%, 1 day)</span><span class="v neg">${fkrw(pmp.var_95_1d_krw)}</span></div>
       <div class="row"><span class="l">Diversification ratio</span><span class="v" title="(Σ |wᵢ| · σᵢ) / σ_portfolio. > 1 = diversifying; ~1 = bots are fungible. Currently low because cash/upbit/unsettled hold majority of portfolio and some bot values report as 0 in dashboard_data.">${f2(pmp.diversification_ratio)}</span></div>
       <div class="row"><span class="l">Effective number of bets</span><span class="v">${f2(pmp.effective_n_bets)}</span></div>
+      ${regimeHtml}
     `;
 
     // Correlation matrix

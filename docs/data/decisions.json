@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-25T08:19:32.046578+09:00",
+  "generated_at": "2026-05-25T08:49:39.730398+09:00",
   "portfolio_constraints": {
     "max_single_bot_pct": 40,
     "max_leverage": 1.5,
@@ -13,6 +13,12 @@
       "bot": "hybrid-vb",
       "title": "Large peak-to-trough — Hybrid VB + Vol-Managed ETF",
       "body": "Cumulative P&L drew down ₩4,168,330 from peak in the 24-day window. Worst single day: ₩-2,387,012. Using absolute ₩3M threshold (no `backtest_mdd` on bot page)."
+    },
+    {
+      "level": "info",
+      "bot": "btc-vb",
+      "title": "Early Sharpe-decay signal (low confidence) — BTC Volatility Breakthrough",
+      "body": "Realized Sharpe -3.20 vs backtest 2.83 (decay = -1.13×). Window is only 24d — below the 60d minimum for the [[purpose]] alpha-decay gate, so this is flagged low_confidence. Watch but do not act on point estimate alone."
     },
     {
       "level": "warn",
@@ -53,7 +59,7 @@
       "dashboard_id": "btc_vb",
       "wiki_path": "quanty-wiki/bots/btc-vb.md",
       "last_update": "2026-05-24",
-      "days_since_update": 1.3,
+      "days_since_update": 1.4,
       "period_pl_krw": -146756.3,
       "mdd_pl_krw": 203844.21000000002,
       "best_day_krw": 29757.97,
@@ -62,7 +68,12 @@
       "backtest_cagr": 210.2,
       "backtest_mdd": 16.6,
       "backtest_sharpe": 2.83,
-      "backtest_window": "7+ years grid-searched on BTC/KRW (2017–2024)"
+      "backtest_window": "7+ years grid-searched on BTC/KRW (2017–2024)",
+      "realized_sharpe_annualized": -3.2,
+      "realized_sharpe_ci_low_95": -4.21,
+      "realized_mdd_pct": 2.07,
+      "sharpe_decay": -1.13,
+      "mdd_excess": 0.12
     },
     "claude-trading-bot": {
       "title": "Claude Trading Bot (AI watchlist)",
@@ -84,7 +95,12 @@
       "backtest_cagr": null,
       "backtest_mdd": null,
       "backtest_sharpe": null,
-      "backtest_window": "no backtest filed; single-name watchlist makes a clean OOS test difficult"
+      "backtest_window": "no backtest filed; single-name watchlist makes a clean OOS test difficult",
+      "realized_sharpe_annualized": null,
+      "realized_sharpe_ci_low_95": null,
+      "realized_mdd_pct": null,
+      "sharpe_decay": null,
+      "mdd_excess": null
     },
     "hybrid-vb": {
       "title": "Hybrid VB + Vol-Managed ETF",
@@ -106,7 +122,12 @@
       "backtest_cagr": null,
       "backtest_mdd": null,
       "backtest_sharpe": null,
-      "backtest_window": "backtest_hybrid_vb.py exists but no consolidated stats filed; needs a summary pass"
+      "backtest_window": "backtest_hybrid_vb.py exists but no consolidated stats filed; needs a summary pass",
+      "realized_sharpe_annualized": -0.65,
+      "realized_sharpe_ci_low_95": -1.1,
+      "realized_mdd_pct": null,
+      "sharpe_decay": null,
+      "mdd_excess": null
     },
     "jd-strategy": {
       "title": "JD Strategy (Wealth Research Institute)",
@@ -128,7 +149,12 @@
       "backtest_cagr": null,
       "backtest_mdd": null,
       "backtest_sharpe": null,
-      "backtest_window": "qualitative source (JD Wealth Research); no quantified OOS backtest in the wiki"
+      "backtest_window": "qualitative source (JD Wealth Research); no quantified OOS backtest in the wiki",
+      "realized_sharpe_annualized": 3.02,
+      "realized_sharpe_ci_low_95": 2.06,
+      "realized_mdd_pct": 6.07,
+      "sharpe_decay": null,
+      "mdd_excess": null
     },
     "korea-etf-momentum": {
       "title": "Korea ETF Momentum Rotation",
@@ -150,7 +176,12 @@
       "backtest_cagr": null,
       "backtest_mdd": null,
       "backtest_sharpe": null,
-      "backtest_window": "not formally documented"
+      "backtest_window": "not formally documented",
+      "realized_sharpe_annualized": -0.77,
+      "realized_sharpe_ci_low_95": -1.24,
+      "realized_mdd_pct": 20.81,
+      "sharpe_decay": null,
+      "mdd_excess": null
     },
     "korea-stock": {
       "title": "Korea Stock (legacy KIS bot)",
@@ -172,7 +203,12 @@
       "backtest_cagr": null,
       "backtest_mdd": null,
       "backtest_sharpe": null,
-      "backtest_window": "no backtest; starter sample bot"
+      "backtest_window": "no backtest; starter sample bot",
+      "realized_sharpe_annualized": null,
+      "realized_sharpe_ci_low_95": null,
+      "realized_mdd_pct": null,
+      "sharpe_decay": null,
+      "mdd_excess": null
     },
     "modified-dual-momentum": {
       "title": "Modified Dual Momentum (강환국)",
@@ -194,7 +230,12 @@
       "backtest_cagr": 18.3,
       "backtest_mdd": 16.3,
       "backtest_sharpe": null,
-      "backtest_window": "53 years (1970–2023) per 강환국 original study; Sharpe not reported in source"
+      "backtest_window": "53 years (1970–2023) per 강환국 original study; Sharpe not reported in source",
+      "realized_sharpe_annualized": -2.64,
+      "realized_sharpe_ci_low_95": -3.51,
+      "realized_mdd_pct": null,
+      "sharpe_decay": null,
+      "mdd_excess": null
     },
     "upbit-jd": {
       "title": "Upbit Improved JD (crypto)",
@@ -216,7 +257,12 @@
       "backtest_cagr": null,
       "backtest_mdd": null,
       "backtest_sharpe": null,
-      "backtest_window": "no quantified backtest filed; superseded by [[btc-vb]]"
+      "backtest_window": "no quantified backtest filed; superseded by [[btc-vb]]",
+      "realized_sharpe_annualized": null,
+      "realized_sharpe_ci_low_95": null,
+      "realized_mdd_pct": null,
+      "sharpe_decay": null,
+      "mdd_excess": null
     },
     "uranium-vb": {
       "title": "Uranium VB",
@@ -238,7 +284,12 @@
       "backtest_cagr": 30.5,
       "backtest_mdd": 19.5,
       "backtest_sharpe": 1.1,
-      "backtest_window": "optimized URNM/URA grid-search; details on the bot page"
+      "backtest_window": "optimized URNM/URA grid-search; details on the bot page",
+      "realized_sharpe_annualized": null,
+      "realized_sharpe_ci_low_95": null,
+      "realized_mdd_pct": null,
+      "sharpe_decay": null,
+      "mdd_excess": null
     },
     "usa-quant40": {
       "title": "USA Quant40 (\"Quant Replacing the 40\")",
@@ -260,7 +311,12 @@
       "backtest_cagr": null,
       "backtest_mdd": null,
       "backtest_sharpe": null,
-      "backtest_window": "framework/ backtests exist but not summarized; book-driven (퀀트가 대신 한다 40)"
+      "backtest_window": "framework/ backtests exist but not summarized; book-driven (퀀트가 대신 한다 40)",
+      "realized_sharpe_annualized": 7.35,
+      "realized_sharpe_ci_low_95": 5.19,
+      "realized_mdd_pct": 1.08,
+      "sharpe_decay": null,
+      "mdd_excess": null
     }
   },
   "candidate_pipeline": [
@@ -490,7 +546,47 @@
         "modified-dual-momentum": -0.28,
         "usa-quant40": 1.0
       }
-    }
+    },
+    "per_regime": {
+      "?": {
+        "days": 23,
+        "portfolio": {
+          "sharpe": -0.63,
+          "var_95_1d_krw": -1839798
+        },
+        "per_bot": {
+          "btc-vb": {
+            "sharpe": -3.2,
+            "weight": 0.068
+          },
+          "korea-etf-momentum": {
+            "sharpe": -0.77,
+            "weight": 0.085
+          },
+          "usa-quant40": {
+            "sharpe": 7.35,
+            "weight": 0.265
+          },
+          "jd-strategy": {
+            "sharpe": 3.02,
+            "weight": 0.021
+          },
+          "modified-dual-momentum": {
+            "sharpe": -2.64,
+            "weight": 0.0
+          },
+          "hybrid-vb": {
+            "sharpe": -0.65,
+            "weight": null
+          },
+          "claude-trading-bot": {
+            "sharpe": null,
+            "weight": 0.0
+          }
+        }
+      }
+    },
+    "regime_source": "not_available"
   },
   "timeseries_window": {
     "start": "2026-04-25",
