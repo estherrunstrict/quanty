@@ -262,6 +262,7 @@ code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; 
 .scorecard .num { text-align: right; font-variant-numeric: tabular-nums; }
 .scorecard .pos { color: var(--green); }
 .scorecard .neg { color: var(--red); }
+.scorecard .warn { color: var(--amber); }
 .scorecard .dim { color: var(--muted); }
 .scorecard .schedule { color: var(--muted); font-size: 12px; }
 
@@ -367,6 +368,7 @@ code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; 
             <th>Bot</th>
             <th>Status</th>
             <th>Verdict</th>
+            <th class="num" title="Share of FX-converted portfolio (KRW basis). Warn ≥ 30%, error ≥ 40% per purpose.md.">Cap %</th>
             <th class="num">Period P&amp;L</th>
             <th class="num">Peak-to-trough</th>
             <th class="num">Worst day</th>
@@ -540,12 +542,20 @@ function render(dash, dec, disc) {
   });
   const fmtPct = (n) => (n === null || n === undefined) ? "—" : `-${n.toFixed(1)}%`;
   const fmtSharpe = (n) => (n === null || n === undefined) ? "—" : n.toFixed(2);
+  const fmtCap = (n) => (n === null || n === undefined) ? "—" : `${n.toFixed(1)}%`;
+  const capCls = (n) => {
+    if (n === null || n === undefined) return "dim";
+    if (n >= 40) return "neg";   // breach
+    if (n >= 30) return "warn";  // approaching
+    return "dim";
+  };
   document.getElementById("scorecard-body").innerHTML = sorted
     .map(([slug, b]) => `
       <tr>
         <td class="bot-name">${botLink(slug, b.title)}</td>
         <td><span class="badge ${b.status}">${b.status}</span></td>
         <td>${b.verdict ? `<span class="badge ${b.verdict}">${b.verdict}</span>` : "—"}</td>
+        <td class="num ${capCls(b.capital_allocated_pct)}" title="${b.capital_pct_source === 'computed' ? 'Computed from dashboard_data.json' : 'From bot frontmatter (manual)'}">${fmtCap(b.capital_allocated_pct)}</td>
         <td class="num ${cls(b.period_pl_krw)}">${fmtKRW(b.period_pl_krw)}</td>
         <td class="num ${cls(b.mdd_pl_krw ? -b.mdd_pl_krw : 0)}">${b.mdd_pl_krw ? "-" + fmtKRW(b.mdd_pl_krw).replace("-", "") : "—"}</td>
         <td class="num ${cls(b.worst_day_krw)}">${fmtKRW(b.worst_day_krw)}</td>

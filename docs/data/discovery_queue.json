@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-05-24T23:14:18.246015+09:00",
+  "generated_at": "2026-05-25T07:51:18.974798+09:00",
   "stats": {
-    "total": 82,
-    "queued": 82,
-    "summarized": 0,
+    "total": 86,
+    "queued": 4,
+    "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-05-24T23:14:18.245916+09:00",
+    "last_gc_at": "2026-05-25T07:51:18.974696+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -31,10 +31,10 @@
       "matched_keywords": [
         "factor"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Institutional-market preference elicitation via portfolio-level queries. Welfare framing, not a tradable signal.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -60,10 +60,10 @@
         "regime",
         "ETF"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Continuous regime score (rate-relief + drawdown + VIX + growth-crowding) routes capital between Growth and Defensive ETF baskets via tanh-smoothed weights. Sharpe 1.01, CAGR 19.24% on 2017-2026 OOS. Directly applicable to modified-dual-momentum.",
+      "claude_suggested_action": "UPDATE_BOT",
       "dismissed_reason": null
     },
     {
@@ -88,10 +88,10 @@
         "regime",
         "cross-sectional"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Tests whether better vol forecasts → better portfolios. Useful methodology but not a new strategy.",
+      "claude_suggested_action": "ASSET_MGMT_OVERLAY",
       "dismissed_reason": null
     },
     {
@@ -120,10 +120,10 @@
         "regime",
         "reinforcement learning"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "DRL applied to portfolio management across asset classes. RL in production carries deployment risk per purpose.md.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -149,10 +149,10 @@
       "matched_keywords": [
         "factor"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Dynamic constraints for sequential portfolio optimization with ESG. ESG not in scope.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -175,10 +175,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Path-dependent framework for asymmetric vol modeling — options-flavored.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -204,10 +204,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Pure theory on portfolio selection via information geometry.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -231,10 +231,10 @@
       "matched_keywords": [
         "ETF"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Explains the structural decay drag in leveraged ETFs via no-arbitrage. Directly relevant to soxl-soxs candidate's primary risk.",
+      "claude_suggested_action": "NEW_CANDIDATE",
       "dismissed_reason": null
     },
     {
@@ -262,10 +262,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Economics paper on marketing spend. Not trading.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -289,10 +289,10 @@
         "risk parity",
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Hierarchical/iterative methods for mean-variance optimization. Methodology extension for risk-parity.",
+      "claude_suggested_action": "ASSET_MGMT_OVERLAY",
       "dismissed_reason": null
     },
     {
@@ -316,10 +316,10 @@
         "factor",
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Peer benchmarks + regime timing for evaluating backtest quality. Methodology for the wiki's backtest_window field.",
+      "claude_suggested_action": "ASSET_MGMT_OVERLAY",
       "dismissed_reason": null
     },
     {
@@ -344,10 +344,10 @@
       "matched_keywords": [
         "factor"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Statistical correction for selection bias in factor-screened portfolios. Relevant to usa-quant40 universe screening.",
+      "claude_suggested_action": "ASSET_MGMT_OVERLAY",
       "dismissed_reason": null
     },
     {
@@ -376,10 +376,10 @@
         "regime",
         "cross-sectional"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Tests LLM stock recommendations. Interesting but no actionable strategy.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -408,10 +408,10 @@
         "factor",
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Sparsity in factor models. Methodology.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -439,10 +439,10 @@
         "cross-sectional",
         "ETF"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Risk parity using topological data analysis on the correlation manifold. Extends risk-parity candidate; could be a v2.",
+      "claude_suggested_action": "NEW_CANDIDATE",
       "dismissed_reason": null
     },
     {
@@ -467,10 +467,10 @@
       "matched_keywords": [
         "factor"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Free-energy/entropy duality framing of risk-sensitive investment. Too theoretical to operationalize.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -495,10 +495,10 @@
       "matched_keywords": [
         "factor"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Intraday systematic risk decomposition. Interesting but not a strategy.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -522,10 +522,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Kelly criterion variants on mutually-exclusive outcomes. Gambling math, not portfolio.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -549,10 +549,10 @@
       "matched_keywords": [
         "factor"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Philosophical framing of investing as data compression.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -578,10 +578,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Leave-one-out decomposition for risk contribution. Methodology for risk attribution; informs overlap-and-duplication concept.",
+      "claude_suggested_action": "ASSET_MGMT_OVERLAY",
       "dismissed_reason": null
     },
     {
@@ -608,10 +608,10 @@
         "regime",
         "cross-sectional"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Forecasting heterogeneous investment returns. Methodology.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -638,10 +638,10 @@
         "factor",
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Minimum-regime-performance framework for measuring strategy durability. Directly informs purpose.md kill-switch criteria for all bots.",
+      "claude_suggested_action": "ASSET_MGMT_OVERLAY",
       "dismissed_reason": null
     },
     {
@@ -668,10 +668,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Stochastic control / insurance math.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -697,10 +697,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Clustered efficient frontier with Markov regime transitions. Adjacent to modified-dual-momentum but mostly methodology.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -726,10 +726,10 @@
         "factor",
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Bayesian methods for portfolio optimization with limited labels and regime shifts. Could inform modified-dual-momentum's defensive leg under regime change.",
+      "claude_suggested_action": "ASSET_MGMT_OVERLAY",
       "dismissed_reason": null
     },
     {
@@ -756,10 +756,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Stochastic control + deep hedging for derivatives. Options/derivatives, out of scope.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -783,10 +783,10 @@
       "matched_keywords": [
         "factor"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Crypto-AI niche. Not portfolio-relevant.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -811,10 +811,10 @@
         "factor",
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Gambling math.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -838,10 +838,10 @@
       "matched_keywords": [
         "factor"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Path-dependent regulation and anticipatory hedging. Theoretical risk management.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -865,10 +865,10 @@
       "matched_keywords": [
         "factor"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Decision theory / gambling math.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -894,10 +894,10 @@
         "ETF",
         "reinforcement learning"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "RL with recursive utility on ETFs. Could inform claude-trading-bot but RL deployment risk is high.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -923,10 +923,10 @@
       "matched_keywords": [
         "factor"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Game theory on order-flow privacy. Microstructure theory.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -951,10 +951,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Benchmark dataset of rejected trading events. Useful for backtest tooling but not a strategy.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -979,10 +979,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Volume-gap features for intraday regime classification in MNQ futures. Intraday horizon — adjacent to scope.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1008,10 +1008,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Crypto perpetual basis trading. Specialized crypto microstructure.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1036,10 +1036,10 @@
       "matched_keywords": [
         "momentum"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Limits of OHLCV intraday signals on MNQ futures. Methodology, intraday.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1065,10 +1065,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "LLM agent coordination architecture. Not trading.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1093,10 +1093,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Multi-agent LLM PoC for automated trading. Generic LLM, no strategy edge.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1120,10 +1120,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Prediction-market credibility scoring. Not portfolio.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1148,10 +1148,10 @@
       "matched_keywords": [
         "cross-sectional"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Microstructure of decentralized prediction markets.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1177,10 +1177,10 @@
       "matched_keywords": [
         "statistical arbitrage"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "M&A derivatives pricing. Options/derivatives.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1207,10 +1207,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "ML-based early detection of microstructure regime shifts in LOBs. Intraday horizon — out of scope.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1257,10 +1257,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "On-chain peak shaving — crypto-specific.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1284,10 +1284,10 @@
       "matched_keywords": [
         "momentum"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Theoretical model of market overheating and panic dynamics. Pure theory.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1310,10 +1310,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Philosophy paper on no-arbitrage and no-free-lunch. Polemic.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1341,10 +1341,10 @@
         "factor",
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Argues AI-driven markets converge to homogeneous representations → systemic risk. Bears on overlap-and-duplication concept.",
+      "claude_suggested_action": "ASSET_MGMT_OVERLAY",
       "dismissed_reason": null
     },
     {
@@ -1369,10 +1369,10 @@
       "matched_keywords": [
         "factor"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Speaker identity in earnings calls + cross-section of post-earnings returns. Text analytics, not implementable.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1397,10 +1397,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Rank correlation + decision quality in multi-market forecasts. Methodology.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1426,10 +1426,10 @@
       "matched_keywords": [
         "reinforcement learning"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "RL for LLM-based trading. Generic, no specific strategy.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1455,10 +1455,10 @@
       "matched_keywords": [
         "cross-sectional"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "LLM bias correction. Not trading.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1485,10 +1485,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Economic history of WWII-era Japanese zaibatsu. Not strategy.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1511,10 +1511,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Geometric features for regime detection. Strong overlap with jd-strategy's state machine and modified-dual-momentum's defensive leg trigger.",
+      "claude_suggested_action": "ASSET_MGMT_OVERLAY",
       "dismissed_reason": null
     },
     {
@@ -1542,10 +1542,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Markov-switching regime models with time-varying transitions. Methodology for regime detection — pairs with #52.",
+      "claude_suggested_action": "ASSET_MGMT_OVERLAY",
       "dismissed_reason": null
     },
     {
@@ -1573,10 +1573,10 @@
         "regime",
         "cross-sectional"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Latent factor extraction via vector quantization. Factor methodology.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1609,10 +1609,10 @@
         "factor",
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Adds transient statistical factors to a risk model. Risk attribution method.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1637,10 +1637,10 @@
       "matched_keywords": [
         "ETF"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Bayesian dynamic vol model. ETF universe but methodology, not strategy.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1666,10 +1666,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Unsupervised framework for high-value payment monitoring. Not trading.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1696,10 +1696,10 @@
         "factor",
         "cross-sectional"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Shrinkage priors for dynamic correlation. Directly relevant to computing overlap_score in the wiki's overlap-and-duplication framework.",
+      "claude_suggested_action": "ASSET_MGMT_OVERLAY",
       "dismissed_reason": null
     },
     {
@@ -1728,10 +1728,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "GCN with chaotic fusion for stock prediction. Off-the-shelf ML.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1759,10 +1759,10 @@
       "matched_keywords": [
         "factor"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Theoretical math.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1787,10 +1787,10 @@
       "matched_keywords": [
         "factor"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Random matrix theory analysis of G5 markets during shocks. Methodology.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1815,10 +1815,10 @@
       "matched_keywords": [
         "factor"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Behavioral / economic convergence model.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1843,10 +1843,10 @@
         "regime",
         "ETF"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Mixture-of-experts vol forecasting. ML methodology.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1871,10 +1871,10 @@
       "matched_keywords": [
         "ETF"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "ETF-specific tail risk monitoring with liquidity-mismatch awareness. Strengthens the proposed NAV-deviation gate on modified-dual-momentum's bond leg.",
+      "claude_suggested_action": "UPDATE_BOT",
       "dismissed_reason": null
     },
     {
@@ -1900,10 +1900,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Generative jump-diffusion model. Theoretical.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1929,10 +1929,10 @@
       "matched_keywords": [
         "reinforcement learning"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Theoretical RL extension.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1957,10 +1957,10 @@
       "matched_keywords": [
         "ETF"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "VaR recalibration for standardized option books. Options-specific.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -1985,10 +1985,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Investigates what deep-hedging networks actually learn — delta corrections, regime fragility. Bears on any DL-based hedging but we don't deploy DL.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -2016,10 +2016,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Theoretical GBM extension.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -2048,10 +2048,10 @@
         "factor",
         "reinforcement learning"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Smooth neural adjoint policy optimization. Generic ML control.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -2076,10 +2076,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Actuarial / insurance.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -2110,10 +2110,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "AI risk insurance. Not trading.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -2138,10 +2138,10 @@
       "matched_keywords": [
         "commodity"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Risk spillover decomposition method. Methodology.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -2166,10 +2166,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Functional-form restrictions on risk. Theoretical.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -2193,10 +2193,10 @@
       "matched_keywords": [
         "factor"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Default contagion identifiability. Theoretical credit risk.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -2222,10 +2222,10 @@
       "matched_keywords": [
         "ETF"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Behavioral finance — short exposure and disposition effect.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -2247,10 +2247,10 @@
         "factor",
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Spurious match: arts/cultural studies paper; 'regime' is unrelated to financial regimes.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -2272,10 +2272,10 @@
         "factor",
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Spurious match: Indian e-commerce tax policy.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -2297,10 +2297,10 @@
       "matched_keywords": [
         "factor"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Spurious match: entrepreneurship studies (French).",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -2321,10 +2321,10 @@
       "matched_keywords": [
         "factor"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Spurious match: biology paper.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -2347,10 +2347,10 @@
       "matched_keywords": [
         "regime"
       ],
-      "status": "queued",
+      "status": "summarized",
       "ingested_into": null,
-      "claude_summary": null,
-      "claude_suggested_action": null,
+      "claude_summary": "Theoretical portfolio optimization under transaction costs with recursive preferences. Methodology.",
+      "claude_suggested_action": "NO_ACTION",
       "dismissed_reason": null
     },
     {
@@ -2373,6 +2373,110 @@
       "discovered": "2026-05-24",
       "matched_keywords": [
         "factor"
+      ],
+      "status": "summarized",
+      "ingested_into": null,
+      "claude_summary": "Informal-economy review of e-Susu adoption. Not trading.",
+      "claude_suggested_action": "NO_ACTION",
+      "dismissed_reason": null
+    },
+    {
+      "id": "openalex:W7107854156",
+      "source": "openalex",
+      "title": "Essays in empirical asset pricing",
+      "authors": [
+        "Rostamkhani, Vahid"
+      ],
+      "abstract": "This thesis presents three essays on the determinants of risk premia across currency and equity markets. The first essay studies the macroeconomic foundations of currency risk premia using a dataset spanning a century. It decomposes the predictability of 11 fundamentals into cross-sectional (CS) and Dollar components, finding CS predictability is more robust. Using a Bayesian framework to navigate the resulting ”factor zoo,” the analysis reveals a dense currency Stochastic Discount Factor (SDF) where many fundamentals contribute noisy information. An aggregated Bayesian Model Averaged (BMA) SDF demonstrates superior out-of-sample pricing power over parsimonious models. The second essay investigates the time-series predictive power of the Currency Volatility Risk Premium (VRP). It shows that the VRP term-structure significantly forecasts currency appreciation and excess returns, particularly at longer horizons. This premium is linked to macroeconomic distress, suggesting it serves as compensation for bearing risk during adverse economic conditions. The third essay introduces a novel risk factor in the cross-section of U.S. equities: the ”equity recovery rate,” defined as the fraction of market equity recoverable in bankruptcy. A robust, inverse relationship is documented between this rate and subsequent risk-adjusted returns. This premium is shown to be distinct from compensation for leverage, traditional distress risk, and other well-known factors.",
+      "categories": [],
+      "url": "",
+      "pdf_url": null,
+      "doi": "10.21953/lse.00004955",
+      "year": 2027,
+      "published": "2027-01-01",
+      "discovered": "2026-05-25",
+      "matched_keywords": [
+        "factor",
+        "cross-sectional"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "openalex:W7125605919",
+      "source": "openalex",
+      "title": "Scaling Telemedicine for Specialist Consultations in Francophone West Africa: A Case Study of Facilitators and Barriers in Seychelles",
+      "authors": [
+        "Jean-Paul Morel",
+        "Anita Labiche",
+        "Marie-Ange Hoareau"
+      ],
+      "abstract": "This case study investigates the facilitators and barriers to scaling telemedicine for specialist consultations in Seychelles, a small island developing state (SIDS), between 2021 and 2026. The research addresses the persistent challenge of equitable access to specialist healthcare in geographically dispersed island nations. A qualitative methodology was employed, involving thematic analysis of national policy documents, in-depth interviews with health ministry officials, clinicians, and IT specialists, and a review of operational data from the national telemedicine platform initiated in 2022. Key findings indicate that strong political commitment and a centralised public health system were primary facilitators for initial implementation. However, significant barriers to sustainable scale-up were identified, including unreliable high-speed internet connectivity on outer islands, variable digital literacy among older patient populations, and concerns regarding the long-term financial sustainability of the service model. The study concludes that while technological infrastructure is a prerequisite, socio-cultural and economic factors are equally critical for successful adoption and scale-up. Its significance lies in providing a contextual analysis for other SIDS, demonstrating that scaling telemedicine requires an integrated strategy encompassing workforce training, patient education, and secure financing to realise its potential for strengthening health systems and advancing universal health coverage.",
+      "categories": [],
+      "url": "https://doi.org/10.5281/zenodo.18361861",
+      "pdf_url": null,
+      "doi": "10.5281/zenodo.18361861",
+      "year": 2026,
+      "published": "2026-12-18",
+      "discovered": "2026-05-25",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "openalex:W7118139516",
+      "source": "openalex",
+      "title": "DYNAMIC MARKET INTELLIGENCE SYSTEMS: ENHANCING STRATEGIC AGILITY WITH REAL-TIME BI FRAMEWORKS",
+      "authors": [
+        "Dr. Viswanath Bandi",
+        "K. Yashovardhan Goud",
+        "Aarushi Havaldar",
+        "Deepak Kalithkar",
+        "Anirudh Gubba"
+      ],
+      "abstract": "ABSTRACT In today’s rapidly changing digital environment, organizations must respond quickly to market shifts, competitive pressures and customer behaviour. Business Intelligence (BI) systems especially real-time analytics are increasingly recognized as essential for strengthening decision-making and strategic agility. However, many firms still struggle to translate BI usage into meaningful strategic outcomes. Despite growing adoption of BI tools, limited research examines how real-time dashboards, BI effectiveness, decision-making speed, and BI challenges collectively shape strategic agility within a unified framework. There is also insufficient empirical evidence from Indian industry contexts. The main objective of this quantitative study was to evaluate how BI awareness, BI usage frequency, real-time dashboard adoption, BI effectiveness, decision-making speed, and BI challenges influence strategic agility among working professionals in Hyderabad. Primary data were collected from 50 respondents across IT, consulting, finance, manufacturing, and retail using a structured 5-point Likert questionnaire. Descriptive statistics, correlation analysis, and multiple regression were used to examine relationships between BI-related factors and strategic agility. Results showed that real-time dashboard usage, BI effectiveness, and decision-making speed significantly predicted strategic agility, collectively explaining 61% of the variance. Dashboard adoption demonstrated the strongest effect, indicating that real-time visibility enhances responsiveness and coordination. Skill shortages had a significant negative impact, limiting BI benefits. In contrast, BI awareness and BI usage frequency were not significant predictors, suggesting that realtime capability and insight quality matter more than basic familiarity or routine use. The findings suggest that organizations should prioritize real-time BI frameworks, strengthen analytical capability through training, and integrate BI insights into strategic processes to enhance adaptability. Managers should focus on developing a data-driven culture where employees can interpret insights effectively, enabling faster and more informed strategic action. Keywords: Strategic agility; market intelligence; business intelligence; real-time analytics; competitive intelligence; data-driven decision-making.",
+      "categories": [],
+      "url": "https://doi.org/10.5281/zenodo.18139168",
+      "pdf_url": null,
+      "doi": "10.5281/zenodo.18139168",
+      "year": 2026,
+      "published": "2026-12-15",
+      "discovered": "2026-05-25",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "openalex:W7134990552",
+      "source": "openalex",
+      "title": "Methodological Evaluation and Panel-Data Estimation of Manufacturing Systems Adoption in Nigeria, 2000–2026",
+      "authors": [
+        "Chinweike Okonkwo"
+      ],
+      "abstract": "The adoption of advanced manufacturing systems is critical for industrial development, yet robust empirical analysis of its drivers and rates in developing economies remains limited. Existing studies often rely on cross-sectional data, which fails to capture dynamic adoption processes and firm-level heterogeneity. This paper aims to methodologically evaluate the adoption of manufacturing systems and to estimate its determinants and temporal trajectory using a panel-data framework. The objective is to provide a rigorous, evidence-based assessment of adoption rates and influencing factors. A balanced panel dataset from a longitudinal survey of manufacturing plants is analysed. The core specification is a two-way fixed effects model: $Adoption_{it} = \\alpha + \\beta X_{it} + \\mu_i + \\lambda_t + \\epsilon_{it}$, where $X_{it}$ includes firm size, technological capability, and access to finance. Estimation uses robust standard errors clustered at the firm level. The analysis indicates a positive but non-linear relationship between firm size and adoption probability. A one standard deviation increase in technological capability is associated with a 15% higher likelihood of adoption (95% CI: 12% to 18%). The temporal trend shows accelerating adoption, particularly in the latter part of the study period. Adoption of manufacturing systems is progressing, driven significantly by internal technological competencies. The panel-data approach confirms the importance of accounting for unobserved firm-level heterogeneity in such analyses. Policy should focus on enhancing technological absorptive capacity within firms, rather than blanket subsidies. Future research should integrate supply-chain linkages into the adoption model. manufacturing systems, technology adoption, panel data, fixed effects, industrial policy, technological capability This paper provides a novel longitudinal dataset and application of a panel-data econometric framework to systematically measure manufacturing systems adoption, offering a methodological advance over prior cross-sectional studies in the region.",
+      "categories": [],
+      "url": "https://doi.org/10.5281/zenodo.18968864",
+      "pdf_url": null,
+      "doi": "10.5281/zenodo.18968864",
+      "year": 2026,
+      "published": "2026-11-18",
+      "discovered": "2026-05-25",
+      "matched_keywords": [
+        "factor",
+        "cross-sectional"
       ],
       "status": "queued",
       "ingested_into": null,
