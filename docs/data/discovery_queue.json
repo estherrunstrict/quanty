@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-05-25T09:12:27.450181+09:00",
+  "generated_at": "2026-05-25T16:01:05.991193+09:00",
   "stats": {
-    "total": 93,
-    "queued": 11,
+    "total": 94,
+    "queued": 12,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-05-25T09:12:27.450075+09:00",
+    "last_gc_at": "2026-05-25T16:01:05.991094+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -2675,6 +2675,38 @@
       "discovered": "2026-05-25",
       "matched_keywords": [
         "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2605.23007",
+      "source": "arxiv",
+      "title": "MadEvolve: Evolutionary Optimization of Trading Systems with Large Language Models",
+      "authors": [
+        "Yurii Kvasiuk",
+        "Tianyi Li",
+        "Owen Colegrove",
+        "Moritz Münchmeyer"
+      ],
+      "abstract": "We explore the application of LLM-driven algorithm optimization to several common tasks in quantitative finance. MadEvolve, a general-purpose algorithm optimization framework inspired by DeepMind's Alpha-Evolve, was recently developed to optimize algorithms in computational cosmology. Here we demonstrate the utility of MadEvolve to optimize algorithmic trading strategies and alpha generation at the example of Bitcoin trading. On our simulation and backtesting setup, we achieve significant improvements on all tasks we considered, such as evolving feature sets for signal generation, optimizing separate components of the trading strategy, and jointly evolving the feature pipeline together with the execution strategy. Additionally, we compare our method to other agentic search approaches, specifically Claude Code, and carefully evaluate p-hacking probabilities on our simulation setup. Our findings strongly support the utility of AI-driven agentic and evolutionary algorithms for algorithmic trading and quantitative finance.",
+      "categories": [
+        "q-fin.TR",
+        "cs.AI",
+        "cs.LG",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2605.23007v1",
+      "pdf_url": "https://arxiv.org/pdf/2605.23007v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-05-21",
+      "discovered": "2026-05-25",
+      "matched_keywords": [
+        "p-hacking"
       ],
       "status": "queued",
       "ingested_into": null,
