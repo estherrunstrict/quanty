@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-05-26T06:30:17.378159+09:00",
+  "generated_at": "2026-05-26T16:00:26.934849+09:00",
   "stats": {
-    "total": 94,
-    "queued": 12,
+    "total": 99,
+    "queued": 17,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-05-26T06:30:17.378055+09:00",
+    "last_gc_at": "2026-05-26T16:00:26.934744+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -2707,6 +2707,154 @@
       "discovered": "2026-05-25",
       "matched_keywords": [
         "p-hacking"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2605.24490",
+      "source": "arxiv",
+      "title": "Market Regime Council for Dynamic Credit Assignment in Multi-Agent LLM Decision Systems",
+      "authors": [
+        "Yunhua Pei",
+        "Zerui Ge",
+        "Jin Zheng",
+        "John Cartlidge"
+      ],
+      "abstract": "Multi-agent LLM decision systems for portfolio management still lack a principled way to assign credit across specialist agents, remain vulnerable to cold-start dominance under regime shifts, and offer limited transparency into how final allocations are formed. We propose Market Regime Council (MRC), a cooperative multi-agent decision system that computes exact Shapley credits across all single, pairwise, and Grand-coalition outputs for online agent weighting. Instantiated with N=3 specialist agents, at each trading period, MRC recomputes coalition-based Shapley weights from exponentially weighted performance histories, uses a Bayesian adaptive mixture to stabilize early periods, applies regime-dependent multipliers to adjust agent authority, and records each rebalance through a five-layer causal trace. Over 1,037 trading days across 13 crypto assets and five seeds, MRC achieves a Sharpe ratio of 1.51 and a cumulative return of 440.1%, ranking first on CR, SR, and IR among active baselines and attaining the lowest MDD among active methods. Ablation results show that the gains come from Shapley-weighted integration across coalition outputs rather than from any single stage in isolation. Code and demo data are included in the supplementary material.",
+      "categories": [
+        "cs.AI",
+        "cs.LG",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2605.24490v1",
+      "pdf_url": "https://arxiv.org/pdf/2605.24490v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-05-23",
+      "discovered": "2026-05-26",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2605.23959",
+      "source": "arxiv",
+      "title": "When Alpha Disappears: A One-Switch Benchmark for Decision-Time Leakage in Financial Backtests",
+      "authors": [
+        "Fan Zhang",
+        "Zhen Li",
+        "Sijia Peng",
+        "Yu Chen"
+      ],
+      "abstract": "We introduce When Alpha Disappears, a paired evaluation benchmark for diagnosing decision-time leakage in financial machine-learning backtests. Rather than treating leakage as a binary property, the benchmark estimates protocol-induced inflation by toggling one evaluation convention at a time around a clean $t{+}1$-open reference, while holding the data panel, walk-forward split, model family, horizon, portfolio rule, and cost convention fixed. Across two daily-OHLCV equity panels, six model families, and yearly tests from 2016--2024, we find that inflation is highly selective: centered temporal features and same-day-open execution with post-open daily-bar information cause large and stable increases in both predictive and trading metrics, whereas global normalization, future-informed graph structure, and same-day-close execution are weak in most settings. The benchmark is diagnostic rather than a claim of tradable alpha, and is intended to make evaluation assumptions, failure modes, and protocol fragility directly measurable.",
+      "categories": [
+        "q-fin.RM",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2605.23959v1",
+      "pdf_url": "https://arxiv.org/pdf/2605.23959v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-05-12",
+      "discovered": "2026-05-26",
+      "matched_keywords": [
+        "walk-forward"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2605.24285",
+      "source": "arxiv",
+      "title": "Memory, Roughness, and Information Persistence in Financial Markets: A Structural Approach to Volatility Forecasting",
+      "authors": [
+        "Akash Deep",
+        "Nicholas Appiah",
+        "Svetlozar T. Rachev"
+      ],
+      "abstract": "This paper studies the joint role of long-memory dynamics,rough-volatility behavior, and persistence-based forecasting features in equity volatility modeling. We combine semiparametric long-memory estimation, rough-volatility diagnostics, and structured forecasting regressions to examine whether persistence measures contain economically meaningful forecasting information beyond conventional volatility predictors. Using a panel of 115 S&P500 constituents from November 2001 through April 2026, we document that volatility proxies exhibit substantial long-memory behavior and locally rough dynamics. The cross-sectional mean Geweke-Porter-Hudak estimate of the memory parameter is $\\hat{d} = 0.226$, while the corresponding local-Whittle estimate is $\\hat{d} = 0.440$, with statistical significance observed across nearly the entire panel. Rolling estimates of persistence rise substantially during the global financial crisis and the COVID period and display a positive contemporaneous association with the VIX. We then examine whether persistence-related features improve out-of-sample volatility forecasts beyond standard HAR and HAR-X benchmarks. Incorporating cross-sectional persistence aggregates, sectoral persistence measures, and persistence-by-stress interaction terms produces moderate but statistically significant forecasting improvements, particularly at longer horizons and during stress regimes. Forecast gains are strongest during periods of elevated market volatility and in volatility-managed portfolio applications. The results suggest that persistence measures may serve as useful reduced-form indicators of the duration and propagation of uncertainty in financial markets, although the paper does not claim structural identification of the economic mechanisms generating persistence.",
+      "categories": [
+        "q-fin.ST",
+        "stat.ML"
+      ],
+      "url": "https://arxiv.org/abs/2605.24285v1",
+      "pdf_url": "https://arxiv.org/pdf/2605.24285v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-05-22",
+      "discovered": "2026-05-26",
+      "matched_keywords": [
+        "regime",
+        "cross-sectional"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2605.24833",
+      "source": "arxiv",
+      "title": "Default Contagion, Matrix Approximation, and Control in Sparse Financial Networks",
+      "authors": [
+        "Aoxin Zhang",
+        "Yingzhe Wang"
+      ],
+      "abstract": "We study systemic default contagion in sparse financial networks and develop a framework for deciding when aggregate exposure matrices are reliable and when node-level network information changes tail risk and control design. The first contribution is a multi-population McKean-Vlasov foundation for distance-to-default dynamics with common noise, bounded state-dependent killing, loss feedback, sparse weighted exposures, and regulatory intervention, including quantitative convergence, propagation of chaos, stability in contagion matrices, controlled well-posedness, a two-population HJB characterization, and a steep-killing bridge to absorbing-boundary contagion. The second contribution is a set of computable matrix-approximation diagnostics: finite-grid bounds driven by row-exposure dispersion and square-edge spread, constructive tail-loss gaps for networks sharing the same aggregate matrix, and a spectral-radius criterion for local cascade onset. The third contribution is an information-value theory for control, showing that node-level graph pressure has strictly positive value when within-type pressure variation interacts with nonsaturated marginal killing reduction. Matched sparse-graph and matrix experiments, common-noise tests, HJB feedback diagnostics, fixed-budget control comparisons, and EBA/Pillar 3-calibrated synthetic networks validate the framework. The main conclusion is that finite-type matrices are effective in regular-mixing regimes, whereas concentrated sparse exposures generate tail-risk and intervention effects that require local-pressure diagnostics and network-aware control.",
+      "categories": [
+        "math.OC",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2605.24833v1",
+      "pdf_url": "https://arxiv.org/pdf/2605.24833v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-05-24",
+      "discovered": "2026-05-26",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2605.24514",
+      "source": "arxiv",
+      "title": "Incremental SVD for Large-Scale Dynamic Matrices: Accuracy, Subspace Stability, Refresh Strategies, and Financial Factor-Based Risk Models",
+      "authors": [
+        "Stilyan Staykov"
+      ],
+      "abstract": "Return panels, covariances, and large feature matrices evolve one observation or one entry at a time, yet downstream models require an up-to-date low-rank factorization $A_t \\approx U_t Σ_t V_t^\\top$ on every tick -- a regime where full SVD is prohibitive and existing alternatives sacrifice either singular vectors, singular values, or long-horizon stability. We present a practical, metric-driven study of Brand-style incremental SVD, built around a unified engine that handles row appends, column appends, rank-1 entry updates, and metrics tracking within a single framework, with two core contributions. For rank-1 entry updates, we derive an explicit projection-based rule $U'Σ'(V')^\\top = P_U(\\widehat{A} + δ\\,e_ie_j^\\top)P_V$ that keeps rank fixed while discarding only the out-of-subspace remainder in a quantifiable way, turning Brand's rank-suppression heuristic into an operational scheme. We then treat refresh scheduling as a first-class design axis, systematically comparing periodic, error-threshold, angle-threshold, and adaptive-rank policies on the accuracy-latency frontier. A unified framework tracks error ratios, principal angles, explained variance, and per-update runtime on long synthetic streams and a multi-asset ETF factor model for covariance and portfolio-risk estimation. With a sensible rank and refresh cadence, incremental SVD matches full-SVD accuracy within a few percent at a fraction of the cost, scaling to high-frequency regimes where batch SVDs are infeasible.",
+      "categories": [
+        "math.NA",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2605.24514v1",
+      "pdf_url": "https://arxiv.org/pdf/2605.24514v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-05-23",
+      "discovered": "2026-05-26",
+      "matched_keywords": [
+        "factor",
+        "regime",
+        "ETF"
       ],
       "status": "queued",
       "ingested_into": null,
