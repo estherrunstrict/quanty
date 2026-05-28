@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-05-28T06:30:11.927428+09:00",
+  "generated_at": "2026-05-28T16:00:57.379534+09:00",
   "stats": {
-    "total": 99,
-    "queued": 17,
+    "total": 100,
+    "queued": 18,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-05-28T06:30:11.927322+09:00",
+    "last_gc_at": "2026-05-28T16:00:57.379432+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -2855,6 +2855,43 @@
         "factor",
         "regime",
         "ETF"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2605.27848",
+      "source": "arxiv",
+      "title": "Regime-Based Portfolio Allocation Using Hidden Markov Models and Reinforcement Learning",
+      "authors": [
+        "Ajay Kumar Verma",
+        "Nunik Srikandi Putri",
+        "Neo Paul Lesupi"
+      ],
+      "abstract": "This study develops a regime-aware portfolio allocation framework that integrates Markov switching models with Reinforcement Learning (RL) to dynamically allocate across equities (SPY), long-term Treasuries (TLT), and gold (GLD). Using daily ETF data from 2004-2025, we first characterize market behavior through a discrete Markov chain and then estimate a three-state Gaussian Hidden Markov Model (HMM) selected by the Bayesian Information Criterion (BIC). The estimated regimes-low-volatility, transitional, and high-volatility-exhibit strong persistence and state-dependent return dynamics consistent with recent findings on nonlinear market states (Ardia et al., 2024; Gupta & Pierdzioch, 2023). State-conditional analysis shows that SPY dominates in stable regimes, while TLT and GLD provide protection during stressed periods, motivating regime-conditioned allocation rules. We evaluate rule-based rotation and RL-driven strategies using a 30% out-of-sample test window with a one-day execution lag to avoid look-ahead bias. Both HMM-based allocations outperform a passive SPY benchmark, while the RL policy achieves the highest risk-adjusted performance, delivering the strongest Sharpe ratio and materially lower drawdowns, yet remains fully interpretable through discrete regime-dependent actions. Sensitivity analysis confirms the robustness of the three-state specification relative to two-state alternatives. Overall, the results demonstrate that RL can systematically enhance HMM-based regime detection, providing a transparent, adaptive, and empirically grounded framework for tactical asset allocation. The combined HMM-RL system provides a transparent, rules-based approach to tactical allocation that improves risk-adjusted performance relative to standard benchmark strategies.",
+      "categories": [
+        "q-fin.PM",
+        "econ.EM",
+        "q-fin.CP",
+        "q-fin.MF",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2605.27848v1",
+      "pdf_url": "https://arxiv.org/pdf/2605.27848v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-05-27",
+      "discovered": "2026-05-28",
+      "matched_keywords": [
+        "regime",
+        "ETF",
+        "reinforcement learning",
+        "regime detection",
+        "drawdown",
+        "look-ahead bias"
       ],
       "status": "queued",
       "ingested_into": null,
