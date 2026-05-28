@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-05-28T16:00:57.379534+09:00",
+  "generated_at": "2026-05-29T06:30:11.583497+09:00",
   "stats": {
-    "total": 100,
-    "queued": 18,
+    "total": 102,
+    "queued": 20,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-05-28T16:00:57.379432+09:00",
+    "last_gc_at": "2026-05-29T06:30:11.583391+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -2892,6 +2892,73 @@
         "regime detection",
         "drawdown",
         "look-ahead bias"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2605.27887",
+      "source": "arxiv",
+      "title": "PortBench: A Correlation-Aware, Full-Pipeline Benchmark for LLM-Driven Portfolio Management",
+      "authors": [
+        "Yuxuan Zhao",
+        "Sijia Chen",
+        "Ningxin Su"
+      ],
+      "abstract": "LLMs have shown strong performance across diverse financial tasks, yet portfolio management (PM), a critical financial decision-making task, remains poorly benchmarked. Existing benchmarks exhibit two main gaps: they ignore cross-asset correlation structures, thereby failing to distinguish genuinely diversified portfolios from concentrated ones, and fail to evaluate the complete PM decision pipeline in real-world scenarios. We introduce PortBench, a benchmark spanning six heterogeneous asset classes over ten years. PortBench consists of two complementary layers: a static QA dataset of 6,269 correlation-based questions across seven task templates, and a dynamic five-stage allocation pipeline that mirrors the full PM decision cycle. To evaluate these layers, we introduce two dedicated metrics: a dual-layer correlation score that measures whether proposed portfolios exploit inter-class hedging and avoid intra-class concentration, and CEPS, a metric that quantifies how reasoning errors compound across pipeline stages. We further assess strategy robustness and investor alignment under three historical stress regimes and risk profiles. Evaluating ten frontier LLMs, we find that despite strong performance on static financial QA, 90\\% of model-profile combinations fail to outperform a basic equal-weight allocation, and models that satisfy every procedural constraint still suffer catastrophic drawdowns under stress. Our source code is available at \\href{https://github.com/AgenticFinLab/portbench}{this https URL}.",
+      "categories": [
+        "cs.AI",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2605.27887v1",
+      "pdf_url": "https://arxiv.org/pdf/2605.27887v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-05-27",
+      "discovered": "2026-05-29",
+      "matched_keywords": [
+        "regime",
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2605.28359",
+      "source": "arxiv",
+      "title": "From Knowing to Doing: A Memory-Controlled Benchmark for LLM Trading Agents on Stock Markets",
+      "authors": [
+        "Taojie Zhu",
+        "Wentao Zhao",
+        "Rui Sun",
+        "Beidi Luan",
+        "Jiacheng Lu",
+        "Sinuo Wang",
+        "Jing Li",
+        "Daxin Jiang",
+        "Yonghong He",
+        "Zuo Bai"
+      ],
+      "abstract": "Evaluating whether large language model (LLM) agents can profit in capital markets is increasingly framed as end-to-end trading: place an agent in a historical market, let it trade, and measure portfolio returns. This setup is vulnerable to two evaluation failures. First, long backtests often overlap with the knowledge cutoffs of frontier LLMs, allowing memorized tickers, dates, prices, and market narratives to substitute for investment reasoning. Second, raw returns are a noisy proxy for stock-selection ability, since positive performance may come from market beta, style exposure, or favorable regimes rather than genuine alpha. We introduce KTD-Fin (Knowing-To-Doing Financial Benchmark), an end-to-end stock-market trading benchmark that addresses both issues. KTD-Fin uses a data-side masking protocol to anonymize key identifiers and calendar information consistently across prompts and tools, separating historical market memory from investment decision-making. It also incorporates a Barra-style performance attribution framework that decomposes portfolio returns into market, style, and stock-selection alpha components. Across ten frontier LLM agents evaluated on the Chinese CSI300 over a 2024--2026 window, masking substantially changes agent rationales, pushing them towards anonymized factor-based reasoning. Attribution analysis further shows that LLM agents' cumulative returns under leakage-controlled evaluation are largely explained by passive market and style exposure, with limited evidence of persistent stock-selection alpha. These findings suggest that financial LLM benchmarks should evaluate not only whether an agent makes money, but also whether the source of returns reflects transferable investment skill. We release KTD-Fin as a reproducible template for leakage-controlled and attribution-aware evaluation of LLM trading agents.",
+      "categories": [
+        "cs.AI",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2605.28359v1",
+      "pdf_url": "https://arxiv.org/pdf/2605.28359v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-05-27",
+      "discovered": "2026-05-29",
+      "matched_keywords": [
+        "factor",
+        "regime"
       ],
       "status": "queued",
       "ingested_into": null,
