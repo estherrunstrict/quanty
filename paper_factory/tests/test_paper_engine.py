@@ -31,3 +31,13 @@ def test_unsupported_type_raises():
     with pytest.raises(pe.EngineError):
         pe.target_weights({"signal": {"type": "custom"}, "universe": ["A"],
                            "position_sizing": "equal_weight"}, _prices({"A": 0.001}))
+
+
+def test_nan_gapped_ticker_is_dropped_from_ranking():
+    import numpy as np
+    prices = _prices({"A": 0.002, "B": 0.001})
+    prices["B"] = np.nan  # B has no usable history
+    spec = {"signal": {"type": "xs_momentum", "lookback_days": 60},
+            "universe": ["A", "B"], "position_sizing": "equal_weight"}
+    w = pe.target_weights(spec, prices)
+    assert "B" not in w and w.get("A", 0) > 0

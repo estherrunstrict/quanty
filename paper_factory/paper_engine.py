@@ -20,7 +20,7 @@ class EngineError(ValueError):
 def _lookback_return(prices: pd.DataFrame, days: int) -> pd.Series:
     if len(prices) <= days:
         raise EngineError(f"need >{days} rows, have {len(prices)}")
-    return prices.iloc[-1] / prices.iloc[-1 - days] - 1.0
+    return (prices.iloc[-1] / prices.iloc[-1 - days] - 1.0).dropna()
 
 
 def _equal_weight(tickers: list[str]) -> dict[str, float]:
@@ -38,16 +38,16 @@ def target_weights(spec: dict[str, Any], prices: pd.DataFrame) -> dict[str, floa
 
     if stype in ("xs_momentum",):
         rets = _lookback_return(prices[universe], lb).sort_values(ascending=False)
-        n_long = max(1, len(universe) // 3)
+        n_long = max(1, len(rets) // 3)
         return _equal_weight(list(rets.index[:n_long]))
 
     if stype in ("ts_momentum",):
         rets = _lookback_return(prices[universe], lb)
-        return _equal_weight([t for t in universe if rets[t] > 0])
+        return _equal_weight([t for t in rets.index if rets[t] > 0])
 
     if stype in ("dual_momentum",):
         rets = _lookback_return(prices[universe], lb)
-        winners = [t for t in universe if rets[t] > 0]
+        winners = [t for t in rets.index if rets[t] > 0]
         if not winners:
             return {}
         best = max(winners, key=lambda t: rets[t])
