@@ -15,7 +15,7 @@ from paper_factory import PAPER_CRON, REPO
 RUNNER_TEMPLATE = '''#!/usr/bin/env python3
 """PAPER runner for {slug} — PARALLEL TO LIVE, simulated money only."""
 from __future__ import annotations
-import csv, sys
+import csv, json, sys
 from datetime import datetime
 from pathlib import Path
 import yaml, pandas as pd
@@ -42,18 +42,43 @@ def _load_prices(universe):
 def main():
     spec = yaml.safe_load(SPEC.read_text())
     prices = _load_prices(spec["universe"])
+    if prices.empty:
+        print(f"{slug}: no usable price data")
+        return
+    last = prices.iloc[-1]
+    STATE_DIR.mkdir(exist_ok=True)  # paper_state/ holds persisted positions + PV
+    state_path = STATE_DIR / f"paper_{slug_us}_state.json"
+    if state_path.exists():
+        state = json.loads(state_path.read_text())
+    else:
+        state = {{"shares": {{}}, "cash": NOTIONAL}}
+    # mark existing positions to market at today's close
+    holdings = sum(float(state["shares"].get(t, 0.0)) * float(last[t])
+                   for t in state["shares"] if t in last.index)
+    pv_now = state["cash"] + holdings
+    if pv_now <= 0:
+        pv_now = NOTIONAL
+    # rebalance to today's target weights
     weights = paper_engine.target_weights(spec, prices)
-    STATE_DIR.mkdir(exist_ok=True)
-    pv = REPO / "paper_state" / f"paper_{slug_us}_pv.csv"
+    new_shares = {{}}
+    invested = 0.0
+    for t, w in weights.items():
+        price = float(last[t])
+        if price > 0:
+            target_val = w * pv_now
+            new_shares[t] = target_val / price
+            invested += target_val
+    state = {{"shares": new_shares, "cash": pv_now - invested}}
+    state_path.write_text(json.dumps(state))
+    pv = STATE_DIR / f"paper_{slug_us}_pv.csv"
     new = not pv.exists()
     with pv.open("a", newline="") as f:
-        w = csv.writer(f)
+        wcsv = csv.writer(f)
         if new:
-            w.writerow(["timestamp", "portfolio_value", "cash", "n_positions"])
-        invested = sum(weights.values()) * NOTIONAL
-        w.writerow([datetime.now().isoformat(timespec="seconds"),
-                    f"{{NOTIONAL:.2f}}", f"{{NOTIONAL - invested:.2f}}", len(weights)])
-    print(f"{slug} weights: {{weights}}")
+            wcsv.writerow(["timestamp", "portfolio_value", "cash", "n_positions"])
+        wcsv.writerow([datetime.now().isoformat(timespec="seconds"),
+                       f"{{pv_now:.2f}}", f"{{state['cash']:.2f}}", len(new_shares)])
+    print(f"{slug} pv={{pv_now:.2f}} weights={{weights}}")
 
 if __name__ == "__main__":
     main()
