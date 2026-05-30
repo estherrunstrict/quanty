@@ -297,6 +297,17 @@ code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; 
   padding-top: 20px;
   border-top: 1px solid var(--line);
 }
+
+/* ------ Pipeline panel ------ */
+.pl-row { border-bottom: 1px solid #2a2a2a; padding: 8px 0; cursor: pointer; }
+.pl-head { display: flex; align-items: center; gap: 10px; font-family: ui-monospace, monospace; }
+.pl-track { letter-spacing: -1px; }
+.pl-dot-on { color: #4caf50; }
+.pl-dot-off { color: #555; }
+.pl-badge { margin-left: auto; }
+.pl-detail { display: none; margin: 6px 0 4px 18px; font-size: 12px; line-height: 1.6; }
+.pl-row.open .pl-detail { display: block; }
+.pl-detail .k { color: #999; display: inline-block; min-width: 74px; }
 </style>
 </head>
 
@@ -409,6 +420,12 @@ code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; 
       <h2>Retirement queue <span class="count" id="cnt-retirement">0</span></h2>
       <div class="card" id="retirement-card"></div>
     </div>
+  </div>
+
+  <div class="section">
+    <h2>Pipeline <span class="count" id="cnt-pipeline">0</span></h2>
+    <div class="muted small" id="pipeline-rejects"></div>
+    <div class="card" id="pipeline-card"></div>
   </div>
 
   <div class="section">
@@ -616,6 +633,9 @@ function render(dash, dec, disc) {
         </div>`;
       }).join("");
 
+  // Pipeline panel
+  renderPipeline(dec);
+
   // Retirement queue — bots with verdict=retire (excluding already-retired)
   // Plus open kill decision targets.
   const retCandidates = Object.entries(dec.bot_verdicts)
@@ -753,6 +773,48 @@ function render(dash, dec, disc) {
       </div>`).join("");
   }
 }
+
+  function renderPipeline(dec) {
+    const items = dec.candidate_pipeline || [];
+    document.getElementById("cnt-pipeline").textContent = items.length;
+    const STAGES = ["select", "extract", "backtest", "paper", "memo"];
+    const worst = (hz) => {
+      if (!hz || !hz.length) return "";
+      if (hz.some((h) => h.verdict === "❌")) return "❌";
+      if (hz.some((h) => h.verdict === "⚠️")) return "⚠️";
+      return "✅";
+    };
+    const track = (st) => STAGES.map((s) =>
+      `<span class="${st && st[s] ? "pl-dot-on" : "pl-dot-off"}">●</span>`).join("─");
+    const num = (x, s = "", p = "") => (x == null ? "—" : `${p}${x}${s}`);
+    const card = document.getElementById("pipeline-card");
+    card.innerHTML = items.map((c) => {
+      const bt = c.backtest || {};
+      const v = c.variables || {};
+      const hz = (bt.horizons || []).map((h) => `${h.horizon} ${h.verdict}`).join(" · ") || "—";
+      const pp = c.paper || {};
+      const paperBit = pp.days_observed
+        ? `${pp.days_observed}/60 days · PV ${pp.pv_last != null ? "₩" + Math.round(pp.pv_last).toLocaleString() : "—"} · Sharpe ${pp.sharpe != null ? pp.sharpe.toFixed(2) : "n/a"}`
+        : "—";
+      return `<div class="pl-row" onclick="this.classList.toggle('open')">
+        <div class="pl-head">
+          <span class="pl-track">${track(c.stage)}</span>
+          <span>${c.title || c.slug}</span>
+          <span class="muted small">${c.status || ""}</span>
+          <span class="pl-badge">${worst(bt.horizons)}</span>
+        </div>
+        <div class="pl-detail">
+          <div><span class="k">algorithm</span> ${c.algorithm || "—"}</div>
+          <div><span class="k">variables</span> signal=${v.signal_type || "—"} · universe=[${(v.universe || []).join(", ")}] · lookback=${num(v.lookback_months, "m")}/${num(v.lookback_days, "d")} · sizing=${v.position_sizing || "—"}</div>
+          <div><span class="k">backtest</span> CAGR ${num(bt.cagr, "%")} · Sharpe ${num(bt.sharpe)} · MDD ${num(bt.mdd, "%")} · ${hz} <span class="muted">(Bonferroni N=3)</span></div>
+          <div><span class="k">paper</span> ${paperBit}</div>
+        </div>
+      </div>`;
+    }).join("") || `<div class="muted small">No candidates in the pipeline yet.</div>`;
+    const rejects = (dec.recent_picks || []).filter((p) => p.verdict === "fail").map((p) => p.slug);
+    document.getElementById("pipeline-rejects").textContent =
+      rejects.length ? "recent rejects: " + rejects.join(", ") : "";
+  }
 
 load();
 </script>
