@@ -31,9 +31,12 @@ def _load_prices(universe):
     frames = {{}}
     for t in universe:
         csv_path = REPO / f"{{t}}_daily.csv"
-        if csv_path.exists():
-            df = pd.read_csv(csv_path, parse_dates=[0], index_col=0)
-            frames[t] = df["Close"] if "Close" in df else df.iloc[:, -1]
+        if not csv_path.exists():
+            continue
+        df = pd.read_csv(csv_path, parse_dates=[0], index_col=0)
+        col = next((c for c in ("Close", "close", "Adj Close", "adj_close")
+                    if c in df.columns), None)
+        frames[t] = df[col] if col is not None else df.iloc[:, -1]
     return pd.DataFrame(frames).dropna()
 
 def main():

@@ -17,3 +17,9 @@ def test_cron_block_append_is_idempotent(tmp_path):
     assert cron.read_text() == after_first
     assert "paper_run_silver_copper.py" in after_first
     assert "check_and_run.sh" not in after_first.replace("check_and_run_paper.sh", "")
+
+
+def test_runner_selects_close_column_by_name():
+    text = sc.render_runner("silver-copper")
+    assert '"Close", "close", "Adj Close", "adj_close"' in text
+    assert "df.iloc[:, -1]" in text  # fallback retained
