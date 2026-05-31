@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-30T20:27:20.935541+09:00",
+  "generated_at": "2026-05-31T12:32:33.071335+09:00",
   "portfolio_constraints": {
     "max_single_bot_pct": 40,
     "max_leverage": 1.5,
@@ -9,22 +9,22 @@
   },
   "alerts": [
     {
-      "level": "warn",
+      "level": "error",
       "bot": "btc-vb",
       "title": "Stale data — BTC Volatility Breakthrough",
-      "body": "Last update 7.9d ago vs 2d threshold for a daily cadence. Check the server cron log."
+      "body": "Last update 8.5d ago vs 2d threshold for a daily cadence. Check the server cron log."
     },
     {
       "level": "warn",
       "bot": "claude-trading-bot",
       "title": "Stale data — Claude Trading Bot (AI watchlist)",
-      "body": "Last update 7.9d ago vs 4d threshold for a weekday cadence. Check the server cron log."
+      "body": "Last update 8.6d ago vs 4d threshold for a weekday cadence. Check the server cron log."
     },
     {
       "level": "warn",
       "bot": "hybrid-vb",
       "title": "Stale data — Hybrid VB + Vol-Managed ETF",
-      "body": "Last update 7.9d ago vs 4d threshold for a default cadence. Check the server cron log."
+      "body": "Last update 8.6d ago vs 4d threshold for a default cadence. Check the server cron log."
     },
     {
       "level": "warn",
@@ -36,13 +36,13 @@
       "level": "warn",
       "bot": "jd-strategy",
       "title": "Stale data — JD Strategy (Wealth Research Institute)",
-      "body": "Last update 7.9d ago vs 4d threshold for a weekday cadence. Check the server cron log."
+      "body": "Last update 8.6d ago vs 4d threshold for a weekday cadence. Check the server cron log."
     },
     {
       "level": "warn",
       "bot": "usa-quant40",
       "title": "Stale data — USA Quant40 (\"Quant Replacing the 40\")",
-      "body": "Last update 7.9d ago vs 4d threshold for a weekday cadence. Check the server cron log."
+      "body": "Last update 8.6d ago vs 4d threshold for a weekday cadence. Check the server cron log."
     },
     {
       "level": "info",
@@ -110,7 +110,7 @@
       "dashboard_id": "btc_vb",
       "wiki_path": "wiki/bots/btc-vb.md",
       "last_update": "2026-05-23",
-      "days_since_update": 7.9,
+      "days_since_update": 8.5,
       "period_pl_krw": -146756.3,
       "mdd_pl_krw": 203844.21000000002,
       "best_day_krw": 29757.97,
@@ -137,7 +137,7 @@
       "dashboard_id": "claude_bot",
       "wiki_path": "wiki/bots/claude-trading-bot.md",
       "last_update": "2026-05-22T22:32:06.052593",
-      "days_since_update": 7.9,
+      "days_since_update": 8.6,
       "period_pl_krw": 0.0,
       "mdd_pl_krw": 0.0,
       "best_day_krw": 0.0,
@@ -164,7 +164,7 @@
       "dashboard_id": "hybrid_vb",
       "wiki_path": "wiki/bots/hybrid-vb.md",
       "last_update": "2026-05-22T09:31:33.662888-04:00",
-      "days_since_update": 7.9,
+      "days_since_update": 8.6,
       "period_pl_krw": -749400.31,
       "mdd_pl_krw": 4168330.42,
       "best_day_krw": 1185421.65,
@@ -191,7 +191,7 @@
       "dashboard_id": "jd_strategy",
       "wiki_path": "wiki/bots/jd-strategy.md",
       "last_update": "2026-05-22T22:30:41.752917",
-      "days_since_update": 7.9,
+      "days_since_update": 8.6,
       "period_pl_krw": 269142.57,
       "mdd_pl_krw": 180366.0,
       "best_day_krw": 133170.0,
@@ -218,7 +218,7 @@
       "dashboard_id": "korea_etf",
       "wiki_path": "wiki/bots/korea-etf-momentum.md",
       "last_update": "2026-05-22T09:00:16.587692+09:00",
-      "days_since_update": 8.5,
+      "days_since_update": 9.1,
       "period_pl_krw": -606240.0,
       "mdd_pl_krw": 2532315.0,
       "best_day_krw": 1023030.0,
@@ -272,7 +272,7 @@
       "dashboard_id": "dual_momentum",
       "wiki_path": "wiki/bots/modified-dual-momentum.md",
       "last_update": "2026-05-22T22:31:11.737539",
-      "days_since_update": 7.9,
+      "days_since_update": 8.6,
       "period_pl_krw": -1576249.8,
       "mdd_pl_krw": 1936802.4,
       "best_day_krw": 236407.8,
@@ -353,7 +353,7 @@
       "dashboard_id": "quant40",
       "wiki_path": "wiki/bots/usa-quant40.md",
       "last_update": "2026-05-22T22:30:08.332830",
-      "days_since_update": 7.9,
+      "days_since_update": 8.6,
       "period_pl_krw": 1575159.6,
       "mdd_pl_krw": 412896.0,
       "best_day_krw": 359876.3999999999,
@@ -544,6 +544,75 @@
       }
     },
     {
+      "slug": "ben-david-2018-etf-volatility",
+      "title": "Ben David 2018 Etf Volatility",
+      "status": "backtest",
+      "paper_source": "[[ben-david-2018-etf-volatility]]",
+      "script": "paper_run_ben-david-2018-etf-volatility.py",
+      "promotion_criteria": "see body — Bonferroni 유의 + MDD ≤ 25% + OOS ≥ 5y per Quanty CLAUDE.md §5.2",
+      "paper_trading_since": null,
+      "health": "",
+      "wiki_path": "wiki/candidates/ben-david-2018-etf-volatility.md",
+      "stage": {
+        "select": true,
+        "extract": true,
+        "backtest": true,
+        "paper": false,
+        "memo": false
+      },
+      "variables": {
+        "signal_type": "mean_reversion",
+        "universe": [
+          "SPY",
+          "QQQ",
+          "IWM",
+          "RSP",
+          "TLT",
+          "SHY"
+        ],
+        "lookback_months": 12,
+        "skip_months": 0,
+        "lookback_days": null,
+        "k": null,
+        "abs_threshold": null,
+        "position_sizing": "equal_weight",
+        "rebalance": "monthly_first_trading_day"
+      },
+      "algorithm": "Long when the 20-day z-score < -1 (oversold); flat otherwise. equal_weight.",
+      "backtest": {
+        "cagr": null,
+        "sharpe": null,
+        "mdd": null,
+        "horizons": [
+          {
+            "horizon": "5d",
+            "net_alpha": -0.002,
+            "p": 0.0804,
+            "verdict": "❌"
+          },
+          {
+            "horizon": "30d",
+            "net_alpha": -0.0072,
+            "p": 0.1853,
+            "verdict": "❌"
+          },
+          {
+            "horizon": "90d",
+            "net_alpha": -0.0081,
+            "p": 0.4662,
+            "verdict": "❌"
+          }
+        ]
+      },
+      "paper": {
+        "days_observed": 0,
+        "pv_last": null,
+        "sharpe": null,
+        "total_return_pct": null,
+        "low_confidence": true
+      }
+    },
+    {
       "slug": "commodity-vb-selection",
       "title": "Commodity VB Selection",
       "status": "backtest",
@@ -716,7 +785,17 @@
       }
     }
   ],
-  "recent_picks": [],
+  "recent_picks": [
+    {
+      "slug": "ben-david-2018-etf-volatility",
+      "verdict": "fail",
+      "matched_keywords": [
+        "volatility",
+        "etf",
+        "mean-reversion"
+      ]
+    }
+  ],
   "portfolio_metrics": {
     "window_start": "2026-04-27",
     "window_end": "2026-05-22",
