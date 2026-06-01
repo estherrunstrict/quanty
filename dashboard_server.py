@@ -356,7 +356,12 @@ def _save_equity_snapshot(strategies, exchange_rate=1380.0):
                 f.write(json.dumps(entry, default=str) + "\n")
             f.write(json.dumps(snapshot, default=str) + "\n")
         os.replace(tmp_path, EQUITY_HISTORY_FILE)
-    except Exception:
+    except Exception as e:
+        # A swallowed write here is exactly what lets the comparison chart drift
+        # from the cards (stale last row). The endpoint is now also pinned live in
+        # _pin_live_equity_endpoints, but surface the failure so ops can fix the
+        # underlying cause (disk full, perms) rather than running on stale history.
+        print(f"[dashboard] equity snapshot write failed: {e}", file=sys.stderr)
         try:
             tmp_path.unlink()
         except OSError:
@@ -396,13 +401,91 @@ def _get_equity_series():
 
     series: dict[str, list] = {}
     for key, by_date in by_key_date.items():
-        pts = [[d, v] for d, v in sorted(by_date.items())]
-        # Prepend a synthetic Jan 1 baseline at ₩0. Only when the bot has at
-        # least one real snapshot — otherwise we'd create a flat zero line
-        # that's worse than no line.
-        if pts and pts[0][0] != EQUITY_START_DATE:
-            pts.insert(0, [EQUITY_START_DATE, 0.0])
-        series[key] = pts
+        # Start each line at the bot's first real snapshot value, not a
+        # synthetic ₩0 baseline — pre-existing realized P/L (e.g. dual_momentum
+        # carrying +₩236k from before tracking began) would otherwise draw a
+        # misleading ramp from zero up to the true value.
+        series[key] = [[d, v] for d, v in sorted(by_date.items())]
+
+    return series
+
+
+def _pin_live_equity_endpoints(equity_series, strategies, exchange_rate):
+    """Overwrite each bot's latest comparison-chart point with its live Total P/L.
+
+    The chart line is built from equity_history.jsonl, a persisted accumulator.
+    The bot card's Total P/L cell is computed fresh from total_pl_ytd in the same
+    payload. They are supposed to agree — but if _save_equity_snapshot's write
+    lags or fails (it swallows IO errors), the last history row goes stale and the
+    chart endpoint drifts from the card, sometimes flipping sign (e.g. a stale
+    +186K KRW row while the card shows a -232 USD live total). Splicing the live
+    total in here guarantees the chart endpoint always equals the card.
+
+    Past dates are untouched — only today's endpoint is pinned to the live value.
+    """
+    today = _get_et_now().strftime("%Y-%m-%d")
+
+    def _krw(amt, cur):
+        return float(amt or 0) if cur == "KRW" else float(amt or 0) * exchange_rate
+
+    def _pin(key, total_native, cur):
+        series = equity_series.get(key)
+        if series is None:
+            return  # no history yet → chart shows "insufficient data", not a wrong value
+        val = round(_krw(total_native, cur), 2)
+        if series and series[-1][0] == today:
+            series[-1][1] = val
+        else:
+            series.append([today, val])
+
+    for s in strategies:
+        sid = s.get("id", "")
+        if sid == "hybrid_vb":
+            for leg_key, cur in (("kr", "KRW"), ("us", "USD")):
+                leg = s.get(leg_key) or {}
+                _pin(f"hybrid_vb_{leg_key}", leg.get("total_pl_ytd", 0), cur)
+            continue
+        _pin(sid, s.get("total_pl_ytd", 0), s.get("currency", "KRW"))
+
+
+def _get_equity_aggregate_series():
+    """Return portfolio-level realized / unrealized / total series in KRW.
+
+    Shape: {"realized": [[date, krw], ...], "unrealized": [...], "total": [...]}.
+    Each value is the sum of that component across all bots on that date.
+    Last-write-wins per (bot, date) before aggregation — matches _get_equity_series.
+    """
+    history = _load_equity_history()
+    by_date_bot: dict[str, dict[str, dict[str, float]]] = {}
+
+    for entry in history:
+        date = entry.get("date", "")
+        if date < EQUITY_START_DATE:
+            continue
+        for key, val in entry.items():
+            if key == "date":
+                continue
+            if not isinstance(val, dict):
+                continue
+            by_date_bot.setdefault(date, {})[key] = {
+                "realized": float(val.get("realized_krw") or 0),
+                "unrealized": float(val.get("unrealized_krw") or 0),
+                "total": float(val.get("total_pl_krw") or 0),
+            }
+
+    series: dict[str, list] = {"realized": [], "unrealized": [], "total": []}
+    for date in sorted(by_date_bot.keys()):
+        agg = {"realized": 0.0, "unrealized": 0.0, "total": 0.0}
+        for bot_vals in by_date_bot[date].values():
+            agg["realized"] += bot_vals["realized"]
+            agg["unrealized"] += bot_vals["unrealized"]
+            agg["total"] += bot_vals["total"]
+        for k in series:
+            series[k].append([date, round(agg[k], 2)])
+
+    # No synthetic Jan 1 baseline — start each aggregate line at the first
+    # snapshot date. Pre-existing realized P/L would otherwise drag the line
+    # down to zero on the left edge (see _get_equity_series for the same fix).
 
     return series
 
@@ -868,6 +951,12 @@ def build_dashboard_data():
     # Every bot (btc_vb included) goes through equity_history.jsonl, so the
     # chart and the per-card Total P/L always agree.
     equity_series = _get_equity_series()
+    equity_series_aggregate = _get_equity_aggregate_series()
+
+    # Pin each bot's chart endpoint to its live Total P/L so the comparison chart
+    # can never disagree with the bot card built in this same payload, even if the
+    # snapshot write above lagged or failed silently.
+    _pin_live_equity_endpoints(equity_series, strategies, fx_now)
 
     # ── Log Events ──
     feed_events = []
@@ -894,6 +983,7 @@ def build_dashboard_data():
         },
         "strategies": strategies,
         "equity_series": equity_series,
+        "equity_series_aggregate": equity_series_aggregate,
         "realized_pl": realized,
         "feed": feed_events,
     }
