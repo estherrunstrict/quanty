@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-05-30T06:30:15.792593+09:00",
+  "generated_at": "2026-06-01T16:00:50.577172+09:00",
   "stats": {
-    "total": 104,
-    "queued": 22,
+    "total": 105,
+    "queued": 23,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-05-30T06:30:15.792492+09:00",
+    "last_gc_at": "2026-06-01T16:00:50.577072+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -3021,6 +3021,32 @@
         "regime",
         "walk-forward",
         "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2605.30464",
+      "source": "arxiv",
+      "title": "Distributional Portfolio Optimization (DPO): A Unified Framework for Distributions over Weights, Returns, and Parameters",
+      "authors": [
+        "Miquel Noguer i Alonso"
+      ],
+      "abstract": "Classical portfolio optimization treats expected returns, covariances, and allocations as deterministic. Modern practice replaces at least one by a distribution: a posterior over parameters, a law of future returns, a stochastic allocation policy, or a distributional-robustness set. We call distributional portfolio optimization (DPO) the unified framework in which weights, returns, and parameters are all modeled as probability measures, organized around the joint coupling Gamma_theta(dw,dr) and its marginal triple (W,R,P). The contribution is synthetic and structural: we organize Bayesian, robust, chance-constrained, stochastic-allocation, and distributional reinforcement-learning portfolio methods through this coupling and prove boundary results connecting them, including a portfolio specialization of Wasserstein-CVaR duality, a static no-randomization theorem, a Bayesian credible-radius calibration of Wasserstein DRO, a Gaussian-isotropic second-order conservatism bound, a conditional two-sided rate W_1 = Theta(n^{-(1+alpha)/2}) governed by the local boundary Holder exponent alpha in [0,1], and a risk-shifted distributional Bellman contraction. A controlled experiment shows that across factor models at K in {10,25,50}, the credible-radius rule lands within 3-7 bp of the oracle out-of-sample tail risk and beats a 24-month validation-tuned radius while spending no validation data. On a K=25 DJIA backtest, equal-weight, no-view Black-Litterman, and Ledoit-Wolf shrinkage attain higher Sharpe than every distributional method; the operational claim is therefore confined to calibration-without-validation and turnover, not raw-return dominance.",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2605.30464v1",
+      "pdf_url": "https://arxiv.org/pdf/2605.30464v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-05-28",
+      "discovered": "2026-06-01",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
