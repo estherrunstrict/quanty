@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-06-02T06:30:09.750487+09:00",
+  "generated_at": "2026-06-02T16:01:11.184531+09:00",
   "stats": {
-    "total": 108,
-    "queued": 26,
+    "total": 111,
+    "queued": 29,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-06-02T06:30:09.750385+09:00",
+    "last_gc_at": "2026-06-02T16:01:11.184429+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -3135,6 +3135,97 @@
       "discovered": "2026-06-02",
       "matched_keywords": [
         "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.00143",
+      "source": "arxiv",
+      "title": "Regime-Adaptive Continual Learning for Portfolio Management",
+      "authors": [
+        "Chaofan Pan",
+        "Lingfei Ren",
+        "Linbo Xiong",
+        "Yonghao Li",
+        "Wei Wei",
+        "Xin Yang"
+      ],
+      "abstract": "Financial markets are inherently non-stationary, exhibiting frequent regime shifts and structural changes that render traditional Portfolio Management (PM) approaches ineffective. Existing remedies, such as rolling-window retraining and naive online fine-tuning, are hindered by high computational costs and insufficient knowledge utilization, respectively, resulting in low returns and limited adaptability. Continual learning (CL) offers a promising paradigm by enabling trading agents to accumulate and transfer knowledge across sequential tasks. In this paper, we propose \\textbf{Re}gime-aware \\textbf{C}ontinual \\textbf{A}daptive \\textbf{P}ortfolio management (\\textbf{ReCAP}), a novel framework that integrates CL into PM to address the challenges of dynamic financial environments. ReCAP employs an adaptive regime detection module to segment historical market data into variable-length regimes, enabling regime-specific learning of policy vectors and the construction of a policy library. During continual trading, a regime-gate module adaptively combines policy vectors from the library based on the current market state, facilitating rapid adaptation to newly detected regimes. Only the regime-gate and the current regime's policy vector are continually updated to preserve useful knowledge effectively. Extensive experiments on five real-world datasets demonstrate that ReCAP consistently outperforms popular baselines, achieving superior returns in long-term investment horizons and rapid adaptation to regime shifts.",
+      "categories": [
+        "q-fin.PM",
+        "cs.AI"
+      ],
+      "url": "https://arxiv.org/abs/2606.00143v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.00143v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-05-29",
+      "discovered": "2026-06-02",
+      "matched_keywords": [
+        "regime",
+        "regime detection"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2605.17628",
+      "source": "arxiv",
+      "title": "A Penalty-Free Pipeline for Direct Quantum-Annealer Portfolio Optimization",
+      "authors": [
+        "Luis Lozano"
+      ],
+      "abstract": "Cardinality-constrained portfolio selection is routinely cast as a quadratic unconstrained binary optimization (QUBO) and submitted to a quantum processing unit (QPU) for direct annealing. We show that this standard penalty encoding is the binding constraint for direct-QPU execution on current D-Wave Pegasus and Zephyr hardware. Expanding the exact cardinality penalty contributes a dense rank-one term that makes the logical interaction graph complete regardless of the covariance, producing chain-break fractions from 83% at small universes up to 92% at the full forty-nine-industry Fama--French universe, and zero feasible raw samples at every tested scale. Topology-aware sparsification reduces chain breaks to near zero, but any sparsifier that removes off-diagonal entries also dilutes the cardinality constraint; an ablation reveals that this sparsify-and-project pipeline is dominated by the classical projector, not the QPU. We propose removing the penalty entirely: sample an objective-only QUBO built from expected returns and the risk-scaled covariance on hardware, and enforce cardinality classically through a deterministic feasibility projector. Across 4,468 saved embedding records on live Pegasus and Zephyr hardware, spanning equities up to forty-nine assets and football-betting instances up to forty-eight, this penalty-free pipeline reduces mean chain-break fractions from 71%--92% down to at most 0.04%, and post-processed regret is at most 0.03% relative to greedy classical references at every tested scale. We do not claim quantum advantage; the penalty encoding, not the sparse hardware topology, is the limiting factor for direct-QPU portfolio optimization at currently accessible scales.",
+      "categories": [
+        "quant-ph",
+        "math.OC",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2605.17628v2",
+      "pdf_url": "https://arxiv.org/pdf/2605.17628v2",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-05-17",
+      "discovered": "2026-06-02",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.00060",
+      "source": "arxiv",
+      "title": "Machine Learning-Based Bitcoin Trading Under Transaction Costs: Evidence From Walk-Forward Forecasting",
+      "authors": [
+        "Andrei Bysik",
+        "Robert Ślepaczuk"
+      ],
+      "abstract": "This paper investigates whether machine learning forecasts of hourly BTC-USDT returns can be converted into economically meaningful trading performance after transaction costs. Using approximately 70,000 hourly observations from 2018-2026, XGBoost, LSTM, and iTransformer are evaluated in a 27-fold walk-forward protocol. All three models produce positive gross trading performance in selected configurations, but naive sign-based strategies fail once transaction costs of ten basis points are imposed. A cost-aware execution filter, which prevents trades only when the forecast magnitude exceeds a transaction-cost-based threshold, sharply reduces turnover and restores profitability in selected configurations. The strongest long-only XGBoost strategy produces annualised returns above 65% with a Sharpe ratio above one. Additional tests show that technical indicators improve performance in selected cases, EGARCH-derived features do not provide uniformly robust gains, and XGBoost is descriptively stronger than the neural alternatives, although bootstrap evidence does not support formal statistical dominance. Loss-function and model-selection effects are secondary and statistically fragile. The results show that the main obstacle in hourly cryptocurrency trading is not only weak predictability, but also the way forecasts are converted into trades.",
+      "categories": [
+        "q-fin.TR",
+        "cs.CE",
+        "cs.LG"
+      ],
+      "url": "https://arxiv.org/abs/2606.00060v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.00060v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-05-19",
+      "discovered": "2026-06-02",
+      "matched_keywords": [
+        "walk-forward",
+        "transaction cost"
       ],
       "status": "queued",
       "ingested_into": null,
