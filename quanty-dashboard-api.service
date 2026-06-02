@@ -1,0 +1,17 @@
+[Unit]
+Description=Quanty dashboard API (dashboard_server.py)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/koreainvestment-autotrade
+ExecStart=/home/ubuntu/myenv/bin/python3 dashboard_server.py
+Restart=always
+RestartSec=5
+StandardOutput=append:/home/ubuntu/koreainvestment-autotrade/dashboard_server.out
+StandardError=append:/home/ubuntu/koreainvestment-autotrade/dashboard_server.out
+
+[Install]
+WantedBy=multi-user.target
