@@ -27,6 +27,7 @@ import yaml
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from urllib.parse import urlparse
+from dashboard_equity import et_now, et_today, pin_equity_endpoints
 
 ROOT = Path(__file__).parent
 RESULTS_DIR = ROOT / "strategy_results"
@@ -94,16 +95,7 @@ TICKER_OWNER = {
 }
 
 KST = timezone(timedelta(hours=9))
-def _get_et_now():
-    """Get current Eastern Time (auto EDT/EST)."""
-    now_utc = datetime.now(timezone.utc)
-    yr = now_utc.year
-    mar1 = datetime(yr, 3, 1, tzinfo=timezone.utc)
-    dst_on = mar1 + timedelta(days=(6 - mar1.weekday()) % 7 + 7, hours=7)
-    nov1 = datetime(yr, 11, 1, tzinfo=timezone.utc)
-    dst_off = nov1 + timedelta(days=(6 - nov1.weekday()) % 7, hours=7)
-    offset = -4 if dst_on <= now_utc < dst_off else -5
-    return now_utc.astimezone(timezone(timedelta(hours=offset)))
+_get_et_now = et_now  # shared impl (dashboard_equity)
 
 # ── Data Loaders ──────────────────────────────────────────────
 
@@ -298,7 +290,7 @@ def _save_equity_snapshot(strategies, exchange_rate=1380.0):
     so we don't snapshot it here — the dashboard server merges it back in
     via the existing equity_hist path.
     """
-    today = _get_et_now().strftime("%Y-%m-%d")
+    today = et_today()
 
     history = _load_equity_history()
 
@@ -408,44 +400,6 @@ def _get_equity_series():
         series[key] = [[d, v] for d, v in sorted(by_date.items())]
 
     return series
-
-
-def _pin_live_equity_endpoints(equity_series, strategies, exchange_rate):
-    """Overwrite each bot's latest comparison-chart point with its live Total P/L.
-
-    The chart line is built from equity_history.jsonl, a persisted accumulator.
-    The bot card's Total P/L cell is computed fresh from total_pl_ytd in the same
-    payload. They are supposed to agree — but if _save_equity_snapshot's write
-    lags or fails (it swallows IO errors), the last history row goes stale and the
-    chart endpoint drifts from the card, sometimes flipping sign (e.g. a stale
-    +186K KRW row while the card shows a -232 USD live total). Splicing the live
-    total in here guarantees the chart endpoint always equals the card.
-
-    Past dates are untouched — only today's endpoint is pinned to the live value.
-    """
-    today = _get_et_now().strftime("%Y-%m-%d")
-
-    def _krw(amt, cur):
-        return float(amt or 0) if cur == "KRW" else float(amt or 0) * exchange_rate
-
-    def _pin(key, total_native, cur):
-        series = equity_series.get(key)
-        if series is None:
-            return  # no history yet → chart shows "insufficient data", not a wrong value
-        val = round(_krw(total_native, cur), 2)
-        if series and series[-1][0] == today:
-            series[-1][1] = val
-        else:
-            series.append([today, val])
-
-    for s in strategies:
-        sid = s.get("id", "")
-        if sid == "hybrid_vb":
-            for leg_key, cur in (("kr", "KRW"), ("us", "USD")):
-                leg = s.get(leg_key) or {}
-                _pin(f"hybrid_vb_{leg_key}", leg.get("total_pl_ytd", 0), cur)
-            continue
-        _pin(sid, s.get("total_pl_ytd", 0), s.get("currency", "KRW"))
 
 
 def _get_equity_aggregate_series():
@@ -956,7 +910,7 @@ def build_dashboard_data():
     # Pin each bot's chart endpoint to its live Total P/L so the comparison chart
     # can never disagree with the bot card built in this same payload, even if the
     # snapshot write above lagged or failed silently.
-    _pin_live_equity_endpoints(equity_series, strategies, fx_now)
+    pin_equity_endpoints(equity_series, strategies, fx_now, et_today())
 
     # ── Log Events ──
     feed_events = []
