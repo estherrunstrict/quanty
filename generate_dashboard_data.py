@@ -17,6 +17,8 @@ DEPOSITS_FILE = os.path.join(DASHBOARD_DIR, "deposits.json")
 
 sys.path.insert(0, DASHBOARD_DIR)
 sys.path.insert(0, os.path.join(TRADING_DIR, "open-trading-api", "examples_llm"))
+sys.path.insert(0, TRADING_DIR)  # for dashboard_equity (shared with dashboard_server)
+from dashboard_equity import et_today, pin_equity_endpoints
 
 
 def get_portfolio(totals=None):
@@ -216,6 +218,7 @@ def mark_to_market_strategies(api_data, totals):
     return {"marked": marked, "skipped": sorted(skipped)}
 
 
+
 def main():
     now = datetime.now(KST)
     print("[{}] Generating dashboard data...".format(now.strftime("%H:%M:%S KST")))
@@ -292,6 +295,15 @@ def main():
         portfolio["total_profit_pct"]  = round(total_pnl / original * 100, 2) if original > 0 else 0
         print("  Matched dashboard P/L: realized W{:+,.0f} + unrealized W{:+,.0f} = W{:+,.0f}".format(
             real_combined, unreal_combined, total_pnl))
+
+    # Re-pin the comparison-chart endpoints to the marked-to-market cards so the
+    # published chart can't disagree with the published bot cards.
+    pin_equity_endpoints(
+        api_data.get("equity_series") or {},
+        api_data.get("strategies") or [],
+        (portfolio or {}).get("exchange_rate", 1380),
+        et_today(),
+    )
 
     # Merge
     output = {
