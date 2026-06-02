@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-06-02T16:01:11.184531+09:00",
+  "generated_at": "2026-06-03T06:30:13.743210+09:00",
   "stats": {
-    "total": 111,
-    "queued": 29,
+    "total": 112,
+    "queued": 30,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-06-02T16:01:11.184429+09:00",
+    "last_gc_at": "2026-06-03T06:30:13.743102+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -3226,6 +3226,37 @@
       "matched_keywords": [
         "walk-forward",
         "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.00624",
+      "source": "arxiv",
+      "title": "Macro-aware time series forecasting via hierarchical mixed-frequency attention models",
+      "authors": [
+        "Daniel Cunha Oliveira",
+        "Kieran Wood",
+        "Stefan Zohren",
+        "Mihai Cucuringu",
+        "André Fujita"
+      ],
+      "abstract": "Deep learning models show promise in financial forecasting, yet their generalization is often undermined by small datasets, noisy signals, and non-stationarity. While meta-learning and related techniques mitigate some of these issues, they typically do not account for a core limitation in macro-financial prediction: the scarcity of distinct macroeconomic regimes that drive asset returns. We introduce HANET (Hierarchical Attention Network), a hybrid LSTM-based architecture that integrates macroeconomic domain knowledge through attention over long-run macro contexts while preserving high-frequency market dynamics. HANET organizes information in a hierarchical mixed-frequency structure, with daily asset-return signals nested within monthly macroeconomic windows, and introduces a Hierarchical Cross-Attention mechanism that reconciles low-frequency macro signals with high-frequency returns without discarding granular daily information. By framing regime selection as attention over macroeconomic contexts, the model adapts to scarce and shifting regimes. Empirically, across 55 liquid futures spanning multiple asset classes, HANET consistently outperforms neural forecasters that ignore macroeconomic information, particularly during turbulent periods, improving risk-adjusted returns and mitigating losses. Ablation studies show that these gains rely on structured macro conditioning rather than naive feature augmentation: an LSTM with the same macro representation performs poorly, and shuffling macro contexts substantially degrades performance. Finally, HANET provides interpretability through attention weights, highlighting which historical regimes are most influential for each forecast and linking macro conditions to portfolio outcomes. These results establish HANET as a systematic approach to integrating macroeconomic information into attention-based deep learning for financial forecasting.",
+      "categories": [
+        "q-fin.ST",
+        "q-fin.CP"
+      ],
+      "url": "https://arxiv.org/abs/2606.00624v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.00624v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-05-30",
+      "discovered": "2026-06-03",
+      "matched_keywords": [
+        "regime"
       ],
       "status": "queued",
       "ingested_into": null,
