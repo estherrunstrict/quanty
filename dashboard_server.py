@@ -27,7 +27,7 @@ import yaml
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from urllib.parse import urlparse
-from dashboard_equity import et_now, et_today, pin_equity_endpoints
+from dashboard_equity import et_today, pin_equity_endpoints
 
 ROOT = Path(__file__).parent
 RESULTS_DIR = ROOT / "strategy_results"
@@ -95,7 +95,6 @@ TICKER_OWNER = {
 }
 
 KST = timezone(timedelta(hours=9))
-_get_et_now = et_now  # shared impl (dashboard_equity)
 
 # ── Data Loaders ──────────────────────────────────────────────
 

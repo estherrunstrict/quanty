@@ -29,19 +29,30 @@ if [[ "$WHAT" == "all" || "$WHAT" == "public" ]]; then
 fi
 
 echo "Restarting the API..."
+# Capture the running PID first so we can prove a NEW process actually came up.
+# A warn-and-continue restart that silently no-ops would otherwise be masked by
+# the old process still serving 200 on the port — reporting a false "Deploy OK".
+BEFORE=$(ssh -i "$KEY" "$HOST" "systemctl show -p MainPID --value quanty-dashboard-api" 2>/dev/null || echo "")
 if ssh -i "$KEY" "$HOST" "sudo -n systemctl restart quanty-dashboard-api" 2>/dev/null; then
-  echo "  restarted via systemd"
+  echo "  restart issued via systemd (old pid ${BEFORE:-?})"
 else
-  echo "  !! Could not restart unattended. Run this yourself:"
-  echo "     ssh -i $KEY $HOST 'sudo systemctl restart quanty-dashboard-api'"
+  echo "  !! Could not restart unattended. Run this, then re-run the deploy:" >&2
+  echo "     ssh -i $KEY $HOST 'sudo systemctl restart quanty-dashboard-api'" >&2
+  exit 1
 fi
 
 echo "Health-checking the API..."
+# Require BOTH HTTP 200 AND a changed MainPID — proves the new code loaded, not
+# that the old process is still answering.
 for i in 1 2 3 4 5; do
   code=$(ssh -i "$KEY" "$HOST" "curl -s -o /dev/null -w '%{http_code}' http://localhost:8077/api/data" || echo 000)
-  echo "  attempt $i -> HTTP $code"
-  [[ "$code" == "200" ]] && { echo "Deploy OK."; exit 0; }
+  after=$(ssh -i "$KEY" "$HOST" "systemctl show -p MainPID --value quanty-dashboard-api" 2>/dev/null || echo "")
+  echo "  attempt $i -> HTTP $code (pid ${after:-?})"
+  if [[ "$code" == "200" && -n "$after" && "$after" != "0" && "$after" != "$BEFORE" ]]; then
+    echo "Deploy OK (fresh pid $after serving 200)."
+    exit 0
+  fi
   sleep 3
 done
-echo "Deploy FAILED health check." >&2
+echo "Deploy FAILED: API not confirmed on a fresh process (pid before=${BEFORE:-?})." >&2
 exit 1
