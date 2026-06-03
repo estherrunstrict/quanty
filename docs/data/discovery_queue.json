@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-06-03T16:00:24.608862+09:00",
+  "generated_at": "2026-06-04T06:30:19.137816+09:00",
   "stats": {
-    "total": 115,
-    "queued": 33,
+    "total": 117,
+    "queued": 35,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-06-03T16:00:24.608755+09:00",
+    "last_gc_at": "2026-06-04T06:30:19.137712+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -3346,6 +3346,65 @@
       "discovered": "2026-06-03",
       "matched_keywords": [
         "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.02945",
+      "source": "arxiv",
+      "title": "Infinite Horizon Optimal Consumption: Intertemporal Hedging under Epstein-Zin Preferences",
+      "authors": [
+        "Erhan Bayraktar",
+        "Emmet Lawless"
+      ],
+      "abstract": "We study an infinite-horizon optimal consumption-investment problem for an investor with Epstein-Zin stochastic differential utility with stochastic investment opportunities in an incomplete market. Risk aversion and intertemporal substitution are separated, and we work in the regime $θ\\in(0,1)$, where there exists a unique generalised utility process for arbitrary non-negative progressively measurable consumption streams. Our main contribution is a variational characterisation of the value function. We show that the value function is the unique minimiser of a functional whose Euler-Lagrange equation coincides with the Hamilton-Jacobi-Bellman equation. Although the functional may be non-convex, the direct method yields existence, and we prove every minimiser is strictly positive, bounded, and classical. A verification theorem identifies any minimiser with the value function and gives feedback representations for optimal consumption and investment policies. The proof combines a change of measure to the myopic probability with uniqueness results for Epstein-Zin BSDEs and a perturbation argument for optimality. Examples with stochastic volatility, Gaussian excess returns, and fat-tailed excess returns illustrate the scope of the framework and its implications for intertemporal hedging.",
+      "categories": [
+        "q-fin.MF",
+        "math.OC",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2606.02945v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.02945v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-01",
+      "discovered": "2026-06-04",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.03548",
+      "source": "arxiv",
+      "title": "Cost of Manipulation in AMM-Based Oracles",
+      "authors": [
+        "Sebastian Müller",
+        "Nordine Moumeni",
+        "Adel Messaoudi"
+      ],
+      "abstract": "We study the robustness of AMM-based on-chain price oracles to strategic manipulation. An attacker trades against constant product automated market makers (CPMMs) to distort an on-chain oracle, arbitrageurs restore cross-pool and cross-venue consistency, and an oracle designer chooses how to aggregate pool quotes. Taking an efficient-market-hypothesis (EMH) view of the off-chain \"true\" price, we define the \\emph{cost of manipulation} as the minimal mark-to-market loss that an attacker must incur to move the oracle by a given multiplicative factor. For independent CPMMs, we derive closed-form single-pool manipulation formulas and solve the attacker-designer game for weighted means and weighted medians, showing that liquidity weights maximize the minimum cost of manipulation within these classes for weighted medians (for any distortion level) and, for weighted means, locally as the distortion tends to zero. For larger distortions, weighted means become more fragile: optimal weights can depend on the target distortion and no single choice is uniformly optimal across distortion levels. In a frictionless CPMM model with cross-pool arbitrage, the manipulation cost depends only on the total quote depth and coincides across symmetric aggregators. We extend this framework to multi-asset star architectures, confirming that liquidity weights remain optimal in the same sense. Finally, we bridge theory and practice by incorporating dwell times and rate limits, providing a quantitative yardstick to size oracles against the explicit economic costs of attack.",
+      "categories": [
+        "cs.CE",
+        "econ.TH",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2606.03548v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.03548v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-02",
+      "discovered": "2026-06-04",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
