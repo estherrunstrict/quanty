@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-06-03T06:30:13.743210+09:00",
+  "generated_at": "2026-06-03T16:00:24.608862+09:00",
   "stats": {
-    "total": 112,
-    "queued": 30,
+    "total": 115,
+    "queued": 33,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-06-03T06:30:13.743102+09:00",
+    "last_gc_at": "2026-06-03T16:00:24.608755+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -3254,6 +3254,95 @@
       "doi": null,
       "year": 2026,
       "published": "2026-05-30",
+      "discovered": "2026-06-03",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.03457",
+      "source": "arxiv",
+      "title": "Hybrid News Sentiment Engine: Real-Time Market Analysis via Adaptive Ensemble Learning on News-Price Pairs",
+      "authors": [
+        "Andreas Aigner"
+      ],
+      "abstract": "We present a hybrid news sentiment engine that continuously learns market sentiment from paired news headlines and concurrent asset-price snapshots without requiring any neural network training or GPU compute. The system uses a three-way ensemble combining (1) a financial-domain lexicon (FinBERT-style keyword scoring), (2) an adaptive statistical TF-IDF cluster learner that organizes headlines into semantic neighborhoods and tracks their average realized price reactions, and (3) an auto-calibrating weighting mechanism that adjusts ensemble contributions based on each signal's historical correlation with actual price movements. The engine runs on a 3-hour polling cycle from the Tradeflags NewsFeed API, which provides 22 price-snapshot fields per news item spanning equity indices (ES, NQ, SPY, DJIA, NDX, IWM), commodities (CL), and cryptocurrencies (BTC, ETH). All processing occurs at sub-second latency on a CPU-only server at effectively zero marginal cost per analytic cycle. We compare our approach against established methods -- FinBERT, GPT-based scoring, VADER, and commercial sentiment APIs -- across dimensions of cost, latency, accuracy, and adaptability. Our statistical cluster learner, which adapts to changing market regimes without retraining, represents a novel contribution not found in existing sentiment systems.",
+      "categories": [
+        "q-fin.ST",
+        "q-fin.CP"
+      ],
+      "url": "https://arxiv.org/abs/2606.03457v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.03457v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-02",
+      "discovered": "2026-06-03",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.03184",
+      "source": "arxiv",
+      "title": "FinStressTS: A Parametric Synthetic Benchmark for Time-Series Forecasting in Finance",
+      "authors": [
+        "Jiaze Sun",
+        "Kelvin J. L. Koa",
+        "Ruiyang Ni",
+        "Yize Liu",
+        "Haonan Chen",
+        "Ke-Wei Huang"
+      ],
+      "abstract": "Financial forecasting is difficult due to low signal-to-noise ratios, latent factors, heavy tails, regime shifts, and jumps. Real-world benchmarks offer limited failure attribution: researchers can observe underperformance, but often cannot isolate why because mechanisms are unobservable and entangled. Real financial data reveal only one realized path, making it difficult to assess tail-risk calibration or data efficiency. We introduce FinStressTS, a mechanism-aware synthetic benchmark that links model behavior to controlled structural causes. FinStressTS comprises 30 diagnostic environments around six mechanism families: volatility clustering, multi-scale persistence, heavy-tailed shocks, regime switching, self-exciting jumps, and zero-inflated processes. We evaluate two tasks: point forecasting, using NMAE across five settings, and probabilistic forecasting, using CRPS under known data-generating mechanisms. We benchmark 15 models, from classical methods (HAR, VAR) to Transformer forecasters (PatchTST, iTransformer) and deep probabilistic architectures (DeepAR, TSFlow), and use learning curves to measure sample efficiency. Our evaluation reveals three insights. First, performance is mechanism-dependent: autoregressive and linear models are highly competitive, and often outperform Transformer-based models, in several volatility-, tail-, and jump-driven environments. Second, distributional alignment matters: parametric probabilistic models such as DeepAR calibrate well in stationary settings, while flexible models can help when distributions become multimodal or sparse. Third, neural models often require more data to match simple baselines, with larger gains mainly when learning latent regimes or complex distributions. FinStressTS provides an open framework for diagnosing failure modes and advancing risk-aware forecasting.",
+      "categories": [
+        "q-fin.CP",
+        "cs.LG",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2606.03184v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.03184v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-02",
+      "discovered": "2026-06-03",
+      "matched_keywords": [
+        "factor",
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.02657",
+      "source": "arxiv",
+      "title": "Regime-Arrival Uncertainty in Generalization Bounds under Distribution Shift",
+      "authors": [
+        "Prince Poudel"
+      ],
+      "abstract": "The standard generalization bounds assume that the training and deployment distributions are the same, or are static, and don't consider regime switching environments where the ratio of calm vs crisis states is different. This paper proposes a framework that generalizes regime-aware models by quantifying the extra risk due to regime composition mismatch, when distribution shifts are Markov-switching. We obtain an exact decomposition, separating regime mismatch from regime sensitivity; we extend the bound to beta-mixing data using the effective sample size corrected for the spectral gap; and we show a minimax lower bound for synthetic data and on 25 years of global equity indices. The proposed penalty is an ex post realized generalization gap, whereas the training-only estimator does not show significant correlation: the feature geometry of crises can be detected, but not the temporal arrival. Thus, the framework is not a forecast machine. Forecasting the composition of the future regime is an open question in the rare cases of regime change.",
+      "categories": [
+        "cs.LG",
+        "q-fin.CP",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2606.02657v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.02657v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-01",
       "discovered": "2026-06-03",
       "matched_keywords": [
         "regime"
