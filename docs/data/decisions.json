@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-03T06:30:05.243895+09:00",
+  "generated_at": "2026-06-03T13:24:43.084647+09:00",
   "portfolio_constraints": {
     "max_single_bot_pct": 40,
     "max_leverage": 1.5,
@@ -9,28 +9,58 @@
   },
   "alerts": [
     {
+      "level": "error",
+      "bot": "btc-vb",
+      "title": "Stale data — BTC Volatility Breakthrough",
+      "body": "Last update 11.6d ago vs 2d threshold for a daily cadence. Check the server cron log."
+    },
+    {
+      "level": "warn",
+      "bot": "claude-trading-bot",
+      "title": "Stale data — Claude Trading Bot (AI watchlist)",
+      "body": "Last update 11.6d ago vs 4d threshold for a weekday cadence. Check the server cron log."
+    },
+    {
+      "level": "warn",
+      "bot": "hybrid-vb",
+      "title": "Stale data — Hybrid VB + Vol-Managed ETF",
+      "body": "Last update 11.6d ago vs 4d threshold for a default cadence. Check the server cron log."
+    },
+    {
       "level": "warn",
       "bot": "hybrid-vb",
       "title": "Large peak-to-trough — Hybrid VB + Vol-Managed ETF",
-      "body": "Cumulative P&L drew down ₩4,168,330 from peak in the 31-day window. Worst single day: ₩-2,387,012. Using absolute ₩3M threshold (no current capital base in dashboard_data)."
+      "body": "Cumulative P&L drew down ₩4,168,330 from peak in the 22-day window. Worst single day: ₩-2,387,012. Using absolute ₩3M threshold (no current capital base in dashboard_data)."
+    },
+    {
+      "level": "warn",
+      "bot": "jd-strategy",
+      "title": "Stale data — JD Strategy (Wealth Research Institute)",
+      "body": "Last update 11.6d ago vs 4d threshold for a weekday cadence. Check the server cron log."
+    },
+    {
+      "level": "warn",
+      "bot": "usa-quant40",
+      "title": "Stale data — USA Quant40 (\"Quant Replacing the 40\")",
+      "body": "Last update 11.6d ago vs 4d threshold for a weekday cadence. Check the server cron log."
     },
     {
       "level": "info",
       "bot": "btc-vb",
       "title": "Early Sharpe-decay signal (low confidence) — BTC Volatility Breakthrough",
-      "body": "Realized Sharpe -3.07 vs backtest 2.83 (decay = -1.09×). Window is only 31d — below the 60d minimum for the [[purpose]] alpha-decay gate, so this is flagged low_confidence. Watch but do not act on point estimate alone."
+      "body": "Realized Sharpe -3.34 vs backtest 2.83 (decay = -1.18×). Window is only 22d — below the 60d minimum for the [[purpose]] alpha-decay gate, so this is flagged low_confidence. Watch but do not act on point estimate alone."
     },
     {
       "level": "info",
       "bot": "hybrid-vb",
       "title": "Early Sharpe-decay signal (low confidence) — Hybrid VB + Vol-Managed ETF",
-      "body": "Realized Sharpe 0.41 vs backtest 1.27 (decay = 0.33×). Window is only 31d — below the 60d minimum for the [[purpose]] alpha-decay gate, so this is flagged low_confidence. Watch but do not act on point estimate alone."
+      "body": "Realized Sharpe -0.75 vs backtest 1.27 (decay = -0.59×). Window is only 22d — below the 60d minimum for the [[purpose]] alpha-decay gate, so this is flagged low_confidence. Watch but do not act on point estimate alone."
     },
     {
       "level": "info",
       "bot": "modified-dual-momentum",
       "title": "Early Sharpe-decay signal (low confidence) — Modified Dual Momentum (강환국)",
-      "body": "Realized Sharpe -2.32 vs backtest 0.83 (decay = -2.79×). Window is only 31d — below the 60d minimum for the [[purpose]] alpha-decay gate, so this is flagged low_confidence. Watch but do not act on point estimate alone."
+      "body": "Realized Sharpe -2.76 vs backtest 0.83 (decay = -3.33×). Window is only 22d — below the 60d minimum for the [[purpose]] alpha-decay gate, so this is flagged low_confidence. Watch but do not act on point estimate alone."
     },
     {
       "level": "warn",
@@ -47,7 +77,7 @@
       "target": "modified-dual-momentum",
       "proposed_by": "claude",
       "effective_date": "2026-06-15",
-      "wiki_path": "quanty-wiki/decisions/2026-05-23-modified-dual-momentum-etf-nav-monitor.md"
+      "wiki_path": "wiki/decisions/2026-05-23-modified-dual-momentum-etf-nav-monitor.md"
     },
     {
       "id": "2026-05-25-author-missing-backtests",
@@ -56,7 +86,7 @@
       "target": "usa-quant40",
       "proposed_by": "claude",
       "effective_date": "2026-06-30",
-      "wiki_path": "quanty-wiki/decisions/2026-05-25-author-missing-backtests.md"
+      "wiki_path": "wiki/decisions/2026-05-25-author-missing-backtests.md"
     },
     {
       "id": "2026-05-25-paper-trade-candidates-deploy-or-demote",
@@ -65,7 +95,7 @@
       "target": "risk-parity",
       "proposed_by": "claude",
       "effective_date": "2026-06-08",
-      "wiki_path": "quanty-wiki/decisions/2026-05-25-paper-trade-candidates-deploy-or-demote.md"
+      "wiki_path": "wiki/decisions/2026-05-25-paper-trade-candidates-deploy-or-demote.md"
     }
   ],
   "bot_verdicts": {
@@ -75,25 +105,25 @@
       "verdict": "keep",
       "schedule": "09:00 KST daily (incl. weekends)",
       "paper_source": "[[williams-vb]]",
-      "capital_allocated_pct": 6.0,
+      "capital_allocated_pct": 6.8,
       "capital_pct_source": "computed",
       "dashboard_id": "btc_vb",
-      "wiki_path": "quanty-wiki/bots/btc-vb.md",
-      "last_update": "2026-06-03",
-      "days_since_update": 0.3,
-      "period_pl_krw": -161281.67,
+      "wiki_path": "wiki/bots/btc-vb.md",
+      "last_update": "2026-05-23",
+      "days_since_update": 11.6,
+      "period_pl_krw": -146756.3,
       "mdd_pl_krw": 203844.21000000002,
       "best_day_krw": 29757.97,
       "worst_day_krw": -123726.5,
-      "days_observed": 31,
+      "days_observed": 22,
       "backtest_cagr": 210.2,
       "backtest_mdd": 16.6,
       "backtest_sharpe": 2.83,
       "backtest_window": "7+ years grid-searched on BTC/KRW (2017–2024)",
-      "realized_sharpe_annualized": -3.07,
-      "realized_sharpe_ci_low_95": -3.93,
+      "realized_sharpe_annualized": -3.34,
+      "realized_sharpe_ci_low_95": -4.44,
       "realized_mdd_pct": 2.07,
-      "sharpe_decay": -1.09,
+      "sharpe_decay": -1.18,
       "mdd_excess": 0.12
     },
     "claude-trading-bot": {
@@ -105,14 +135,14 @@
       "capital_allocated_pct": 0.0,
       "capital_pct_source": "computed",
       "dashboard_id": "claude_bot",
-      "wiki_path": "quanty-wiki/bots/claude-trading-bot.md",
-      "last_update": "2026-06-02T22:32:06.100216",
-      "days_since_update": 0.3,
+      "wiki_path": "wiki/bots/claude-trading-bot.md",
+      "last_update": "2026-05-22T22:32:06.052593",
+      "days_since_update": 11.6,
       "period_pl_krw": 0.0,
       "mdd_pl_krw": 0.0,
       "best_day_krw": 0.0,
       "worst_day_krw": 0.0,
-      "days_observed": 31,
+      "days_observed": 22,
       "backtest_cagr": null,
       "backtest_mdd": null,
       "backtest_sharpe": null,
@@ -132,22 +162,22 @@
       "capital_allocated_pct": null,
       "capital_pct_source": "manual",
       "dashboard_id": "hybrid_vb",
-      "wiki_path": "quanty-wiki/bots/hybrid-vb.md",
-      "last_update": "2026-06-02T09:31:34.129597-04:00",
-      "days_since_update": 0.3,
-      "period_pl_krw": 499578.48,
+      "wiki_path": "wiki/bots/hybrid-vb.md",
+      "last_update": "2026-05-22T09:31:33.662888-04:00",
+      "days_since_update": 11.6,
+      "period_pl_krw": -749400.31,
       "mdd_pl_krw": 4168330.42,
       "best_day_krw": 1185421.65,
       "worst_day_krw": -2387012.07,
-      "days_observed": 31,
+      "days_observed": 22,
       "backtest_cagr": 22.7,
       "backtest_mdd": 22.5,
       "backtest_sharpe": 1.27,
       "backtest_window": "8.2y (2018-2026) via backtest_hybrid_vb.py — average of US-side (CAGR 12.0%, MDD 25.0%, Sharpe 0.82) and KR-side (CAGR 33.4%, MDD 19.9%, Sharpe 1.71). The KR leg dominates aggregate returns; capital-weighted Sharpe is closer to KR's 1.71 since most capital sits in KR (₩27.6M vs $7.7K).",
-      "realized_sharpe_annualized": 0.41,
-      "realized_sharpe_ci_low_95": 0.04,
+      "realized_sharpe_annualized": -0.75,
+      "realized_sharpe_ci_low_95": -1.23,
       "realized_mdd_pct": null,
-      "sharpe_decay": 0.33,
+      "sharpe_decay": -0.59,
       "mdd_excess": null
     },
     "jd-strategy": {
@@ -159,21 +189,21 @@
       "capital_allocated_pct": 2.1,
       "capital_pct_source": "computed",
       "dashboard_id": "jd_strategy",
-      "wiki_path": "quanty-wiki/bots/jd-strategy.md",
-      "last_update": "2026-06-02T22:30:42.836176",
-      "days_since_update": 0.3,
-      "period_pl_krw": 404591.88,
-      "mdd_pl_krw": 493249.70999999996,
-      "best_day_krw": 508165.13,
-      "worst_day_krw": -295693.47,
-      "days_observed": 31,
+      "wiki_path": "wiki/bots/jd-strategy.md",
+      "last_update": "2026-05-22T22:30:41.752917",
+      "days_since_update": 11.6,
+      "period_pl_krw": 269142.57,
+      "mdd_pl_krw": 180366.0,
+      "best_day_krw": 133170.0,
+      "worst_day_krw": -129858.0,
+      "days_observed": 22,
       "backtest_cagr": null,
       "backtest_mdd": null,
       "backtest_sharpe": null,
       "backtest_window": "qualitative source (JD Wealth Research); no quantified OOS backtest in the wiki",
-      "realized_sharpe_annualized": 1.68,
-      "realized_sharpe_ci_low_95": 1.13,
-      "realized_mdd_pct": 14.38,
+      "realized_sharpe_annualized": 3.16,
+      "realized_sharpe_ci_low_95": 2.12,
+      "realized_mdd_pct": 6.07,
       "sharpe_decay": null,
       "mdd_excess": null
     },
@@ -183,24 +213,24 @@
       "verdict": "keep",
       "schedule": "09:00 KST first trading day of each month",
       "paper_source": "[[antonacci-2014-dual-momentum]]",
-      "capital_allocated_pct": 7.0,
+      "capital_allocated_pct": 8.5,
       "capital_pct_source": "computed",
       "dashboard_id": "korea_etf",
-      "wiki_path": "quanty-wiki/bots/korea-etf-momentum.md",
-      "last_update": "2026-06-02T09:00:16.327197+09:00",
-      "days_since_update": 0.9,
-      "period_pl_krw": -1382985.0,
+      "wiki_path": "wiki/bots/korea-etf-momentum.md",
+      "last_update": "2026-05-22T09:00:16.587692+09:00",
+      "days_since_update": 12.2,
+      "period_pl_krw": -606240.0,
       "mdd_pl_krw": 2532315.0,
       "best_day_krw": 1023030.0,
       "worst_day_krw": -1540860.0,
-      "days_observed": 31,
+      "days_observed": 22,
       "backtest_cagr": null,
       "backtest_mdd": null,
       "backtest_sharpe": null,
       "backtest_window": "not formally documented",
-      "realized_sharpe_annualized": -1.47,
-      "realized_sharpe_ci_low_95": -1.99,
-      "realized_mdd_pct": 22.23,
+      "realized_sharpe_annualized": -0.81,
+      "realized_sharpe_ci_low_95": -1.3,
+      "realized_mdd_pct": 20.81,
       "sharpe_decay": null,
       "mdd_excess": null
     },
@@ -213,7 +243,7 @@
       "capital_allocated_pct": 0.0,
       "capital_pct_source": "manual",
       "dashboard_id": null,
-      "wiki_path": "quanty-wiki/bots/korea-stock.md",
+      "wiki_path": "wiki/bots/korea-stock.md",
       "last_update": "",
       "days_since_update": null,
       "period_pl_krw": null,
@@ -240,22 +270,22 @@
       "capital_allocated_pct": 0.0,
       "capital_pct_source": "computed",
       "dashboard_id": "dual_momentum",
-      "wiki_path": "quanty-wiki/bots/modified-dual-momentum.md",
-      "last_update": "2026-06-02T22:31:12.496863",
-      "days_since_update": 0.3,
+      "wiki_path": "wiki/bots/modified-dual-momentum.md",
+      "last_update": "2026-05-22T22:31:11.737539",
+      "days_since_update": 11.6,
       "period_pl_krw": -1576249.8,
       "mdd_pl_krw": 1936802.4,
       "best_day_krw": 236407.8,
       "worst_day_krw": -1936802.4,
-      "days_observed": 31,
+      "days_observed": 22,
       "backtest_cagr": 11.6,
       "backtest_mdd": 16.7,
       "backtest_sharpe": 0.83,
       "backtest_window": "7.1y (2019-2026) via backtest_modified_dual_momentum.py (Sortino 1.09, Calmar 0.69). Note: 강환국 original-source 53-year numbers were CAGR 18.3/MDD 16.3/Sharpe-not-reported — the recent OOS window underperforms the headline claim, notably losing to plain SPY buy-and-hold (CAGR 14.9, Sharpe 0.91) and to 60/40 (Sharpe 0.86) over the same period.",
-      "realized_sharpe_annualized": -2.32,
-      "realized_sharpe_ci_low_95": -3.0,
+      "realized_sharpe_annualized": -2.76,
+      "realized_sharpe_ci_low_95": -3.7,
       "realized_mdd_pct": null,
-      "sharpe_decay": -2.79,
+      "sharpe_decay": -3.33,
       "mdd_excess": null
     },
     "upbit-jd": {
@@ -267,7 +297,7 @@
       "capital_allocated_pct": 0.0,
       "capital_pct_source": "manual",
       "dashboard_id": null,
-      "wiki_path": "quanty-wiki/bots/upbit-jd.md",
+      "wiki_path": "wiki/bots/upbit-jd.md",
       "last_update": "",
       "days_since_update": null,
       "period_pl_krw": null,
@@ -294,7 +324,7 @@
       "capital_allocated_pct": 0.0,
       "capital_pct_source": "manual",
       "dashboard_id": null,
-      "wiki_path": "quanty-wiki/bots/uranium-vb.md",
+      "wiki_path": "wiki/bots/uranium-vb.md",
       "last_update": "",
       "days_since_update": null,
       "period_pl_krw": null,
@@ -318,24 +348,24 @@
       "verdict": "watch",
       "schedule": "09:30 ET weekdays",
       "paper_source": "home-grown",
-      "capital_allocated_pct": 23.2,
+      "capital_allocated_pct": 26.5,
       "capital_pct_source": "computed",
       "dashboard_id": "quant40",
-      "wiki_path": "quanty-wiki/bots/usa-quant40.md",
-      "last_update": "2026-06-02T22:30:09.658609",
-      "days_since_update": 0.3,
-      "period_pl_krw": 2068247.75,
+      "wiki_path": "wiki/bots/usa-quant40.md",
+      "last_update": "2026-05-22T22:30:08.332830",
+      "days_since_update": 11.6,
+      "period_pl_krw": 1575159.6,
       "mdd_pl_krw": 412896.0,
       "best_day_krw": 359876.3999999999,
       "worst_day_krw": -224746.7999999998,
-      "days_observed": 31,
+      "days_observed": 22,
       "backtest_cagr": null,
       "backtest_mdd": null,
       "backtest_sharpe": null,
       "backtest_window": "framework/ backtests exist but not summarized; book-driven (퀀트가 대신 한다 40)",
-      "realized_sharpe_annualized": 7.82,
-      "realized_sharpe_ci_low_95": 5.81,
-      "realized_mdd_pct": 1.09,
+      "realized_sharpe_annualized": 7.76,
+      "realized_sharpe_ci_low_95": 5.37,
+      "realized_mdd_pct": 1.08,
       "sharpe_decay": null,
       "mdd_excess": null
     }
@@ -350,7 +380,39 @@
       "promotion_criteria": "This is a paper-shadow of a live bot — used to validate proposed changes before they go live",
       "paper_trading_since": null,
       "health": "paper-stalled",
-      "wiki_path": "quanty-wiki/candidates/hybrid-vb-paper.md"
+      "wiki_path": "wiki/candidates/hybrid-vb-paper.md",
+      "stage": {
+        "select": true,
+        "extract": false,
+        "backtest": false,
+        "paper": false,
+        "memo": false
+      },
+      "variables": {
+        "signal_type": null,
+        "universe": [],
+        "lookback_months": null,
+        "skip_months": null,
+        "lookback_days": null,
+        "k": null,
+        "abs_threshold": null,
+        "position_sizing": null,
+        "rebalance": null
+      },
+      "algorithm": "(no spec yet)",
+      "backtest": {
+        "cagr": null,
+        "sharpe": null,
+        "mdd": null,
+        "horizons": []
+      },
+      "paper": {
+        "days_observed": 0,
+        "pv_last": null,
+        "sharpe": null,
+        "total_return_pct": null,
+        "low_confidence": true
+      }
     },
     {
       "slug": "momentum-12-1",
@@ -361,7 +423,39 @@
       "promotion_criteria": "60 trading days paper; realized Sharpe ≥ 0.7× backtest; no overlap > 0.7 with live bots",
       "paper_trading_since": null,
       "health": "paper-stalled",
-      "wiki_path": "quanty-wiki/candidates/momentum-12-1.md"
+      "wiki_path": "wiki/candidates/momentum-12-1.md",
+      "stage": {
+        "select": true,
+        "extract": false,
+        "backtest": false,
+        "paper": true,
+        "memo": false
+      },
+      "variables": {
+        "signal_type": null,
+        "universe": [],
+        "lookback_months": null,
+        "skip_months": null,
+        "lookback_days": null,
+        "k": null,
+        "abs_threshold": null,
+        "position_sizing": null,
+        "rebalance": null
+      },
+      "algorithm": "(no spec yet)",
+      "backtest": {
+        "cagr": null,
+        "sharpe": null,
+        "mdd": null,
+        "horizons": []
+      },
+      "paper": {
+        "days_observed": 1,
+        "pv_last": 100000.0,
+        "sharpe": null,
+        "total_return_pct": null,
+        "low_confidence": true
+      }
     },
     {
       "slug": "risk-parity",
@@ -372,7 +466,39 @@
       "promotion_criteria": "60 trading days paper; realized Sharpe ≥ 0.7× backtest; MDD ≤ 1.25× backtest",
       "paper_trading_since": null,
       "health": "paper-stalled",
-      "wiki_path": "quanty-wiki/candidates/risk-parity.md"
+      "wiki_path": "wiki/candidates/risk-parity.md",
+      "stage": {
+        "select": true,
+        "extract": false,
+        "backtest": false,
+        "paper": true,
+        "memo": false
+      },
+      "variables": {
+        "signal_type": null,
+        "universe": [],
+        "lookback_months": null,
+        "skip_months": null,
+        "lookback_days": null,
+        "k": null,
+        "abs_threshold": null,
+        "position_sizing": null,
+        "rebalance": null
+      },
+      "algorithm": "(no spec yet)",
+      "backtest": {
+        "cagr": null,
+        "sharpe": null,
+        "mdd": null,
+        "horizons": []
+      },
+      "paper": {
+        "days_observed": 1,
+        "pv_last": 100000.0,
+        "sharpe": null,
+        "total_return_pct": null,
+        "low_confidence": true
+      }
     },
     {
       "slug": "xs-momentum",
@@ -383,7 +509,108 @@
       "promotion_criteria": "60 trading days paper; Sharpe ≥ 0.7× backtest; distinct return profile from [[momentum-12-1]]",
       "paper_trading_since": null,
       "health": "paper-stalled",
-      "wiki_path": "quanty-wiki/candidates/xs-momentum.md"
+      "wiki_path": "wiki/candidates/xs-momentum.md",
+      "stage": {
+        "select": true,
+        "extract": false,
+        "backtest": false,
+        "paper": true,
+        "memo": false
+      },
+      "variables": {
+        "signal_type": null,
+        "universe": [],
+        "lookback_months": null,
+        "skip_months": null,
+        "lookback_days": null,
+        "k": null,
+        "abs_threshold": null,
+        "position_sizing": null,
+        "rebalance": null
+      },
+      "algorithm": "(no spec yet)",
+      "backtest": {
+        "cagr": null,
+        "sharpe": null,
+        "mdd": null,
+        "horizons": []
+      },
+      "paper": {
+        "days_observed": 1,
+        "pv_last": 100000.0,
+        "sharpe": null,
+        "total_return_pct": null,
+        "low_confidence": true
+      }
+    },
+    {
+      "slug": "ben-david-2018-etf-volatility",
+      "title": "Ben David 2018 Etf Volatility",
+      "status": "backtest",
+      "paper_source": "[[ben-david-2018-etf-volatility]]",
+      "script": "paper_run_ben-david-2018-etf-volatility.py",
+      "promotion_criteria": "see body — Bonferroni 유의 + MDD ≤ 25% + OOS ≥ 5y per Quanty CLAUDE.md §5.2",
+      "paper_trading_since": null,
+      "health": "",
+      "wiki_path": "wiki/candidates/ben-david-2018-etf-volatility.md",
+      "stage": {
+        "select": true,
+        "extract": true,
+        "backtest": true,
+        "paper": false,
+        "memo": false
+      },
+      "variables": {
+        "signal_type": "mean_reversion",
+        "universe": [
+          "SPY",
+          "QQQ",
+          "IWM",
+          "RSP",
+          "TLT",
+          "SHY"
+        ],
+        "lookback_months": 12,
+        "skip_months": 0,
+        "lookback_days": null,
+        "k": null,
+        "abs_threshold": null,
+        "position_sizing": "equal_weight",
+        "rebalance": "monthly_first_trading_day"
+      },
+      "algorithm": "Long when the 20-day z-score < -1 (oversold); flat otherwise. equal_weight.",
+      "backtest": {
+        "cagr": null,
+        "sharpe": null,
+        "mdd": null,
+        "horizons": [
+          {
+            "horizon": "5d",
+            "net_alpha": -0.002,
+            "p": 0.0804,
+            "verdict": "❌"
+          },
+          {
+            "horizon": "30d",
+            "net_alpha": -0.0072,
+            "p": 0.1853,
+            "verdict": "❌"
+          },
+          {
+            "horizon": "90d",
+            "net_alpha": -0.0081,
+            "p": 0.4662,
+            "verdict": "❌"
+          }
+        ]
+      },
+      "paper": {
+        "days_observed": 0,
+        "pv_last": null,
+        "sharpe": null,
+        "total_return_pct": null,
+        "low_confidence": true
+      }
     },
     {
       "slug": "commodity-vb-selection",
@@ -394,7 +621,39 @@
       "promotion_criteria": "Distinct selection criterion vs [[hybrid-vb]]; OOS Sharpe ≥ 1.0",
       "paper_trading_since": null,
       "health": "",
-      "wiki_path": "quanty-wiki/candidates/commodity-vb-selection.md"
+      "wiki_path": "wiki/candidates/commodity-vb-selection.md",
+      "stage": {
+        "select": true,
+        "extract": false,
+        "backtest": false,
+        "paper": false,
+        "memo": false
+      },
+      "variables": {
+        "signal_type": null,
+        "universe": [],
+        "lookback_months": null,
+        "skip_months": null,
+        "lookback_days": null,
+        "k": null,
+        "abs_threshold": null,
+        "position_sizing": null,
+        "rebalance": null
+      },
+      "algorithm": "(no spec yet)",
+      "backtest": {
+        "cagr": null,
+        "sharpe": null,
+        "mdd": null,
+        "horizons": []
+      },
+      "paper": {
+        "days_observed": 0,
+        "pv_last": null,
+        "sharpe": null,
+        "total_return_pct": null,
+        "low_confidence": true
+      }
     },
     {
       "slug": "silver-copper",
@@ -405,7 +664,39 @@
       "promotion_criteria": "Pair-trade backtest with reasonable cointegration evidence",
       "paper_trading_since": null,
       "health": "",
-      "wiki_path": "quanty-wiki/candidates/silver-copper.md"
+      "wiki_path": "wiki/candidates/silver-copper.md",
+      "stage": {
+        "select": true,
+        "extract": false,
+        "backtest": false,
+        "paper": false,
+        "memo": false
+      },
+      "variables": {
+        "signal_type": null,
+        "universe": [],
+        "lookback_months": null,
+        "skip_months": null,
+        "lookback_days": null,
+        "k": null,
+        "abs_threshold": null,
+        "position_sizing": null,
+        "rebalance": null
+      },
+      "algorithm": "(no spec yet)",
+      "backtest": {
+        "cagr": null,
+        "sharpe": null,
+        "mdd": null,
+        "horizons": []
+      },
+      "paper": {
+        "days_observed": 0,
+        "pv_last": null,
+        "sharpe": null,
+        "total_return_pct": null,
+        "low_confidence": true
+      }
     },
     {
       "slug": "soxl-soxs",
@@ -416,7 +707,39 @@
       "promotion_criteria": "MDD must clear ≤ 25% on 3+ years OOS before paper-trading",
       "paper_trading_since": null,
       "health": "",
-      "wiki_path": "quanty-wiki/candidates/soxl-soxs.md"
+      "wiki_path": "wiki/candidates/soxl-soxs.md",
+      "stage": {
+        "select": true,
+        "extract": false,
+        "backtest": false,
+        "paper": false,
+        "memo": false
+      },
+      "variables": {
+        "signal_type": null,
+        "universe": [],
+        "lookback_months": null,
+        "skip_months": null,
+        "lookback_days": null,
+        "k": null,
+        "abs_threshold": null,
+        "position_sizing": null,
+        "rebalance": null
+      },
+      "algorithm": "(no spec yet)",
+      "backtest": {
+        "cagr": null,
+        "sharpe": null,
+        "mdd": null,
+        "horizons": []
+      },
+      "paper": {
+        "days_observed": 0,
+        "pv_last": null,
+        "sharpe": null,
+        "total_return_pct": null,
+        "low_confidence": true
+      }
     },
     {
       "slug": "top10-momentum",
@@ -427,71 +750,193 @@
       "promotion_criteria": "OOS Sharpe ≥ 1.0; clear separation from [[usa-quant40]]",
       "paper_trading_since": null,
       "health": "",
-      "wiki_path": "quanty-wiki/candidates/top10-momentum.md"
+      "wiki_path": "wiki/candidates/top10-momentum.md",
+      "stage": {
+        "select": true,
+        "extract": false,
+        "backtest": false,
+        "paper": false,
+        "memo": false
+      },
+      "variables": {
+        "signal_type": null,
+        "universe": [],
+        "lookback_months": null,
+        "skip_months": null,
+        "lookback_days": null,
+        "k": null,
+        "abs_threshold": null,
+        "position_sizing": null,
+        "rebalance": null
+      },
+      "algorithm": "(no spec yet)",
+      "backtest": {
+        "cagr": null,
+        "sharpe": null,
+        "mdd": null,
+        "horizons": []
+      },
+      "paper": {
+        "days_observed": 0,
+        "pv_last": null,
+        "sharpe": null,
+        "total_return_pct": null,
+        "low_confidence": true
+      }
+    },
+    {
+      "slug": "xiong-2026-growth-defensive",
+      "title": "Xiong 2026 Growth Defensive",
+      "status": "backtest",
+      "paper_source": "[[xiong-2026-growth-defensive]]",
+      "script": "paper_run_xiong-2026-growth-defensive.py",
+      "promotion_criteria": "see body — Bonferroni 유의 + MDD ≤ 25% + OOS ≥ 5y per Quanty CLAUDE.md §5.2",
+      "paper_trading_since": null,
+      "health": "",
+      "wiki_path": "wiki/candidates/xiong-2026-growth-defensive.md",
+      "stage": {
+        "select": true,
+        "extract": true,
+        "backtest": true,
+        "paper": false,
+        "memo": false
+      },
+      "variables": {
+        "signal_type": "dual_momentum",
+        "universe": [
+          "QQQ",
+          "IWF",
+          "XLK",
+          "XLU",
+          "XLP",
+          "TLT"
+        ],
+        "lookback_months": 12,
+        "skip_months": 0,
+        "lookback_days": null,
+        "k": null,
+        "abs_threshold": 0,
+        "position_sizing": "equal_weight",
+        "rebalance": "monthly_first_trading_day"
+      },
+      "algorithm": "Among assets with positive 12-1m return, hold the single strongest; otherwise cash. Rebalance monthly_first_trading_day.",
+      "backtest": {
+        "cagr": null,
+        "sharpe": null,
+        "mdd": null,
+        "horizons": [
+          {
+            "horizon": "5d",
+            "net_alpha": -0.0019,
+            "p": 0.0323,
+            "verdict": "⚠️"
+          },
+          {
+            "horizon": "30d",
+            "net_alpha": -0.0045,
+            "p": 0.2478,
+            "verdict": "❌"
+          },
+          {
+            "horizon": "90d",
+            "net_alpha": -0.0054,
+            "p": 0.3568,
+            "verdict": "❌"
+          }
+        ]
+      },
+      "paper": {
+        "days_observed": 0,
+        "pv_last": null,
+        "sharpe": null,
+        "total_return_pct": null,
+        "low_confidence": true
+      }
+    }
+  ],
+  "recent_picks": [
+    {
+      "slug": "ben-david-2018-etf-volatility",
+      "verdict": "fail",
+      "matched_keywords": [
+        "volatility",
+        "etf",
+        "mean-reversion"
+      ]
+    },
+    {
+      "slug": "xiong-2026-growth-defensive",
+      "verdict": "fail",
+      "matched_keywords": [
+        "momentum",
+        "factor",
+        "regime",
+        "ETF"
+      ]
     }
   ],
   "portfolio_metrics": {
     "window_start": "2026-04-27",
-    "window_end": "2026-06-02",
-    "days_observed": 30,
+    "window_end": "2026-05-22",
+    "days_observed": 21,
     "low_confidence": true,
     "portfolio": {
-      "daily_pnl_krw_mean": -4936.61,
-      "daily_pnl_krw_std": 1150289.73,
-      "sharpe_annualized": -0.07,
-      "sharpe_ci_low_95": -0.43,
-      "sharpe_ci_high_95": 0.29,
+      "daily_pnl_krw_mean": -58778.3,
+      "daily_pnl_krw_std": 1340581.86,
+      "sharpe_annualized": -0.7,
+      "sharpe_ci_low_95": -1.17,
+      "sharpe_ci_high_95": -0.22,
       "var_95_1d_krw": -1839798,
-      "diversification_ratio": 0.06,
+      "diversification_ratio": 0.07,
       "effective_n_bets": 2.34
     },
     "per_bot": {
       "btc-vb": {
-        "daily_pnl_krw_mean": -5376.06,
-        "daily_pnl_krw_std": 27783.93,
-        "sharpe_annualized": -3.07,
-        "sharpe_ci_low_95": -3.93,
-        "sharpe_ci_high_95": -2.22,
-        "weight": 0.06
+        "daily_pnl_krw_mean": -6988.4,
+        "daily_pnl_krw_std": 33179.02,
+        "sharpe_annualized": -3.34,
+        "sharpe_ci_low_95": -4.44,
+        "sharpe_ci_high_95": -2.25,
+        "weight": 0.068
       },
       "korea-etf-momentum": {
-        "daily_pnl_krw_mean": -46099.5,
-        "daily_pnl_krw_std": 497044.61,
-        "sharpe_annualized": -1.47,
-        "sharpe_ci_low_95": -1.99,
-        "sharpe_ci_high_95": -0.96,
-        "weight": 0.07
+        "daily_pnl_krw_mean": -28868.57,
+        "daily_pnl_krw_std": 568509.54,
+        "sharpe_annualized": -0.81,
+        "sharpe_ci_low_95": -1.3,
+        "sharpe_ci_high_95": -0.31,
+        "weight": 0.085
       },
       "usa-quant40": {
-        "daily_pnl_krw_mean": 68941.59,
-        "daily_pnl_krw_std": 140012.59,
-        "sharpe_annualized": 7.82,
-        "sharpe_ci_low_95": 5.81,
-        "sharpe_ci_high_95": 9.83,
-        "weight": 0.232
+        "daily_pnl_krw_mean": 75007.6,
+        "daily_pnl_krw_std": 153495.51,
+        "sharpe_annualized": 7.76,
+        "sharpe_ci_low_95": 5.37,
+        "sharpe_ci_high_95": 10.14,
+        "weight": 0.265
       },
       "jd-strategy": {
-        "daily_pnl_krw_mean": 13486.4,
-        "daily_pnl_krw_std": 127197.42,
-        "sharpe_annualized": 1.68,
-        "sharpe_ci_low_95": 1.13,
-        "sharpe_ci_high_95": 2.24,
+        "daily_pnl_krw_mean": 12816.31,
+        "daily_pnl_krw_std": 64317.05,
+        "sharpe_annualized": 3.16,
+        "sharpe_ci_low_95": 2.12,
+        "sharpe_ci_high_95": 4.21,
         "weight": 0.021
       },
       "modified-dual-momentum": {
-        "daily_pnl_krw_mean": -52541.66,
-        "daily_pnl_krw_std": 360065.19,
-        "sharpe_annualized": -2.32,
-        "sharpe_ci_low_95": -3.0,
-        "sharpe_ci_high_95": -1.63,
+        "daily_pnl_krw_mean": -75059.51,
+        "daily_pnl_krw_std": 431524.48,
+        "sharpe_annualized": -2.76,
+        "sharpe_ci_low_95": -3.7,
+        "sharpe_ci_high_95": -1.82,
         "weight": 0.0
       },
       "hybrid-vb": {
-        "daily_pnl_krw_mean": 16652.62,
-        "daily_pnl_krw_std": 638284.43,
-        "sharpe_annualized": 0.41,
-        "sharpe_ci_low_95": 0.04,
-        "sharpe_ci_high_95": 0.79,
+        "daily_pnl_krw_mean": -35685.73,
+        "daily_pnl_krw_std": 756472.92,
+        "sharpe_annualized": -0.75,
+        "sharpe_ci_low_95": -1.23,
+        "sharpe_ci_high_95": -0.26,
         "weight": null
       },
       "claude-trading-bot": {
@@ -507,10 +952,10 @@
       "btc-vb": {
         "btc-vb": 1.0,
         "claude-trading-bot": null,
-        "hybrid-vb": -0.02,
-        "jd-strategy": -0.08,
+        "hybrid-vb": -0.04,
+        "jd-strategy": -0.21,
         "korea-etf-momentum": -0.07,
-        "modified-dual-momentum": -0.03,
+        "modified-dual-momentum": -0.04,
         "usa-quant40": 0.1
       },
       "claude-trading-bot": {
@@ -523,81 +968,81 @@
         "usa-quant40": null
       },
       "hybrid-vb": {
-        "btc-vb": -0.02,
+        "btc-vb": -0.04,
         "claude-trading-bot": null,
         "hybrid-vb": 1.0,
-        "jd-strategy": 0.06,
-        "korea-etf-momentum": 0.58,
-        "modified-dual-momentum": 0.01,
-        "usa-quant40": 0.35
+        "jd-strategy": 0.13,
+        "korea-etf-momentum": 0.65,
+        "modified-dual-momentum": -0.0,
+        "usa-quant40": 0.41
       },
       "jd-strategy": {
-        "btc-vb": -0.08,
+        "btc-vb": -0.21,
         "claude-trading-bot": null,
-        "hybrid-vb": 0.06,
+        "hybrid-vb": 0.13,
         "jd-strategy": 1.0,
-        "korea-etf-momentum": 0.11,
-        "modified-dual-momentum": 0.2,
-        "usa-quant40": 0.33
+        "korea-etf-momentum": -0.07,
+        "modified-dual-momentum": 0.48,
+        "usa-quant40": 0.12
       },
       "korea-etf-momentum": {
         "btc-vb": -0.07,
         "claude-trading-bot": null,
-        "hybrid-vb": 0.58,
-        "jd-strategy": 0.11,
+        "hybrid-vb": 0.65,
+        "jd-strategy": -0.07,
         "korea-etf-momentum": 1.0,
         "modified-dual-momentum": -0.03,
-        "usa-quant40": 0.37
+        "usa-quant40": 0.33
       },
       "modified-dual-momentum": {
-        "btc-vb": -0.03,
+        "btc-vb": -0.04,
         "claude-trading-bot": null,
-        "hybrid-vb": 0.01,
-        "jd-strategy": 0.2,
+        "hybrid-vb": -0.0,
+        "jd-strategy": 0.48,
         "korea-etf-momentum": -0.03,
         "modified-dual-momentum": 1.0,
-        "usa-quant40": -0.26
+        "usa-quant40": -0.28
       },
       "usa-quant40": {
         "btc-vb": 0.1,
         "claude-trading-bot": null,
-        "hybrid-vb": 0.35,
-        "jd-strategy": 0.33,
-        "korea-etf-momentum": 0.37,
-        "modified-dual-momentum": -0.26,
+        "hybrid-vb": 0.41,
+        "jd-strategy": 0.12,
+        "korea-etf-momentum": 0.33,
+        "modified-dual-momentum": -0.28,
         "usa-quant40": 1.0
       }
     },
     "per_regime": {
       "?": {
-        "days": 30,
+        "days": 21,
         "portfolio": {
-          "sharpe": -0.07,
+          "sharpe": -0.7,
           "var_95_1d_krw": -1839798
         },
         "per_bot": {
           "btc-vb": {
-            "sharpe": -3.07,
-            "weight": 0.06
+            "sharpe": -3.34,
+            "weight": 0.068
           },
           "korea-etf-momentum": {
-            "sharpe": -1.47,
-            "weight": 0.07
+            "sharpe": -0.81,
+            "weight": 0.085
           },
           "usa-quant40": {
-            "sharpe": 7.82,
-            "weight": 0.232
+            "sharpe": 7.76,
+            "weight": 0.265
           },
           "jd-strategy": {
-            "sharpe": 1.68,
+            "sharpe": 3.16,
             "weight": 0.021
           },
           "modified-dual-momentum": {
-            "sharpe": -2.32,
+            "sharpe": -2.76,
             "weight": 0.0
           },
           "hybrid-vb": {
-            "sharpe": 0.41,
+            "sharpe": -0.75,
             "weight": null
           },
           "claude-trading-bot": {
@@ -611,7 +1056,7 @@
   },
   "timeseries_window": {
     "start": "2026-04-25",
-    "end": "2026-06-02",
+    "end": "2026-05-22",
     "bots_covered": [
       "btc-vb",
       "korea-etf-momentum",
