@@ -1,0 +1,21 @@
+[Unit]
+Description=Quanty decision-approval endpoint (decision_approval_server.py)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/quanty-dashboard
+Environment=APPROVAL_TOKEN_FILE=/home/ubuntu/.quanty_approval_token
+Environment=QUANTY_WIKI_DIR=/home/ubuntu/quanty-wiki
+Environment=QUANTY_AUTOMATION_DIR=/home/ubuntu/koreainvestment-autotrade
+Environment=QUANTY_DECISIONS_OUT=/home/ubuntu/quanty-dashboard/docs/data/decisions.json
+ExecStart=/home/ubuntu/myenv/bin/python3 decision_approval_server.py
+Restart=always
+RestartSec=5
+StandardOutput=append:/home/ubuntu/quanty-dashboard/decision_approval.out
+StandardError=append:/home/ubuntu/quanty-dashboard/decision_approval.out
+
+[Install]
+WantedBy=multi-user.target

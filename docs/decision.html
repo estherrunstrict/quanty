@@ -308,6 +308,10 @@ code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; 
 .pl-detail { display: none; margin: 6px 0 4px 18px; font-size: 12px; line-height: 1.6; }
 .pl-row.open .pl-detail { display: block; }
 .pl-detail .k { color: #999; display: inline-block; min-width: 74px; }
+.actions { display: inline-flex; gap: 6px; margin-left: 8px; }
+.actions button { cursor: pointer; border: 1px solid var(--border, #ccc); border-radius: 4px; padding: 2px 8px; font-size: 0.75rem; }
+.btn-approve { color: #1a7f37; } .btn-reject { color: #b42318; }
+.decided-approved { color: #1a7f37; font-weight: 600; } .decided-rejected { color: #b42318; font-weight: 600; }
 </style>
 </head>
 
@@ -545,7 +549,13 @@ function render(dash, dec, disc) {
               ${m.effective_date ? `· effective ${m.effective_date}` : ""}
             </div>
           </div>
-          <div class="rhs">${memoLink(m.wiki_path)}</div>
+          <div class="rhs">
+            ${memoLink(m.wiki_path)}
+            <div class="actions">
+              <button class="btn-approve" onclick="actOnDecision('${m.id}','approve',this.closest('.memo'))">Approve</button>
+              <button class="btn-reject" onclick="actOnDecision('${m.id}','reject',this.closest('.memo'))">Reject</button>
+            </div>
+          </div>
         </div>`)
       .join("");
   }
@@ -817,6 +827,38 @@ function render(dash, dec, disc) {
   }
 
 load();
+
+async function actOnDecision(id, action, rowEl) {
+  if (!confirm(action.toUpperCase() + " this decision?\n\n" + id)) return;
+  let token = localStorage.getItem('quanty_approval_token');
+  if (!token) { token = prompt('Approval token:'); if (!token) return; localStorage.setItem('quanty_approval_token', token); }
+  let base;
+  try {
+    const ep = await fetch('data/approve_endpoint.json', { cache: 'no-store' }).then(r => r.json());
+    base = (ep.url || '').replace(/\/$/, '');
+    if (!base) throw new Error('no url');
+  } catch (e) { alert('Approval endpoint unavailable (tunnel may be restarting). Try again shortly.'); return; }
+  try {
+    const res = await fetch(base + '/approve', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ id, action })
+    });
+    if (res.status === 401) { localStorage.removeItem('quanty_approval_token'); alert('Token rejected — re-enter next time.'); return; }
+    if (res.status === 409) { alert('Already decided — refresh the page.'); return; }
+    if (!res.ok) { alert('Failed (' + res.status + '). Tunnel may be restarting; try again shortly.'); return; }
+    const data = await res.json();
+    const a = rowEl.querySelector('.actions');
+    if (a) {
+      a.textContent = '';
+      const span = document.createElement('span');
+      span.className = 'decided-' + data.new_status;
+      span.textContent = data.new_status;
+      a.appendChild(span);
+    }
+    rowEl.style.opacity = '0.6';
+  } catch (e) { alert('Network error — tunnel may be restarting. Try again shortly.'); }
+}
 </script>
 </body>
 </html>

@@ -1,0 +1,17 @@
+[Unit]
+Description=Quanty approval Cloudflare quick tunnel
+After=network-online.target quanty-decision-approval.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/quanty-dashboard
+ExecStart=/bin/bash /home/ubuntu/quanty-dashboard/start_approval_tunnel.sh
+Restart=always
+RestartSec=10
+StandardOutput=append:/home/ubuntu/quanty-dashboard/approval_tunnel.out
+StandardError=append:/home/ubuntu/quanty-dashboard/approval_tunnel.out
+
+[Install]
+WantedBy=multi-user.target
