@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-06-05T06:31:26.413528+09:00",
+  "generated_at": "2026-06-05T16:00:09.143355+09:00",
   "stats": {
-    "total": 117,
-    "queued": 35,
+    "total": 123,
+    "queued": 41,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-06-05T06:31:26.413425+09:00",
+    "last_gc_at": "2026-06-05T16:00:09.143251+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -3405,6 +3405,179 @@
       "discovered": "2026-06-04",
       "matched_keywords": [
         "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.04258",
+      "source": "arxiv",
+      "title": "Anticipatory Portfolio Optimization",
+      "authors": [
+        "Miquel Noguer i Alonso"
+      ],
+      "abstract": "A portfolio is \\emph{anticipatory} when its optimizer acts on a richer model than the myopic, price-taking estimator used to calibrate it. Enrichment may be informational, via enlarged filtrations; dynamic, via horizon forecasts; or performative, via the deployment law induced by market impact. We give a decision-theoretic definition for all three cases and measure anticipation by the realized control gap between enriched controller and restricted estimator. The same quadratic geometry separates information, planning value, impact correction, and overfitting. For log utility under initial enlargement, value is the information-drift energy $\\frac12\\mathbb{E} \\int_0^Tα_t^2\\,dt$, equivalently mutual information or relative entropy. In mean-variance form, signal value is $\\frac{1}{2γ}{\\rm tr}(Σ^{-1}Ω)$. Dynamic forecast anticipation gives a finite-horizon quadratic premium in the forecast stack, while permanent impact changes the price-taking allocation $θ_{\\rm na} =(Λ+γΣ)^{-1}μ$ into $θ_{\\rm an} = (2Λ+γΣ)^{-1}μ$ and reveals a spectral phase transition for naive recalibration. The main result is a stacked finite-horizon LQG decomposition: information, forecast, and impact combine into an information trace plus one inverse-precision norm, whose expansion yields the impact term, forecast term, and signed forecast-impact interaction. Sharp angle bounds and an orthogonal nonnegative projection identity resolve the signed term. The stationary extension endogenizes information covariance as Kalman error reduction and carries impact anticipation to an infinite-horizon Lyapunov trace with transaction costs. Finally, the penalty $\\frac{1}{2}{\\rm tr}(H^{-1}Σ_\\varepsilon)$ shows that correctly specified anticipation creates value, vacuous anticipation has zero value, and misspecified anticipation is harmful when estimated structure is optimized as true.",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2606.04258v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.04258v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-02",
+      "discovered": "2026-06-05",
+      "matched_keywords": [
+        "transaction cost",
+        "overfitting"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.05882",
+      "source": "arxiv",
+      "title": "The Impact of Market Informedness on Market Makers' Profitability",
+      "authors": [
+        "Konrad Ochędzan",
+        "Nino Antulov-Fantulin"
+      ],
+      "abstract": "This paper examines the impact of market informedness on the profitability of market makers. In contrast to the existing literature, the analysis is conducted in a complex market environment featuring heterogeneous market-making agents that differ in terms of information sets and aversion to inventory risk, endogenous price formation, exogenous fundamental value dynamics, and self-exciting market order flow. The paper also establishes finite-horizon stability guarantees for the resulting state-dependent Hawkes market-taker process, including non-explosion, exponential mispricing integrability, occupation-time bounds, and a pathwise mispricing tail estimate. To address the market-making problem, the study employs a reinforcement learning framework based on the multi-agent proximal policy optimization (MAPPO) algorithm in a centralized training with decentralized execution (CTDE) setting. The study shows that informed market order flow is particularly dangerous in poorly informed markets, leading to severe adverse-selection risk. Although the complex market dynamics together with stochastic training give rise to locally non-monotonic outcomes, the results nevertheless reveal an overall upward trend in market makers' profitability as market informedness increases, suggesting that price discovery resulting from higher market informedness offsets the negative impact of adverse selection.",
+      "categories": [
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2606.05882v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.05882v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-04",
+      "discovered": "2026-06-05",
+      "matched_keywords": [
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.04217",
+      "source": "arxiv",
+      "title": "Polymarket-v1 Database",
+      "authors": [
+        "Boka Qin",
+        "Rui Yang"
+      ],
+      "abstract": "We introduce the Polymarket-v1 Database: the complete on-chain trade archive of Polymarket's first-generation CTF Exchange on Polygon, spanning 2022-11-21 to 2026-04-28 and covering the full contract lifecycle from first settlement to natural termination. The dataset comprises 1.20 billion trade records across 1.30 million markets with $61 billion in nominal volume. Its defining feature is 100% ground-truth aggressor direction derived from the blockchain settlement layer, a property unavailable in existing prediction market archives, which rely on heuristic inference. We use this truth-aligned archive to benchmark standard microstructure tools and document three findings. First, the tick rule and bulk volume classification achieve near-random aggregate accuracy (49.83% and 50.51%), but this masks a systematic, correctable price-level gradient driven by positive trade direction autocorrelation and concentrated market-making -- two structural features of prediction markets that violate the mean-reversion assumption embedded in classical classifiers. Second, these classification errors propagate into downstream metrics: inferred VPIN diverges substantially from ground-truth VPIN, and OFI estimates are directionally biased, with material consequences for Transaction Cost Analysis. Third, ground-truth microstructure quality predicts forecasting performance in ways that classification-based proxies cannot recover: True VPIN positively predicts Brier scores, while Gibbs spread negatively predicts them -- a selection effect reflecting that high-spread niche markets attract informed specialists rather than noise traders. Replacing ground-truth metrics with classified proxies attenuates both relationships, illustrating that measurement accuracy at the transaction level is a prerequisite for reliable inference about prediction market design and probability calibration.",
+      "categories": [
+        "cs.CE",
+        "q-fin.ST",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2606.04217v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.04217v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-02",
+      "discovered": "2026-06-05",
+      "matched_keywords": [
+        "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.06190",
+      "source": "arxiv",
+      "title": "Multi-Scale Markov Switching GARCH",
+      "authors": [
+        "Jayesh Chaudhary"
+      ],
+      "abstract": "Financial volatility exhibits substantial non-stationarity, making single-regime models inadequate for characterising changing market conditions. This paper proposes a triple-timeframe Markov-Switching GARCH (MS-GARCH) framework for volatility regime detection in EUR/USD across daily, four-hour, and hourly horizons. Three independent AR(1)-MS-GARCH models are estimated to capture macro, meso, and micro regime dynamics, while Filardo-style time-varying transition probabilities (TVTP) are incorporated at the shorter horizons through composite stress indicators. The resulting regime probabilities are combined through an outer-product construction into a 27-state cross-scale probability tensor. Using EUR/USD data from 2015-2025, the framework produces statistically distinct Calm, Turbulent, and Crisis regimes and achieves superior out-of-sample volatility forecasting performance relative to a conventional GARCH benchmark. The results suggest that volatility dynamics contain meaningful structure across multiple timescales and that modelling these scales separately provides a more informative representation of market conditions than a single-timescale approach.",
+      "categories": [
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2606.06190v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.06190v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-04",
+      "discovered": "2026-06-05",
+      "matched_keywords": [
+        "regime",
+        "regime detection"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.05138",
+      "source": "arxiv",
+      "title": "Generating Financial Time Series by Matching Random Convolutional Features",
+      "authors": [
+        "Konrad J. Mueller",
+        "Nikita Zozoulenko",
+        "Ben Wood",
+        "Thomas Cass",
+        "Lukas Gonon"
+      ],
+      "abstract": "Generating realistic financial time series is challenging as training data is often limited to a single historical path. With such scarce data, overfitting is hard to avoid, especially under adversarial training where a trained discriminator can memorize the training samples. To mitigate this, recent approaches train generators to minimize the discrepancy between untrained feature representations of real and generated time series. In these works, the feature maps are based on path signatures, which can fail to capture relevant time series properties at tractable truncation depths. In this work, we instead train generators by matching random convolutional features of real and generated time series. Existing random convolutional feature maps, such as Rocket and Hydra, have been shown to provide informative representations of real-world time series, but cannot supervise generative models because they are non-differentiable. We introduce SOCK (SOft Competing Kernels), a fully differentiable random convolutional feature map, suited to train generative time series models. We show that generators trained by matching random SOCK features consistently outperform signature and diffusion baselines across a wide range of small-sample financial datasets. We further demonstrate SOCK's expressiveness on two-sample hypothesis testing and time series classification tasks, where SOCK matches or outperforms existing unsupervised feature maps.",
+      "categories": [
+        "cs.LG",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2606.05138v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.05138v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-03",
+      "discovered": "2026-06-05",
+      "matched_keywords": [
+        "overfitting"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.04576",
+      "source": "arxiv",
+      "title": "ReSGA: A Large Tail Risk Model for Learning Value-at-Risk and Expected Shortfall",
+      "authors": [
+        "Yichi Zhang",
+        "Ke Zhu",
+        "Zhoufan Zhu"
+      ],
+      "abstract": "Learning Value-at-Risk (VaR) and Expected Shortfall (ES) is important for managing financial risks effectively. Existing approaches with limited parameters are vulnerable to model misspecification in the era of big data. To address this limitation, we propose a large tail risk model, the retrieval-enhanced self-grouping autoencoder (ReSGA), which is designed with millions of parameters to exploit the rich cross-sectional dependence and long-term temporal dynamics of assets using their characteristics. Applied to monthly US equity returns from 1926 to 2023 with 153 firm characteristics, ReSGA outperforms twelve econometric and machine learning competitors in terms of out-of-sample loss and statistical backtesting. In addition, its forecast advantages can translate into significant economic gains from long-short decile portfolios that are constructed by a new size-enhanced left-side momentum strategy. To clarify the role of complexity, we further conduct a systematic scaling analysis and demonstrate that improvements in joint VaR-ES forecasting are primarily driven by data complexity rather than model complexity. Finally, our analyses of group-importance and transfer-learning exhibit the interpretability and cross-market generalizability of ReSGA.",
+      "categories": [
+        "stat.ML",
+        "cs.LG",
+        "econ.EM",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2606.04576v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.04576v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-03",
+      "discovered": "2026-06-05",
+      "matched_keywords": [
+        "momentum",
+        "cross-sectional"
       ],
       "status": "queued",
       "ingested_into": null,
