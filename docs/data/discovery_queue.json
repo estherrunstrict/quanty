@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-06-06T06:30:11.476661+09:00",
+  "generated_at": "2026-06-08T16:00:12.951872+09:00",
   "stats": {
-    "total": 123,
-    "queued": 41,
+    "total": 126,
+    "queued": 44,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-06-06T06:30:11.476556+09:00",
+    "last_gc_at": "2026-06-08T16:00:12.951655+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -3578,6 +3578,93 @@
       "matched_keywords": [
         "momentum",
         "cross-sectional"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.07450",
+      "source": "arxiv",
+      "title": "Information Networks of Stock Prices",
+      "authors": [
+        "Muhammad Aldy Hassan",
+        "Hokky Situngkir"
+      ],
+      "abstract": "The collective movement of stock prices harbors complex interdependencies that are conventionally simplified only through a linear lens. This paper explores computed structural network representations in the Indonesian capital market by testing the limits of Pearson correlation and Mutual Information (MI) in unveiling the spectral dynamics of the market. Across 2,328 rolling observation windows from 2015 to 2025, we examine 24 methodological configurations that combine three dependency estimators (Pearson, MI adaptive binning, and MI-kNN), two graph filtering schemes (Minimum Spanning Tree/MST and Planar Maximally Filtered Graph/PMFG), and four community decoders. The empirical results unveil a fundamental reality: topological richness does not always resonate with sectoral classification precision. The Pearson, MST, and Infomap configuration is shown to remain the most robust foundation for recovering conventional sectoral taxonomy. Nevertheless, when deeper observation demands the exposition of local structures and the weave of heterogeneous communities, the architectural relaxation through PMFG demonstrates its superiority. In the realm of residual information detection, MI adaptive binning appears far more proportional than kNN; histogram-based regularization successfully tames empirical noise without sweeping away traces of non-linear dependency. Ultimately, the synergy of MI and PMFG is not positioned to dethrone the dominance of linear correlation, but rather to provide an essential analytical lens for excavating hidden economic sub-structures -- such as the cohesion of commodity regimes -- that have long transcended the rigid boundaries of the market's formal sectors.",
+      "categories": [
+        "cs.SI",
+        "q-fin.PM",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2606.07450v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.07450v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-05",
+      "discovered": "2026-06-08",
+      "matched_keywords": [
+        "regime",
+        "commodity"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.07059",
+      "source": "arxiv",
+      "title": "Diffusive in plain sight: An inconspicuous law of market impact",
+      "authors": [
+        "Julius F. Bonart"
+      ],
+      "abstract": "Decomposing impact as the difference between realized and counterfactual returns and requiring both to be diffusive yields an identity that restricts admissible impact scaling at the level of individual participants. This constraint implies the square-root law in the information-neutral regime and a crossover to linear impact under strong informational coupling, consistent with empirical observations. In the weak-coupling regime, cumulative market impact is itself diffusive -- a diagnostic that many propagator and latent liquidity models fail to satisfy.",
+      "categories": [
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2606.07059v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.07059v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-05",
+      "discovered": "2026-06-08",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.06823",
+      "source": "arxiv",
+      "title": "PandaAI: A Practical Agent CQ2 for Neuro-symbolic Data Analysis And Integrated Decision-Making in Quantitative Finance",
+      "authors": [
+        "Yuqi Li",
+        "Siyuan Liu",
+        "Bingjun Liu"
+      ],
+      "abstract": "While deep learning has excelled in various domains, its application to sequential decision-making in finance remains challenging due to the low Signal-to-Noise Ratio (SNR) and non-stationarity of financial data. Leveraging the reasoning capabilities of Large Language Models (LLMs), we propose \\textbf{PandaAI}, a closed-loop neuro-symbolic LLM agent with market regime modeling and constrained alpha generation, which bridges general LLM reasoning with financial rigor and suppresses the financial toxicity of LLM-generated outputs. To bridge the gap between general linguistic capability and financial rigor, we fine-tune a domain-specific LLM. Furthermore, we integrate this LLM into a modular architecture and form a closed-loop system. Unlike traditional models that optimize isolated prediction metrics, \\textbf{PandaAI} is designed as a neuro-symbolic agent that navigates the complex, real-world financial environment with explicit risk awareness. Extensive experiments on CSI 300 stock data show that \\textbf{PandaAI} achieves a $18.2\\%$ higher Rank IC and $25.7\\%$ lower maximum drawdown than state-of-the-art time-series models. Our constrained LLM generation and dual-channel adaptation method provide a general paradigm for LLM deployment in high-stakes sequential decision-making scenarios.",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2606.06823v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.06823v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-05",
+      "discovered": "2026-06-08",
+      "matched_keywords": [
+        "regime",
+        "drawdown"
       ],
       "status": "queued",
       "ingested_into": null,
