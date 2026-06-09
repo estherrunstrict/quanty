@@ -109,6 +109,74 @@ def get_portfolio(totals=None):
         return {}
 
 
+def recover_missing_bot_holdings(api_data, totals):
+    """Restore a bot's position from the authoritative account balance when its
+    own result file reported zero holdings.
+
+    Korea ETF Momentum scopes its KIS balance query to a single ticker
+    (`get_holdings([state_target])`) and that call intermittently returns an
+    empty page with NO exception — see the bot log flickering
+    "Current holding: 139220 (1263 shares)" -> "None (0 shares)" -> back again
+    on days with no rebalance and an unchanged target_qty. On a dropout the bot
+    writes holdings=[] / total_profit=0, which zeroes the dashboard card even
+    though the position is live.
+
+    The account-level totals query (`get_account_totals`) is a SEPARATE,
+    full-account call made at publish time; when it sees the bot's target
+    ticker we recover the position from it. 139220 (TIGER 200 Construction) is
+    KEM-exclusive (not in any other bot's universe), so the full account row is
+    attributable to this bot. Guarded so we never recover a ticker another bot
+    already claims (avoids double-counting), and only fires when the bot itself
+    reported nothing. mark_to_market_strategies runs afterward and recomputes
+    profit / total_pl_ytd / profit_rate from the restored holdings.
+    """
+    if not totals:
+        return 0
+    kr_acct = {h.get("ticker"): h for h in (totals.get("kr") or {}).get("holdings", []) or []
+               if (h.get("quantity") or 0) > 0}
+    # Tickers other bots already report holding — don't poach these.
+    claimed = set()
+    for s in api_data.get("strategies", []) or []:
+        if s.get("id") == "korea_etf":
+            continue
+        for leg in (s, s.get("kr") or {}, s.get("us") or {}):
+            for h in (leg.get("holdings") or []):
+                if (h.get("quantity") or 0) > 0:
+                    claimed.add(h.get("ticker"))
+
+    recovered = 0
+    for s in api_data.get("strategies", []) or []:
+        if s.get("id") != "korea_etf":
+            continue
+        if any((h.get("quantity") or 0) > 0 for h in (s.get("holdings") or [])):
+            continue  # bot reported a live position; nothing to recover
+        tkr = (s.get("extra") or {}).get("target_ticker")
+        acct = kr_acct.get(tkr)
+        if not tkr or tkr == "CASH" or not acct or tkr in claimed:
+            continue
+        qty = acct["quantity"]
+        val = float(acct.get("value") or 0)
+        profit = float(acct.get("profit") or 0)
+        cur = val / qty if qty else 0
+        avg = (val - profit) / qty if qty else 0
+        s["holdings"] = [{
+            "ticker": tkr,
+            "quantity": qty,
+            "value": round(val, 2),
+            "avg_price": round(avg, 4),
+            "current_price": round(cur, 2),
+            "profit": round(profit, 2),
+            "profit_rate": acct.get("profit_rate", 0),
+            "currency": "KRW",
+            "recovered_from_account": True,
+        }]
+        s["value"] = round(val, 2)
+        s["cost_basis"] = round(val - profit, 2)
+        s["profit"] = round(profit, 2)
+        recovered += 1
+    return recovered
+
+
 def _build_kis_price_index(totals):
     """ticker -> (current_price_native, currency) from KIS positions.
 
@@ -198,6 +266,15 @@ def mark_to_market_strategies(api_data, totals):
                 real = ld.get("realized_profit_ytd") or 0
                 ld["total_pl_ytd"] = round(real + new_un, 2)
                 ld["unrealized_drift_at_mtm"] = round(new_un - before, 2)
+                # Re-sum value and re-derive the rate from the marked holdings.
+                # _mark_holdings refreshes each holding's value/profit but the
+                # leg-level value and profit_rate are otherwise left at their
+                # stale pre-mark figures — which makes value-cost != profit and
+                # flips KR Profit % positive against a negative Total P/L.
+                ld["value"] = round(sum((h.get("value") or 0) for h in ld["holdings"]), 2)
+                leg_budget = s.get("budget_kr") if leg == "kr" else s.get("budget_us")
+                if leg_budget and leg_budget > 0:
+                    ld["profit_rate_ytd_pct"] = round(ld["total_pl_ytd"] / leg_budget * 100, 2)
                 s[leg] = ld
             continue
 
@@ -240,6 +317,14 @@ def main():
         totals = get_account_totals()
     except Exception as e:
         print("  WARNING: KIS totals query failed; falling back to bot-state values: {}".format(e))
+
+    # Recover any bot position that its own result file dropped (intermittent
+    # single-ticker balance-query dropout) from the authoritative account
+    # balance, BEFORE mark-to-market re-prices it.
+    if totals:
+        rec = recover_missing_bot_holdings(api_data, totals)
+        if rec:
+            print("  Recovered {} bot position(s) from account balance".format(rec))
 
     # Live mark-to-market: replace bot-saved holding values with current KIS
     # prices so the dashboard shows price moves up to publish time, not bot's
