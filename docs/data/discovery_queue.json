@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-06-12T06:30:09.826257+09:00",
+  "generated_at": "2026-06-12T16:00:10.913897+09:00",
   "stats": {
-    "total": 138,
-    "queued": 56,
+    "total": 140,
+    "queued": 58,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-06-12T06:30:09.826137+09:00",
+    "last_gc_at": "2026-06-12T16:00:10.913794+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -4015,6 +4015,60 @@
       "discovered": "2026-06-09",
       "matched_keywords": [
         "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.12612",
+      "source": "arxiv",
+      "title": "The Mathematics of Heuristic Portfolio Optimization (HPO)",
+      "authors": [
+        "Miquel Noguer i Alonso"
+      ],
+      "abstract": "Practitioners allocate capital with forecast-light rules such as equal weight, inverse volatility, risk parity, HRP, and return-adjusted HRP (RA-HRP). This paper develops \\emph{Heuristic Portfolio Optimization} (HPO): an information-restricted projection of the Markowitz/tangency solution onto a stable rule class. The implied-return principle, $\\w$ is maximum-Sharpe iff $\\bmu_e\\propto\\bSigma\\w$, gives closed-form optimality sets for leading heuristics and exposes the Schur-complement substitutions behind HRP. For RA-HRP, we introduce fixed-tree cluster-Sharpe recursion, unit-free HRP--RA-HRP interpolation, tangency conditions, conditional-risk splits, and pathwise/KL decompositions of weight distortion. First-order Sharpe calculus expresses the marginal value of return information as nodewise alphas against HRP and yields a linear KL trust budget. We formalize generic HPO maps, define the implied-return defect, prove that it equals squared Sharpe inefficiency, characterize tree-HPO coincidence by nodewise mass ratios, and give a bias--variance decomposition for estimated rules. Finally, HPO is embedded into Reinforcement Learning Portfolio Optimization (RLPO): every HPO map induces a deterministic stationary policy; static HPO is the $γ=0$ no-friction face of the Bellman problem; RA-HRP supplies a hierarchical policy prior; and dynamic improvement is warranted when continuation value exceeds myopic HPO defect plus frictions. A performance-difference identity prices the myopic value gap, gives an $\\varepsilon/(1-γ)$ myopia bound, and identifies nodewise alphas as policy-gradient coordinates of the hierarchical actor. Thus HPO is the static optimality layer and RLPO the dynamic control layer. The conditions are GRS-testable, extend to mean--CVaR and expected utility under ellipticity, and become Kelly-growth conditions in diffusion limits.",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2606.12612v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.12612v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-10",
+      "discovered": "2026-06-12",
+      "matched_keywords": [
+        "risk parity",
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.12446",
+      "source": "arxiv",
+      "title": "Temporal Coarse-Graining of Latent Default-Probability Paths Generates Effective Default Correlation",
+      "authors": [
+        "Shintaro Mori"
+      ],
+      "abstract": "We show that persistent dynamics of a latent default-probability path can generate effective default correlation through temporal coarse-graining. In the OU--Binomial baseline, monthly defaults are conditionally independent given this latent path, but aggregating monthly default probabilities into long-horizon probabilities induces a scale-dependent effective mixing distribution for aggregated default counts. Applied to corporate default-count data, this mechanism explains long-horizon overdispersion, autocorrelation, and the emergence of effective default correlation. We then examine Davis--Lo-type contagion and Vasicek-type common-factor extensions. Direct fitting at each aggregation scale assigns increasing residual covariance shares to instantaneous dependence, but worsens the per-block expected log predictive density. In contrast, when monthly posterior latent paths are first coarse-grained and residual-dependence parameters are estimated conditional on these paths, the residual covariance contributions remain small while the predictive density improves. Thus, temporal coarse-graining provides a scale-consistent baseline that regularizes the attribution of variance and improves identifiability by suppressing the over-allocation of long-horizon fluctuations to contagion or asset-correlation parameters.",
+      "categories": [
+        "q-fin.ST",
+        "physics.data-an"
+      ],
+      "url": "https://arxiv.org/abs/2606.12446v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.12446v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-05-30",
+      "discovered": "2026-06-12",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
