@@ -109,6 +109,37 @@ def get_portfolio(totals=None):
         return {}
 
 
+def get_account_totals_resilient(retries=4, delay=2.0, fetch=None, sleep=None):
+    """get_account_totals(), retried when the KR holdings come back empty.
+
+    The KIS balance query intermittently returns an empty page with no
+    exception (the same dropout that zeroes korea_etf and the other KR-funded
+    bots). The KR account in this portfolio is never legitimately empty, so an
+    empty kr.holdings list is a transient miss — re-query before publishing so
+    recovery, mark-to-market, and the price index all see the real positions.
+    Returns the first response with non-empty KR holdings, else the last
+    response after `retries` attempts.
+    """
+    import time as _t
+    if sleep is None:
+        sleep = _t.sleep
+    if fetch is None:
+        from query_account_total import get_account_totals
+        fetch = get_account_totals
+    totals = None
+    for attempt in range(retries):
+        totals = fetch()
+        kr = ((totals or {}).get("kr") or {}).get("holdings") or []
+        if kr:
+            if attempt:
+                print("  KR account recovered after {} empty attempt(s)".format(attempt))
+            return totals
+        if attempt < retries - 1:
+            sleep(delay)
+    print("  WARNING: KR account holdings empty after {} attempts (KR bots may show 0)".format(retries))
+    return totals
+
+
 def recover_missing_bot_holdings(api_data, totals):
     """Restore a bot's position from the authoritative account balance when its
     own result file reported zero holdings.
@@ -313,8 +344,7 @@ def main():
     # and to mark-to-market each bot's holdings.
     totals = None
     try:
-        from query_account_total import get_account_totals
-        totals = get_account_totals()
+        totals = get_account_totals_resilient()
     except Exception as e:
         print("  WARNING: KIS totals query failed; falling back to bot-state values: {}".format(e))
 
