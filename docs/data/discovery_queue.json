@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-06-16T16:01:22.181558+09:00",
+  "generated_at": "2026-06-17T06:30:12.751008+09:00",
   "stats": {
-    "total": 142,
-    "queued": 60,
+    "total": 143,
+    "queued": 61,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-06-16T16:01:22.181454+09:00",
+    "last_gc_at": "2026-06-17T06:30:12.750897+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -4127,6 +4127,32 @@
       "discovered": "2026-06-16",
       "matched_keywords": [
         "risk parity"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.15473",
+      "source": "arxiv",
+      "title": "Belief at Risk: Quantifying Agentic AI Model Risk with LLM-Inferred Bayesian State Filters",
+      "authors": [
+        "Matthew Francis Dixon"
+      ],
+      "abstract": "Agentic AI systems create model risk because uncertain beliefs are coupled to autonomous actions. This paper develops a mathematical framework for quantifying agentic AI risk by representing the system as a partially observed Markov decision process with latent states, Bayesian belief updates, control-dependent losses, and tail-risk functionals. The main methodological contribution is to treat a large language model as an uncertain semantic observation model: the LLM maps high-dimensional evidence into a probability vector over latent regimes, while a Bayesian filter imposes temporal coherence and produces auditable posterior beliefs. The resulting framework separates uncertainty quantification from risk measurement. Uncertainty is represented by posterior entropy, belief drift, and calibration error; risk is represented by the distribution of losses induced by decisions taken under those beliefs. The paper connects this construction to model risk management, coherent risk measures, Bayesian filtering, POMDP theory, robust control, and quantitative portfolio risk. An empirical case study using adjusted daily equity returns from Massive.com illustrates how LLM-inferred belief states can be combined with Bayesian filtering to produce regime probabilities, uncertainty diagnostics, calibration statistics, and VaR/CVaR-style risk measures. The framework is intended as a rigorous foundation for validating agentic AI in financial and other regulated decision environments.",
+      "categories": [
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2606.15473v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.15473v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-13",
+      "discovered": "2026-06-17",
+      "matched_keywords": [
+        "regime"
       ],
       "status": "queued",
       "ingested_into": null,
