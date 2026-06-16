@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-06-16T06:30:12.795979+09:00",
+  "generated_at": "2026-06-16T16:01:22.181558+09:00",
   "stats": {
-    "total": 141,
-    "queued": 59,
+    "total": 142,
+    "queued": 60,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-06-16T06:30:12.795879+09:00",
+    "last_gc_at": "2026-06-16T16:01:22.181454+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -4098,6 +4098,35 @@
       "discovered": "2026-06-15",
       "matched_keywords": [
         "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.14798",
+      "source": "arxiv",
+      "title": "Two Sides of Schur Damping: High-Dimensional Pseudo-Likelihoods and Portfolio Allocation",
+      "authors": [
+        "Peter Cotton"
+      ],
+      "abstract": "Two communities that rarely cite each other -- spatial statisticians fitting high-dimensional weather fields, and quantitative investors building portfolios -- have independently arrived at the same mathematical object: a Schur complement, damped by one interpretable parameter. In spatial modeling the Schur complement is the conditional covariance that makes a Gaussian (Vecchia) pseudo-likelihood estimable at scale, and recent work regularizes it by shrinking toward a base model. In allocation it is the residual risk of a bet net of its hedge, and the same parameter interpolates hierarchical risk parity and the minimum-variance portfolio. We show these are one operation -- reliability shrinkage of a conditional Gaussian -- so that the damping a weather model needs to remain estimable when stations outnumber observations is, term for term, the damping a portfolio needs to remain stable when assets outnumber returns. The optimal amount is a closed-form reliability, a James-Stein shrinkage that is simultaneously a Ledoit-Wolf intensity. The shrinkage machinery is classical, but the identity appears to be new: to our knowledge neither literature has noted that the conditional shrinkage a spatial model fits and the diversification-variance tilt a portfolio chooses are one and the same quantity. We make the correspondence precise, note that the two literatures have each supplied what the other lacks, and report a small experiment on the one genuinely open choice -- how to set the damping -- suggesting the spatial community's fitted intensity is, if anything, the better recipe.",
+      "categories": [
+        "q-fin.RM",
+        "q-fin.MF",
+        "q-fin.PM",
+        "stat.ME"
+      ],
+      "url": "https://arxiv.org/abs/2606.14798v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.14798v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-11",
+      "discovered": "2026-06-16",
+      "matched_keywords": [
+        "risk parity"
       ],
       "status": "queued",
       "ingested_into": null,
