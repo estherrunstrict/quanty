@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-06-18T06:30:15.069320+09:00",
+  "generated_at": "2026-06-18T16:00:11.762457+09:00",
   "stats": {
-    "total": 144,
-    "queued": 62,
+    "total": 145,
+    "queued": 63,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-06-18T06:30:15.069215+09:00",
+    "last_gc_at": "2026-06-18T16:00:11.762350+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -4182,6 +4182,33 @@
       "discovered": "2026-06-17",
       "matched_keywords": [
         "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.18545",
+      "source": "arxiv",
+      "title": "The Gini-Bayes Connection: The CAP Slope as Bayes' Theorem, with Applications to Weight of Evidence, Somers' $D$, and Calibration",
+      "authors": [
+        "Denis Burakov"
+      ],
+      "abstract": "The probabilistic reading of the cumulative accuracy profile (CAP) has a long industry lineage. Falkenstein, Boral and Carty (2000) state, in discrete form, that the default rate at a score percentile equals the portfolio average rate times the local slope of the power curve; van der Burgt (2008, 2019) formalizes this as the continuous identity $p(D\\mid x) = p_D\\, dy/dx$ and imports the continuous form as a working fact; Tasche (2009) analyzes the resulting calibration method; Voloshyn and Voloshyn (2023) substitute Bayes' theorem, $f(x\\mid D)=p(D\\mid x) f(x)/p_D$, into the area integral and write the Gini as a functional of the calibration curve. The slope itself is already in the lineage (van der Burgt's $dy/dx$ is the ratio of the two cumulative differentials), but it enters as a cited working fact, never as Bayes' theorem. We make that identification explicit and draw out its consequences. First, the CAP slope is Bayes' theorem in cumulative coordinates: the standardized PD it recovers is the posterior probability rescaled by the prior. The weight of the paper then falls on two results this reading unlocks. The odds form places the weight of evidence (the log of the likelihood ratio, i.e. the Bayes factor) and the information value inside one geometry (the weight of evidence at a point is the log of the ratio of the \"bad\" and \"good\" CAP slopes). The accuracy ratio, Somers' $D_{xy}$, and the Gini $(2A-1)/(1-p_D)$ are revealed as one number computed three ways. Run in comparison mode (realized outcomes against model claims), the same identity recovers the reliability diagram in cumulative coordinates, with the sign of the gap between the empirical and model-implied Gini coefficients as a calibration diagnostic. A worked five-band example carries every identity in discrete form, and a kernel-density example extends them to the continuous case.",
+      "categories": [
+        "stat.AP",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2606.18545v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.18545v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-16",
+      "discovered": "2026-06-18",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
