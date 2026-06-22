@@ -1,29 +1,29 @@
 {
-  "updated_at": "2026-06-20 06:30 KST",
+  "updated_at": "2026-06-22 16:00 KST",
   "portfolio": {
-    "total_value_krw": 143574142,
+    "total_value_krw": 144221833,
     "original_deposit_krw": 75714217,
-    "total_profit_krw": 3395274,
-    "total_profit_pct": 4.48,
-    "cash_krw": 35739361,
+    "total_profit_krw": 3783925,
+    "total_profit_pct": 5.0,
+    "cash_krw": 36635566,
     "cash_usd": 13387.49,
-    "unsettled_us_sell_krw": 25276709,
+    "unsettled_us_sell_krw": 25469180,
     "upbit_krw": 9797378,
-    "exchange_rate": 1523.4,
-    "unrealized_krw": 3781604,
-    "realized_krw": -386329,
+    "exchange_rate": 1535.0,
+    "unrealized_krw": 3774465,
+    "realized_krw": 9460,
     "unrealized_native": {
-      "krw": 1604010,
+      "krw": 1580290,
       "usd": 1429.43
     },
     "realized_native": {
-      "krw": -587205,
+      "krw": -192945,
       "usd": 131.86
     }
   },
   "meta": {
-    "timestamp": "2026-06-20T06:30:02.509380+09:00",
-    "kst": "2026-06-20 06:30 KST",
+    "timestamp": "2026-06-22T16:00:02.831594+09:00",
+    "kst": "2026-06-22 16:00 KST",
     "equity_start": "2026-01-01"
   },
   "strategies": [
@@ -39,15 +39,15 @@
       "total_trades": 17,
       "winning_trades": 9,
       "allocation": 0.3,
-      "last_run": "2026-06-20",
+      "last_run": "2026-06-21",
       "holdings": [],
       "extra": {
         "k": 0.4,
         "atr_period": 7,
         "ma_period": 5,
-        "equity_days": 97
+        "equity_days": 98
       },
-      "stale_hours": 1.4822865260971918,
+      "stale_hours": 34.98235896011194,
       "unrealized_profit": 0,
       "realized_profit_ytd": -124304.8,
       "realized_trades": 17,
@@ -65,21 +65,21 @@
       "name": "Korea ETF Momentum",
       "currency": "KRW",
       "mode": "live",
-      "value": 11562765.0,
+      "value": 10918635.0,
       "cost_basis": 9485130.0,
-      "profit": 1604010.0,
+      "profit": 1768200.0,
       "budget": 10000000,
       "holdings": [
         {
           "ticker": "139220",
           "quantity": 1263,
-          "value": 11089140.0,
+          "value": 11253330.0,
           "avg_price": 7510.0,
-          "current_price": 8780.0,
-          "profit": 1604010.0,
-          "profit_rate": 16.91,
+          "current_price": 8910.0,
+          "profit": 1768200.0,
+          "profit_rate": 18.64,
           "currency": "KRW",
-          "live_price": 8780.0,
+          "live_price": 8910.0,
           "mark_to_market": true
         }
       ],
@@ -88,9 +88,9 @@
         "target_ticker": "139220",
         "rebalance_day": false
       },
-      "stale_hours": 21.4954249853558,
-      "timestamp": "2026-06-19T09:00:18.932612+09:00",
-      "unrealized_profit": 1604010.0,
+      "stale_hours": 6.996070399880409,
+      "timestamp": "2026-06-22T09:00:16.962736+09:00",
+      "unrealized_profit": 1768200.0,
       "realized_profit_ytd": -1380.0,
       "realized_trades": 1,
       "wins_ytd": 0,
@@ -99,9 +99,9 @@
       "mdd_pct": null,
       "realized_source": "kis_domestic",
       "cycles_ytd": 1,
-      "total_pl_ytd": 1602630.0,
-      "profit_rate_ytd_pct": 16.03,
-      "unrealized_drift_at_mtm": -473625.0
+      "total_pl_ytd": 1766820.0,
+      "profit_rate_ytd_pct": 17.67,
+      "unrealized_drift_at_mtm": 334695.0
     },
     {
       "id": "quant40",
@@ -132,7 +132,7 @@
         "signal": "\ud83d\udfe1 Bullish (3/4)",
         "regime": ""
       },
-      "stale_hours": 7.998035159773297,
+      "stale_hours": 65.49813304477267,
       "timestamp": "2026-06-19T22:30:09.537857",
       "unrealized_profit": 1450.54,
       "realized_profit_ytd": 180.14,
@@ -177,7 +177,7 @@
         "regime": "EASING",
         "is_holding": true
       },
-      "stale_hours": 7.988342002299097,
+      "stale_hours": 65.48843988650376,
       "timestamp": "2026-06-19T22:30:44.092409",
       "unrealized_profit": -21.11,
       "realized_profit_ytd": -32.31,
@@ -207,7 +207,7 @@
         "mode_label": "offensive",
         "rebalance_day": false
       },
-      "stale_hours": 7.980601105557548,
+      "stale_hours": 65.48069899393452,
       "timestamp": "2026-06-19T22:31:12.300831",
       "unrealized_profit": 0,
       "realized_profit_ytd": 171.31,
@@ -229,33 +229,80 @@
       "budget_kr": 27600000,
       "budget_us": 20000.0,
       "kr": {
-        "value": 0,
-        "cost_basis": 0,
-        "profit": 0,
-        "holdings": [],
+        "value": 6657260.0,
+        "cost_basis": 6845169.9965,
+        "profit": -187910.0,
+        "holdings": [
+          {
+            "ticker": "069500",
+            "quantity": 0,
+            "value": 0.0,
+            "avg_price": 0.0,
+            "current_price": 146910.0,
+            "profit": 0.0,
+            "profit_rate": 0,
+            "currency": "KRW"
+          },
+          {
+            "ticker": "091170",
+            "quantity": 141,
+            "value": 2102310.0,
+            "avg_price": 15250.0,
+            "current_price": 14910.0,
+            "profit": -47940.0,
+            "profit_rate": -2.23,
+            "currency": "KRW",
+            "live_price": 14910.0,
+            "mark_to_market": true
+          },
+          {
+            "ticker": "305720",
+            "quantity": 97,
+            "value": 1607775.0,
+            "avg_price": 20209.4845,
+            "current_price": 16575.0,
+            "profit": -352545.0,
+            "profit_rate": -17.98,
+            "currency": "KRW",
+            "live_price": 16575.0,
+            "mark_to_market": true
+          },
+          {
+            "ticker": "364690",
+            "quantity": 55,
+            "value": 2947175.0,
+            "avg_price": 49720.0,
+            "current_price": 53585.0,
+            "profit": 212575.0,
+            "profit_rate": 7.77,
+            "currency": "KRW",
+            "live_price": 53585.0,
+            "mark_to_market": true
+          }
+        ],
         "regime": {
           "229200": "BEAR",
           "144600": "BEAR",
           "132030": "BEAR",
           "305720": "BEAR",
           "091170": "NEUTRAL",
-          "069500": "BULL",
           "364690": "BULL"
         },
-        "heat": 0.013592898982243478,
+        "heat": 0.0117531967618444,
         "dd": 0.0,
         "open_positions": 2,
-        "unrealized_profit": 0,
-        "realized_profit_ytd": -461520.0,
-        "realized_trades": 57,
-        "wins_ytd": 16,
-        "losses_ytd": 41,
-        "win_rate_pct": 28.1,
+        "unrealized_profit": -187910.0,
+        "realized_profit_ytd": -67260.0,
+        "realized_trades": 59,
+        "wins_ytd": 17,
+        "losses_ytd": 42,
+        "win_rate_pct": 28.8,
         "mdd_pct": null,
         "realized_source": "kis_domestic",
-        "cycles_ytd": 57,
-        "total_pl_ytd": -461520.0,
-        "profit_rate_ytd_pct": -1.67
+        "cycles_ytd": 59,
+        "total_pl_ytd": -255170.0,
+        "profit_rate_ytd_pct": -0.92,
+        "unrealized_drift_at_mtm": -90650.0
       },
       "us": {
         "value": 0,
@@ -289,17 +336,50 @@
         "total_pl_ytd": -187.28,
         "profit_rate_ytd_pct": -0.94
       },
-      "holdings": [],
+      "holdings": [
+        {
+          "ticker": "069500",
+          "quantity": 0,
+          "value": 0.0,
+          "avg_price": 0.0,
+          "current_price": 146910.0,
+          "profit": 0.0,
+          "profit_rate": 0,
+          "currency": "KRW"
+        },
+        {
+          "ticker": "091170",
+          "quantity": 141,
+          "value": 2142495.0,
+          "avg_price": 15250.0,
+          "current_price": 15315.0,
+          "profit": 9165.0,
+          "profit_rate": 0.42622950819672933,
+          "currency": "KRW"
+        },
+        {
+          "ticker": "305720",
+          "quantity": 97,
+          "value": 1619415.0,
+          "avg_price": 20209.4845,
+          "current_price": 16935.0,
+          "profit": -317624.9964999999,
+          "profit_rate": -16.202711652541158,
+          "currency": "KRW"
+        },
+        {
+          "ticker": "364690",
+          "quantity": 55,
+          "value": 2936725.0,
+          "avg_price": 49720.0,
+          "current_price": 53560.0,
+          "profit": 211200.0,
+          "profit_rate": 7.723250201126297,
+          "currency": "KRW"
+        }
+      ],
       "open_positions": {
         "kr": {
-          "069500": {
-            "entry_date": "2026-06-10T09:01:03.642217+09:00",
-            "entry_price": 126295.0,
-            "shares": 21,
-            "stop_price": 127471.78571428571,
-            "peak_price": 146945.0,
-            "risk_amount": 185060.01273497354
-          },
           "364690": {
             "entry_date": "2026-06-15T09:01:03.620319+09:00",
             "entry_price": 49720.0,
@@ -307,13 +387,21 @@
             "stop_price": 46586.42857142857,
             "peak_price": 53790.0,
             "risk_amount": 190103.99917494645
+          },
+          "091170": {
+            "entry_date": "2026-06-22T09:01:03.647440+09:00",
+            "entry_price": 15250.0,
+            "shares": 141,
+            "stop_price": 14261.714285714286,
+            "peak_price": 15250.0,
+            "risk_amount": 134284.23145195903
           }
         },
         "us": {}
       },
-      "stale_hours": 7.97255245314704,
-      "realized_trades": 64,
-      "cycles_ytd": 64,
+      "stale_hours": 6.9777402670515905,
+      "realized_trades": 66,
+      "cycles_ytd": 66,
       "mdd_pct": null
     },
     {
@@ -455,7 +543,7 @@
         "trend_pass_count": 20,
         "vcp_count": 1
       },
-      "stale_hours": 7.965746400223838,
+      "stale_hours": 65.46584454052979,
       "timestamp": "2026-06-19T22:32:05.779713",
       "unrealized_profit": 0,
       "realized_profit_ytd": 0,
@@ -663,6 +751,18 @@
       [
         "2026-06-19",
         -124304.8
+      ],
+      [
+        "2026-06-20",
+        -124304.8
+      ],
+      [
+        "2026-06-21",
+        -124304.8
+      ],
+      [
+        "2026-06-22",
+        -124304.8
       ]
     ],
     "korea_etf": [
@@ -856,7 +956,19 @@
       ],
       [
         "2026-06-19",
-        1602630.0
+        2076255.0
+      ],
+      [
+        "2026-06-20",
+        2076255.0
+      ],
+      [
+        "2026-06-21",
+        1432125.0
+      ],
+      [
+        "2026-06-22",
+        1766820.0
       ]
     ],
     "quant40": [
@@ -1050,7 +1162,19 @@
       ],
       [
         "2026-06-19",
-        2484177.91
+        2250332.51
+      ],
+      [
+        "2026-06-20",
+        2250332.51
+      ],
+      [
+        "2026-06-21",
+        2250332.51
+      ],
+      [
+        "2026-06-22",
+        2503093.8
       ]
     ],
     "jd_strategy": [
@@ -1244,7 +1368,19 @@
       ],
       [
         "2026-06-19",
-        -81380.03
+        -73720.15
+      ],
+      [
+        "2026-06-20",
+        -73720.15
+      ],
+      [
+        "2026-06-21",
+        -73720.15
+      ],
+      [
+        "2026-06-22",
+        -81999.7
       ]
     ],
     "dual_momentum": [
@@ -1438,7 +1574,19 @@
       ],
       [
         "2026-06-19",
-        260973.65
+        236407.8
+      ],
+      [
+        "2026-06-20",
+        236407.8
+      ],
+      [
+        "2026-06-21",
+        236407.8
+      ],
+      [
+        "2026-06-22",
+        262960.85
       ]
     ],
     "hybrid_vb_kr": [
@@ -1633,6 +1781,18 @@
       [
         "2026-06-19",
         -461520.0
+      ],
+      [
+        "2026-06-20",
+        -461520.0
+      ],
+      [
+        "2026-06-21",
+        -164520.0
+      ],
+      [
+        "2026-06-22",
+        -255170.0
       ]
     ],
     "hybrid_vb_us": [
@@ -1826,7 +1986,19 @@
       ],
       [
         "2026-06-19",
-        -285302.35
+        -258446.4
+      ],
+      [
+        "2026-06-20",
+        -258446.4
+      ],
+      [
+        "2026-06-21",
+        -258446.4
+      ],
+      [
+        "2026-06-22",
+        -287474.8
       ]
     ],
     "claude_bot": [
@@ -2020,6 +2192,18 @@
       ],
       [
         "2026-06-19",
+        0.0
+      ],
+      [
+        "2026-06-20",
+        0.0
+      ],
+      [
+        "2026-06-21",
+        0.0
+      ],
+      [
+        "2026-06-22",
         0.0
       ]
     ]
@@ -2217,6 +2401,18 @@
       [
         "2026-06-19",
         -405238.0
+      ],
+      [
+        "2026-06-20",
+        -405238.0
+      ],
+      [
+        "2026-06-21",
+        -10978.0
+      ],
+      [
+        "2026-06-22",
+        -10978.0
       ]
     ],
     "unrealized": [
@@ -2411,6 +2607,18 @@
       [
         "2026-06-19",
         4050241.96
+      ],
+      [
+        "2026-06-20",
+        4050241.96
+      ],
+      [
+        "2026-06-21",
+        3308851.96
+      ],
+      [
+        "2026-06-22",
+        3308851.96
       ]
     ],
     "total": [
@@ -2605,14 +2813,26 @@
       [
         "2026-06-19",
         3645003.96
+      ],
+      [
+        "2026-06-20",
+        3645003.96
+      ],
+      [
+        "2026-06-21",
+        3297873.96
+      ],
+      [
+        "2026-06-22",
+        3297873.96
       ]
     ]
   },
   "realized_pl": {
-    "_updated": "2026-06-20T05:03:05+09:00",
+    "_updated": "2026-06-22T09:15:04+09:00",
     "_year": 2026,
     "_source_mode": "both",
-    "_total_krw": -587204.8,
+    "_total_krw": -192944.8,
     "_total_usd": 131.86,
     "strategies": {
       "BTC_VB": {
@@ -2632,16 +2852,16 @@
       },
       "HYBRID_VB_KR": {
         "currency": "KRW",
-        "realized_ytd": -461520.0,
-        "trades_ytd": 57,
-        "wins_ytd": 16,
-        "losses_ytd": 41,
-        "win_rate_pct": 28.1,
+        "realized_ytd": -67260.0,
+        "trades_ytd": 59,
+        "wins_ytd": 17,
+        "losses_ytd": 42,
+        "win_rate_pct": 28.8,
         "mdd_pct": null,
         "last_trade": {
-          "ticker": "364690",
-          "exit_date": "20260615",
-          "pnl": -400.0
+          "ticker": "091170",
+          "exit_date": "20260622",
+          "pnl": -310.0
         },
         "source": "kis_domestic"
       },
@@ -2721,6 +2941,55 @@
     ]
   },
   "feed": [
+    {
+      "type": "trade_sell",
+      "title": "Sell Executed",
+      "body": "SELL confirmed: {'KRX_FWDG_ORD_ORGNO': {0: '91251'}, 'ODNO': {0: '0004138100'}, 'ORD_TMD': {0: '090109'}, 'SOR_ODNO': {0: ''}}",
+      "source": "HybridVB_KR",
+      "timestamp": "2026-06-22 09:01:09"
+    },
+    {
+      "type": "signal",
+      "title": "LONG Signal Active",
+      "body": "Step 3: Close \u2265 MA(5) \u2192 LONG signal active.",
+      "source": "VB_Strategy",
+      "timestamp": "2026-06-22 05:01:05"
+    },
+    {
+      "type": "signal",
+      "title": "Target Set",
+      "body": "Step 4: Breakout target = \u20a996,774,000 + 0.4 \u00d7 \u20a92,395,857 = \u20a997,732,343",
+      "source": "VB_Strategy",
+      "timestamp": "2026-06-22 05:01:05"
+    },
+    {
+      "type": "session",
+      "title": "Daily Run Started",
+      "body": "BTC VB Strategy \u2014 Daily Run 2026-06-22",
+      "source": "VB_Strategy",
+      "timestamp": "2026-06-22 05:00:04"
+    },
+    {
+      "type": "session",
+      "title": "Session Complete",
+      "body": "Done.",
+      "source": "VB_Strategy",
+      "timestamp": "2026-06-21 05:01:06"
+    },
+    {
+      "type": "signal",
+      "title": "NO SIGNAL \u2014 Bearish",
+      "body": "Step 3: Close < MA(5) \u2192 NO SIGNAL (bearish). Sitting in cash.",
+      "source": "VB_Strategy",
+      "timestamp": "2026-06-21 05:01:05"
+    },
+    {
+      "type": "session",
+      "title": "Daily Run Started",
+      "body": "BTC VB Strategy \u2014 Daily Run 2026-06-21",
+      "source": "VB_Strategy",
+      "timestamp": "2026-06-21 05:00:04"
+    },
     {
       "type": "session",
       "title": "Session Complete",
@@ -2881,56 +3150,7 @@
       "body": "MARKET BUY filled: 0.02958111 BTC at ~\u20a997,692,824 (pre: 0.00000000, post: 0.02958111)",
       "source": "VB_Strategy",
       "timestamp": "2026-06-15 06:19:20"
-    },
-    {
-      "type": "trade_buy",
-      "title": "Breakout Triggered",
-      "body": "BREAKOUT! \u20a997,575,000 \u2265 \u20a997,270,314",
-      "source": "VB_Strategy",
-      "timestamp": "2026-06-15 06:19:15"
-    },
-    {
-      "type": "trade_buy",
-      "title": "Breakout Triggered",
-      "body": "Step 7: Breakout triggered! Placing market buy for \u20a92,889,863...",
-      "source": "VB_Strategy",
-      "timestamp": "2026-06-15 06:19:15"
-    },
-    {
-      "type": "signal",
-      "title": "LONG Signal Active",
-      "body": "Step 3: Close \u2265 MA(5) \u2192 LONG signal active.",
-      "source": "VB_Strategy",
-      "timestamp": "2026-06-15 05:01:06"
-    },
-    {
-      "type": "signal",
-      "title": "Target Set",
-      "body": "Step 4: Breakout target = \u20a996,241,000 + 0.4 \u00d7 \u20a92,573,286 = \u20a997,270,314",
-      "source": "VB_Strategy",
-      "timestamp": "2026-06-15 05:01:06"
-    },
-    {
-      "type": "session",
-      "title": "Daily Run Started",
-      "body": "BTC VB Strategy \u2014 Daily Run 2026-06-15",
-      "source": "VB_Strategy",
-      "timestamp": "2026-06-15 05:00:05"
-    },
-    {
-      "type": "signal",
-      "title": "No Breakout Today",
-      "body": "No breakout within 1433 minutes. Target was \u20a998,154,314",
-      "source": "VB_Strategy",
-      "timestamp": "2026-06-15 04:54:28"
-    },
-    {
-      "type": "session",
-      "title": "Session Complete",
-      "body": "Done.",
-      "source": "VB_Strategy",
-      "timestamp": "2026-06-15 04:54:28"
     }
   ],
-  "mark_to_market_at": "2026-06-20 06:30 KST"
+  "mark_to_market_at": "2026-06-22 16:00 KST"
 }
