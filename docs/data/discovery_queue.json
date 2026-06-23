@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-06-23T06:30:24.451251+09:00",
+  "generated_at": "2026-06-23T16:00:10.272558+09:00",
   "stats": {
-    "total": 146,
-    "queued": 64,
+    "total": 152,
+    "queued": 70,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-06-23T06:30:24.451091+09:00",
+    "last_gc_at": "2026-06-23T16:00:10.272453+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -4236,6 +4236,175 @@
       "matched_keywords": [
         "cross-sectional",
         "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.20903",
+      "source": "arxiv",
+      "title": "Reinforcement Learning for Risk-Sensitive Investment Management: a Free Energy--Entropy Duality Approach",
+      "authors": [
+        "Sebastien Lleo",
+        "Wolfgang Runggaldier"
+      ],
+      "abstract": "This paper develops a reinforcement-learning approach to continuous-time risk-sensitive benchmarked asset allocation in a partly model-based setting. The benchmarked problem does not directly fit the standard Markovian stochastic-control template: the state is uncontrolled, whereas the terminal reward contains a controlled Itô integral. We use free energy-entropy duality to reformulate the problem as a linear-quadratic-Gaussian stochastic differential game under an equivalent probability measure, yielding explicit finite- and infinite-horizon saddle-point solutions. This structure guides a continuous-time $q$-learning actor-critic method: the quadratic value function motivates the critic, while the affine saddle-point controls motivate deterministic actors for the portfolio allocation and adversarial control. The learned allocation admits an economic interpretation through fractional Kelly decompositions. A proof-of-concept implementation calibrated to U.S. equity data shows that the actors learn the optimal policy with high accuracy and reveals a favorable asymmetry: the portfolio actor receives a cleaner learning signal than the auxiliary adversarial actor.",
+      "categories": [
+        "q-fin.PM",
+        "math.OC"
+      ],
+      "url": "https://arxiv.org/abs/2606.20903v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.20903v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-18",
+      "discovered": "2026-06-23",
+      "matched_keywords": [
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.22206",
+      "source": "arxiv",
+      "title": "Transaction Costs and Speed in the Ethereum Ecosystem: Scalability of the Mainnet and Layer 2s",
+      "authors": [
+        "Meghan Ambrosia",
+        "Bruce Mizrach"
+      ],
+      "abstract": "We study the evolution of transaction speed and fees from January 2024 through March 2026, comparing Ethereum Mainnet and its Layer 2 (L2) networks, as well as Solana and Polygon. Ethereum has undergone upgrades that have increased block size and blob count. These upgrades have doubled transactions per second (TPS) on both the Mainnet and the L2 networks. Mainnet median fees have fallen from over \\$2 to under \\$0.02, and L2 median fees have fallen more than 95% from \\$0.05 to \\$0.0015. We forecast that Mainnet median fees will converge with Solana in August 2027, but TPS will remain below 100 until 2034. The L1 Strawmap, proposing EIP-7938, a potential exponential increase in the gas limit, brings the Mainnet to only 100 TPS in January 2028. With continued blob expansion, L2s will surpass Solana TPS in March 2029 and have lower median fees by October 2026.",
+      "categories": [
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2606.22206v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.22206v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-20",
+      "discovered": "2026-06-23",
+      "matched_keywords": [
+        "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.21784",
+      "source": "arxiv",
+      "title": "KineticSim: A Lightweight, High-Performance Execution Engine for Real-Time Market Simulators",
+      "authors": [
+        "Shakya Jayakody",
+        "Prarthinie Jayakody"
+      ],
+      "abstract": "Simulating financial markets at scale with multi-agent (Agent-Based) models is critical for market design, regulatory stress-testing, and reinforcement learning, but traditional CPU simulators are bottlenecked by sequential processing while vectorized GPU frameworks suffer from kernel-launch overhead and redundant global-memory round-trips. We formalize, analyze, and evaluate a reusable parallel design pattern: persistent, state-carrying clearing for iterative multi-agent reductions. By caching mutable simulation state in thread-block shared memory across step boundaries, aggregating agent actions via shared-memory atomics, and resolving the clearing function cooperatively, the pattern reduces the per-step critical-path depth from Theta(L+A) for sequential clearing (L price-grid ticks, A agents) to Theta(log L + ceil(A/L)) and makes global-memory traffic independent of the step count. We implement this in KineticSim, a lightweight GPU execution engine that simulates massive ensembles of limit-order books in parallel, reaching a peak throughput of over 54.7 billion agent-events per second. On a fixed workload it delivers speedups of 3406x over CPU (NumPy), 27.8x over PyTorch GPU, 42.8x over JAX GPU, and 8.4x over a naive custom CUDA baseline, while using roughly an order of magnitude less GPU memory than PyTorch. Across 53 configurations the two custom CUDA engines produce bitwise-identical order books, and aggregate statistics match the CPU reference to within 0.1%. The pattern generalizes to other iterative multi-agent workloads requiring state-persistent, block-localized reductions.",
+      "categories": [
+        "cs.DC",
+        "cs.PF",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2606.21784v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.21784v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-19",
+      "discovered": "2026-06-23",
+      "matched_keywords": [
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.23492",
+      "source": "arxiv",
+      "title": "Continuous Hidden Markov Models for Equity Returns: Heavy-Tail Emission Families and Regime-Conditional Value-at-Risk",
+      "authors": [
+        "Abdulrahman Alswaidan",
+        "Cade Jin",
+        "Jeffrey D. Varner"
+      ],
+      "abstract": "Synthetic generators of daily equity returns let practitioners stress test, backtest, and design scenarios that a single realized market history cannot supply, but only if the generator reproduces the stylized facts of real returns: heavy tails, negligible linear autocorrelation, and slow decay of the absolute-return autocorrelation. Hidden Markov models with few Gaussian states were long thought unable to reproduce that slow decay, and the standard fix was to abandon them for more complex hidden semi-Markov models. We revisit this issue with a continuous hidden Markov model whose regime chain governs the autocorrelation while per-regime densities govern the marginal, separating the temporal and distributional sides of the original failure. A unified expectation-maximization framework fits Gaussian, Student-t, Laplace, and generalized-error emissions under shared forward-backward recursions and quantile-based initialization, and a spectral identity bounds the number of decay modes by the rank of the centred transition matrix. Across SPY walk-forward folds, a sector-balanced 30-ticker panel, a CRSP cross-decade transfer, and a six-asset basket, that bound was not binding once a few states were used: heavy-tailed marginals, not additional decay modes, closed most of the fit gap, recovering volatility clustering above the i.i.d. baseline and narrowing the kurtosis gap without a tuning hyperparameter. The original failure is therefore distributional, not temporal. On daily US equities, a simple, interpretable Markov model suffices, and unlike a bootstrap or semi-Markov fit that wins only on a single-window fit, the fitted model also yields a regime-conditional Value-at-Risk that passes a joint conditional-coverage test and a copula that reproduces cross-asset correlations: one interpretable generator serving both path simulation and downstream risk and portfolio tasks.",
+      "categories": [
+        "q-fin.ST",
+        "q-fin.CP",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2606.23492v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.23492v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-22",
+      "discovered": "2026-06-23",
+      "matched_keywords": [
+        "regime",
+        "walk-forward"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.22719",
+      "source": "arxiv",
+      "title": "Leakage-Aware Benchmarking of LLM Forecasting: Real-Time Nowcasts as the Decision-Time Input for Macro Factor Ranking",
+      "authors": [
+        "Mao Guan",
+        "Qian Chen"
+      ],
+      "abstract": "Forecasting benchmarks for retrieval-augmented LLMs routinely confound model capability with information leakage: features labeled with a target's timestamp are often not observable at the system's decision time. We study leakage-controlled equity factor ranking with a retrieval-augmented 7B open-source LLM forecaster. At each month-end from 2023-04 to 2026-03, the forecaster observes only decision-time information: lag-shifted FRED macro variables, recent macro-event summaries, and the Cleveland Fed's archived daily CPI nowcast for unreleased current-month inflation. A macro-analog retrieval module selects historical states, a critic LLM compresses them into one tactical rule, and an actor LLM maps the current state and recent rules into scores for seven U.S. equity style factors. The full pipeline obtains a median monthly Spearman rank IC of +0.154, with positive means across three non-overlapping contiguous 12-month subwindows; the mean IC remains statistically underpowered, with a bootstrap 95% confidence interval that includes zero. Non-LLM baselines under the same decision-time constraint demonstrate that a kNN macro-analog model recovers a comparable median IC, indicating that real-time inflation information and macro-similar retrieval explain much of the median signal. The LLM pipeline retains higher mean IC and a stronger long-short allocation sanity check, suggesting that any marginal benefit is concentrated in the extreme rankings that drive long-short portfolio formation. A descriptive audit of the 36 critic rules and per-month case studies appears in the appendix.",
+      "categories": [
+        "q-fin.ST",
+        "cs.AI"
+      ],
+      "url": "https://arxiv.org/abs/2606.22719v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.22719v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-21",
+      "discovered": "2026-06-23",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.22162",
+      "source": "arxiv",
+      "title": "Temporal Coarse-Graining of Multi-Sector Default Count Data Generates Posterior-Implied Copulas",
+      "authors": [
+        "Shintaro Mori"
+      ],
+      "abstract": "Sectoral default dependence is usually described by a static correlation matrix, a static copula, or a small number of common factors. Such representations, when specified separately at each observation horizon, do not by themselves explain why the effective dependence observed in monthly credit data differs from that observed after annual aggregation. This paper proposes a dynamic low-rank state-space model for monthly multi-sector default-count data and studies the dependence structure induced by temporal coarse-graining. The leading eigenvectors of the monthly sectoral default-rate correlation matrix are used as fixed loading directions for persistent AR(1) latent credit-state factors, and defaults are modeled through a binomial observation layer. Survival aggregation of monthly posterior probability paths induces horizon-dependent distributions of sectoral default-probability vectors, from which effective correlation matrices, eigenvalue spectra, and posterior-implied rank copulas are obtained. Applied to S\\&P monthly sector-level default-count data from 1981--01 to 2021--09, a two-factor specification captures the dominant market-wide and sector-rotation modes, reproduces the annual amplification of the leading eigenvalues, and generates heterogeneous copula structures across sector pairs. In an annual forecast evaluation, the dynamic factor specifications reduce the under-dispersion of static binomial and beta-binomial baselines, improving interval coverage and CRPS for aggregate portfolio counts. In log-score-based forecast comparisons, the one-factor specification is highly competitive, whereas the two-factor specification improves sector-level calibration as measured by per-sector CRPS.",
+      "categories": [
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2606.22162v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.22162v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-20",
+      "discovered": "2026-06-23",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
