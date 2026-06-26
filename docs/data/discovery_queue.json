@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-06-26T06:30:13.546794+09:00",
+  "generated_at": "2026-06-26T16:00:18.800175+09:00",
   "stats": {
-    "total": 155,
-    "queued": 73,
+    "total": 157,
+    "queued": 75,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-06-26T06:30:13.546674+09:00",
+    "last_gc_at": "2026-06-26T16:00:18.800048+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -4495,6 +4495,67 @@
       "discovered": "2026-06-25",
       "matched_keywords": [
         "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.26815",
+      "source": "arxiv",
+      "title": "Data-Driven Duration Management -- Term Structure Forecasting Using Machine Learning",
+      "authors": [
+        "Tobias Lausser",
+        "Joao Eduardo Vuolo",
+        "Rudi Zagst"
+      ],
+      "abstract": "This paper compares different methods for forecasting the term structure of U.S. and European zero-coupon government bonds using both traditional econometric and Machine Learning (ML) approaches. We compare classical models (e.g., Dynamic Nelson-Siegel (DNS) and Principal Component Analysis (PCA)) with different Neural Network (NN) architectures, including those inspired by the classical models, on the U.S. Treasury market and bonds issued by the European Central Bank (ECB). To enhance predictive performance, macroeconomic variables are incorporated. The findings for both markets are separately analyzed and compared. To this end, we propose a robust model evaluation framework combining statistical accuracy metrics - such as RMSE, MAE, and directional accuracy - with the economic relevance of a quantitative bond trading strategy. Results show that NNs consistently outperform traditional models in both forecasting accuracy and portfolio performance. For the U.S., the most effective approach is a direct-forecasting NN that incorporates DNS factors to reduce the dimensionality of zero-rate data and an Autoencoder (AE) to extract macroeconomic features, while for Europe, the optimal model is a factor-based NN using PCA-derived zero-rate factors without the integration of macroeconomic variables. Overall, the paper demonstrates how combining traditional modeling approaches with modern ML techniques and evaluation can improve yield curve forecasts and support applications in fixed-income portfolio construction.",
+      "categories": [
+        "q-fin.PM",
+        "q-fin.CP",
+        "stat.ML"
+      ],
+      "url": "https://arxiv.org/abs/2606.26815v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.26815v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-25",
+      "discovered": "2026-06-26",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.26625",
+      "source": "arxiv",
+      "title": "Portfolio Optimization for Commodity ETFs under Heavy-Tailed Returns",
+      "authors": [
+        "Nicholas Appiah",
+        "Ali Jaffri",
+        "Dilmi C. W. Hettiachchi-Halpe-Kankanamalage",
+        "Svetlozar T. Rachev"
+      ],
+      "abstract": "This paper examines portfolio optimization for commodity exchange-traded funds (ETFs) under heavy-tailed return behavior. Using daily Bloomberg data for 30 U.S.-listed commodity ETFs from 12 December 2018 to 16 December 2024, we study funds spanning agriculture, energy, metals, and broad commodity index exposure. We compare a passive buy-and-hold portfolio with rolling-window optimized portfolios formed under mean--variance and conditional value-at-risk (CVaR) criteria, considering both long-only and restricted long--short strategies. The results showed substantial heterogeneity across commodity sectors, with energy and broad commodity index funds displaying pronounced volatility, skewness, and excess kurtosis. Historical optimization indicated that minimum-risk and CVaR-based portfolios provided more stable cumulative performance than tangent portfolios and generally improved Sharpe, Calmar, and STARR$_{0.95}$ ratios. Extreme-value diagnostics showed that optimized portfolios remained exposed to heavy downside tails, so improved risk-adjusted performance did not eliminate extreme-loss risk. A dynamic extension based on ARMA--GARCH marginal models, Student--$t$ copula dependence, and one-step-ahead predictive scenarios improved performance mainly when combined with minimum-risk or CVaR-based objectives. Dynamic mean--variance tangent portfolios performed less reliably, reflecting sensitivity to expected-return estimation error. Transaction-cost robustness checks further showed that the practical value of dynamic optimization depended on turnover control, with low-turnover dynamic CVaR tangent portfolios remaining more resilient to implementation costs. Overall, the analysis showed that commodity ETF allocation benefited most from conservative and downside-risk-aware optimization, while optimized portfolios continued to require explicit tail-risk and implementation diagnostics.",
+      "categories": [
+        "q-fin.PM",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2606.26625v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.26625v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-25",
+      "discovered": "2026-06-26",
+      "matched_keywords": [
+        "ETF",
+        "commodity"
       ],
       "status": "queued",
       "ingested_into": null,
