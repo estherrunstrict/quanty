@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-06-27T06:30:10.962208+09:00",
+  "generated_at": "2026-06-29T16:00:12.837884+09:00",
   "stats": {
-    "total": 157,
-    "queued": 75,
+    "total": 158,
+    "queued": 76,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-06-27T06:30:10.962102+09:00",
+    "last_gc_at": "2026-06-29T16:00:12.837775+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -4556,6 +4556,33 @@
       "matched_keywords": [
         "ETF",
         "commodity"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.27932",
+      "source": "arxiv",
+      "title": "(In)Efficient Market States and Rough Volatility Detected via Grunwald-Letnikov Fractional Derivative",
+      "authors": [
+        "Daniele Angelini"
+      ],
+      "abstract": "Testing self-similarity in fractional processes from a single observed trajectory is difficult under long-range dependence, because the associated Kolmogorov--Smirnov (KS) statistic undergoes a phase transition when $H>1/2$. In this regime, the classical limit collapses to a non-functional absolute Gaussian law and finite-sample convergence becomes severely distorted. This paper introduces a regime-adaptive KS/GL--KS framework based on the discrete Grünwald--Letnikov (GL) fractional derivative. The GL filter removes the low-frequency long-memory singularity while preserving the finite-dimensional $H$-self-similarity needed for distributional identification. We derive the filtered empirical-process limit, prove consistency and local asymptotic behavior of the resulting Hurst estimator, and validate the method through Monte Carlo simulations. Financial applications to realized volatility and equity index prices show how the procedure detects rough volatility and persistent, anti-persistent, or efficient market states.",
+      "categories": [
+        "q-fin.ST",
+        "q-fin.MF"
+      ],
+      "url": "https://arxiv.org/abs/2606.27932v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.27932v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-26",
+      "discovered": "2026-06-29",
+      "matched_keywords": [
+        "regime"
       ],
       "status": "queued",
       "ingested_into": null,
