@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-06-30T06:30:11.656692+09:00",
+  "generated_at": "2026-06-30T16:00:14.580126+09:00",
   "stats": {
-    "total": 158,
-    "queued": 76,
+    "total": 162,
+    "queued": 80,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-06-30T06:30:11.656572+09:00",
+    "last_gc_at": "2026-06-30T16:00:14.580021+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -4581,6 +4581,120 @@
       "year": 2026,
       "published": "2026-06-26",
       "discovered": "2026-06-29",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.29591",
+      "source": "arxiv",
+      "title": "The Bounce Has No Direction: Sign, Magnitude, and the Microstructure of Equity Return Predictability",
+      "authors": [
+        "Victoria Portnaya"
+      ],
+      "abstract": "SPY's lag-1 return autocorrelation ($\\hatρ(1)=-0.081$, $z=-7.4$) is among the most significant regularities in empirical equity finance, yet the standard variance-ratio (VR) test cannot determine whether it reflects directional reversal or magnitude shrinkage - phenomena with entirely different trading implications. We develop the Fourier-Residue Identity (FRI), which decomposes return autocorrelation into a sign ($k=2$) and a magnitude ($k=4$) channel, each independently testable and neither redundant. Applied to six US instruments over 1993--2026 and a 21-instrument cross-asset panel, the FRI delivers a sharp microstructure diagnosis. The lag-1 autocorrelation in SPY is driven entirely by magnitude: the FRI sign test is insignificant ($p=0.11$) while the full test achieves $p<10^{-12}$. A large move yesterday predicts a smaller move today regardless of direction - the fingerprint of bid-ask bounce and non-synchronous constituent staleness, not directional reversal. At lag 3, a significant directional reversal ($p=0.02$) invisible to the scalar ACF reveals a separate partial-price-adjustment channel. We prove the Fejer identity VR(q)=1+2C_q (confirmed to <0.001 on all series), giving the Lo-MacKinlay test a spectral interpretation, and introduce a subsample diagnostic R_N=G_{N/2}/G_N that classifies equity autocorrelation as structural (R_N->1) rather than sampling noise (R_N->sqrt(2)). The cross-asset panel shows mean reversion confined to exchange-traded equities and sovereign bonds; credit ETFs, commodities, FX, and crypto are indistinguishable from random walks. All estimators pass 27 unit tests; Monte Carlo confirms correct 5% size under GARCH.",
+      "categories": [
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2606.29591v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.29591v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-28",
+      "discovered": "2026-06-30",
+      "matched_keywords": [
+        "mean reversion",
+        "ETF"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.30037",
+      "source": "arxiv",
+      "title": "Heads, Not Backbones: Output Heads Dominate Architectures on Fat-Tailed Returns",
+      "authors": [
+        "Sichao He",
+        "Yansong Zhang"
+      ],
+      "abstract": "In a deep forecasting pipeline for fat-tailed financial returns at short horizons, which matters more - the backbone architecture or the output head? We compare four modern backbones (TimesNet, DLinear, N-BEATS, iTransformer) under three output heads: a point head, a single-Gaussian density head, and a Gaussian mixture density head with K=4 components. On S and P 500 monthly log-returns (1871-2023) under anchored walk-forward validation, the three heads form a strict gradient: switching from point to Gaussian improves CRPS by about 1.3 percent; switching from Gaussian to mixture adds a further about 2.4 percent. Switching between backbones, in contrast, changes CRPS by less than 1.5 percent on the point-head row and on the backbone-mean axis; density-head backbone spread is larger (up to 5.1 percent on the h=1 Gaussian row, driven by N-BEATS) but the head gradient (3.7 percentage points) still dominates. The Model Confidence Set on squared errors does not exclude any of the 12 variants at the 5 percent level: the head separates them only on distributional metrics (CRPS, pinball, coverage), not on squared error. The mixture head incremental value over a single Gaussian is largest in the highest-volatility regimes (13.9 percent in 1970s stagflation at h=12), confirming the mixture captures tail risk beyond what a unimodal Gaussian can express. The picture is horizon-dependent: the head dominates at short horizons, but at long horizons (h >= 6) the backbone re-takes the lead - an h-split we document against classical baselines (section 5.1). We conclude that on fat-tailed returns at short horizons, the head dominates the backbone, and the mixture distribution adds genuine value over a single Gaussian during crisis periods when risk-management decisions actually matter.",
+      "categories": [
+        "cs.LG",
+        "q-fin.RM",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2606.30037v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.30037v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-29",
+      "discovered": "2026-06-30",
+      "matched_keywords": [
+        "regime",
+        "walk-forward"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.29406",
+      "source": "arxiv",
+      "title": "Adaptive AI Delegation under Uncertainty: A Bayesian Governance Policy for Sequential Decision Authority",
+      "authors": [
+        "Matthew Francis Dixon"
+      ],
+      "abstract": "Organizations increasingly use large language models and agentic AI systems to generate probabilistic assessments and candidate actions in high-consequence settings. This creates a managerial problem distinct from prediction: how should organizations allocate decision authority to AI-generated recommendations as evidence quality, uncertainty, and organizational objectives evolve over time? Existing AI governance frameworks emphasize transparency, documentation, oversight, and regulatory compliance, but provide limited quantitative guidance for dynamically allocating decision authority under uncertainty. To address this challenge, we formulate adaptive AI delegation as a Governance-Aware Partially Observable Markov Decision Process (POMDP) in which Bayesian inference estimates the informational state and sequential optimization determines delegated AI authority. The paper also develops a quantitative validation and benchmarking framework for governance policies. Synthetic stress tests, reported LLM-confidence robustness, forecast-accuracy validation, governance-appetite sensitivity, and fragile-AI early-warning experiments evaluate whether the proposed policy exhibits graceful degradation, robustness to confidence-only perturbations, adaptive delegation under improving evidence quality, and interpretable calibration of institutional conservatism. The Governance-Aware POMDP is further benchmarked against five representative governance strategies operating under identical Bayesian beliefs, information, and governance objectives. The results show that while specialized heuristics perform well in stationary settings, sequential Bayesian governance provides the strongest general-purpose governance policy across heterogeneous AI-quality regimes by adaptively allocating organizational decision authority under uncertainty.",
+      "categories": [
+        "q-fin.RM",
+        "math.OC"
+      ],
+      "url": "https://arxiv.org/abs/2606.29406v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.29406v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-28",
+      "discovered": "2026-06-30",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.28706",
+      "source": "arxiv",
+      "title": "Balancing Shareholder Value and Financial Stability under a Reduced-Form Liquidation Model",
+      "authors": [
+        "Benjamin Avanzi",
+        "Bernard Wong",
+        "Jinxia Zhu"
+      ],
+      "abstract": "Modern resolution and prudential regimes increasingly wind up a distressed firm not at a single hard threshold but through a graduated, state-dependent process. We study how the design of such a regime shapes the trade-off between shareholder value and financial stability for a firm whose surplus follows a general diffusion. Forced liquidation is modelled in reduced form, arriving at a surplus-dependent hazard rate that rises as the firm's position deteriorates. The framework has three regions: an unregulated region where dividends may be paid, a regulated region where solvency requirements prohibit distributions, and a distress region in which the firm faces the liquidation hazard. To quantify shareholder value we solve the resulting singular stochastic control problem: which is to maximise the expected present value of distributions until liquidation. We establish a verification theorem, prove that a barrier strategy is optimal, and obtain tractable expressions for the value function and the expected survival time, so that alternative designs can be compared at low cost. We show that a distress region placed solely below or solely above the classical ruin threshold does not consistently improve both shareholder value and firm survival, whereas combining the two yields a Pareto improvement. Regulatory design is decisive.",
+      "categories": [
+        "q-fin.MF",
+        "math.OC",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2606.28706v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.28706v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-27",
+      "discovered": "2026-06-30",
       "matched_keywords": [
         "regime"
       ],
