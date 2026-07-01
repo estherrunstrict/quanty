@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-01T06:30:13.950156+09:00",
+  "generated_at": "2026-07-01T16:00:11.336042+09:00",
   "stats": {
-    "total": 162,
-    "queued": 80,
+    "total": 165,
+    "queued": 83,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-07-01T06:30:13.950055+09:00",
+    "last_gc_at": "2026-07-01T16:00:11.335931+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -4696,6 +4696,89 @@
       "published": "2026-06-27",
       "discovered": "2026-06-30",
       "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.31387",
+      "source": "arxiv",
+      "title": "Signature-Based Optimal Execution for Statistical Arbitrage with Path-Dependent Trading Signals",
+      "authors": [
+        "Gianmarco Morbelli",
+        "Sven Karbach",
+        "Mike Derksen"
+      ],
+      "abstract": "We develop a signature-based framework for optimal execution in statistical arbitrage strategies with path-dependent predictive signals. Both the alpha process and the trading speed are modelled as linear functionals of the truncated signature of a time-augmented market path, placing signal generation and execution on the same truncated signature basis. This allows the trading rule to react to the realised history of the signal while accounting for temporary impact, inventory exposure, terminal liquidation, and approximate dollar neutrality The main contribution is a quadratic reduction theorem: within the class of signature-linear trading speeds, the restricted path-dependent execution problem becomes a finite-dimensional concave quadratic programme in the policy coefficients. After running synthetic experiments under a mean-reverting log-spread model, we find that the fitted policy achieves a higher return on turnover than a z-score classical threshold benchmark. We shows how the same workflow can be deployed on a historical equity pairs-trading backtest, where the fitted signature policy again outperforms the benchmark in accounting terms.",
+      "categories": [
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2606.31387v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.31387v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-30",
+      "discovered": "2026-07-01",
+      "matched_keywords": [
+        "statistical arbitrage"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.31251",
+      "source": "arxiv",
+      "title": "Regime-Conditional Distributional Comparison of Trading Strategies: A GAMLSS/ZAGA Framework Applied to the S&P 500",
+      "authors": [
+        "Krzysztof Ozimek"
+      ],
+      "abstract": "Conventional comparisons of algorithmic trading strategies reduce each performance metric to a single number over the full backtest horizon, thereby discarding information about how performance varies with market conditions. This paper proposes a distributional framework that addresses this shortcoming. A walk-forward backtest of 146 out-of-sample folds on the S&P 500 (2002--2025) is used to compute the Adjusted Information Ratio ($IR^{\\ast}$) for a polynomial Support Vector Machine strategy (SVMP) and a buy-and-hold benchmark (BH) in each fold. The resulting $IR^{\\ast}$ sequences are modelled jointly via a Generalised Additive Model for Location, Scale and Shape (GAMLSS) with a Zero-Adjusted Gamma (ZAGA) response, with distributional parameters conditioned on market regime covariates: realised volatility and cumulative market momentum. Strategy comparison is conducted through (i) regime-specific differences in expected $IR^{\\ast}$ ($ΔE$) and its variance ($ΔVar$), derived analytically from the fitted ZAGA parameters, and (ii) parametric bootstrap tests of three null hypotheses concerning $E(IR^{\\ast})$, $Var(IR^{\\ast})$, and their ratio, evaluated at six representative market regimes. The results demonstrate that the dominance relationship between SVMP and BH is conditional on market regime. The proposed GAMLSS/ZAGA framework constitutes a methodologically rigorous and practically interpretable alternative to conventional strategy evaluation.",
+      "categories": [
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2606.31251v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.31251v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-30",
+      "discovered": "2026-07-01",
+      "matched_keywords": [
+        "momentum",
+        "regime",
+        "walk-forward"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.31122",
+      "source": "arxiv",
+      "title": "Generating Plausible Stress Scenarios via Large Deviations",
+      "authors": [
+        "Anand Deo"
+      ],
+      "abstract": "Financial stress tests based on handpicked scenarios can mislead risk management by overlooking genuinely dangerous configurations or overemphasising shocks that are too implausible to be decision-relevant. We develop a systematic method for generating plausible stress scenarios for financial losses driven by exogenous risk factors. The method exploits a large-deviations principle: conditional on a large loss, the risk factors concentrate near the most likely stress configurations. We use this structure to define representative stress distributions and to extrapolate observed samples into more extreme scenarios while preserving the relative plausibility of stress mechanisms. As a result, the procedure can generate informative stress scenarios even when historical data contain few or no observations in the stressed regime. Numerical experiments on two financial network models show that the method recovers the stressed loss law and key stress diagnostics, including in settings where benchmark generators fail to generate any stressed samples.",
+      "categories": [
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2606.31122v1",
+      "pdf_url": "https://arxiv.org/pdf/2606.31122v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-30",
+      "discovered": "2026-07-01",
+      "matched_keywords": [
+        "factor",
         "regime"
       ],
       "status": "queued",
