@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-02T06:31:44.848887+09:00",
+  "generated_at": "2026-07-02T16:00:08.101427+09:00",
   "stats": {
-    "total": 165,
-    "queued": 83,
+    "total": 167,
+    "queued": 85,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-07-02T06:31:44.848790+09:00",
+    "last_gc_at": "2026-07-02T16:00:08.101335+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -4779,6 +4779,67 @@
       "discovered": "2026-07-01",
       "matched_keywords": [
         "factor",
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.00475",
+      "source": "arxiv",
+      "title": "End-to-End Parametric Portfolio Policies for Cross-Asset Futures Timing: When Do AI Models Beat Simple Rules?",
+      "authors": [
+        "Austin Pollok",
+        "Kevin Robik"
+      ],
+      "abstract": "Timing-based tilts across asset classes can drive much of the risk and return of a diversified cross-asset portfolio. The standard approach forecasts returns and then optimizes weights. We instead study an end-to-end AI-based policy that maps market states directly to portfolio weights, and we then ask when this one-step modeling approach outperforms simple rules-based strategies. We train these policies on the sixteen most liquid CME futures, where an edge is unlikely to be due to illiquidity, using a differentiable Sharpe ratio loss function, and we benchmark them against equal weighting, risk parity, and time-series momentum. The learned policies rank above the rules on the pooled cross-asset portfolio and in several sub-asset classes, but not uniformly. In gross terms, an LSTM and a transformer-based architecture perform comparably out-of-sample, but diverge when we consider transaction costs. The transformer generates the stronger learned policy, trades far less than the LSTM, and matches or exceeds equal weighting through moderate cost.",
+      "categories": [
+        "q-fin.ST",
+        "q-fin.PM",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2607.00475v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.00475v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-01",
+      "discovered": "2026-07-02",
+      "matched_keywords": [
+        "momentum",
+        "risk parity",
+        "time-series momentum",
+        "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.01198",
+      "source": "arxiv",
+      "title": "When large trades are not news: Liquidity tail risk and price discovery",
+      "authors": [
+        "Umut Çetin",
+        "Mingwei Lin",
+        "Giulia Livieri"
+      ],
+      "abstract": "When is a large trade news, and when is it a liquidity shock? We study this question in a sequential competitive limit order book with asymmetric information. In our model, liquidity suppliers observe aggregate order flow but not its decomposition into informed demand and uninformed liquidity demand. We model uninformed order flow with Student-$t$ tails, interpreted as a reduced form for rare liquidity regimes. The tail index of liquidity demand determines how informative large trades are. With thin-tailed noise, large order imbalances are quickly interpreted as private information. With heavy-tailed liquidity demand, the same imbalances remain plausibly liquidity-driven. This liquidity-tail ambiguity flattens and concavifies price impact, slows learning from order flow, and delays the decline of adverse-selection premia. We characterize equilibrium through a fixed-point equation for the marginal-cost schedule. Heavy-tailed liquidity demand changes the mathematics of equilibrium: the Gaussian monotonicity and compactness arguments fail because remote liquidity states remain pricing-relevant at polynomial order. We construct fixed points on a tail-controlled compact class and study learning and large-order asymptotics along selected monotone branches. Repeated order flow reveals the fundamental value under stable information-rate conditions, but heavier liquidity tails slow finite-horizon price discovery. Large-order impact obeys regular-variation asymptotics whose exponents depend on the liquidity-tail index, informed competition, and posterior beliefs. The model identifies liquidity tail risk as a state variable for market impact, spread resilience, and the informativeness of large trades.",
+      "categories": [
+        "q-fin.TR",
+        "q-fin.MF"
+      ],
+      "url": "https://arxiv.org/abs/2607.01198v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.01198v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-01",
+      "discovered": "2026-07-02",
+      "matched_keywords": [
         "regime"
       ],
       "status": "queued",
