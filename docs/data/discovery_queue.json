@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-03T06:30:43.913804+09:00",
+  "generated_at": "2026-07-03T16:00:11.096730+09:00",
   "stats": {
-    "total": 167,
-    "queued": 85,
+    "total": 170,
+    "queued": 88,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-07-03T06:30:43.913645+09:00",
+    "last_gc_at": "2026-07-03T16:00:11.096612+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -4841,6 +4841,96 @@
       "discovered": "2026-07-02",
       "matched_keywords": [
         "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.01550",
+      "source": "arxiv",
+      "title": "Is Trend Still Your Friend?: A Microstructural Account of the Demise of Short-Term Trend-Following",
+      "authors": [
+        "Jutta G. Kurth",
+        "Zoltan Eisler",
+        "Adam Rej",
+        "Jean-Philippe Bouchaud"
+      ],
+      "abstract": "Systematic trend following has, on average, been profitable for at least two centuries; yet since approximately 2009, short-term trends have ceased to deliver reliable returns. Using a cross-section of roughly 100 liquid futures contracts spanning 1995-2025, together with an industry-representative CTA proxy, we document the break and characterise its dependence on signal speed and asset class. We evaluate four candidate explanations - capacity constraints, market electronification, a regime change in CTA-versus-order-flow interactions, and a microstructural mechanism - and find that the first three fail on grounds of timing, magnitude, or cross-sectional heterogeneity. Our central empirical finding is that the cross-sectional variable distinguishing degraded from surviving trends is the volatility-normalised tick size: post-2008 trend PnL has collapsed on small-tick contracts across all signal horizons, while remaining essentially intact on large-tick ones. Neither asset class nor liquidity replicates this dichotomy. We interpret this result through a self-fulfilling feedback loop that, in our view, lies at the heart of the trend anomaly itself: trend signals trigger directional trades, whose market impact reinforces the very price moves that generated the signal. Both the profitability and the persistence of trend are sustained by this impact channel, which requires that trend followers can execute aggressively at reasonable cost. We argue that the post-crisis transition to HFT-dominated market making, whose liquidity-withdrawal behaviour in front of predictable directional flow has sharply contrasting consequences for sparse (small-tick) and dense (large-tick) limit order books, has broken this loop on small-tick contracts. On large-tick contracts, residual depth remains sufficient, and the loop continues to operate.",
+      "categories": [
+        "q-fin.TR",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2607.01550v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.01550v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-02",
+      "discovered": "2026-07-03",
+      "matched_keywords": [
+        "regime",
+        "cross-sectional"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.01377",
+      "source": "arxiv",
+      "title": "Liquidity Premium and Investment Horizons",
+      "authors": [
+        "Irene Aldridge"
+      ],
+      "abstract": "We estimate Kyle's (1985) price-impact coefficient $λ$ directly from daily equity order flow and test its ability to forecast the cross-section of subsequent stock returns. Using CRSP data from 2020 to 2025, we construct firm-month measures of signed order flow and two estimators of $\\hatλ_{it}$: a within-month price-impact regression and an Amihud-style ratio. Signed order flow strongly predicts contemporaneous and one-month-ahead returns, while volume volatility predicts lower subsequent returns, consistent with widening price impact degrading price discovery. Fama-MacBeth regressions confirm that our order-flow signal carries significant cross-sectional return information after Newey--West adjustment. Theoretically, we resolve the liquidity premium puzzle of Constantinides (1986) through an adverse-selection mechanism: low order flow widens $λ$ and depresses prices today; subsequent normalization restores prices, generating the illiquidity premium without risk-based compensation.",
+      "categories": [
+        "econ.EM",
+        "q-fin.PR",
+        "q-fin.ST",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2607.01377v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.01377v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-01",
+      "discovered": "2026-07-03",
+      "matched_keywords": [
+        "cross-sectional"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.01765",
+      "source": "arxiv",
+      "title": "A Cap-Axis Integral Diagnostic of Factor Models",
+      "authors": [
+        "Useong Shin"
+      ],
+      "abstract": "I propose a cap-axis integral diagnostic for factor-model evaluation. Low-dimensional factor models can improve the maximum-Sharpe frontier while leaving zero-alpha violations on economically fixed subspaces. The diagnostic studies one such subspace by lifting pricing errors into a bridge-alpha curve along the market-capitalization rank axis. Under an aggregate-market gate, a zero curve is equivalent to pricing the market's internal cap-rank subspace. In 1967-2024 CRSP data, q5's daily negative bridge attenuates under lead-lag correction, while Fama-French and Carhart bridges are more visible monthly. Across 154 factors, the cap-axis norm is distinct from Sharpe gain and size exposure.",
+      "categories": [
+        "q-fin.GN",
+        "q-fin.CP",
+        "q-fin.MF",
+        "q-fin.PR",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2607.01765v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.01765v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-02",
+      "discovered": "2026-07-03",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
