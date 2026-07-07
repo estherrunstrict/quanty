@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-07T06:30:14.558293+09:00",
+  "generated_at": "2026-07-07T16:00:11.477067+09:00",
   "stats": {
-    "total": 170,
-    "queued": 88,
+    "total": 179,
+    "queued": 97,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-07-07T06:30:14.558118+09:00",
+    "last_gc_at": "2026-07-07T16:00:11.476955+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -4931,6 +4931,276 @@
       "discovered": "2026-07-03",
       "matched_keywords": [
         "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.04958",
+      "source": "arxiv",
+      "title": "Look-Ahead-Freedom as Temporal Non-Interference: A Verifiable Correctness Property for Backtesting and Agentic Trading Pipelines",
+      "authors": [
+        "Xavier Fonseca"
+      ],
+      "abstract": "Look-ahead bias (using information from after a decision epoch to make the decision at that epoch) is the dominant way a backtest or a machine-learning evaluation flatters a system that will disappoint in deployment. The field manages it with construct-specific recipes and empirical detectors, which are sound only channel by channel and certify nothing by their silence. We show that look-ahead-freedom is a formal property in disguise: fixing an epoch, the demand that the future not influence the present is temporal non-interference over a time-indexed information lattice. From this identification we develop a pipeline calculus separating a datum's availability from its reference time, and settle the problem's boundary. Where availability may depend on data values, look-ahead-freedom is undecidable (indeed Pi-0-1-hard): leakage is recursively enumerable but freedom is not. On the value-independent fragment (covering windowing, resampling, joins, point-in-time and vintage reads, and agentic retrieval) we give a type-and-effect system that is sound and decidable in linear time. An artifact confirms the theory: the check scales linearly, an independent oracle witnesses no leak in any accepted pipeline, and the checker catches every planted leak that differential and tiling detectors miss.",
+      "categories": [
+        "cs.CR",
+        "cs.LO",
+        "cs.PL",
+        "cs.SE",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2607.04958v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.04958v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-06",
+      "discovered": "2026-07-07",
+      "matched_keywords": [
+        "look-ahead bias"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.03858",
+      "source": "arxiv",
+      "title": "A Spectral Generalisation of the Variance Ratio: Eigenstructure of Long-Horizon Portfolio Covariance and a Multi-Memory Factor Model of U.S. Equity Returns",
+      "authors": [
+        "Anders G Frøseth"
+      ],
+      "abstract": "We propose a multivariate generalisation of the Lo-MacKinlay (1988) variance ratio that decomposes long-horizon equity-return dynamics into separate return-channel and volatility-channel memory components across the cross-section of asset returns. The framework identifies a parsimonious five-factor model - capturing persistent, antipersistent, and multi-scale memory in returns and volatility - that fits four U.S. portfolio panels (the Fama-French 49-industry universe, its pre/post-1998 halves, and the Fama-French 100 size x book-to-market sort) and a European replication (Fama-French Europe 25), recovering seven stylised facts of long-horizon equity dynamics simultaneously across all five panels. Three findings carry economic content. (i) The same five-factor decomposition fits all five panels, indicating a cross-sectional structure robust to industry vs. size-and-value sorts, to sub-periods, and to U.S. vs. developed-European markets. (ii) U.S. equity volatility memory underwent a regime transition in the late 1980s - not at the static 1998 split-half boundary - with the slowest component of the volatility cascade lengthening from approximately two to four years; a 1000-replicate rolling-window bootstrap localises the transition with strictly non-overlapping 90% confidence bands separating pre- and post-transition windows. (iii) The cross-sectional loadings driving return-channel long memory are economically distinct from those driving volatility-channel cascade memory: a cross-channel beta-inversion test finds no panel with the positive alignment a single shared loading predicts, rejecting the shared-loading hypothesis toward anti-alignment on the two largest panels at Bonferroni p = 0.0004. Characteristics that predict return-momentum patterns therefore need not predict volatility-persistence patterns.",
+      "categories": [
+        "q-fin.ST",
+        "physics.soc-ph",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2607.03858v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.03858v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-04",
+      "discovered": "2026-07-07",
+      "matched_keywords": [
+        "momentum",
+        "factor",
+        "regime",
+        "cross-sectional"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.03082",
+      "source": "arxiv",
+      "title": "Portfolio Optimization and Tail-Risk Analytics of Actively Managed ETFs",
+      "authors": [
+        "William W. Lamptey",
+        "Nicholas Appiah",
+        "Abootaleb Shirvani",
+        "Priscilla Ati-Tay",
+        "Svetlozar T. Rachev",
+        "Frank J. Fabozzi"
+      ],
+      "abstract": "This paper examines portfolio optimization and tail-risk analytics for a heterogeneous universe of actively managed investment funds. Using daily Bloomberg data for 30 funds from 4 December 2020 to 24 December 2025, the study evaluates buy-and-hold, mean--variance, CVaR-based, and tangency-type strategies under long-only and long--short constraints. The sample consists predominantly of actively managed ETFs, with PTTRX retained as an actively managed fixed-income mutual-fund comparator. The results show substantial heterogeneity across thematic equity, fixed-income, income-oriented, multi-asset, and alternative strategies, creating both diversification opportunities and meaningful differences in volatility, drawdown behavior, downside exposure, and tail risk. Historical results indicate that tangency-type portfolios are generally the strongest competitors to the buy-and-hold benchmark in cumulative and risk-adjusted terms, while minimum-variance and CVaR-minimizing portfolios sacrifice upside participation for stronger downside control. Dynamic allocation does not improve all strategies uniformly: the long-only dynamic CVaR-95 portfolio is consistently attractive across several risk-adjusted criteria, whereas long--short dynamic tangency-CVaR portfolios perform strongly but are more sensitive to turnover and implementation costs. Tail-risk diagnostics based on empirical VaR, Expected Shortfall, maximum drawdown, left-tail Hill estimators, and POT--GPD methods show that downside tail exposure remains meaningful after portfolio aggregation. Overall, actively managed ETFs are best evaluated as components of a joint investment opportunity set in which dependence structure, portfolio design, dynamic allocation, implementation frictions, and tail-risk exposure jointly shape performance.",
+      "categories": [
+        "q-fin.PM",
+        "q-fin.RM",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2607.03082v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.03082v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-03",
+      "discovered": "2026-07-07",
+      "matched_keywords": [
+        "ETF",
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.04280",
+      "source": "arxiv",
+      "title": "Order Splitting and Liquidity Replenishment Are Jointly Necessary for the Square-Root Law of Market Impact:",
+      "authors": [
+        "Yang Zhou",
+        "Jianwen Chen",
+        "Ruipeng Wei"
+      ],
+      "abstract": "Three quantitative predictions have been advanced for the square-root law (SRL) of market impact, $I/σ_D = c\\,(Q/V_D)^δ$ with $δ\\approx 0.5$: GGPS ($δ=β-1$), FGLW ($δ=α-1$), and LOB walking ($δ=1/(1+γ)$). Using a minimal limit-order-book model populated by heterogeneous interacting agents and calibrated against the Tokyo Stock Exchange benchmark ($\\langleδ\\rangle = 0.489$~\\citep{satoStrictUniversalitySquareRoot2025}), we test all three on identical simulated data and find that none matches the per-stock measured $δ$: GGPS and FGLW over-predict by factors of two and four respectively, while LOB walking under-predicts. The model reproduces $\\langleδ\\rangle = 0.539\\pm 0.048$ across 2000 independently parameterised stocks. To identify which mechanisms are causally responsible, we perform counterfactual ablation by selectively suppressing each component. Removing order splitting collapses $δ$ from $0.549$ to $0.324$; removing liquidity replenishment by market makers drops it to $0.386$; perturbations that leave both intact (momentum trading, price limits, splitting rule, background liquidity) move $δ$ by less than $10\\%$. Order splitting and liquidity replenishment are thus jointly identified as the necessary mechanisms for the SRL within this model, with the simulated SRL depending on neither the metaorder size tail nor the visible book shape in isolation.",
+      "categories": [
+        "q-fin.CP",
+        "econ.TH",
+        "q-fin.MF",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2607.04280v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.04280v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-05",
+      "discovered": "2026-07-07",
+      "matched_keywords": [
+        "momentum",
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.04221",
+      "source": "arxiv",
+      "title": "A Limit Order Market with Uncertain Informed Trading Participation",
+      "authors": [
+        "Umut Çetin",
+        "Mingwei Lin"
+      ],
+      "abstract": "We study a one period limit order market with informed traders, noise traders, and competitive liquidity suppliers, in which the number of informed traders is random. Liquidity suppliers know the distribution of the informed trader count, but not its realization, and therefore face uncertainty about both the presence and the intensity of informed trading. We characterize equilibrium by a fixed point integral equation for the marginal cost function and establish existence of equilibrium for bounded asset values. We then analyse large order asymptotics. For bounded asset values with power law endpoint behaviour, equilibrium price impact follows a power law whose exponent is determined jointly by the asset value tail and the full distribution of the informed trader count. In particular, this exponent is not determined by the expected number of informed traders alone. In the light endpoint regime, price impact is instead logarithmic. Finally, we solve the fixed point numerically across several asset value and informed trader count distributions. The numerical results are consistent with the theoretical asymptotics in the cases covered by the theory and provide comparative statics beyond them.",
+      "categories": [
+        "q-fin.TR",
+        "q-fin.MF"
+      ],
+      "url": "https://arxiv.org/abs/2607.04221v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.04221v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-05",
+      "discovered": "2026-07-07",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.02830",
+      "source": "arxiv",
+      "title": "Outcome-Classified Precision Auditing of Filter Rules in Algorithmic DEX Trading: Evidence from 2,400 Rejection Events",
+      "authors": [
+        "Arati Uday Kamat"
+      ],
+      "abstract": "This paper reports a precision audit of a production filter stack against a 13-day window of post-rejection forward-market observations on Solana DEX trading (2026-04-10 to 2026-04-23, UTC). The audit yielded 99,510 follow-up samples across 2,402 unique rejection events spanning eight active filter rules. We classify each event under a five-tier outcome rule and report per-filter distributions. The headline result is the conservative save-to-miss ratio of 3.7 : 1 from windowed measured-drawdown saves alone; every active filter with adequate sample size is individually net-positive. A wider interpretation that credits single-sample-within-60-minute events as saves yields 14.8 : 1. We then test the interpretive premise of that wider tier against the deposited lifecycle data of a separately-published benchmark (RED-2400). The matched comparison shows that early-death-classified mints reach the gone state at 48.9 percent. Non-early-death rejected mints reach gone at 57.6 percent. The early-death classification does not identify tokens at elevated rug-pull risk relative to other rejected tokens. The wider 14.8 : 1 ratio therefore rests on a tier that the matched test does not validate. The conservative 3.7 : 1 is the report the lifecycle data supports. The methodological contribution is the separation of the two evidence bases and the demonstration that the wider tier does not survive matched-comparison testing.",
+      "categories": [
+        "q-fin.TR",
+        "q-fin.CP",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2607.02830v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.02830v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-02",
+      "discovered": "2026-07-07",
+      "matched_keywords": [
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.02823",
+      "source": "arxiv",
+      "title": "Pump.fun Graduation Regime Windows: Survival Analysis of 832,941 Token Launches and the Social-Presence Effect",
+      "authors": [
+        "Arati Uday Kamat"
+      ],
+      "abstract": "We present a Kaplan-Meier and Cox proportional-hazards survival analysis of 832,941 Solana pump.fun token launches with 24-hour graduation outcomes, observed continuously between 2026-05-08 and 2026-06-10. The pooled graduation rate is 0.198% (Wilson 95% CI [0.189%, 0.208%]), a 3.18x decline from the 0.63% rate reported by Marino et al. (2026) for September-October 2025. After excluding a four-day tracker warm-up and the partial last day, the steady-state rate is 0.207% (Wilson 95% CI [0.198%, 0.218%]). We formalise the windowed comparison as the Graduation Regime Windows (GRW) framework, name our 34-day window the RED-PUMP-2026-v1 regime, and release the 860,213-launch dataset under CC-BY-4.0 on Zenodo at concept DOI 10.5281/zenodo.20633486. Social-channel presence exerts a large effect: launches advertising Telegram graduate at 1.485% versus 0.166% without (8.94x lift, log-rank p < 1e-300); Cox hazard ratio for Telegram is 5.40 (95% CI [4.73, 6.17], p = 6.6e-138). Launches advertising all three social channels graduate at 1.919% versus 0.110% for launches with none (17.4x lift). Initial market-cap above the 30 SOL platform default, a proxy for creator self-buying, raises the hazard ratio to 4.51; the top quartile (mcap > 31 SOL) graduates at 0.634%, matching the 2025 pooled rate. The cross-regime decline is substantially attributable to a shift toward zero-self-buy tokens rather than a fall in success rate among self-buy launches. Cox concordance is 0.858.",
+      "categories": [
+        "q-fin.TR",
+        "q-fin.CP",
+        "q-fin.GN",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2607.02823v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.02823v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-02",
+      "discovered": "2026-07-07",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.05091",
+      "source": "arxiv",
+      "title": "Any Axes Are Allowed: A Characteristic-Axis Integral Diagnosis of Factor Models",
+      "authors": [
+        "Useong Shin"
+      ],
+      "abstract": "This paper extends the cap-axis integral diagnostic to general characteristic axes and measures factor-model pricing errors as bridge-alpha curves. A predetermined characteristic order generates prefix portfolios; subtracting equal-exposure aggregate portfolios gives zero-investment bridges indexed by cutoff p. The null is not a pointwise alpha test on selected deciles, but a zero-curve restriction on the restricted subspace generated by the characteristic order. In 1967-2024 CRSP data, value, profitability, investment, and momentum axes show systematic sign reversals. HML and CMA overcorrect significantly, whereas RMW and UMD largely flatten their axes. Axis-level pricing errors are nearly orthogonal to maximum-Sharpe gains.",
+      "categories": [
+        "q-fin.GN",
+        "q-fin.CP",
+        "q-fin.PR",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2607.05091v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.05091v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-06",
+      "discovered": "2026-07-07",
+      "matched_keywords": [
+        "momentum",
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.03888",
+      "source": "arxiv",
+      "title": "Local Gaussian Correlation in the Tails: A Scarcity Diagnostic, an Optimal Local Bandwidth, and the Limits of Adaptivity",
+      "authors": [
+        "Akash Deep",
+        "Gagan Deep"
+      ],
+      "abstract": "Local Gaussian correlation (LGC) measures dependence locally, making it a natural tool for tail dependence and financial contagion, but its estimates degrade in the joint tails, where they are most needed. Location-adaptive bandwidths have been tried for LGC and found inferior to a single global bandwidth; we explain why, and map the regime in which adaptivity does help. First, a diagnostic: across heavy-tailed data-generating processes the parametric marginal pre-transform is inert (it changes the integrated error only in the fourth decimal), while the binding constraint is the local effective sample size, with the replication dispersion following a Fisher variance floor sd ~ (1 - rho^2)/sqrt(eff_n). Second, theory: specializing the Hjort-Jones local-likelihood asymptotics to the bivariate Gaussian family that LGC fits, we derive the first location-specific AMISE-optimal bandwidth for LGC, b*(x) proportional to [(1 - rho^2)^2 / (f beta^2)]^(1/6) n^(-1/6), and validate its bias expansion directly (bias proportional to b^2 beta, R^2 approximately 0.9, slope-to-beta correlation 0.80). Third, a regime map: a Monte Carlo across dependence strengths shows the adaptive rule beats the global plug-in only at moderate dependence with curved surfaces. At weak dependence there is no curvature to exploit; at strong dependence finite-sample bias from the steep surface dominates, and adaptivity performs substantially worse, with an error that grows in the sample size. This explains the field's experience that global bandwidths are hard to beat, and locates the exception. Fourth, application: on volatility-filtered equity returns the adaptive estimator yields more stable tail-dependence surfaces under resampling. The message is cautionary: the binding constraint on tail LGC is data scarcity, not bandwidth placement, and no bandwidth, however optimal, can recover information the data do not contain.",
+      "categories": [
+        "stat.ME",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2607.03888v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.03888v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-04",
+      "discovered": "2026-07-07",
+      "matched_keywords": [
+        "regime"
       ],
       "status": "queued",
       "ingested_into": null,
