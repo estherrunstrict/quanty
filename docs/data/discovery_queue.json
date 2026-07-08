@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-08T06:30:11.698695+09:00",
+  "generated_at": "2026-07-08T16:00:09.846612+09:00",
   "stats": {
-    "total": 179,
-    "queued": 97,
+    "total": 182,
+    "queued": 100,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-07-08T06:30:11.698574+09:00",
+    "last_gc_at": "2026-07-08T16:00:09.846507+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -5199,6 +5199,91 @@
       "year": 2026,
       "published": "2026-07-04",
       "discovered": "2026-07-07",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.06117",
+      "source": "arxiv",
+      "title": "Relief-Gated Relative Rotation for QQQ-DIA Allocation: Globally Screened Relative States, Fixed Position Mapping, Incremental Interaction Admission, and Walk-Forward Validation",
+      "authors": [
+        "Zheli Xiong"
+      ],
+      "abstract": "This paper studies Relief-Gated Relative Rotation (RGRR), a two-ETF rule that allocates between QQQ and DIA by mapping screened relative and macro states into a continuous QQQ weight. RGRR is economic rather than mechanical: it rotates between a growth-heavy sleeve and a Dow/value-heavy sleeve only when QQQ-DIA relative states are confirmed by rate, volatility, credit, or broad-market relief conditions. Candidate main effects and interactions are globally screened with horizon-specific HAC regressions and correlation de-duplication, then held fixed during walk-forward validation. Rolling out-of-sample validation re-selects only signal-family lambdas, not the signal universe or the position mapping. The final stack contains one main effect, nine second-order interactions, and two third-order interactions. Third-order terms must also improve rolling out-of-sample Sharpe versus the main plus second-order base and survive economic-family de-duplication. The final mapping uses a fixed bounded weight transformation and includes a 10 bps one-way turnover cost. Across the 2018, 2020, and 2022 out-of-sample starts, RGRR improves Sharpe versus 100% QQQ and 50/50 QQQ-DIA in every tested interval. It improves CAGR versus 50/50 in every interval, but beats 100% QQQ on CAGR only in the 2022 window. In 2018, RGRR earns an 18.33% CAGR and 0.94 Sharpe, versus 20.50% and 0.89 for QQQ and 16.69% and 0.86 for 50/50. In 2022, it earns a 15.19% CAGR and 0.87 Sharpe, versus 14.65% and 0.70 for QQQ. The evidence supports RGRR as a risk-adjusted relative allocation rule, not a pure return-dominance rule. Its main practical weakness is high turnover, ranging from 354% to 506% annualized.",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2607.06117v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.06117v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-07",
+      "discovered": "2026-07-08",
+      "matched_keywords": [
+        "ETF",
+        "walk-forward"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.06121",
+      "source": "arxiv",
+      "title": "Can Reinforcement Learning Efficiently Discover Price Manipulation?",
+      "authors": [
+        "Ioanna-Yvonni Tsaknaki",
+        "Andrea Macrì",
+        "Fabrizio Lillo"
+      ],
+      "abstract": "In this paper, we investigate whether a model-free RL agent can identify and exploit price manipulation opportunities more effectively than a traditional model-based approach that assumes correct specification of the data-generating process but relies on noisy parameter estimates. We consider a single-asset market in which prices evolve according to an Almgren-Chriss framework with non-linear permanent impact and linear temporary impact. We first establish the existence of price-manipulative strategies in discrete time and compute the optimal benchmark strategy using Sequential Least Squares Quadratic Programming under full information. We then compare two finite-sample learning approaches: a model-based procedure that estimates impact parameters from simulated execution data and an agnostic RL approach based on Deep Deterministic Policy Gradient, trained directly on the same amount of data. For intermediate volatility, the RL agent successfully discovers profitable manipulative strategies without explicit knowledge of the underlying model, even when training data are quite limited. More importantly, RL consistently outperforms the model-based approach when parameter estimates are affected by sampling error, despite the latter benefiting from the correct model specification. For large volatility, all methods are unable to identify manipulation opportunities, while for small volatility, the model based approach outperforms RL. These findings highlight both the effectiveness of RL in complex control problems and the risks associated with deploying learning algorithms in financial markets without appropriate safeguards.",
+      "categories": [
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2607.06121v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.06121v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-07",
+      "discovered": "2026-07-08",
+      "matched_keywords": [
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.06220",
+      "source": "arxiv",
+      "title": "Stable Sentiment and Persistent Dynamics in U.S. Economic News over 45 Years",
+      "authors": [
+        "Luis Enrique Correa Rocha"
+      ],
+      "abstract": "Collective emotion is often inferred from the tone of mass media, but such emotion is not directly observed. One approximation is to extract sentiment from text and use sentiment indexes as proxies to study the temporal organization of news sentiment. Using a daily index of U.S. economic news sentiment from 24 newspapers (1980-2025), we examine whether the response time of this sentiment process has changed. Although the average balance of positive and negative coverage has remained broadly stable, the persistence of news sentiment states has increased substantially. In dynamical terms, this implies longer residence times in optimistic or pessimistic regimes and weaker short-run correction of sentiment shocks. Complementary statistics show declining sentiment volatility, fewer reversals, and increasing bimodality, i.e. a stronger separation between positive and negative sentiment states. We also find an asymmetry between bursts of negative and positive sentiment, with negative bursts tending to last longer. These patterns are consistent with a minimal endogenous-memory model in which a slowly evolving latent sentiment component becomes more persistent while short-range corrective feedback weakens. The findings indicate a change in the temporal response of the U.S. economic newspaper sentiment index over the last 45 years, with sentiment shocks leaving longer traces than expected under short-memory exponential decay. News-based sentiment is thus better modeled as persistent episodes rather than as daily reactions that reset after each event.",
+      "categories": [
+        "physics.soc-ph",
+        "cs.CY",
+        "physics.data-an",
+        "q-fin.ST",
+        "stat.AP"
+      ],
+      "url": "https://arxiv.org/abs/2607.06220v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.06220v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-07",
+      "discovered": "2026-07-08",
       "matched_keywords": [
         "regime"
       ],
