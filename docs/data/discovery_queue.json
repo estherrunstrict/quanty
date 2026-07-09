@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-09T06:30:11.512531+09:00",
+  "generated_at": "2026-07-09T16:00:09.427170+09:00",
   "stats": {
-    "total": 182,
-    "queued": 100,
+    "total": 184,
+    "queued": 102,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-07-09T06:30:11.512423+09:00",
+    "last_gc_at": "2026-07-09T16:00:09.427060+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -5286,6 +5286,60 @@
       "discovered": "2026-07-08",
       "matched_keywords": [
         "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.06908",
+      "source": "arxiv",
+      "title": "Iterative detection of global factors near the BBP phase transition",
+      "authors": [
+        "Andrés García-Medina"
+      ],
+      "abstract": "Detecting the number of global factors in high-dimensional correlation matrices is a central problem in multivariate statistics and random matrix theory, with important implications for asset pricing and econophysics. When the number of variables $p$ is comparable to the number of observations $n$, signal-to-noise separation becomes difficult, especially near the Baik--Ben Arous--Péché (BBP) transition, where weak factors may be confused with fluctuations at the Marčenko--Pastur spectral edge. In this work, we characterize the participation-ratio (PR) structure of the Brown--Harding (BH) factor model. Under strong common loadings, the leading coherent eigenvector $u_1$ satisfies $\\mathrm{PR}(u_1)/p\\to 1$, whereas weak-factor directions and typical idiosyncratic sample eigenvectors $u$ satisfy the delocalized benchmark $\\mathrm{PR}(u)/p\\to 1/3$. These limits motivate an eigenvector-level criterion for retaining extensive directions. We propose an iterative global factor (IGF) algorithm that combines adaptive Marčenko--Pastur edge recalibration with a PR delocalization filter. The method iteratively reestimates the effective noise level, tests eigenvalue separation from the residual bulk, and retains only spectrally separated components with sufficiently extended eigenvectors. Monte Carlo simulations of the BH factor model show that IGF recovers the true number of factors near the BBP transition, where eigenvalue-only criteria can fail or remain ambiguous. A synthetic moving-window calibration matched to the empirical dimensions, which is then applied to S\\&P 500 returns. IGF detects a richer and more dynamic set of global factors than the Onatski test, with a median count of 7 factors. The results indicate that combining spectral separation with eigenvector delocalization improves the detectability of global-factor estimation in high-dimensional financial correlation matrices.",
+      "categories": [
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2607.06908v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.06908v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-08",
+      "discovered": "2026-07-09",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.07465",
+      "source": "arxiv",
+      "title": "Innovating Risk Modelling for Global Funds",
+      "authors": [
+        "Swaraj Gambhir",
+        "Thanu George",
+        "Kairavi Sivasankar"
+      ],
+      "abstract": "Markowitz defined portfolio risk as an internal property, built from the covariance among a book's own holdings rather than the distance to any index. Seventy years of simplification reversed that. The market beta of CAPM, the fixed style and industry axes of Barra-type models, and the promotion of benchmark deviation to the definition of risk all traded the inward view for an external one. Risk became distance from an index. For a fund that fits no benchmark, that trade fails. A global book concentrated in a few markets and a few innovation sectors has no natural index to deviate from, and the active-risk number it produces measures the mismatch, not the risk. We return to the covariance. Principal component analysis (PCA) recovers the systematic structure inside the portfolio directly from its own returns. PCA has always carried one cost: its factors resist a plain-English reading. We clear that with a generative-AI labelling layer. It names the leading factors, ranked by their actual contribution to risk rather than by universe variance, and a deterministic rubric keeps it from inventing structure the loadings do not contain. Around this sit four independent signals. Density-based clustering with a mismatch ratio flags groups whose risk outruns their capital. A sign-invariant PCA Risk Score (PRS) marks the names that build the dominant factor bets. A standalone Bleed score catches the slow capital destroyers PCA cannot see. A trailing-return timing gate routes disagreements between the risk signals and recent price action to human judgment. We run the full engine on a proxy global-innovation book of thirty names over one year.",
+      "categories": [
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2607.07465v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.07465v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-08",
+      "discovered": "2026-07-09",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
