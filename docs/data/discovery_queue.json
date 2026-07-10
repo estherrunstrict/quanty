@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-10T06:30:11.093376+09:00",
+  "generated_at": "2026-07-10T16:00:09.880009+09:00",
   "stats": {
-    "total": 184,
-    "queued": 102,
+    "total": 185,
+    "queued": 103,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-07-10T06:30:11.093271+09:00",
+    "last_gc_at": "2026-07-10T16:00:09.879904+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -5338,6 +5338,35 @@
       "year": 2026,
       "published": "2026-07-08",
       "discovered": "2026-07-09",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.08500",
+      "source": "arxiv",
+      "title": "Estimating the Stochastic Discount Factor from Option Prices and Predicting the Equity Premium",
+      "authors": [
+        "Kenichiro Shiraya",
+        "Tomohisa Yamakami",
+        "Akira Yamazaki"
+      ],
+      "abstract": "This paper proposes a stochastic discount factor (SDF) scaled by time-varying volatility. By utilizing prices and market data implied solely from S\\&P 500 options, the proposed framework recovers a stable, non-monotonic SDF that captures the pure forward-looking expectations of market participants while mitigating observation noise. Our empirical analysis reveals that the SDF exhibits a distinctive hump on the shallow put side, which transitions into a more clearly defined W-shape as the time to maturity increases, identifying maturity as a key factor influencing the intensity of the central hump. We show that this structural feature can be theoretically rationalized by stochastic volatility dynamics under a constant market price of risk. The equity premium derived from the time-varying volatility scaled SDF demonstrates superior out-of-sample predictive performance relative to existing benchmarks, such as the Martin bounds.",
+      "categories": [
+        "q-fin.MF",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2607.08500v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.08500v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-09",
+      "discovered": "2026-07-10",
       "matched_keywords": [
         "factor"
       ],
