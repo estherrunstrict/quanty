@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-11T06:30:13.651373+09:00",
+  "generated_at": "2026-07-13T16:00:10.293862+09:00",
   "stats": {
-    "total": 185,
-    "queued": 103,
+    "total": 189,
+    "queued": 107,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-07-11T06:30:13.651269+09:00",
+    "last_gc_at": "2026-07-13T16:00:10.293697+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -5369,6 +5369,122 @@
       "discovered": "2026-07-10",
       "matched_keywords": [
         "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.09556",
+      "source": "arxiv",
+      "title": "A novel robust mixed integer linear programming model for index tracking problem under no rebalancing: heuristic optimization approach",
+      "authors": [
+        "Danial Ramezani",
+        "Mostafa Abouei Ardakan",
+        "Mohamadreza Dehghani Ahmadabad"
+      ],
+      "abstract": "Passive management has increasingly won popularity over the past few years because of its advantages, such as lower management fees and transaction costs. Index tracking endeavors to reproduce the performance of an index with smaller sets of assets. In this paper, a novel formulation is proposed that is not only more robust than the existing ones but also performs better on out-of-sample data and tracks indices over long periods without any considerable deviation or the need for rebalancing. Solving index tracking problems in a polynomial time is a challenging task due to their NP-hard nature. To address this issue, a novel heuristic based on metaheuristic algorithms and local branching is also developed to solve the proposed model. The heuristic enjoys not only the exploration capabilities of a genetic algorithm but the characteristics of local search algorithms as well. The data from the OR library is used to verify the capabilities of the proposed heuristic in comparison with commercial solvers. Results indicate that not only is the heuristic able to converge to optimal solutions for not-so-large problem sizes, but the portfolios it generates also outperform those yielded by commercial solvers in terms of both in-sample and out-of-sample data.",
+      "categories": [
+        "cs.CE",
+        "math.OC",
+        "q-fin.PM",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2607.09556v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.09556v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-10",
+      "discovered": "2026-07-13",
+      "matched_keywords": [
+        "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.09121",
+      "source": "arxiv",
+      "title": "Augmenting Fundamental Analysis with Large Language Models: A RAG-Based System for Generating Investor Briefs",
+      "authors": [
+        "Bartosz Ziółko",
+        "Kacper Dobrzeniewski"
+      ],
+      "abstract": "In this study, we examine the opportunities brought by Large Language Models (LLMs) to various aspects of fundamental analysis of companies based on their reports as well as data and documents describing macroeconomic situation like GDP and inflation changes as well as documents filled to the U.S. Securities and Exchange Commission (SEC) which can be found in EDGAR. We were preprocessing those data and than sending via API to gpt-4o model in a Retrieval-Augmented Generation (RAG) like regime. We prepared as well a document describing an exemplar investor knowledge based on Kitchin cycles. We were scanning data important for analysis of 9 companies for 4 weeks. Using LLM we were producing automatic briefs about them. They were sent to nine participants who are individual investors to evaluate usefulness of such approach to data analysis.",
+      "categories": [
+        "cs.CL",
+        "cs.AI",
+        "q-fin.PM",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2607.09121v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.09121v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-10",
+      "discovered": "2026-07-13",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.09230",
+      "source": "arxiv",
+      "title": "When Does Order Flow Matter? State-Dependent L2 Liquidity-State Transitions in Crypto Futures",
+      "authors": [
+        "Joohyoung Jeon"
+      ],
+      "abstract": "Building event-conditioned market models requires separating macro-event labels from persistent microstructure state. We study this distinction in Binance BTCUSDT and ETHUSDT futures from 2023-2026, combining top-20 L2 order book data, trade-flow records, and macro-event windows. We define a supervised discrete L2 liquidity-state transition task, distinct from latent-regime detection and price-direction prediction, and evaluate models in rolling monthly out-of-sample folds with event-clustered validation and blocked permutation tests, admitting each feature layer only if it improves on the layer below it on the same panel. Within these event windows, the first-order predictive signal is the pre-event L2 liquidity state: a coarse pre-event state baseline strongly predicts post-event liquidity regimes, interpretable logit models over continuous L2 features fail to improve on it, and a shallow nonlinear L2 model adds a robust further gain of comparable size to the state baseline's own. The macro-event calendar enters only by locating the windows and supplying matched non-event controls; we use event timing but not the event's label content, so pre-event state competes against an uninformed within-window baseline, not against the event type. Order flow adds further value only when layered on top of the L2 state model, not as a replacement. This value is not robustly cross-symbol: for ETH it is present across calm, mixed, and stressed regimes and largest under stressed pre-event liquidity, whereas BTC shows only isolated five-minute passes and no regime that clears at both horizons. These findings motivate a state-first design principle for market microstructure models. We provide a liquidity-state transition baseline and evaluation protocol that reinforcement-learning, execution-policy, or LLM-based context layers should exceed before their added value is credited.",
+      "categories": [
+        "q-fin.TR",
+        "cs.LG"
+      ],
+      "url": "https://arxiv.org/abs/2607.09230v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.09230v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-10",
+      "discovered": "2026-07-13",
+      "matched_keywords": [
+        "regime",
+        "regime detection"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.08907",
+      "source": "arxiv",
+      "title": "Herding and Liquidity in Order-Book Markets. I. A Robust Liquidity-Stress Crossover and its Reflexive Mechanism",
+      "authors": [
+        "Jan Novotny"
+      ],
+      "abstract": "Agent-based models of markets readily produce emergent instabilities, but telling a genuine collective effect apart from a parameter artefact takes discipline. We apply Bouchaud's phase-diagram method to a continuous-double-auction order-book model. The method is to map the full phase diagram, test its robustness to rule changes, and rule out degenerate and numerical origins before we call any feature a tipping point. The model has fundamental-anchored zero-intelligence liquidity and a mid-anchored chartist herding layer, controlled by the fraction $\\varphi$ and the strength $κ$ of herders. A 7x6 grid (336 runs, each with a scrambled-sign null) locates an emergent liquidity-stress crossover. The order parameter, the fraction of events with a one-sided book, rises to about 0.34 at $(\\varphi,κ)=(0.9,1.0)$, is zero across all 42 scrambled cells, and forms a smooth crossover rather than a discontinuous Dark Corner. The dry-up is rule-robust (it recurs under an order-flow-imbalance rule), horizon-robust (about 0.32-0.35 across a 16x range of momentum window), and has a monotone onset boundary $\\varphi^*(κ) = \\{0.55, 0.45, 0.36\\}$. We then decompose the mechanism at a matched directional-bias amplitude (mean |p_buy - 0.5| about 0.269). Price-momentum herding carries a large, comparator-robust reflexive component (+0.29; buying begets buying), whereas the order-flow rule's component is about 0 and comparator-dependent. The RMS-mispricing gradient is a placement artefact, largest at $κ=0$. A companion two-market analysis finds no directional cross-market contagion across a signal-only herding link.",
+      "categories": [
+        "q-fin.TR",
+        "q-fin.CP"
+      ],
+      "url": "https://arxiv.org/abs/2607.08907v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.08907v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-09",
+      "discovered": "2026-07-13",
+      "matched_keywords": [
+        "momentum"
       ],
       "status": "queued",
       "ingested_into": null,
