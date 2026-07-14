@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-14T06:30:12.044196+09:00",
+  "generated_at": "2026-07-14T16:00:11.210749+09:00",
   "stats": {
-    "total": 189,
-    "queued": 107,
+    "total": 191,
+    "queued": 109,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-07-14T06:30:12.044094+09:00",
+    "last_gc_at": "2026-07-14T16:00:11.210618+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -5485,6 +5485,62 @@
       "discovered": "2026-07-13",
       "matched_keywords": [
         "momentum"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.09906",
+      "source": "arxiv",
+      "title": "Depth-Efficient Quantum Topological Data Analysis for Regime-Specific Detection of Financial Stress",
+      "authors": [
+        "Arul Rhik Mazumder",
+        "Shreyan Ronit Mazumder"
+      ],
+      "abstract": "We present, to our knowledge, the first adaptation of Pauli Correlation Encoding (PCE) to quantum topological data analysis, reformulating Betti number estimation as a depth-efficient variational optimization over a compressed qubit register. From a Takens embedding and Vietoris--Rips filtration of S&P~500 returns, we extract combinatorial Laplacians and recast null-space counting as a continuous-PCE Rayleigh-quotient minimization with variational deflation, encoding $n_k$ simplex indices into $O(n_k^{1/κ})$ qubits with shallow, ancilla-free circuits. Because the resulting loss is rational rather than bilinear in the correlators, the barren-plateau bound of~\\cite{Sciorilli25} does not transfer; empirically the gradient variance decays only polynomially, with no exponential barren plateau, over $n=4$--$12$ qubits. The classical stage matches ripser~\\cite{bauer2021ripser} on all 190 sliding windows (2007-2009). On the real market Laplacians ($β_1=1$--$22$), warm-starting from a classical null-space surrogate allows PCE-VQE to recover $β_1$ exactly at every scale, placing the obstacle in the optimisation landscape rather than the encoding. Chronologically split classification gives in-regime ROC AUC $0.818$, but out-of-distribution evaluation on the 2020 COVID shock and 2022 rate cycle (AUC $0.009$, $0.515$) shows the calibration does not generalize across crisis regimes.",
+      "categories": [
+        "quant-ph",
+        "cs.LG",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2607.09906v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.09906v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-10",
+      "discovered": "2026-07-14",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.11328",
+      "source": "arxiv",
+      "title": "Strategic OTC market making with reputation feedback",
+      "authors": [
+        "Alexander Barzykin"
+      ],
+      "abstract": "Electronic over-the-counter (OTC) liquidity provision is increasingly shaped not only by the price of the next quote, but also by a dealer's accumulated standing with clients and platforms. We develop a stochastic-control model in which request-for-quote (RFQ) win ratios and streaming fill ratios feed back into future flow through performance-based flow gates, creating an explicit trade-off between immediate spread capture and long-term franchise value. The resulting policy naturally alternates between reputation-building campaigns and franchise monetization phases, and can generate multiple stable client-flow regimes even in a parsimonious single dealer control problem.",
+      "categories": [
+        "q-fin.MF",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2607.11328v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.11328v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-13",
+      "discovered": "2026-07-14",
+      "matched_keywords": [
+        "regime"
       ],
       "status": "queued",
       "ingested_into": null,
