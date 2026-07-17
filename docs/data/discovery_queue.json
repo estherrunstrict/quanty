@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-17T06:30:10.559605+09:00",
+  "generated_at": "2026-07-17T16:00:16.156291+09:00",
   "stats": {
-    "total": 192,
-    "queued": 110,
+    "total": 197,
+    "queued": 115,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-07-17T06:30:10.559501+09:00",
+    "last_gc_at": "2026-07-17T16:00:16.156192+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -5569,6 +5569,155 @@
       "discovered": "2026-07-15",
       "matched_keywords": [
         "walk-forward"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.15195",
+      "source": "arxiv",
+      "title": "SciPhy Reinforcement Learning for Portfolio Optimization",
+      "authors": [
+        "Igor Halperin",
+        "Andrey Itkin"
+      ],
+      "abstract": "This paper introduces a dynamic portfolio optimization framework for large institutional investors using Scientific Physics-Informed Reinforcement Learning (SciPhyRL). Formulated in continuous time over an extended state space that includes explicit cumulative costs, the approach leverages offline historical data to learn optimal, distribution-aware strategies. A core innovation reduces the optimization challenge to solving an HJB equation by projecting it onto observed trajectories as a pathwise Hamilton-Jacobi equation. This is solved directly from data using PINN in a single offline sweep, eliminating the need for traditional value or policy iteration. To make the method effective at practical short horizons, the control variable is recast from a continuous trading rate to a discrete target holding. This ensures signal-implied positions are reached immediately, while execution costs are evaluated against a microstructure-grounded quadratic price impact model. Evaluated on a $14$-asset ETF universe using an engineered oracle signal, the learned Gibbs policy yields substantial out-of-sample Sharpe ratio improvements over static and myopic baselines. The results demonstrate that the proposed framework successfully translates known signal quality into a robust, multi-period, and cost-aware allocation mechanism with strictly controlled volatility and turnover.",
+      "categories": [
+        "q-fin.PM",
+        "math.AP",
+        "math.NA",
+        "q-fin.CP",
+        "q-fin.MF"
+      ],
+      "url": "https://arxiv.org/abs/2607.15195v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.15195v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-16",
+      "discovered": "2026-07-17",
+      "matched_keywords": [
+        "ETF",
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2606.09564",
+      "source": "arxiv",
+      "title": "Option prices from operational-time reaction-boundary lattices",
+      "authors": [
+        "Chris Angstmann",
+        "Tim Gebbie"
+      ],
+      "abstract": "We consider the role of a continuum operational time $u$, its mapping to calendar time $t$, and their relation to event time in option-pricing problems. We derive option-pricing equations from an operational-time Markov lattice rather than from a calendar-time diffusion. The primitive model is a homogeneous nearest-neighbour log-price lattice; state-dependent local variance is represented through its general local-kernel extension. Its Chapman--Kolmogorov decomposition yields discrete forward and backward equations. In price variables, the backward equation gives a generalized European pricing PDE and reduces to Black--Scholes--Merton under the risk-neutral drift restriction and constant volatility. Interpreted as a reaction boundary, the lattice gives a structural route from boundary variance to projected local volatility. The key point is the separation of the operational kernel, the calendar-time clock projection, and the pricing-measure choice. Within the deterministic one-factor local-volatility class, an option surface identifies the projected clock--variance combination rather than its operational variance and clock components separately. The resulting hierarchy also distinguishes full calendar-generator equivalence from weaker terminal or continuum matching, and clarifies why incompleteness concerns unspanned clock, jump, or renewal risks rather than random time alone.",
+      "categories": [
+        "q-fin.PR",
+        "q-fin.MF",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2606.09564v4",
+      "pdf_url": "https://arxiv.org/pdf/2606.09564v4",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-08",
+      "discovered": "2026-07-17",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.14174",
+      "source": "arxiv",
+      "title": "How Much of a 10-K Matters? Aggregation-Dependent Value of Full-Text versus Risk-Factor Sentiment",
+      "authors": [
+        "Sanggyu Sean Choi"
+      ],
+      "abstract": "Financial sentiment extraction has largely relied on news text and supervised extraction against return labels alone, leaving 10-K filings -- and volatility, the target risk disclosure is arguably best suited to informing -- comparatively unexplored. We extend a supervised lexicon-learning approach to 10-K filings and their Item 1A risk-factor sections, training sentiment scores against both return and volatility labels at three levels of aggregation: sector, portfolio, and individual firm. Across 1,383 filings from 94 Nasdaq-100 technology constituents (2006--2023), we evaluate the resulting twelve sentiment metrics on classification accuracy, correlation with realised market outcomes, and qualitative lexical content. Full-filing text produces more accurate sentiment at the sector and portfolio level for both targets, but this reverses at the individual-firm level, where the narrower Item 1A section performs better -- an effect we attribute to the interaction between document volume and the amount of independent training signal available at each level of aggregation. A Loughran-McDonald dictionary baseline is consistently, strongly negatively correlated with price at every level tested, underscoring the value of a supervised approach for regulatory disclosure text. These findings, and the design choices they motivate, establish the sentiment-generation methodology underlying a subsequent, larger-scale, multi-source system.",
+      "categories": [
+        "cs.LG",
+        "q-fin.CP",
+        "q-fin.MF",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2607.14174v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.14174v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-15",
+      "discovered": "2026-07-17",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.14373",
+      "source": "arxiv",
+      "title": "A Noise-Robust Elicit-to-Optimize Framework for Distortion Riskmetrics via Inverse Reinforcement Learning",
+      "authors": [
+        "Yang Liu",
+        "Yuhao Liu",
+        "Yunran Wei"
+      ],
+      "abstract": "We propose a noise-robust elicit-to-optimize framework that integrates inverse reinforcement learning (IRL) and reinforcement learning (RL) for eliciting agents' risk preferences and optimizing policies under a broad class of risk objectives characterized by distortion riskmetrics. On the elicitation side, we propose an adaptive Bayesian IRL method that infers agents' latent risk objectives from their noisy observed decisions, explicitly allowing agents to take stochastic and suboptimal actions. We establish the existence of a finite set of distinguishing questions that identifies the preferred distortion riskmetric within the candidate class and prove that the convergence rate of the algorithm is of order $O(\\exp(-cm+O(\\sqrt{m\\log m})))$ under general settings, where $c>0$ is a constant and $m$ denotes the number of algorithm iterations. On the optimization side, we develop a model-free RL algorithm for optimizing policies under conditional distortion riskmetrics. By representing the objective as an integral of the conditional cost quantile function with respect to the distortion function, the method unifies distortion-riskmetric objectives. We optimize diverse risk objectives by extending the Proximal Policy Optimization (PPO) algorithm with policy, value, and quantile neural networks, where the quantile network estimates the full conditional cost quantile function and enables numerical evaluation of general risk objectives. A comprehensive empirical study demonstrates the framework's elicitation accuracy and effectiveness in complex financial environments.",
+      "categories": [
+        "cs.LG",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2607.14373v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.14373v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-15",
+      "discovered": "2026-07-17",
+      "matched_keywords": [
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.04103",
+      "source": "arxiv",
+      "title": "Governing Generative AI Across Financial Institutions: A Framework for Generative AI Risk Control",
+      "authors": [
+        "Dennis Mao",
+        "Alessandra Lin",
+        "Yixin Kang",
+        "Yiqing Wang"
+      ],
+      "abstract": "Generative artificial intelligence is moving from general-purpose experimentation toward specialized applications across banking, capital markets, insurance, payments, and wealth management. Its main contribution is not limited to conversational interfaces. Modern generative systems can synthesize large document collections, extract information from unstructured data, generate software and analytical code, create scenario narratives, support research workflows, and coordinate multi-step tasks. These capabilities make generative AI especially relevant to finance, where decisions often depend on combining quantitative data with contracts, policies,filings, news, customer communications, and expert judgment. This paper presents an application-oriented view of generative AI in finance. It organizes potential uses around five capability patterns, including knowledge synthesis, content generation, analytical assistance, interaction, and workflow orchestration, and maps them to major financia functions. Representative applications include investment research, customer service, lending support, fraud investigation, financial reporting, operations automation, software development, and personalized financial guidance. The paper also discusses common technical architectures, such as retrieval-augmented generation, tool-using assistants, multimodal models, and agentic workflows, and identifies practical factors that shape business value. The resulting landscape provides a foundation for researchers and practitioners seeking to understand where generative AI may produce the greatest operational and analytical impact in financial services",
+      "categories": [
+        "q-fin.RM",
+        "cs.LG"
+      ],
+      "url": "https://arxiv.org/abs/2607.04103v3",
+      "pdf_url": "https://arxiv.org/pdf/2607.04103v3",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-05",
+      "discovered": "2026-07-17",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
