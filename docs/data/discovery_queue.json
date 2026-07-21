@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-21T16:00:51.427405+09:00",
+  "generated_at": "2026-07-22T06:30:10.652754+09:00",
   "stats": {
-    "total": 197,
-    "queued": 115,
+    "total": 201,
+    "queued": 119,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-07-21T16:00:51.427302+09:00",
+    "last_gc_at": "2026-07-22T06:30:10.652593+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -5718,6 +5718,130 @@
       "discovered": "2026-07-17",
       "matched_keywords": [
         "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.18001",
+      "source": "arxiv",
+      "title": "AlphaZeroBeta: Deep Reinforcement Learning for Market-Neutral Portfolios",
+      "authors": [
+        "Boris Belyakov"
+      ],
+      "abstract": "Market-neutral portfolios aim to generate consistent returns while offsetting systematic market risk. Traditional approaches based on factor models or convex optimization often underperform during market regime shifts or when structural assumptions break down. We propose AlphaZeroBeta, a deep reinforcement learning framework designed to deliver benchmark-relative alpha (excess returns) with near-zero beta (market neutrality). AlphaZeroBeta combines a composite reward function that balances risk-adjusted excess return, benchmark correlation, and transaction costs with a CNN-GRU policy trained end-to-end via Recurrent PPO and evaluated through a rolling walk-forward protocol. Backtests covering 2014-2024 across seven equity indices show that the model achieves higher Sharpe ratios than the baselines while maintaining near-zero benchmark correlations and competitive drawdowns.",
+      "categories": [
+        "q-fin.PM",
+        "q-fin.CP"
+      ],
+      "url": "https://arxiv.org/abs/2607.18001v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.18001v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-20",
+      "discovered": "2026-07-22",
+      "matched_keywords": [
+        "factor",
+        "regime",
+        "reinforcement learning",
+        "walk-forward",
+        "drawdown",
+        "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.16450",
+      "source": "arxiv",
+      "title": "Portfolio Optimization under Heavy Tails and Asymmetric Volatility: Evidence from Taiwan-Exposed ETFs",
+      "authors": [
+        "Ting-Jung Lee",
+        "Abootaleb Shirvani",
+        "Farzana Afroz",
+        "Svetlozar T. Rachev",
+        "Frank J. Fabozzi"
+      ],
+      "abstract": "Taiwan's central role in global semiconductor manufacturing exposes Taiwan-related ETFs to technology concentration, geopolitical uncertainty, and supply-chain disruptions, resulting in return distributions characterized by heavy tails, volatility clustering, and asymmetric responses to negative shocks. This paper analyzes thirty U.S.-listed ETFs with Taiwan exposure from February 2015 to February 2025 using tail-risk diagnostics, asymmetric volatility modeling, and portfolio optimization under mean--variance and conditional value-at-risk (CVaR) criteria. Hill tail-index estimates document heavy-tailed behavior across the ETF universe. Although the ETFs exhibit broadly similar asymptotic tail-decay behavior, semiconductor-focused ETFs produce substantially larger VaR and CVaR estimates than diversified benchmarks, indicating that cross-sectional differences in extreme downside risk are driven primarily by differences in return scale rather than tail-index estimates. GJR-GARCH estimates reveal persistent, asymmetric volatility, and the apparent long memory in squared returns is largely attributable to conditional heteroskedasticity rather than genuine fractional integration. CVaR optimization produces substantially more concentrated allocations than mean--variance optimization, with the CVaR tangent portfolio allocating a large weight to SMH during the post-COVID AI-driven expansion. Portfolio rankings depend on the performance measure: the Sharpe ratio and STARR measure favor the equally weighted portfolio, whereas the Rachev ratio favors CVaR-based portfolios. Overall, the results suggest that variance-based frameworks alone provide an incomplete characterization of risk in technology-concentrated investment environments and that variance-based and tail-sensitive performance measures may favor different portfolios over the same sample period.",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2607.16450v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.16450v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-17",
+      "discovered": "2026-07-22",
+      "matched_keywords": [
+        "cross-sectional",
+        "ETF"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.16229",
+      "source": "arxiv",
+      "title": "FinBench: Time-Gated Calibration and Uncertainty Benchmarking for Agentic Financial Forecasting",
+      "authors": [
+        "Rishab Ghosh",
+        "Vinay Devarakonda"
+      ],
+      "abstract": "Large language models (LLMs) are increasingly used as components of agentic systems that observe, plan, and act. In finance, even \"assistive\" systems become decision-relevant once their outputs are used to size trades or allocate risk. A key failure mode is the confidence--competence gap: a model that is only slightly better than chance but consistently overconfident will, under typical bet-sizing rules, generate negative long-run growth. Existing benchmarks emphasize semantic understanding or point accuracy, but do not directly test probabilistic calibration under the temporal constraints and non-stationarity that define real markets. We introduce FinBench, a benchmark designed to evaluate calibration and uncertainty quality for financial forecasting in a setting that is (i) strictly time-gated to avoid look-ahead bias and (ii) evaluated with strictly proper scoring rules that penalize hallucinated confidence. FinBench tasks require models to output (a) a probability of positive return and (b) an 80% prediction interval for realized log return; evaluation uses the Brier score and the Winkler interval score, along with skill scores against hard baselines. This paper describes the benchmark specification and reports a small pilot run (one trading day; three liquid tickers; 33 forecasts) as a sanity check of the pipeline. The pilot illustrates how calibration-sensitive metrics distinguish between \"confident but fragile\" behavior and uncertainty-aware forecasting.",
+      "categories": [
+        "stat.AP",
+        "cs.LG",
+        "q-fin.CP",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2607.16229v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.16229v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-06-24",
+      "discovered": "2026-07-22",
+      "matched_keywords": [
+        "look-ahead bias"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.16281",
+      "source": "arxiv",
+      "title": "A Novel Hybrid Quantum Reservoir Computing (nHQRC) for Phase Transition Detection in Non-Equilibrium Dynamical Systems",
+      "authors": [
+        "Manoj B. Bhatkar",
+        "Prashant M. Yawalkar"
+      ],
+      "abstract": "The analysis of highly non-linear stochastic data within non-equilibrium dynamical systems requires computational frameworks capable of detecting latent phase transitions before systemic structural breakdowns occur. Traditional Variational Quantum Algorithms (VQAs) are frequently bottlenecked by vanishing gradients, the barren plateau problem, and prohibitive training overheads. In this paper, we propose a novel Hybrid Quantum Reservoir Computing (nHQRC) framework, which bypasses these limitations by employing a frozen, disordered Transverse-Field Ising Model (TFIM) to project time-dependent stochastic driving forces into an exponentially large Hilbert space. To resolve the physical phase multi-wrapping vulnerabilities present in baseline quantum reservoir models, we introduce a lookahead-free, pre-amplification manifold scaling technique. Multi-qubit configurations are genetically optimized to the \"edge of chaos,\" while quantum state tracking is performed by extracting von Neumann entropy ($S$) and exact mixed-state Quantum Fisher Information (QFI) to act as leading entanglement witnesses. Utilizing these quantum triggers as boundary constraints, trajectory predictions are constructed via a generative Stochastic Schrödinger Bridge (SSB) readout. By subjecting the quantum reservoir to an 8-dimensional non-stationary stochastic driving field, the framework significantly improves systemic drift-to-diffusion efficiency ($η$) and actively arrests maximum trajectory decay (MTD) by over 13% compared to standard classical benchmarks. This establishes a robust, $\\mathcal{O}(1)$ temporal overhead blueprint for near-term quantum regime detection and macroscopic subsystem stabilization.",
+      "categories": [
+        "quant-ph",
+        "cs.LG",
+        "q-fin.CP",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2607.16281v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.16281v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-09",
+      "discovered": "2026-07-22",
+      "matched_keywords": [
+        "regime",
+        "regime detection"
       ],
       "status": "queued",
       "ingested_into": null,
