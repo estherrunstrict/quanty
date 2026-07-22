@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-22T06:30:10.652754+09:00",
+  "generated_at": "2026-07-22T16:00:17.457059+09:00",
   "stats": {
-    "total": 201,
-    "queued": 119,
+    "total": 202,
+    "queued": 120,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-07-22T06:30:10.652593+09:00",
+    "last_gc_at": "2026-07-22T16:00:17.456957+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -5842,6 +5842,36 @@
       "matched_keywords": [
         "regime",
         "regime detection"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.19005",
+      "source": "arxiv",
+      "title": "Observable Matrix Dynamics of Stocks",
+      "authors": [
+        "Igor Halperin"
+      ],
+      "abstract": "The Observable Matrix Dynamics (OMD) approach monitors the time development of complex non-linear systems through the trajectory of a fixed-size distance matrix and its spectrum. We apply it to the S\\&P 500 cross section over three crisis decades, the 2001 dot-com bust, the 2007--2008 financial crisis, and the 2020 Covid crash, with three fixed-size observables on a fixed universe. The arccos distance matrix of the rolling return correlations reads the correlation geometry: its effective dimension collapses at the 2008 and 2020 crises, while the 2001 bust is a dispersed unwind. Read against machine-learning distance matrices, its spectrum stays in the un-relaxed, pre-learning regime with no low-dimensional manifold, so the market never learns its correlation structure or relaxes to a stationary geometry. Subtracting the market factor exposes a coherent sector rotation, whose name-level attribution identifies which stocks drive each crisis and in what order. At a short lookback these signals resolve precursors and forecast the endogenous 2008 crisis, though not the exogenous 2020 shock. The other two observables model the daily return and volatility rankings as Markov chains on their ranking spaces. The return chain has persistent, defensive-led bellwethers and near-reversible dynamics. The volatility chain is far more persistent, led by the financial sector, and is the only one to carry a weak, episodic arrow of time, flaring at market stress and matching volatility clustering and the Zumbach effect. All three matrices show coherent changes during market crashes.",
+      "categories": [
+        "q-fin.ST",
+        "cs.CE",
+        "q-fin.GN",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2607.19005v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.19005v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-21",
+      "discovered": "2026-07-22",
+      "matched_keywords": [
+        "factor",
+        "regime"
       ],
       "status": "queued",
       "ingested_into": null,
