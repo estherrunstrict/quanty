@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-23T06:30:12.221483+09:00",
+  "generated_at": "2026-07-23T16:00:09.873590+09:00",
   "stats": {
-    "total": 202,
-    "queued": 120,
+    "total": 205,
+    "queued": 123,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-07-23T06:30:12.221360+09:00",
+    "last_gc_at": "2026-07-23T16:00:09.873446+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -5872,6 +5872,93 @@
       "matched_keywords": [
         "factor",
         "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.20093",
+      "source": "arxiv",
+      "title": "Retail Trader's Ruin: An Anatomy of Popular Signal Failure",
+      "authors": [
+        "Adam Darmanin"
+      ],
+      "abstract": "We test whether five widely promoted retail signal families - trend, oscillator, candlestick, volume, and calendar rules - deliver a positive, economically meaningful, net-of-cost, and survivable edge. Practical viability is the conjunction of three predeclared gates: statistical edge after multiplicity correction, economic viability after trading costs, and finite-bankroll survival under leverage. Exposure-matched benchmarks, stationary-bootstrap confidence intervals, hierarchical Benjamini-Yekutieli control, one-sided claim-exclusion tests, and equivalence tests distinguish positive evidence, statistically refuted materiality, and unresolved cases. Four of six candidates - oscillator, volume, calendar, and candlestick - are REFUTED, ruled out on statistical and/or economic materiality grounds; trend and a momentum calibration benchmark are INCONCLUSIVE, with confidence intervals too wide at this sample size to resolve the claim; none is SUPPORTED. Cross-sectional tests use point-in-time membership and delisting corrections. The momentum benchmark itself does not clear the statistical gate and is classified INCONCLUSIVE, not REFUTED - the critical validity signature that a genuinely uncertain positive control is never falsely falsified by this design. Under FINRA- and ESMA-anchored leverage and margin scenarios, survival is not the binding constraint for any tested family at the US headline scenario, though it becomes discriminating for trend and oscillator under the higher-leverage EU CFD scenario. The results reject specific promoted deployability claims where confidence bounds rule out the declared effect threshold and classify the remaining cases as unresolved rather than treating non-significance as proof.",
+      "categories": [
+        "q-fin.ST",
+        "q-fin.RM",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2607.20093v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.20093v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-22",
+      "discovered": "2026-07-23",
+      "matched_keywords": [
+        "momentum",
+        "cross-sectional"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.19497",
+      "source": "arxiv",
+      "title": "The Science and Practice of Trend-Following Systems",
+      "authors": [
+        "Artur Sepp",
+        "Vladimir Lucic"
+      ],
+      "abstract": "We present a unified approach to designing trend-following (TF) systems and classify them into European, American, and Time Series Momentum categories. For European TF systems, we derive an exact relationship between profit-and-loss, autocorrelation, and drift in volatility-normalized returns. We analyze the expected return under fractional ARFIMA processes and show that TF systems are profitable when the long-term autocorrelation is positive, even under short-term mean reversion. In the frequency domain, the expected return is represented as a Poisson-kernel reading of the analytical or empirical spectrum of the volatility-normalized returns: the system profits at zero drift when the kernel-weighted spectral mass exceeds one, so trend-following alpha is excess spectral mass at low frequencies. Longer lookbacks benefit in addition from the squared drift of the return process. We derive the closed-form Sharpe ratio, with the excess kurtosis of the innovations entering through a single loading, and the net Sharpe ratio and cost-optimal span under trading costs. Under white noise, we derive the closed-form skewness of aggregated TF returns, which is positive at every horizon and peaks near half the filter span. Monte Carlo experiments confirm the analytical results. We show that the positive skewness of TF returns is structural under various model assumptions. Empirically, we evaluate the systems on liquid contracts, and show that all TF systems are strongly correlated and our analytical results can be applied for their performance attribution. Our results enable design, simulation, and performance attribution of TF systems from trend persistence, mean reversion, drift, and skewness.",
+      "categories": [
+        "q-fin.ST",
+        "q-fin.MF"
+      ],
+      "url": "https://arxiv.org/abs/2607.19497v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.19497v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-21",
+      "discovered": "2026-07-23",
+      "matched_keywords": [
+        "momentum",
+        "mean reversion"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.20343",
+      "source": "arxiv",
+      "title": "Model Risk via Signature-Induced Optimal Transport",
+      "authors": [
+        "Tomoyuki Ichiba",
+        "Qijin Shi"
+      ],
+      "abstract": "We propose a signature-induced, optimal transport framework for path-space model risk, in which ambiguity between stochastic path laws is factorized through optimal transport costs on signature coordinates under a common coupling. Via an ambient feature-space relaxation, we derive for affine signature scores and affine half-space events explicit robust expectation and probability bounds that depend only on the baseline model. In both cases, the correction is governed by the same effective budget, which depends only on the affine score and the budget vector of the ambiguity set. Moreover, the same quantity leads to a budget-aware sparse signature surrogate method for more general, possibly implicit, or data-driven, path functionals. We illustrate the resulting methodology through controlled stress tests and benchmark model-misspecification problems in finance and insurance.",
+      "categories": [
+        "q-fin.RM",
+        "math.OC",
+        "q-fin.MF"
+      ],
+      "url": "https://arxiv.org/abs/2607.20343v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.20343v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-22",
+      "discovered": "2026-07-23",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
