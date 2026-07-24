@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-24T06:30:11.110005+09:00",
+  "generated_at": "2026-07-24T16:00:09.558572+09:00",
   "stats": {
-    "total": 205,
-    "queued": 123,
+    "total": 206,
+    "queued": 124,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-07-24T06:30:11.109898+09:00",
+    "last_gc_at": "2026-07-24T16:00:09.558477+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -5959,6 +5959,32 @@
       "discovered": "2026-07-23",
       "matched_keywords": [
         "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.21170",
+      "source": "arxiv",
+      "title": "Portfolio Optimization under Dynamic Rebalancing via Topological Data Analysis and News Sentiments",
+      "authors": [
+        "Divyanee Garg"
+      ],
+      "abstract": "Understanding similarity among financial assets is essential for effective portfolio diversification. This paper proposes a novel sentiment-adjusted portfolio optimization framework that integrates Topological Data Analysis (TDA) with technical indicators and FinBERT-based sentiment scores extracted from financial news. A TDA-based distance measure is employed within an agglomerative clustering framework to identify topologically dissimilar assets for portfolio construction. By incorporating sentiment information, the framework captures rapid changes in market perception and investor behavior that are not reflected by technical indicators alone. Unlike conventional correlation and Euclidean distance based approaches, the proposed method characterizes complex nonlinear relationships through topological summaries. To account for the transient nature of market sentiment, a dynamic rolling-window rebalancing strategy with frequent portfolio updates is adopted. A retention mechanism is further introduced to preserve high-quality assets across consecutive rebalancing windows, thereby reducing portfolio turnover and transaction costs. Extensive empirical analysis on S&P 500 constituents demonstrates that the proposed framework consistently outperforms correlation and Euclidean distance based methods, as well as benchmark strategies including Naïve, Index, and full-universe portfolios, in terms of returns and reward-risk performance. Furthermore, the framework exhibits strong robustness by delivering positive performance during periods of heightened market uncertainty, such as the U.S.-Israel-Iran conflict.",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2607.21170v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.21170v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-23",
+      "discovered": "2026-07-24",
+      "matched_keywords": [
+        "transaction cost"
       ],
       "status": "queued",
       "ingested_into": null,
