@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-28T06:30:13.538347+09:00",
+  "generated_at": "2026-07-28T16:00:09.902075+09:00",
   "stats": {
-    "total": 206,
-    "queued": 124,
+    "total": 210,
+    "queued": 128,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-07-28T06:30:13.538244+09:00",
+    "last_gc_at": "2026-07-28T16:00:09.901973+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -5985,6 +5985,124 @@
       "discovered": "2026-07-24",
       "matched_keywords": [
         "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.23068",
+      "source": "arxiv",
+      "title": "Neural Network-Driven Volatility Drag Mitigation under Aggressive Leverage",
+      "authors": [
+        "Christian Bongiorno",
+        "Efstratios Manolakis",
+        "Rosario Nunzio Mantegna"
+      ],
+      "abstract": "This paper introduces a compact reformulation of a modular end-to-end neural network for global minimum-variance portfolio optimization that decouples model complexity from both look-back window length and universe size. A five-parameter hyperbolic weighted moving average combined with a saturating exponential replaces the original 2,400-parameter lag-transformation layer, and a bidirectional gated-recurrent-unit eigencleaning module together with a streamlined marginal-volatility network reduce total learnable parameters from 39,586 to just 2,175. In out-of-sample tests against state-of-the-art nonlinear-shrinkage and risk-parity benchmarks, the compact network attains the lowest realized portfolio variance without compromising expected return. Under long-only constraints, the variance reduction supports substantially higher leverage while maintaining comparable drawdown control. Validation in a high-fidelity trading simulator that incorporates realistic margin-call dynamics confirms enhanced over-leverage resilience. These findings demonstrate that end-to-end variance-minimization architectures can achieve substantial parameter efficiency and robust capital-efficiency gains without sacrificing risk-adjusted performance.",
+      "categories": [
+        "q-fin.PM",
+        "cs.LG"
+      ],
+      "url": "https://arxiv.org/abs/2607.23068v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.23068v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-25",
+      "discovered": "2026-07-28",
+      "matched_keywords": [
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.24410",
+      "source": "arxiv",
+      "title": "The Fundamental Structure of Risk: From Characteristics to Covariance",
+      "authors": [
+        "Alexandre Alouadi",
+        "Charles-Albert Lehalle"
+      ],
+      "abstract": "Estimating the covariance structure of financial assets typically relies on his- torical returns, making risk models dependent on noisy and asset-specific time se- ries. We propose the Characteristic-Driven Dynamic Factor Model (CD-DFM), a non-linear latent factor model that instead constructs a representation of the asset cross-section directly from observable firm characteristics, primarily company funda- mentals. The learned latent space jointly determines interpretable factor exposures and a forward covariance estimator, and is trained end to end on an objective that combines a Stein covariance loss with a factor reconstruction term, targeting the out-of-sample second moments used in risk management. Because the latent repre- sentation, i.e. the encoder depends only on characteristics, previously unseen assets can be embedded at inference time without retraining. Experiments on S&P 500 equities show that CD-DFM produces economically structured latent representa- tions, interpretable factor portfolios, and competitive covariance forecasts despite relying on substantially lower-frequency information than return-based approaches. Among the benchmarked methods, it is the only model that simultaneously combines characteristic-driven representations, factor interpretability, competitive covariance calibration, and zero-shot onboarding of unseen assets.",
+      "categories": [
+        "q-fin.ST",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2607.24410v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.24410v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-27",
+      "discovered": "2026-07-28",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.24065",
+      "source": "arxiv",
+      "title": "Variational Quantum Conditional Boltzmann Machines for Time-Series Forecasting: Architectures, Symmetric Hyperparameter Evaluation, and a Nonlinear Benchmark",
+      "authors": [
+        "Gerhard Hellstern",
+        "Danyal Maheshwari",
+        "Martin Zaefferer",
+        "Martin Braun",
+        "Tanja Döhler"
+      ],
+      "abstract": "In this study, we developed and evaluated four conditional energy-based forecasting architectures: a classical Gaussian-Bernoulli CRBM, a hybrid quantum-classical QCRBM, a full-register QQRBM, and a lag-feature QFeatureQRBM with complete derivations of their conditional distributions, Contrastive-Divergence gradients, and hybrid training, bridging the energy-based formulation and the implementation-level quantum computation. Unlike prior comparisons, our evaluation enforces symmetric hyperparameter optimisation: classical and quantum-specific hyperparameters receive an equally thorough grid search across thirteen structured experiments. We test on two data classes, a Gaussian-process dataset (GP) generated with real financial data and the input-driven NARMA-10 nonlinear benchmark. Across both regimes we find no systematic evidence of a quantum advantage at the available sample size: no quantum architecture improves on the best classical baseline. The fully quantum QQRBM and QFeatureQRBM are significantly worse, whereas the hybrid QCRBM is statistically indistinguishable from the strongest classical CRBM on both datasets. A power analysis bounds this null result: at n = 12 only medium-to-large effects are detectable, so small advantages cannot be excluded. An iso-parameter (matched-budget) comparison reaches the same conclusion: the classical CRBM is lowest at three of the four budgets and no CRBM-vs-QCRBM difference is significant at any budget.",
+      "categories": [
+        "quant-ph",
+        "cs.LG",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2607.24065v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.24065v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-27",
+      "discovered": "2026-07-28",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.24150",
+      "source": "arxiv",
+      "title": "Approximation of stochastic insurer balance-sheet results using signatures of economic scenarios",
+      "authors": [
+        "Hervé Andrès",
+        "Alexandre Boumezoued",
+        "Arthur Bourdon",
+        "Benjamin Jourdain"
+      ],
+      "abstract": "In the insurance industry, Asset and Liability Management (ALM) models are key tools for numerous applications, including Solvency Capital Requirement (SCR) computation and asset allocation optimization. However, their use often entails a significant computational cost, especially when a large number of sensitivities or stressed balance-sheet evaluations must be performed. In this work, we propose an approximation framework for the outputs of an ALM model, such as the Value In Force or the Best Estimate, based on the theory of path signatures. More precisely, the proposed approach consists of approximating ALM outputs by a linear combination of signature terms derived from input economic scenarios. We show that the resulting surrogate is easy to calibrate, essentially through regularized linear regression, and exhibits strong predictive performance while drastically reducing computational costs. We further investigate its robustness under changes in the distribution of economic scenarios by considering variations in the parameters of the underlying model of risk factors while the surrogate model is kept fixed. These results make the proposed approach particularly suitable for large-scale sensitivity analyses and fast balance-sheet evaluations in practical actuarial applications.",
+      "categories": [
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2607.24150v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.24150v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-27",
+      "discovered": "2026-07-28",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
