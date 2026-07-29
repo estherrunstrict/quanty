@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-29T06:30:10.970805+09:00",
+  "generated_at": "2026-07-29T16:00:10.553533+09:00",
   "stats": {
-    "total": 210,
-    "queued": 128,
+    "total": 212,
+    "queued": 130,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-07-29T06:30:10.970699+09:00",
+    "last_gc_at": "2026-07-29T16:00:10.553402+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -6103,6 +6103,63 @@
       "discovered": "2026-07-28",
       "matched_keywords": [
         "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.25459",
+      "source": "arxiv",
+      "title": "Emergent Latent-State Computation under Stochastic Volatility",
+      "authors": [
+        "Xiaoyu Huang",
+        "Lulu Wang"
+      ],
+      "abstract": "Mechanistic interpretability has largely focused on language models and deterministic toy tasks. Much less is known about how sequence models internally represent latent stochastic dynamics under noisy, partially observed observations. We study this question in a controlled multivariate stochastic volatility setting, where models observe only returns while the ground-truth latent volatility state is known to the researcher. This setting provides a useful benchmark for mechanistic interpretability under partial observability: the latent state is hidden from the model but directly available for evaluation. Across architectures, losses, and output heads, we find evidence for a two-stage computation. Hidden representations encode substantial information about the next latent volatility state, and the output head maps this representation to squared return forecasts. Furthermore, in Transformers, latent-state decodability emerges at identifiable architectural stages whose location depends on the volatility period. In long-cycle regimes, this computation simplifies into an explicit latent-state filter consisting of a learned linear projection followed by $\\ell^2$ normalization. Output-head replacement further shows that part of the degradation under noisy MSE training arises from readout misalignment rather than representation failure. These results suggest that stochastic volatility models provide a useful benchmark for mechanistic interpretability under noisy latent dynamics and partial observability.",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2607.25459v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.25459v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-28",
+      "discovered": "2026-07-29",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.25258",
+      "source": "arxiv",
+      "title": "Robust Hedging Valuation Adjustment for Deep Hedging Policies under Market Frictions",
+      "authors": [
+        "Takayuki Sakuma"
+      ],
+      "abstract": "Hedging a derivative position under transaction costs and market frictions requires a trading rule that adapts to changing conditions. Deep hedging trains a neural policy for this task but policy training does not determine whether a trading desk can afford to run the policy. We apply robust hedging valuation adjustment (HVA) as a post-training valuation-adjustment layer that evaluates tracking-loss CVaR together with explicit funding and margin add-ons. The funding and margin add-ons share the same KL uncertainty set as HVA. For each policy, a single common-stress tilt computes HVA, funding and margin jointly and a trading desk can get one internally consistent reserve instead of the three separately. We compare classical hedge policies with learned hedge specifications across three market environments with different liquidity. No single specification dominates in every market. Under the strict tracking-risk budget, gamma-wide classical bands are selected in High and Middle Liquidity while sparse learned execution is selected in Low Liquidity. At looser validation budgets wider classical bands are generally selected.",
+      "categories": [
+        "q-fin.RM",
+        "q-fin.CP",
+        "q-fin.PR"
+      ],
+      "url": "https://arxiv.org/abs/2607.25258v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.25258v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-28",
+      "discovered": "2026-07-29",
+      "matched_keywords": [
+        "transaction cost"
       ],
       "status": "queued",
       "ingested_into": null,
