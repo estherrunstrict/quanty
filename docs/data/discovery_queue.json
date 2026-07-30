@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-30T06:30:13.197752+09:00",
+  "generated_at": "2026-07-30T16:00:07.982035+09:00",
   "stats": {
-    "total": 212,
-    "queued": 130,
+    "total": 214,
+    "queued": 132,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-07-30T06:30:13.197631+09:00",
+    "last_gc_at": "2026-07-30T16:00:07.981934+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -6160,6 +6160,58 @@
       "discovered": "2026-07-29",
       "matched_keywords": [
         "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.27063",
+      "source": "arxiv",
+      "title": "Herding, Momentum, and Reversal in China's A-Share Market: An Agent-Based Network Model with Information Diffusion",
+      "authors": [
+        "Jiahao Weng"
+      ],
+      "abstract": "This study develops an agent-based financial market model to explain stock-price momentum and reversal through the joint effects of local herding and delayed information diffusion. Investors form heterogeneous Gaussian beliefs about the next-period price, choose among buying, selling, and remaining inactive, and revise their action probabilities in response to neighboring investors. The local interaction structure is represented by von Neumann and Moore lattices and is later replaced by Erdős--Rényi and Watts--Strogatz networks for robustness. A separate information process updates investor beliefs through a finite-speed diffusion mechanism, allowing informational adjustment to be distinguished from behavioral imitation. The simulations show that stronger herding produces spatially clustered trading, larger price fluctuations, and more pronounced excess kurtosis in returns. Faster information diffusion reduces the time required for prices to approach the signal-implied value, whereas the combination of information diffusion and social reinforcement generates overshooting and subsequent reversal. An empirical application to China's A-share market compares conventional CSAD and LSV measures with a rolling tail-based herding indicator obtained after Johnson $S_U$ transformation. The indicators display similar time variation and rise during major market disruptions. These findings identify information delay, local social reinforcement, and the eventual decay of herding as complementary mechanisms behind momentum and reversal.",
+      "categories": [
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2607.27063v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.27063v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-29",
+      "discovered": "2026-07-30",
+      "matched_keywords": [
+        "momentum"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.26188",
+      "source": "arxiv",
+      "title": "Bitcoin Runs on a Clock: Why Every Price Indicator Dies and the Halving Clock Doesn't",
+      "authors": [
+        "Josh Molnar"
+      ],
+      "abstract": "Every widely followed Bitcoin cycle indicator (Pi Cycle, MVRV, Mayer, Puell) called turns precisely for a decade, then degraded in one sequence: precise, then early, then silent. This is one structural phenomenon. Across the four halving epochs (2011-2026), the per-cycle maxima of five top-calling oscillators decline monotonically while minima end higher, so any threshold calibrated on past cycles must stop firing; short-horizon indicators decay toward zero and several invert sign; yet Bitcoin's time structure stays fixed, with mature-cycle tops 525/546/534 days after their halvings and bottoms 406/364/366 days after their tops. Turns are identified retrospectively by a fixed mechanical rule, not a real-time record. Timing-free nulls put the joint clustering at 5e-6 to 1e-3 across every variant. A harder empirical null (block-bootstrapped paths under the identical rule) never reproduces the top cluster under its deterministic construction (0 of 10,000); the bottom cluster is largely intrinsic to the drawdown process (31-43% of paths), so the evidence concentrates in top phase-alignment. In block height (the exact 210,000-block unit) the top null stays 0 of 10,000 and partial bottom structure emerges; shape and volatility overlays do not improve. A causal power law in time-since-genesis (exponent near 5.6) is the only signal whose sign is stable across mature epochs, replicates on a second source and Ethereum, and whose timing edge over buy-and-hold turns positive in the current cycle (one holdout, suggestive not decisive). We rest nothing on per-epoch significance: a rotation null shows HAC inference over-rejects here (size 0.33 at nominal 0.05; p=0.21). Macro drivers (M2, yield curve) show the same instability and lose a joint horse race. We pre-register falsifiable windows: a 2026 bottom (Oct 5-Nov 16) and a next top 525-546 days after the following halving.",
+      "categories": [
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2607.26188v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.26188v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-28",
+      "discovered": "2026-07-30",
+      "matched_keywords": [
+        "drawdown"
       ],
       "status": "queued",
       "ingested_into": null,
