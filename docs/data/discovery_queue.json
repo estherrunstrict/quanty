@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-07-31T06:31:40.087195+09:00",
+  "generated_at": "2026-07-31T16:00:09.420548+09:00",
   "stats": {
-    "total": 214,
-    "queued": 132,
+    "total": 219,
+    "queued": 137,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-07-31T06:31:40.087094+09:00",
+    "last_gc_at": "2026-07-31T16:00:09.420431+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -6212,6 +6212,158 @@
       "discovered": "2026-07-30",
       "matched_keywords": [
         "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.27461",
+      "source": "arxiv",
+      "title": "Are Three Matrices All You Need To Beat the Market? Observable Matrix Dynamics for Portfolio Optimization",
+      "authors": [
+        "Igor Halperin"
+      ],
+      "abstract": "We present a simple framework for dynamic portfolio management that uses nothing but daily prices, trading volumes, and market capitalizations. Its state is three fixed-size matrices built from the price history: the distance matrix of the return correlations and the transition matrices of two Markov chains that rank the S\\&P 500 names monthly by trailing return and by trailing volatility. These three matrices rest on the price history alone, the same information Markowitz mean-variance optimization draws on, but they replace its expected-return vector and covariance matrix. Our method requires no matrix inversion, works on outlier-robust cross-sectional ranks, and is dynamic rather than single-period. Empirically the volatility rank is forecastable one step ahead while the return rank stays close to unforecastable. A portfolio built on the forecasts, a market-neutral momentum long-short blended with an opportunistic long-only sleeve, beats the market on two non-overlapping out-of-sample test sets, January 2022 to December 2024 and January 2025 to July 2026, at Sharpes of $1.06$ and $1.32$ against the market's $0.78$ and $1.14$, respectively, net of a five-basis-point trading cost and marked to market daily. It also outperforms the classical minimum-variance and maximum-diversification portfolios. Diversifying the long sleeve by residual distance adds a further edge on both periods, lifting the Sharpe to $1.08$ and $1.44$ and the annualized return from $18\\%$ to $20\\%$ and from $44\\%$ to $56\\%$, respectively. A convex information-leader overlay separately insures the market-neutral sleeve, buying convexity and a shallower drawdown at a small cost in return, the Sharpe unchanged.",
+      "categories": [
+        "q-fin.PM",
+        "q-fin.RM",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2607.27461v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.27461v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-29",
+      "discovered": "2026-07-31",
+      "matched_keywords": [
+        "momentum",
+        "cross-sectional",
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.28127",
+      "source": "arxiv",
+      "title": "FinSMART: Financial Sentiment Analysis for Algorithmic Trading through Market-Aligned Reinforcement Learning",
+      "authors": [
+        "Giorgos Iacovides",
+        "Wuyang Zhou",
+        "Danilo Mandic"
+      ],
+      "abstract": "Recent advances in Generative AI have substantially improved financial sentiment analysis through post-trained financial large language models (LLMs). However, existing approaches remain confined to a market-agnostic, supervised learning paradigm that relies on limited, static and human-annotated datasets, and thus are incapable of adapting to evolving market conditions. To address this limitation, we introduce FinSMART, the first market-aligned reinforcement learning framework for financial sentiment analysis, which directly optimizes sentiment signals using realized market outcomes. To deal with the noisy, non-stationary, and multifactorial nature of financial markets, FinSMART incorporates a signal extraction pipeline that combines market-aware data filtering with a discrete asymmetric trading reward, enabling stable reinforcement learning from economically meaningful market feedback. Experimental results demonstrate that FinSMART significantly outperforms existing state-of-the-art methods in profitability, risk-adjusted performance, and sentiment signal quality, improving cumulative trading returns by 220% over the strongest baseline. Uniquely, the FinSMART framework naturally supports market-aware retraining, at any point in time, by replacing costly manual annotation with newly observed financial articles and their realized market outcomes. Such a retraining strategy enables the model to continuously adapt to changing market dynamics, resulting in consistent performance gains over its static counterpart. These findings demonstrate the practical applicability of market-aligned reinforcement learning and highlight its potential as a next-generation paradigm for developing adaptive financial LLMs.",
+      "categories": [
+        "cs.CL",
+        "cs.LG",
+        "q-fin.ST",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2607.28127v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.28127v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-30",
+      "discovered": "2026-07-31",
+      "matched_keywords": [
+        "factor",
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.27485",
+      "source": "arxiv",
+      "title": "Energy Market and Carbon Emission Spillovers in Critical Minerals Investment: A Dynamic Connectedness Approach",
+      "authors": [
+        "Haibo Wang",
+        "Lutfu Sua",
+        "Jaime Ortiz",
+        "Jun Huang",
+        "Bahram Alidaee"
+      ],
+      "abstract": "Design/methodology/approach A time-varying parameter vector autoregression (TVP-VAR) model is employed to quantify dynamic connectedness and directional volatility spillovers using daily data from May 1, 2013, to May 2, 2023. The study isolates the impact of extreme events by splitting the data into pre- and post-COVID-19 samples based on the February 2020 stock market crash. Purpose This paper examines the daily financial risk spillovers associated with investing in critical minerals. It examines the dynamic interconnectedness between seven critical mineral Exchange-Traded Fund (ETF) portfolios and key economic-wide variables, including the energy market, carbon emissions, market sentiment, and global infrastructure. Findings Portfolios with high Environmental, Social, and Governance (ESG) scores significantly contribute to shock spillovers. Net directional connectedness analysis reveals that West Texas Intermediate (WTI) crude oil and carbon emission futures consistently act as \"net receivers,\" absorbing volatility from the system. Conversely, Cobalt and Aluminum ETFs primarily act as \"net givers,\" transmitting volatility. The pandemic caused significant structural shifts in these transmission roles. Practical implications The identification of specific net givers and receivers provides actionable insights for investors, facilitating better hedging strategies against time-varying structural breaks and broader economic shocks. Originality This study uniquely utilizes financial ETF data rather than physical mineral prices to capture accessible investment risks. It is among the first to link ESG scores to the directional role (giver vs. receiver) of critical mineral assets within a broader macro-financial network.",
+      "categories": [
+        "econ.EM",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2607.27485v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.27485v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-29",
+      "discovered": "2026-07-31",
+      "matched_keywords": [
+        "ETF"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.28294",
+      "source": "arxiv",
+      "title": "Bootstrap inference in autoregressive duration models",
+      "authors": [
+        "Giuseppe Cavaliere",
+        "Thomas Mikosch",
+        "Anders Rahbek",
+        "Frederik Vilandt"
+      ],
+      "abstract": "This paper develops bootstrap inference for autoregressive conditional duration (ACD) models observed over a fixed calendar span, so that the number of durations is random. We study recursive schemes that either fix the calendar span or the realized event count. For the fixed-count bootstrap, we establish consistency when the duration tail index satisfies $κ\\geq1$. When $0<κ<1$, classical consistency fails because the estimator has a mixed-normal limit, but the bootstrap reproduces its conditional Gaussian component. Consequently, basic percentile intervals remain first-order valid and bootstrap $t$-statistics are asymptotically standard normal. Monte Carlo experiments show accurate finite-sample inference across finite- and infinite-mean regimes and robustness to non-exponential innovations. An application to cryptocurrency ETF transaction durations finds strong persistence and illustrates the practical difference between fixed-count and random-count inference.",
+      "categories": [
+        "econ.EM",
+        "math.ST",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2607.28294v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.28294v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-30",
+      "discovered": "2026-07-31",
+      "matched_keywords": [
+        "regime",
+        "ETF"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.27611",
+      "source": "arxiv",
+      "title": "AWARE-FX: An Auditable Knowledge-Guided AI System for Measuring Corporate Foreign-Exchange Hedging Disclosure",
+      "authors": [
+        "Qi Wang"
+      ],
+      "abstract": "Corporate annual reports contain weakly structured evidence about foreign-exchange risk management, derivative use, natural hedging, and explicit non-use. This study develops AWARE-FX, an auditable AI/NLP decision-support system that converts report text into traceable firm-year hedging-disclosure measures. The system combines a professional-source lexicon, negation and accounting-status logic, channel-specific financial encoders, exact evidence gates, conservative aggregation, and an audit ledger. Across 24,909 Hong Kong firm-years from 2008-2025, it retrieves and scores 543,527 snippets. Reliability is evaluated through ablations, a stratified 300-snippet human audit, three-seed FinBERT-ModernBERT comparisons, strict 2023-2025 temporal tests, probability calibration, selective prediction, and fixed-prompt generative-model benchmarks. FinBERT has the higher mean F1 in seven of eight encoder task-split comparisons; its temporal F1 ranges from 0.702 to 0.872. Abstaining on the 20% least-confident temporal observations raises retained-sample F1 by 0.050-0.077. Deterministic Qwen3-8B performs strongly on commodity and negation evidence but poorly on foreign-debt and accounting-context labels, showing that a general-purpose LLM does not uniformly replace domain constraints. The strict FX score is negatively associated with linked baseline and stress-period FX exposure, whereas the generic broad score is not. These associations provide external construct validation, not causal estimates of hedging effectiveness. AWARE-FX contributes a tested decision-support architecture in which retrieval, status logic, classification, uncertainty handling, aggregation, and external validation remain separately auditable.",
+      "categories": [
+        "cs.CL",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2607.27611v1",
+      "pdf_url": "https://arxiv.org/pdf/2607.27611v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-30",
+      "discovered": "2026-07-31",
+      "matched_keywords": [
+        "commodity"
       ],
       "status": "queued",
       "ingested_into": null,
