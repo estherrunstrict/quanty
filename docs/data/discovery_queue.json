@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-08-05T06:30:12.377860+09:00",
+  "generated_at": "2026-08-05T16:00:10.200182+09:00",
   "stats": {
-    "total": 228,
-    "queued": 146,
+    "total": 230,
+    "queued": 148,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-08-05T06:30:12.377747+09:00",
+    "last_gc_at": "2026-08-05T16:00:10.200079+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -6615,6 +6615,62 @@
       "discovered": "2026-08-04",
       "matched_keywords": [
         "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.03616",
+      "source": "arxiv",
+      "title": "Measuring the engine of a liquidation cascade: subcritical branching inside a first-order transition",
+      "authors": [
+        "Ramon Marc Garcia Seuma"
+      ],
+      "abstract": "We study seven major crypto-perpetual liquidation cascades (2022-2025), and in the largest of them we can watch the mechanism directly. From the on-chain fill log of a fully transparent venue we measure the branching ratio of that event -- the October 2025 crash, the largest on record -- in flight, with both of its factors observed and no free constants. It ran deeply subcritical: the structural ratio and the amplification bookkeeping both place it at $\\hatλ\\approx 0.1-0.2$ throughout, while a third, flow-based estimator falls through the climax rather than rising. All three agree on subcriticality within the venue, not on a common numerical level. Alongside them, 88% of all post-onset forced selling landed within thirty minutes and 63% of it was absorbed off-book by the venue's backstop, which drives the branching ratio down precisely at the climax. Across the full set of seven, at onset -- the minute ending the steepest hour of each crash -- the order parameter (mean inter-asset coupling) jumps by between 1.6 and 4.4 baseline standard deviations into a near-fully-ordered phase, while the susceptibility proxy $χ$ collapses in five of the seven events and diverges in none; the jump is invariant under subsampling. The transition is abrupt and scale-robust rather than critical, and its in-cascade signature lives in the liquidity sector: price impact spikes on two venues and two instruments while open interest clears by 25-70%. The natural mechanistic account, a Galton-Watson cascade with $λ= k \\tildeρ$, is then eliminated as a description of the pre-cascade state: both of its falsifiable predictions fail at simulated power >= 0.96, on proxied and on directly measured regressors alike. Severity is set by shock times map-in-path times liquidity withdrawal rather than by a diverging multiplier, which is why none of the scalar pre-state measures we can construct grades it.",
+      "categories": [
+        "physics.soc-ph",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2608.03616v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.03616v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-04",
+      "discovered": "2026-08-05",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.02828",
+      "source": "arxiv",
+      "title": "Proper-score observation-driven filters: local geometry, estimation, and continuous-time limits",
+      "authors": [
+        "Giulia Livieri",
+        "Gianluca Palmari"
+      ],
+      "abstract": "Observation-driven filters update a time-varying parameter with the likelihood score, linking the recursion to the logarithmic scoring rule. We replace this update with the negative parameter derivative of a differentiable proper scoring rule, within a declared working family and predictable scaling. For a general rule, the conditional mean update is a pre-conditioned stochastic-gradient of conditional scoring risk; when an autoregressive pull is included, the centre is the zero of a composite mean field. We derive local realised-loss descent and conditional-mean contraction results, and decompose the local dynamics into risk curvature and innovation variability. These two quantities coincide for the log score under the Bartlett identity but generally differ, which clarifies how bounded drivers can limit the transmission of extreme observations to the filtered path. We also establish consistency and dependent-data sandwich asymptotic normality for batch minimum-scoring-risk estimation of the static recursion parameters. For high-frequency scale models, centred updates yield a diffusion limit, non-centred updates yield a mean-flow limit, and a local transfer theorem gives an Ornstein-Uhlenbeck approximation around a moving scoring-rule risk projection. The working family, scoring rule, scaling, and autoregressive parameters jointly determine the filtered path, while the working family also determines predictive quantiles. Controlled experiments illustrate these channels. An empirical density-by-criterion factorial on international equity returns evaluates point-variance loss, value-at-risk coverage, and probability-integral-transform diagnostics without imposing a universal ranking. The results provide a criterion-based framework for observation-driven filtering under misspecification and identify the assumptions required for estimation, local tracking, and continuous-time approximation.",
+      "categories": [
+        "math.ST",
+        "math.PR",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2608.02828v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.02828v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-03",
+      "discovered": "2026-08-05",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
