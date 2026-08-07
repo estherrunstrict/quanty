@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-08-07T06:30:12.596646+09:00",
+  "generated_at": "2026-08-07T16:00:09.233360+09:00",
   "stats": {
-    "total": 232,
-    "queued": 150,
+    "total": 234,
+    "queued": 152,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-08-07T06:30:12.596543+09:00",
+    "last_gc_at": "2026-08-07T16:00:09.233253+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -6730,6 +6730,63 @@
         "factor",
         "drawdown",
         "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.05373",
+      "source": "arxiv",
+      "title": "Velocity- and Regime-Aware Detection of Intraday Options Market Manipulation, with Explainable Attribution",
+      "authors": [
+        "Alex Chen",
+        "Maria Hybinette"
+      ],
+      "abstract": "Intraday market manipulation is hard to detect because its footprint is brief, buried in millions of quotes, and statistically similar to ordinary volatility. Detectors reach high recall only by flagging so many other days that measured precision collapses, producing alerts no regulator can act on. We show that this manipulation leaves a distinctive dynamic signature: a pump-and-crash pattern visible in the velocity of market state, rather than its level. We build a minute-level detection pipeline, strictly partitioned in time, based on smoothed state velocity: option-Delta velocity for index options and price velocity for equities. We explain every alert with SHAP attribution. We hold the test period strictly out-of-sample and fix all thresholds before evaluation. On the locked Indian BANKNIFTY index-options test, the plain autoencoder recovers 10 of 10 regulator-identified manipulation days. Conditioning detection on market regimes inferred by a hidden Markov model yields an instructive negative result. The regimes are descriptively distinct, but using them trades recall for precision. Under the closed-world assumption that unlabeled days are normal, precision remains near 25%. The same dynamic appears in thinly traded U.S. equities (SEC v. Patel). The shape of the signature survives the transfer; its velocity magnitude does not. A pump-reversal shape score ranks the complaint's alleged manipulation days with AUC 0.91 (ARQQ) and 0.81 (ACY). On the ARQQ worked example, the score peaks inside the complaint's documented minute window. Finally, exact SHAP attribution over every alert shows that unconfirmed alerts share the regulator-identified days' attribution profile (cosine similarity 0.99). The precision ceiling is consistent with incomplete enforcement labels rather than detector failure. What transfers across markets and instrument types is the dynamic signature itself.",
+      "categories": [
+        "q-fin.TR",
+        "cs.LG",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2608.05373v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.05373v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-05",
+      "discovered": "2026-08-07",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.05755",
+      "source": "arxiv",
+      "title": "Cross-Sectional Heterogeneity in LSTM Networks for Financial Time Series",
+      "authors": [
+        "Julius Döbelt"
+      ],
+      "abstract": "Predicting financial asset returns remains one of the most difficult challenges in empirical finance, driven by the low signal-to-noise ratio and the semi-strong form of market efficiency. While deep learning models, especially LSTM networks, have shown promise in capturing temporal dependencies, standard architectures often struggle to account for the cross-sectional heterogeneity of asset returns. This paper proposes a novel architectural extension to the basic LSTM model designed to improve both predictive accuracy and model interpretability. The framework integrates macro-financial covariates to capture broader economic signals and learnable sector embeddings to encompass heterogeneity by sector. The trading strategy involves constructing a long-short portfolio based on daily directional forecasts for each S&P 500 constituent, targeting stocks expected to under- or outperform the cross-sectional median return of the S&P 500. Model Performance is evaluated against three competitive benchmarks: a basic LSTM, a Random Forest model and a traditional market buy-and-hold strategy. The empirical results demonstrate that the LSTM with sector embeddings outperforms all benchmarks across key risk and return metrics. By utilizing sector embeddings, the model explicitly incorporates cross-sectional heterogeneity, allowing it to adapt to varying industry dynamics within the market. To address the black-box nature of deep learning, I use latent space visualizations to analyse how the model differentiates between sectors, providing insights into the internal representation of the sectors in the LSTM. The impact of the sector information can be quantified using a novel contribution metric by inspecting the weights of the LSTM. The predictive signal is driven by a short-term reversal factor and an industry momentum factor.",
+      "categories": [
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2608.05755v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.05755v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-06",
+      "discovered": "2026-08-07",
+      "matched_keywords": [
+        "momentum",
+        "factor",
+        "cross-sectional"
       ],
       "status": "queued",
       "ingested_into": null,
