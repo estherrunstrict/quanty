@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-08-08T06:30:13.199804+09:00",
+  "generated_at": "2026-08-10T16:00:11.391452+09:00",
   "stats": {
-    "total": 234,
-    "queued": 152,
+    "total": 235,
+    "queued": 153,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-08-08T06:30:13.199697+09:00",
+    "last_gc_at": "2026-08-10T16:00:11.391346+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -6787,6 +6787,39 @@
         "momentum",
         "factor",
         "cross-sectional"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.06618",
+      "source": "arxiv",
+      "title": "Beyond Co-Movement: Locality by Exposures Enables a Joint Factor-Graph Framework for Portfolio Diversification",
+      "authors": [
+        "Sara Chehab",
+        "Giorgos Iacovides",
+        "Parisa Yazdanparast",
+        "Danilo Mandic"
+      ],
+      "abstract": "Current portfolio construction methods are either agnostic to the effects of idiosyncratic shocks (standard factor models) or to the latent data structure driving systematic returns (recent graph-based approaches). This presents an opportunity to combine the complementary market aspects captured by the factor and graph domains, allowing asset allocations to operate directly on the underlying market structure, rather than on its observed co-movement or its finite-sample artefacts. In this work, we introduce the Mutually-INformed Graph-Locality and Exposures framework (MINGLE), which mutually regularises the factor and graph domains by redefining graph locality through systematic factor exposure profiles, rather than via observed co-movements. This is formalised through a unified Alternating Direction Method of Multipliers (ADMM) framework that jointly learns a latent factor representation and its induced graph topology directly from market returns. The resulting exposure-similarity graph aligns more closely with established economic sectors than conventional correlation-based graphs. Portfolios constructed from this representation are shown to consistently outperform their correlation-based counterparts across a range of volatility regimes and transaction cost levels. For rigour, paired statistical testing confirms that these gains stem from the reconciliation of the graph and factor domains.",
+      "categories": [
+        "q-fin.PM",
+        "cs.LG",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2608.06618v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.06618v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-06",
+      "discovered": "2026-08-10",
+      "matched_keywords": [
+        "factor",
+        "regime",
+        "transaction cost"
       ],
       "status": "queued",
       "ingested_into": null,
