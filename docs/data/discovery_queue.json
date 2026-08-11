@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-08-11T06:30:10.447950+09:00",
+  "generated_at": "2026-08-11T16:00:08.872655+09:00",
   "stats": {
-    "total": 235,
-    "queued": 153,
+    "total": 240,
+    "queued": 158,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-08-11T06:30:10.447844+09:00",
+    "last_gc_at": "2026-08-11T16:00:08.872555+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -6820,6 +6820,150 @@
         "factor",
         "regime",
         "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.09641",
+      "source": "arxiv",
+      "title": "Lower spectrum of financial correlation matrices: a new perspective on market synchronization",
+      "authors": [
+        "Rosanna Grassi",
+        "Caterina Pastorino",
+        "Pierpaolo Uberti"
+      ],
+      "abstract": "In this paper we investigate the information content of the lower part of the spectrum of financial correlation matrices, as a source of information on market synchronization. In a financial context, a classical application of Principal Component Analysis and Random Matrix Theory identifies the largest eigenvalues as indicators of dominant market factors and synchronization patterns. We complement this perspective by showing that the smallest eigenvalues also contain relevant information about the effective structure of financial markets. The paper presents the methodological proposal and validates its effectiveness through comprehensive real data experiments in both descriptive and predictive settings.",
+      "categories": [
+        "q-fin.ST",
+        "q-fin.MF"
+      ],
+      "url": "https://arxiv.org/abs/2608.09641v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.09641v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-10",
+      "discovered": "2026-08-11",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.09378",
+      "source": "arxiv",
+      "title": "Scaling laws of Stablecoin Transactions: Evidence from USDT and USDC on the Ethereum blockchain",
+      "authors": [
+        "Kundan Mukhia",
+        "Sabat Rai",
+        "Vivek Shrivastav",
+        "Imran Ansari",
+        "Md. Nurujjaman"
+      ],
+      "abstract": "Stablecoins have rapidly emerged as an important class of digital assets and a component of the digital financial ecosystem. Despite their growing importance, the statistical properties of stablecoin transaction activity remain largely unexplored. To the best of our knowledge, this is the first study to investigate scaling behavior in stablecoin transaction data, focusing on USDT and USDC. We analyze approximately 370 million USDT and USDC transactions recorded on the Ethereum blockchain across six periods spanning June 2024 to February 2026. Based on interactions between Externally Owned Accounts (EOAs) and Smart Contracts (SCs), we classify transactions into four categories: EOA-EOA, EOA-SC, SC-EOA, and SC-SC. Using maximum-likelihood estimation of power-law exponents, we find that transaction value distributions exhibit heavy-tailed scaling for both stablecoins across all periods and interaction categories. We identify two distinct scaling regimes: EOA-involved categories cluster around 1.45-1.60, whereas SC-SC transactions exhibit higher exponents of approximately 1.72-1.73. Sensitivity analysis confirms that this separation is robust across periods, stablecoins, and fitting sample sizes. Counterfactual analysis shows that changes in category weights alone cannot explain the observed variation in the overall exponent. Across different sample sizes, the counterfactual path accounts for only about 10%-35% of the total temporal range observed in the actual data. Overall, our results indicate two broadly differentiated scaling regimes in the tail of stablecoin transaction values. Power-law tail behavior is observed throughout stablecoin transaction activity, but the exponent depends on whether transactions are driven by EOAs or SCs. These findings provide a basis for further research on scaling behavior and transaction heterogeneity in blockchain-based financial systems.",
+      "categories": [
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2608.09378v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.09378v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-10",
+      "discovered": "2026-08-11",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.09859",
+      "source": "arxiv",
+      "title": "Nash Peer-to-Peer Insurance Bargaining under Price Fairness and Coalitional Stability",
+      "authors": [
+        "Tim J. Boonen",
+        "Wing Fung Chong",
+        "Kenneth Tsz Hin Ng",
+        "Tak Wa Ng"
+      ],
+      "abstract": "We study peer-to-peer (P2P) insurance contracting between a risk-averse P2P reinsurer and multiple risk-averse peers in an asymmetric Nash-bargaining framework, where all agents seek to improve expected utility relative to their disagreement points. Consistent with the expected value premium principle, we impose a price-fairness condition requiring each peer's expected contribution to be based on a common loading applied to the peer's expected loss. To justify the bargaining formulation relative to a standard fixed-weight weighted-sum optimization problem, we provide an axiomatic characterization showing that the Nash bargaining solution satisfies properties well suited to voluntary P2P insurance contracting in small pools. We establish the existence and uniqueness of the optimal contract and derive first-order characterizations for the full-, partial-, and zero-reinsurance regimes. To address subgroup formation, we develop computationally tractable sufficient conditions that rule out viable coalitional deviations, both with and without price fairness. Our numerical study investigates the impact of price fairness and pool size on the optimal contract and agents' welfare. Price fairness reduces dispersion in risk allocations and certainty-equivalent loadings among peers. Regarding pool size, welfare need not increase monotonically, highlighting that risk-pool expansion depends not only on diversification but also on the evolution of bargaining power.",
+      "categories": [
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2608.09859v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.09859v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-10",
+      "discovered": "2026-08-11",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.09087",
+      "source": "arxiv",
+      "title": "Joint Lyapunov Certificates for K-Agent Generative AI Governance: Stochastic Stability, Emergent Ensemble Risk, and Zero-Knowledge Governance Attestation",
+      "authors": [
+        "Sriram Nagaraj"
+      ],
+      "abstract": "We develop a rigorous mathematical framework for the governance of systems of K self-adapting generative AI models under the principles of Model Risk Management (MRM). When multiple models share a meta-learning coupling through an interaction matrix, the per-agent Lyapunov analysis that underpins standard MRM is provably insufficient: individual agents can each satisfy their declared stability bounds while the joint system is in a regime of emergent ensemble-level drift. We formalize this gap through the Joint Lyapunov Proof (JLP)---a cryptographic and stochastic protocol that attests, without revealing proprietary weights, that the aggregate dynamics satisfy MRM Ongoing Monitoring standard at every validation epoch. Our main contributions are the following. We give a complete characterization of the infinitesimal generator of the joint quadratic Lyapunov function. We derive the exact critical coupling threshold above which the system loses mean-square stability. We prove a Noise-Floor Theorem and identify the correct target for zero-knowledge attestation. A per-epoch Succinct Non-Interactive Argument of Knowledge (SNARK) on the live weights is derived. All theoretical claims are validated against five numerical studies using a multi-agent softmax system.",
+      "categories": [
+        "math.NA",
+        "cs.CR",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2608.09087v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.09087v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-10",
+      "discovered": "2026-08-11",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.09069",
+      "source": "arxiv",
+      "title": "Telemetry and Concealment in Self-Adapting Generative AI: Logging Architecture, Adversarial Model Hiding, and the Limits of Detection",
+      "authors": [
+        "Sriram Nagaraj"
+      ],
+      "abstract": "Model risk management (MRM) guidance assumes a static model lifecycle, in which models are developed, independently validated, and implemented without further autonomous modification. Continually self-adapting generative AI systems --- models that update their own weights during production deployment --- fundamentally violate this assumption and render point-in-time validation inadequate. This paper addresses the resulting governance problem in two parts. Part I develops a rigorous telemetry architecture for such models, operating simultaneously in discrete and continuous time. We establish a Minimal Sufficient Statistic for audit purposes, construct a tamper-evident Merkle chain for discrete weight sequences, derive the appropriate continuous-time generalization via the Ito formula, and propose event-driven logging via KL divergence stopping times that is both computationally tractable and meaningful for validation. Part II asks what happens when the model provider is adversarial. A firm deploying such a model has strong incentives to conceal learning updates that would trigger mandatory validation review. We formalize this as the Model Hiding Problem and provide a systematic taxonomy of six distinct attack strategies against the Part I architecture, spanning discrete and continuous time, with a formal countermeasure for each. Together the two parts establish a dual-regime architecture in which continuous telemetry is necessary but not sufficient, narrowing---but never replacing---periodic invasive audit. The framework is model-architecture-agnostic and is designed to satisfy the three pillars of traditional MRM.",
+      "categories": [
+        "cs.CR",
+        "math.NA",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2608.09069v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.09069v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-10",
+      "discovered": "2026-08-11",
+      "matched_keywords": [
+        "regime"
       ],
       "status": "queued",
       "ingested_into": null,
