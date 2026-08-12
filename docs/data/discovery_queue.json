@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-08-12T06:31:24.130868+09:00",
+  "generated_at": "2026-08-12T16:00:10.244465+09:00",
   "stats": {
-    "total": 240,
-    "queued": 158,
+    "total": 243,
+    "queued": 161,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-08-12T06:31:24.130762+09:00",
+    "last_gc_at": "2026-08-12T16:00:10.244356+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -6962,6 +6962,88 @@
       "year": 2026,
       "published": "2026-08-10",
       "discovered": "2026-08-11",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.10410",
+      "source": "arxiv",
+      "title": "Objective-oriented quantitative investment: A specification-driven framework for automated synthesis of trading strategy pipelines",
+      "authors": [
+        "Liangliang Zhang"
+      ],
+      "abstract": "Automated quantitative research has made striking progress, yet each system answers the same question: which strategy scores highest on a scalar metric? We argue this question is incomplete. Professional investors do not order \"the highest return\"; they order an identity--pure stock-selection alpha uncontaminated by style exposure, resilient in unilateral market declines, within turnover and capacity budgets. We call the incumbent paradigm result-oriented and propose Objective-Oriented Quantitative Investment (OOQI): a specification-driven framework in which (i) the full strategy pipeline is modeled as a typed design space of interchangeable modules with explicit interface contracts (8.85 x 10^8 assemblies in our reference instantiation); (ii) investor intent is formalized as a strategy profile specification--a composable language of measurable, falsifiable clauses from eight requirement families, with hard/soft semantics and an interaction algebra; and (iii) a compiler translates specifications into constrained assemblies and verifies satisfaction clause-by-clause. Because search over large assembly spaces inflates apparent satisfaction, we develop a verification protocol treating the satisfaction rate itself as a statistical object, subject to deflation for search width, temporal holdout, and random-assembly null models. A synthetic demonstration with 32 pipeline assemblies shows that result-oriented selection attains the top in-sample information ratio while satisfying only 25% of the specification, whereas specification-driven selection satisfies 100% of it at a 5.5% score cost. The accompanying theory shows satisfaction-driven synthesis is NP-hard in general yet constant-factor approximable in a conflict-free regime; specifications form a lattice dual to assemblies; each clause carries a Lagrangian shadow price; and rolling re-certification is anytime-valid via e-processes.",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2608.10410v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.10410v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-11",
+      "discovered": "2026-08-12",
+      "matched_keywords": [
+        "factor",
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.10788",
+      "source": "arxiv",
+      "title": "The Triadic Stress Index in Financial Markets",
+      "authors": [
+        "Alberto Acedo"
+      ],
+      "abstract": "The Triadic Stress Index (TSI) takes a network index whose four factors were first observed in soil microbiome co-occurrence networks and applies it, without alteration, to the correlation network of financial assets. We test it on five markets spanning 2006-2026 (equities including banking crises and the AI sector, cryptocurrencies, commodities, foreign exchange and sovereign debt), against three independent definitions of a crisis episode, at a fixed alarm budget, out of sample, with block-bootstrap intervals and a Holm correction across the family of tests. The benchmarks are the Absorption Ratio, the industry standard used by MSCI and central banks; the effective rank and the Vendi score, the sharpest spectral measures available; Ollivier-Ricci curvature; and the global and local balance indices of signed correlation networks. Three comparisons favour the index. It carries a per-node decomposition, diag(A^3), naming which asset is carrying the concentration with no parameter to select, and scores 0.97-0.99 against 0.33-0.84 for the only published per-node alternative, whereas spectral attribution must first choose how many components to read and collapses under a standard but wrong choice. Its alarms are the cleanest of anything tested, 4.0% of them with no matching episode against 14.7% for the effective rank and roughly 59% for the Absorption Ratio. And it beats the Absorption Ratio on detection by 0.273 in F1 out of sample, p<0.0005. The remaining comparisons are ties. Against the effective rank and the Vendi score the index ties in every scheme and both samples, and the margin over the Absorption Ratio narrows under the strictest labelling. On real matrices the far simpler node degree reproduces the attribution. A lead-lag analysis puts the peak cross-correlation at zero lag: this is a coincident state index, not a forecast.",
+      "categories": [
+        "physics.soc-ph",
+        "q-fin.RM",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2608.10788v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.10788v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-11",
+      "discovered": "2026-08-12",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.10693",
+      "source": "arxiv",
+      "title": "When the Fed Speaks: Dynamics and Forecasts of the Volatility Surface",
+      "authors": [
+        "Lukasz Adamski",
+        "Robert Slepaczuk"
+      ],
+      "abstract": "Our primary goal is to forecast and empirically examine the evolution of the implied volatility (IV) surface, with particular focus on the dates of scheduled meetings of the Federal Open Market Committee (FOMC). Firstly, we check if IV increases before the announcement and if thes effect is stronger for short-dated, out-the-money (OTM) options in high volatility regimes. In the second part, we turn the focus to verifying if the ML framework can beat the benchmark random walk in forecasting this effect. A feature related to dates of scheduled FOMC meetings augments the model, which allows us to discover if it can learn the effect of elevated pre-announcement uncertainty. Our contribution relies mainly on the quantitative prediction of the pre-announcement effect and the inclusion of exogenous information inside the ML framework used for the IV surface forecasting. It is also on of the first attempts to apply ML models directly on the IV surface without relying on dimensionality reduction. To achieve this, we employ a convolutional two-dimensional LSTM model, which is capable of learning spatio-temporal signals in the surface. Our analysis reveals that the edge of the ML framework can be limited due to the noisy characteristics of the IV surface. Nevertheless, our study reinforces the perspective that ML models can effectively forecast the IV surface also during abnormal days.",
+      "categories": [
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2608.10693v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.10693v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-11",
+      "discovered": "2026-08-12",
       "matched_keywords": [
         "regime"
       ],
