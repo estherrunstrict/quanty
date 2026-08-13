@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-08-13T06:30:13.790892+09:00",
+  "generated_at": "2026-08-13T16:00:17.188668+09:00",
   "stats": {
-    "total": 243,
-    "queued": 161,
+    "total": 247,
+    "queued": 165,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-08-13T06:30:13.790787+09:00",
+    "last_gc_at": "2026-08-13T16:00:17.188567+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -7046,6 +7046,131 @@
       "discovered": "2026-08-12",
       "matched_keywords": [
         "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.12283",
+      "source": "arxiv",
+      "title": "Large Language Model-Driven Small-Capitalization Trading: Integrating Financial News Sentiment, Macroeconomic Indicators, and Technical Signals",
+      "authors": [
+        "Alireza Kargarzadeh",
+        "Nariman Khaledian",
+        "Navid Parvini",
+        "Arman Khaledian"
+      ],
+      "abstract": "Large language models can extract richer signals from financial news than fixed sentiment lexicons, and recent work has explored feeding such signals into portfolio construction. We study an uncertainty-aware construction that feeds model-predicted risk -- decomposed into aleatoric and epistemic components -- directly into the covariance matrix of portfolio allocators, rather than treating portfolio risk as fixed or adjusting only expected returns. We evaluate the pipeline on Russell 2000 equities under three stock-selection regimes: a pure-alpha trigger that isolates abnormal stock moves not explained by macro indicators, a pure-beta trigger that captures macro-indicator moves before the stock itself fires, and a beta trigger in which both channels agree. Across the full holding-period grid, the separated pure-alpha and pure-beta legs usually dominate the beta intersection on Sharpe and return. Two horizons are especially informative. At one day, pure beta can work under low and moderate transaction costs because it captures immediate lead-lag spillovers from liquid macro and sector indicators into exposed small-cap stocks, but this advantage disappears at 100 bps when turnover and microstructure noise dominate. At 40 days, pure beta works for a different reason: slower macro repricing overtakes the firm-specific pure-alpha channel. The strongest conservative row is pure beta with GPT-4o mini sentiment, a Student-t target, a 40-day holding period, and risk parity allocation, reaching Sharpe 2.33 at 100 bps. The results suggest that stock-selection regime and allocator choice matter at least as much as the sentiment model, and that separating firm-specific and macro-exposure triggers is more informative than requiring both to fire simultaneously.",
+      "categories": [
+        "q-fin.PM",
+        "cs.CL"
+      ],
+      "url": "https://arxiv.org/abs/2608.12283v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.12283v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-12",
+      "discovered": "2026-08-13",
+      "matched_keywords": [
+        "risk parity",
+        "regime",
+        "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.11250",
+      "source": "arxiv",
+      "title": "AgonAlpha: Autonomous Alpha Discovery via Prompt Economy and Scalable Agentic Search",
+      "authors": [
+        "Weicheng Ye",
+        "Youran Sun",
+        "Xingyu Ren",
+        "Shunyao Yu",
+        "Chugang Yi",
+        "Haizhao Yang"
+      ],
+      "abstract": "Language models can propose many plausible trading factors, but an autonomous research system must also allocate its evaluation budget, verify its own evidence, and preserve how each candidate was produced. We present AgonAlpha, an architecture that searches over frozen research artifacts---hypotheses, executable expressions, platform evidence, rationales, and review status---rather than formulas alone. To our knowledge, AgonAlpha is the first alpha-mining system to combine verified artifact search, a fresh-context adversarial reviewer with re-execution and veto authority, and pending-aware parallel budget allocation, together with a complete public evidence trail. Independent deployments on WorldQuant BRAIN produced SPECTACULAR-grade alphas across five users and six model backends, with Fitness reaching 9.50 and Sharpe reaching 3.48, while retaining prompt-to-expression provenance for every submission.",
+      "categories": [
+        "cs.AI",
+        "cs.MA",
+        "q-fin.CP",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2608.11250v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.11250v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-04",
+      "discovered": "2026-08-13",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.12259",
+      "source": "arxiv",
+      "title": "Calibration Bets on the Past: Post-Training Quantization for Financial Time-Series Forecasting",
+      "authors": [
+        "Junyi Ye",
+        "Ivy Gateri Wanjiku"
+      ],
+      "abstract": "Financial forecasting models are typically developed in full precision, yet production deployment often requires low-precision inference to reduce memory and computational cost. Post-training quantization (PTQ) enables such deployment without retraining. However, reliable activation quantization requires calibration: activation ranges are estimated from historical data before deployment and then remain fixed during future inference. The importance of this deployment choice for financial forecasting remains poorly understood. We present a systematic study of activation calibration for PTQ in cross-sectional volatility forecasting on the S&P 500. Our evaluation covers seven representative neural architectures, eight walk-forward test years (2018-2025), and 560 trained models. We find that activation calibration has little effect at 8 bits but becomes the primary determinant of predictive performance at 4 bits. Under default absolute-maximum (abs-max) calibration, static 4-bit quantization of both weights and activations removes 11-62% of the full-precision mean information coefficient in affected architectures. Replacing abs-max with percentile calibration recovers 53-94% of this degradation in the four most affected architectures. The preferred activation range also varies across market periods. Narrow ranges improve resolution under typical market conditions but lose part of their advantage when test-period market dispersion exceeds the calibration history. These findings show that activation calibration is a first-class deployment decision for reliable 4-bit PTQ in financial forecasting. When substantial degradation remains, 8-bit activations or weight-only 4-bit quantization provide more robust deployment choices.",
+      "categories": [
+        "cs.LG",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2608.12259v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.12259v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-12",
+      "discovered": "2026-08-13",
+      "matched_keywords": [
+        "cross-sectional",
+        "walk-forward"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.12251",
+      "source": "arxiv",
+      "title": "Regime-Gated Residual Mixture-of-Experts for Cross-Sectional Volatility Forecasting",
+      "authors": [
+        "Junyi Ye",
+        "Gargi Vijay Borde"
+      ],
+      "abstract": "Financial volatility is regime dependent, yet incorporating regime information into neural networks can also destabilize training. This paper asks where such information should enter a neural cross-sectional volatility forecasting model. We study five-day realized-volatility forecasts for 1,027 U.S. equities using a rolling walk-forward evaluation framework in which information, model capacity, hyperparameter tuning, and random seeds are matched across architectures. We propose RG-ResMoE, a regime-gated residual mixture-of-experts architecture in which regime information is used only for expert routing rather than for direct forecasting. The base predictor models volatility from stock features, while a gating network uses regime state variables to route residual corrections. RG-ResMoE consistently outperforms a capacity-matched MLP in both forecasting accuracy and training stability in the main U.S. study. Similar gains are observed on an independent Japanese panel. The integration pathway is decisive: appending the same regime variables directly to the forecasting input degrades both predictive performance and training stability, whereas restricting them to the routing gate improves accuracy and Value-at-Risk calibration. Hard routing consistently underperforms soft routing. The results suggest that, in compact neural volatility forecasting models, the primary value of mixture-of-experts models lies less in increasing model capacity than in controlling how nonstationary regime information influences prediction.",
+      "categories": [
+        "q-fin.ST",
+        "cs.LG"
+      ],
+      "url": "https://arxiv.org/abs/2608.12251v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.12251v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-12",
+      "discovered": "2026-08-13",
+      "matched_keywords": [
+        "regime",
+        "cross-sectional",
+        "walk-forward"
       ],
       "status": "queued",
       "ingested_into": null,
