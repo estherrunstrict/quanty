@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-08-14T06:30:17.438730+09:00",
+  "generated_at": "2026-08-14T16:00:11.623498+09:00",
   "stats": {
-    "total": 247,
-    "queued": 165,
+    "total": 249,
+    "queued": 167,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-08-14T06:30:17.438606+09:00",
+    "last_gc_at": "2026-08-14T16:00:11.623397+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -7171,6 +7171,66 @@
         "regime",
         "cross-sectional",
         "walk-forward"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.13096",
+      "source": "arxiv",
+      "title": "FlowLOB: Efficient and Controllable Limit Order Book Generation with Flow Matching",
+      "authors": [
+        "Zhuohan Wang",
+        "Andreea Bacalum",
+        "Ollie Olby",
+        "Carmine Ventre",
+        "Namid Stillman"
+      ],
+      "abstract": "Limit order book (LOB) simulators are most useful to practitioners when they combine realistic market dynamics, computationally efficient sampling, controllable scenario generation, and the ability to generalize beyond the instruments seen during training---properties that existing agent-based and deep generative simulators provide only partially. We present \\textbf{FlowLOB}, a conditional \\textbf{flow}-matching generator of \\textbf{LOB} trajectories, trained on multiple Hong Kong Exchange (HKEX) symbols at three sampling frequencies ($0.1$s, $1$s, $10$s) in tick-relative representation that transfers to unseen instruments. Because flow and diffusion models admit a common formulation, we train both with identical data, architecture, and budget, and sample both through the same fixed-step ODE solvers, yielding a controlled comparison of sampling efficiency and fidelity. Flow matching attains its best quality with only $10$ ODE-solver steps, whereas diffusion needs many more function evaluations to approach the same fidelity. At this efficient operating point, FlowLOB improves realism over baselines, two learned and two agent-based models, in most distributional metrics at the two finer sampling frequencies. We evaluate counterfactual controllability with a distributional test that asks whether changing a scenario condition moves the generated statistic toward the corresponding real tail regime; FlowLOB satisfies this criterion in most tested settings. Both realism and control effects transfer zero-shot on a held-out symbol. We additionally conduct ablation studies on the network architecture and the learning rate.",
+      "categories": [
+        "cs.LG",
+        "cs.CE",
+        "q-fin.CP",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2608.13096v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.13096v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-13",
+      "discovered": "2026-08-14",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.13056",
+      "source": "arxiv",
+      "title": "Simulating Stress Laws under Extremal Dependence: Characterizing What Generative Models Must Preserve",
+      "authors": [
+        "Mantu Gupta",
+        "Anand Deo"
+      ],
+      "abstract": "We study stress-scenario generation for systems driven by multivariate heavy-tailed risk factors. Within regions where several financial losses are simultaneously extreme, stress analysis concerns both the conditional law of the risk factors and the most plausible configurations producing those losses. We show that both are governed by the same limiting tail law. Preserving its measure recovers rare-event probabilities and scaled conditional stress laws, while misspecifying extremal dependence distorts some regular joint-stress probability. Its density governs reverse-stress optimization, whose maximizers identify the most plausible stress configurations. To exploit this common structure in finite samples, we develop SSGEN (Self-Similar Generative Estimation), which learns extremal dependence from intermediate exceedances and extrapolates to rarer levels using a Pareto radial component. Even when the target event is absent from the sample, we establish convergence rates for the generated conditional law, and data-driven reverse-stress solutions.",
+      "categories": [
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2608.13056v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.13056v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-13",
+      "discovered": "2026-08-14",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
