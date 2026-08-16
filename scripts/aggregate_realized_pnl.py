@@ -16,6 +16,16 @@ Output: strategy_results/realized_pl_{year}.json with per-bot:
   last_trade, source_used.
 
 Safe to run concurrently with live bots — atomic write via os.replace.
+
+Known limitation — shared-ticker attribution (2026-08-16):
+  Attribution is per-ticker, not per-order. Several bots share one KIS account,
+  so a ticker can only be credited to ONE canonical bot (TICKER_TO_STRATEGY).
+  Concretely: if the Claude Trading Bot ever trades NVDA / MSFT / GOOGL / AAPL /
+  AMZN, that realized P/L is booked to JD_STRATEGY, because JD is the canonical
+  holder of those names (same convention as 144600/132030 staying with
+  HYBRID_VB_KR instead of KOREA_ETF). Per-bot precision for shared names would
+  require order-id-level attribution from KIS execution records matched against
+  each bot's own order log — out of scope for the reporting layer.
 """
 
 import argparse
@@ -88,6 +98,19 @@ TICKER_TO_STRATEGY = {
     '144600': 'HYBRID_VB_KR', '132030': 'HYBRID_VB_KR',
     '305720': 'HYBRID_VB_KR', '091170': 'HYBRID_VB_KR',
     '364690': 'HYBRID_VB_KR',
+    # Claude Trading Bot — exclusive names only.
+    # The effective live watchlist is config.yaml -> claude_trading_bot.watchlist
+    # (currently ["EQIX"]), NOT the 12-name EXCHANGE_MAP in
+    # ClaudeTradingBotAutoTrade.py (that table is only a KIS exchange lookup).
+    # EQIX is the only name this bot has ever traded (state file: 1 BUY, 2026-07-01).
+    'EQIX': 'CLAUDE_AI_BOT',
+    # Not-yet-traded names that appear in EXCHANGE_MAP and are unclaimed by any
+    # other bot. Add them here ONLY when the watchlist actually grows, otherwise
+    # the KIS reset below empties buckets for tickers that never trade:
+    #   'DLR': 'CLAUDE_AI_BOT', 'AMT': 'CLAUDE_AI_BOT', 'CCI': 'CLAUDE_AI_BOT',
+    #   'META': 'CLAUDE_AI_BOT', 'AVGO': 'CLAUDE_AI_BOT', 'NOW': 'CLAUDE_AI_BOT',
+    # AAPL/MSFT/GOOGL/NVDA/AMZN also appear in EXCHANGE_MAP but stay with
+    # JD_STRATEGY — see the collision note in the module docstring.
 }
 
 # Default empty-bot template

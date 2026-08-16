@@ -809,7 +809,11 @@ def build_dashboard_data():
 
         strategies.append({
             "id": "claude_bot",
-            "name": "AI Market Intelligence",
+            # Honest naming: this card is a real trading bot (ClaudeTradingBotAutoTrade.py),
+            # not just a market-intelligence panel. The id stays "claude_bot" — it is
+            # load-bearing for equity_history keys, REALIZED_KEY_BY_ID and the
+            # front-end's regime/breadth/VCP special case.
+            "name": "Claude Trading Bot",
             "currency": "USD",
             "mode": "paper" if cb_paper else "live",
             "value": cb_holdings_value,
