@@ -765,17 +765,16 @@ function renderSparkline(series, width = 280, height = 60) {
 }
 
 // ═══ Strategy Comparison Chart ═══════════════════════════
-// Overlays all 7 bots' YTD equity curves normalized to % return from each bot's
-// own first snapshot. Mixed currencies (KRW/USD) are sidestepped because
-// % return is currency-agnostic. Bots with <2 points or a zero base value
-// are listed in the legend as "insufficient data" but skipped from the plot.
-function buildComparisonChart(equitySeries, strategies) {
+// Plots each bot's YTD Total P/L (realized + unrealized accrued daily) in KRW,
+// plus a bold "Portfolio Total" overlay summing all bots per date.
+function buildComparisonChart(equitySeries, aggregateSeries, strategies) {
   const seriesMeta = {
     btc_vb:        { name: 'BTC Volatility Breakout', stratId: 'btc_vb',        color: '#c9a24d' },
     korea_etf:     { name: 'Korea ETF Momentum',      stratId: 'korea_etf',     color: '#3a8a5a' },
     quant40:       { name: 'US Quant40',              stratId: 'quant40',       color: '#4a78a8' },
     jd_strategy:   { name: 'JD Strategy',             stratId: 'jd_strategy',   color: '#a84848' },
     dual_momentum: { name: 'Dual Momentum',           stratId: 'dual_momentum', color: '#7a68a8' }, // sole purple by spec
+    claude_bot:    { name: 'Claude Trading Bot',      stratId: 'claude_bot',    color: '#5a9a8a' },
     hybrid_vb_kr:  { name: 'Hybrid VB (KR)',          stratId: 'hybrid_vb',     sub: 'kr', color: '#c9a24d99' },
     hybrid_vb_us:  { name: 'Hybrid VB (US)',          stratId: 'hybrid_vb',     sub: 'us', color: '#4a78a899' },
   };
@@ -793,7 +792,8 @@ function buildComparisonChart(equitySeries, strategies) {
     const cycles = sub.cycles_ytd;
     const entry = {
       key, name: meta.name, color: meta.color,
-      wr, cycles, points: [], finalPct: null, insufficient: false,
+      wr, cycles, points: [], finalVal: null, insufficient: false,
+      isPortfolio: false,
     };
     if (raw.length < 2) {
       entry.insufficient = true;
@@ -806,6 +806,23 @@ function buildComparisonChart(equitySeries, strategies) {
     entry.finalVal = entry.points[entry.points.length - 1].val;
     return entry;
   });
+
+  // Portfolio Total — sum of all bots' total P/L per date, drawn last so it
+  // sits on top of per-bot lines.
+  const portfolioRaw = (aggregateSeries || {}).total || [];
+  if (portfolioRaw.length >= 2) {
+    const portEntry = {
+      key: 'portfolio', name: 'Portfolio Total', color: 'var(--tx)',
+      wr: null, cycles: null, points: [], finalVal: null, insufficient: false,
+      isPortfolio: true,
+    };
+    portfolioRaw.forEach(([date, val]) => {
+      portEntry.points.push({ date, val });
+      allDates.add(date);
+    });
+    portEntry.finalVal = portEntry.points[portEntry.points.length - 1].val;
+    prepared.push(portEntry);
+  }
 
   const dateList = [...allDates].sort();
   if (dateList.length < 2) return null;
@@ -840,7 +857,8 @@ function buildComparisonChart(equitySeries, strategies) {
 
   const linesSvg = prepared.filter(p => !p.insufficient).map(p => {
     const pts = p.points.map(pt => `${xFor(dateToIdx[pt.date]).toFixed(1)},${yFor(pt.val).toFixed(1)}`).join(' ');
-    return `<polyline data-key="${p.key}" points="${pts}" fill="none" stroke="${p.color}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`;
+    const sw = p.isPortfolio ? 2.5 : 1.5;
+    return `<polyline data-key="${p.key}" points="${pts}" fill="none" stroke="${p.color}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`;
   }).join('');
 
   const cursor = `<line class="cmp-cursor" x1="0" y1="0" x2="0" y2="${VB}" stroke="var(--tx2)" stroke-width="0.5" stroke-dasharray="3,3" vector-effect="non-scaling-stroke" style="display:none"/>`;
@@ -875,8 +893,10 @@ function buildComparisonChart(equitySeries, strategies) {
     return `<span style="left:${left.toFixed(2)}%">${dateList[i].substring(5)}</span>`;
   }).join('');
 
-  // Legend: sort by final value desc; insufficient-data rows pinned to bottom.
+  // Legend: portfolio sum pinned to top, then per-bot by final value desc;
+  // insufficient-data rows pinned to bottom.
   const sorted = [...prepared].sort((a, b) => {
+    if (a.isPortfolio !== b.isPortfolio) return a.isPortfolio ? -1 : 1;
     if (a.insufficient !== b.insufficient) return a.insufficient ? 1 : -1;
     if (a.insufficient) return 0;
     return b.finalVal - a.finalVal;
@@ -887,6 +907,9 @@ function buildComparisonChart(equitySeries, strategies) {
     }
     const valStr = fmtKrw(p.finalVal);
     const valCls = p.finalVal >= 0 ? 'up' : 'dn';
+    if (p.isPortfolio) {
+      return `<div class="cmp-legend-row" style="font-weight:600;border-bottom:1px solid var(--border);padding-bottom:0.4rem;margin-bottom:0.2rem"><span class="cmp-swatch" style="background:${p.color}"></span><span class="cmp-name">${p.name}</span><span class="cmp-pct ${valCls}">${valStr}</span></div>`;
+    }
     const wrPart = (p.wr === null || p.wr === undefined) ? '' : `, ${p.wr.toFixed(0)}% WR`;
     const metaStr = `(${p.cycles || 0}c${wrPart})`;
     return `<div class="cmp-legend-row"><span class="cmp-swatch" style="background:${p.color}"></span><span class="cmp-name">${p.name}</span><span class="cmp-pct ${valCls}">${valStr}</span><span class="cmp-meta">${metaStr}</span></div>`;
@@ -896,7 +919,7 @@ function buildComparisonChart(equitySeries, strategies) {
   section.innerHTML = `
     <div class="cmp-hdr">
       <h2 class="cmp-title">Strategy Comparison · 2026 YTD</h2>
-      <div class="cmp-sub">Total P/L (realized + unrealized) per bot, in KRW</div>
+      <div class="cmp-sub">Total P/L per bot (realized + unrealized accrued) + portfolio sum, in KRW</div>
     </div>
     <div class="cmp-chart">
       <div class="cmp-y-axis">${yAxisHTML}</div>
@@ -1042,8 +1065,8 @@ function render(data) {
   });
   app.appendChild(strip);
 
-  // ── Strategy Comparison Chart (overlay of all bots' YTD % returns)
-  const cmp = buildComparisonChart(data.equity_series || {}, data.strategies || []);
+  // ── Strategy Comparison Chart (per-bot Total P/L + Portfolio Sum overlay)
+  const cmp = buildComparisonChart(data.equity_series || {}, data.equity_series_aggregate || {}, data.strategies || []);
   if (cmp) app.appendChild(cmp);
 
   // ── Mobile Tabs
