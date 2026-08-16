@@ -329,7 +329,7 @@ code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; 
   <!-- Hero portfolio numbers from dashboard_data.json -->
   <div class="hero">
     <div class="card">
-      <div class="lbl">Total Portfolio (KRW)</div>
+      <div class="lbl">Total Investments (KRW)</div>
       <div class="val mono" id="hero-total">—</div>
       <div class="delta" id="hero-pl">—</div>
     </div>
@@ -506,7 +506,12 @@ function render(dash, dec, disc) {
 
   // Hero
   const port = dash?.portfolio || {};
-  document.getElementById("hero-total").textContent = fmtKRW(port.total_value_krw);
+  // Prefer the whole-investment total (KIS + Upbit + Toss) when the generator
+  // publishes it; portfolio.total_value_krw only ever knew KIS + Upbit, which
+  // understates the account Jae is actually deciding about by the Toss sleeve.
+  const wholeTotal = dash?.totals?.investments_krw;
+  document.getElementById("hero-total").textContent =
+    fmtKRW(wholeTotal > 0 ? wholeTotal : port.total_value_krw);
   const pl = port.total_profit_krw;
   const plEl = document.getElementById("hero-pl");
   if (pl !== null && pl !== undefined) {
