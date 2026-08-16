@@ -876,6 +876,9 @@ function buildComparisonChart(equitySeries, aggregateSeries, strategies) {
     jd_strategy:   { name: 'JD Strategy',             stratId: 'jd_strategy',   color: '#a84848' },
     dual_momentum: { name: 'Dual Momentum',           stratId: 'dual_momentum', color: '#7a68a8' }, // sole purple by spec
     claude_bot:    { name: 'Claude Trading Bot',      stratId: 'claude_bot',    color: '#5a9a8a' },
+    // Toss-account bot. Its P/L runs at a ~W50k scale against the others' millions,
+    // so the line hugs zero — that is honest for a W1M sleeve, not a bug.
+    nmf2:          { name: 'NMF2 (신마법공식 2.0)',     stratId: 'nmf2',          color: '#a8688a' },
     hybrid_vb_kr:  { name: 'Hybrid VB (KR)',          stratId: 'hybrid_vb',     sub: 'kr', color: '#c9a24d99' },
     hybrid_vb_us:  { name: 'Hybrid VB (US)',          stratId: 'hybrid_vb',     sub: 'us', color: '#4a78a899' },
   };
@@ -1465,6 +1468,26 @@ function render(data) {
         }).join('');
         holdingsHTML = `<div class="holds"><div style="font-size:0.58rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--tx4);margin-bottom:0.3rem">Trend Template Passes (${passes.length})</div>${rows}</div>`;
       }
+    }
+
+    else if (s.id === 'nmf2') {
+      const ex = s.extra || {};
+      const nBudget = s.budget || 0;
+      const nInvested = s.cost_basis || 0;
+      const nPct = nBudget > 0 ? Math.round(nInvested / nBudget * 100) : 0;
+      // No win-rate / MDD / cycles row: this sleeve keeps a position ledger, not
+      // a closed-trade book, so those cells would all read 0 and imply "never won".
+      metricsHTML = `
+        <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(nInvested, 'KRW')} <span style="color:var(--tx4)">(${nPct}%)</span></div></div>
+        <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(nBudget, 'KRW')}</div></div>
+        <div><div class="sg-lbl">Market Value</div><div class="sg-val">${fmtVal(s.value || 0, 'KRW')}</div></div>
+        <div><div class="sg-lbl">Unrealized</div><div class="sg-val ${pnlClass(s.unrealized_profit || 0)}">${fmtPnl(s.unrealized_profit || 0, 'KRW')}</div></div>
+        ${totalPlCell(s.total_pl_ytd, 'KRW')}
+        ${profitPctCell(s.profit_rate_ytd_pct)}
+        <div><div class="sg-lbl">Positions</div><div class="sg-val">${ex.ticker_count || 0}<span style="color:var(--tx4)">/${ex.ledger_position_count || 0}</span></div></div>
+        <div><div class="sg-lbl">Ledger Cash</div><div class="sg-val">${fmtVal(ex.cash_krw || 0, 'KRW')}</div></div>
+      `;
+      signalHTML = `<div class="sig long" style="font-size:0.5rem">TOSS · 신마법공식 2.0 + 계절성</div>`;
     }
 
     else if (isManual) {
