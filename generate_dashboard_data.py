@@ -27,8 +27,18 @@ from dashboard_equity import et_today, pin_equity_endpoints
 TOSS_SNAPSHOT_FILE = os.path.join(TRADING_DIR, "strategy_results", "toss_snapshot.json")
 TOSS_MAX_AGE_HOURS = 30
 
-# Hands-on / Manual sleeve history (reporting-side only — no bot reads this).
+# NMF2 (신마법공식 2.0) sleeve — a real automated bot trading a ~W1M slice of the
+# Toss account. Its ledger is the ONLY record of which Toss positions are the
+# bot's; without it every Toss share looks hands-on. Read STRICTLY read-only:
+# this file is the bot's own live state and the dashboard must never write it.
+# We read it here (rather than shipping it in the Mac-side Toss snapshot)
+# because the ledger already lives on THIS host next to the generator, so a
+# direct read needs no new transport, no Mac job, and no snapshot schema bump.
+NMF2_LEDGER_FILE = "/home/ubuntu/toss-nmf2-bot/toss_nmf2_bot/state/ledger.json"
+# Hands-on / Manual and NMF2 sleeve history (reporting-side only — no bot reads
+# these; they live beside the other reporting artefacts, never in the bot's dir).
 MANUAL_HISTORY_FILE = os.path.join(TRADING_DIR, "strategy_results", "manual_sleeve_history.jsonl")
+NMF2_HISTORY_FILE = os.path.join(TRADING_DIR, "strategy_results", "nmf2_history.jsonl")
 # |investments - (bots + manual + cash)| above this share of investments flips
 # totals.reconciliation_warning. The split is built by partitioning the account
 # rows themselves, so a non-zero gap means an INPUT is missing (KIS query failed,
@@ -469,10 +479,18 @@ def collect_bot_claims(strategies, sources=("holdings", "open_positions")):
     `sources` narrows which of the three count, so the caller can measure the
     dropout itself: claims(all) - claims(("holdings",)) is exactly the value of
     live bot positions their own cards forgot to report.
+
+    Cards carrying an explicit non-KIS `account` (NMF2's "toss") are skipped: the
+    result is matched against the KIS holdings map, and Toss and KIS share
+    Korea's 6-digit ticker space, so an unguarded match would hand the bot KIS
+    shares it does not own — inflating `bots_krw` and opening a reconciliation
+    gap. Those cards are attributed against their own account instead.
     """
     claims = {}
     for s in strategies or []:
         if not isinstance(s, dict) or s.get("id") == "manual":
+            continue
+        if s.get("account") not in (None, "", "kis"):
             continue
         per = {}
 
@@ -523,7 +541,139 @@ def _attributed_krw(kis_holdings, claims, fx):
     return total
 
 
-def build_manual_sleeve(all_holdings, strategies, fx_rate, toss_holdings=None):
+def load_nmf2_ledger(path=None):
+    """The NMF2 bot's ledger, READ-ONLY. Returns {} on any problem, never raises.
+
+    Degrading to {} is deliberate: a publish must not fail — and must not shift
+    money between sleeves — because the bot rotated its state file mid-read. An
+    empty ledger yields no nmf2 card, and every Toss share falls back to the
+    hands-on sleeve exactly as it did before this bot had a card.
+    """
+    try:
+        with open(path or NMF2_LEDGER_FILE) as f:
+            led = json.load(f)
+    except Exception:
+        return {}
+    if not isinstance(led, dict) or not isinstance(led.get("positions"), dict):
+        return {}
+    return led
+
+
+def build_nmf2_card(ledger, toss_holdings, fx_rate=None):
+    """The NMF2 bot as a first-class strategy card. PURE — no I/O.
+
+    The ledger knows WHAT the bot owns (qty + avg_price); it does not know what
+    those shares are worth today. The Mac-side Toss snapshot does. So the card is
+    the intersection: for each ledger symbol, claim `min(ledger_qty, account_qty)`
+    shares and value them by pro-rating the account's own mark.
+
+    Two rules keep `totals.reconciliation_gap_krw` at zero:
+      1. Never value more shares than the account reports — the same pro-rate the
+         KIS sleeve uses, so the bot and the hands-on sleeve split one number.
+      2. A ledger symbol absent from the snapshot contributes ZERO, not
+         qty x avg_price. Cost basis is not market value, and money the account
+         does not report cannot be added to a total built from account rows. Such
+         symbols are named in `extra.unmatched_symbols` rather than swallowed.
+
+    Ledger cash is reported for context but NOT added to `value` — Toss cash is
+    already whole inside `totals.cash_krw`, and counting it here would book it
+    twice.
+    """
+    positions = (ledger or {}).get("positions") or {}
+    if not positions:
+        return None
+    fx = float(fx_rate or 0)
+    by_symbol = {}
+    for h in toss_holdings or []:
+        if isinstance(h, dict):
+            sym = h.get("symbol") or h.get("ticker")
+            if sym and sym not in by_symbol:
+                by_symbol[sym] = h
+
+    rows, unmatched = [], []
+    value_krw = cost_krw = 0.0
+    for symbol, pos in sorted(positions.items()):
+        if not isinstance(pos, dict):
+            continue
+        led_qty = float(pos.get("qty") or 0)
+        if led_qty <= 0:
+            continue
+        acct = by_symbol.get(symbol)
+        acct_qty = float((acct or {}).get("qty") or (acct or {}).get("quantity") or 0)
+        if not acct or acct_qty <= 0:
+            unmatched.append(symbol)
+            continue
+        claimed = min(led_qty, acct_qty)
+        share = claimed / acct_qty
+        cur = acct.get("currency") or "KRW"
+        acct_native = float(acct.get("value_native") or acct.get("value_krw") or 0)
+        native = acct_native * share
+        krw = native if cur == "KRW" else (native * fx if fx > 0
+                                           else float(acct.get("value_krw") or 0) * share)
+        cost = claimed * float(pos.get("avg_price") or 0)
+        value_krw += krw
+        cost_krw += cost
+        rows.append({
+            "ticker": symbol,
+            "name": acct.get("name") or symbol,
+            "qty": round(claimed, 6),
+            "quantity": round(claimed, 6),
+            "currency": cur,
+            "avg_price": round(float(pos.get("avg_price") or 0), 4),
+            "current_price": round(native / claimed, 4) if claimed else 0.0,
+            "value": round(native, 2),
+            "value_krw": round(krw, 2),
+            "profit": round(krw - cost, 2),
+            "profit_rate": round((krw - cost) / cost * 100, 2) if cost > 0 else 0.0,
+            "source": "toss",
+            "ledger_qty": round(led_qty, 6),
+        })
+
+    rows.sort(key=lambda r: r.get("value_krw", 0), reverse=True)
+    unrealized = value_krw - cost_krw
+    budget = float((ledger or {}).get("budget_krw") or 0)
+    return {
+        "id": "nmf2",
+        "name": "NMF2 (신마법공식 2.0)",
+        "currency": "KRW",
+        "mode": "live",
+        # Marks this card as trading a NON-KIS account. collect_bot_claims reads
+        # it to keep these KRX codes away from the KIS holdings map (Toss and KIS
+        # share Korea's 6-digit ticker space, so an unguarded match would credit
+        # the bot with KIS shares it does not own and open a reconciliation gap).
+        "account": "toss",
+        "value": round(value_krw, 2),
+        "cost_basis": round(cost_krw, 2),
+        "budget": round(budget, 2),
+        "unrealized_profit": round(unrealized, 2),
+        # No realized figure: the ledger keeps positions, not a closed-trade
+        # book, and this sleeve has not sold since inception. 0.0 is the honest
+        # value today, and total_pl_ytd stays equal to unrealized because of it.
+        "realized_profit_ytd": 0.0,
+        "realized_trades": 0,
+        "total_pl_ytd": round(unrealized, 2),
+        "profit_rate_ytd_pct": round(unrealized / cost_krw * 100, 2) if cost_krw > 0 else 0.0,
+        "holdings": rows,
+        "last_run": (ledger or {}).get("updated"),
+        "extra": {
+            "note": "신마법공식 2.0 + 계절성 — real-money KRW sleeve inside the Toss account, "
+                    "run from Jae's Mac. Positions come from the bot's ledger; prices from the Toss snapshot.",
+            "ticker_count": len(rows),
+            "ledger_position_count": len(positions),
+            "cash_krw": round(float((ledger or {}).get("cash_krw") or 0), 2),
+            "budget_krw": round(budget, 2),
+            "deployed_pct": round(cost_krw / budget * 100, 2) if budget > 0 else 0.0,
+            "unmatched_symbols": unmatched,
+            "ledger_updated": (ledger or {}).get("updated"),
+            "caveat": "Value is marked from the Toss snapshot, so it is only as fresh as that "
+                      "snapshot. Ledger cash is shown but excluded from `value` — Toss cash is "
+                      "counted once, in totals.cash_krw.",
+        },
+    }
+
+
+def build_manual_sleeve(all_holdings, strategies, fx_rate, toss_holdings=None,
+                        toss_claims=None):
     """The Hands-on / Manual sleeve, as a strategy-shaped card. PURE — no I/O.
 
     manual_qty = account_qty - SUM(bot-claimed qty), per ticker, valued at the
@@ -533,13 +683,13 @@ def build_manual_sleeve(all_holdings, strategies, fx_rate, toss_holdings=None):
 
     Cash is deliberately NOT in the sleeve — it is totals.cash_krw.
 
-    `toss_holdings` (rows from the Mac-side Toss snapshot) are added whole:
-    no bot card represents the Toss account, so every Toss position is hands-on.
-    The one known exception is the ~W1M NMF2 Mac-side sleeve inside Toss (<1% of
-    the account, no dashboard card yet) — called out in extra.caveat rather than
-    silently netted out. Including Toss here is also what makes Task 5's
-    reconciliation meaningful: otherwise ~W187M of real money belongs to no
-    bucket at all and the gap check fires on every publish.
+    `toss_holdings` (rows from the Mac-side Toss snapshot) get the SAME
+    subtraction, via `toss_claims` ({symbol: qty} owned by Toss-account bots —
+    today that is NMF2's ledger). Whatever the bots do not claim is hands-on.
+    Including Toss here is what makes Task 5's reconciliation meaningful:
+    otherwise ~W187M of real money belongs to no bucket at all and the gap check
+    fires on every publish. And because bot and hands-on shares are carved out of
+    the same account row, the two can never both count the same share.
     """
     fx = float(fx_rate or 0)
     claims = collect_bot_claims(strategies)
@@ -580,35 +730,45 @@ def build_manual_sleeve(all_holdings, strategies, fx_rate, toss_holdings=None):
 
     toss_krw = 0.0
     toss_rows = 0
+    toss_bot_claimed_krw = 0.0
     for h in toss_holdings or []:
         if not isinstance(h, dict):
             continue
-        qty = float(h.get("qty") or h.get("quantity") or 0)
+        acct_qty = float(h.get("qty") or h.get("quantity") or 0)
         cur = h.get("currency") or "KRW"
-        value_native = float(h.get("value_native") or h.get("value_krw") or 0)
+        acct_native = float(h.get("value_native") or h.get("value_krw") or 0)
         # Re-price at the DASHBOARD's FX rate, not the snapshot's own fallback
         # rate. accounts.toss.total_krw is already re-priced that way; leaving
         # the sleeve on the snapshot's rate opens a reconciliation gap the size
         # of the FX drift (W286k at a 3-won difference on a $98k US sleeve).
         if fx > 0:
-            value_krw = value_native if cur == "KRW" else value_native * fx
+            acct_krw = acct_native if cur == "KRW" else acct_native * fx
         else:
-            value_krw = float(h.get("value_krw") or value_native)
-        if qty <= 0 or value_krw <= 0:
+            acct_krw = float(h.get("value_krw") or acct_native)
+        if acct_qty <= 0 or acct_krw <= 0:
             continue
         ticker = h.get("symbol") or h.get("ticker") or "?"
+        claimed = min(float((toss_claims or {}).get(ticker, 0.0)), acct_qty)
+        manual_qty = acct_qty - claimed
+        toss_bot_claimed_krw += acct_krw * (claimed / acct_qty)
+        if manual_qty <= 1e-9:
+            continue
+        share = manual_qty / acct_qty
+        value_native = acct_native * share
+        value_krw = acct_krw * share
         toss_krw += value_krw
         toss_rows += 1
         rows.append({
             "ticker": ticker,
             "name": h.get("name") or ticker,
-            "qty": round(qty, 6),
-            "quantity": round(qty, 6),
+            "qty": round(manual_qty, 6),
+            "quantity": round(manual_qty, 6),
             "currency": cur,
-            "current_price": round(value_native / qty, 4) if qty else 0.0,
+            "current_price": round(value_native / manual_qty, 4) if manual_qty else 0.0,
             "value": round(value_native, 2),
             "value_krw": round(value_krw, 2),
             "source": "toss",
+            "bot_claimed_qty": round(claimed, 6),
         })
 
     rows.sort(key=lambda r: r.get("value_krw", 0), reverse=True)
@@ -626,14 +786,18 @@ def build_manual_sleeve(all_holdings, strategies, fx_rate, toss_holdings=None):
         # strategies to build the headline "Total P&L". A half-covered number
         # folded into that headline is worse than no number.
         "extra": {
-            "note": "Broker positions attributed to no bot: KIS holdings minus every bot's claimed shares, plus the Toss account.",
+            "note": "Broker positions attributed to no bot: KIS and Toss holdings minus every bot's claimed shares.",
             "ticker_count": len(rows),
             "kis_krw": round(kis_krw, 2),
             "kis_ticker_count": sum(1 for r in rows if r.get("source") == "kis"),
             "kis_unrealized_krw": round(kis_unrealized_krw, 2),
             "toss_krw": round(toss_krw, 2),
             "toss_ticker_count": toss_rows,
-            "caveat": "Toss rows include the ~W1M Mac-side NMF2 sleeve, which has no bot card yet. No cost basis exists for Toss, so no P/L is reported for this sleeve.",
+            # What the Toss-account bots (NMF2) took out of this sleeve. Kept
+            # here so the carve-out is auditable from the published JSON alone.
+            "toss_bot_claimed_krw": round(toss_bot_claimed_krw, 2),
+            "caveat": "The NMF2 sleeve inside Toss is now its own bot card and is excluded here. "
+                      "No cost basis exists for the remaining Toss rows, so no P/L is reported for this sleeve.",
         },
     }
 
@@ -700,8 +864,10 @@ def build_totals(accounts, strategies, manual_card, kis_holdings, fx_rate):
     investments_krw = KIS + Upbit + Toss.
     bots / manual / cash partition the SAME money:
       bots   = every account share a bot claims, at the account's own mark
-               (+ the Upbit sleeve when the BTC bot is actually in a position)
-      manual = the hands-on sleeve (KIS leftovers + the whole Toss account)
+               (+ the Upbit sleeve when the BTC bot is actually in a position,
+                + Toss-account bots' marked value — NMF2, whose shares the
+                  hands-on sleeve gave up in the very same carve-out)
+      manual = the hands-on sleeve (KIS and Toss leftovers)
       cash   = KIS cash + settlement-in-flight + Toss cash + idle Upbit
     so the gap is zero unless an input went missing. `bots_cards_krw` is the
     naive "sum the bot cards" figure kept alongside for diagnosis: the
@@ -720,7 +886,13 @@ def build_totals(accounts, strategies, manual_card, kis_holdings, fx_rate):
     bots_kis_krw = _attributed_krw(kis_holdings, collect_bot_claims(strategies), fx)
     reported_kis_krw = _attributed_krw(
         kis_holdings, collect_bot_claims(strategies, sources=("holdings",)), fx)
-    bots_krw = bots_kis_krw + float(upbit.get("position_krw") or 0)
+    # Bots trading a non-KIS account carry their own already-KRW marked value
+    # (build_nmf2_card pro-rates it out of the Toss snapshot rows the hands-on
+    # sleeve then skips), so they are added directly rather than re-attributed.
+    upbit_bot_krw = float(upbit.get("position_krw") or 0)
+    toss_bots_krw = sum(float(s.get("value") or 0) for s in (strategies or [])
+                        if isinstance(s, dict) and s.get("account") == "toss")
+    bots_krw = bots_kis_krw + upbit_bot_krw + toss_bots_krw
     manual_krw = float((manual_card or {}).get("value") or 0)
     cash_krw = (float(kis.get("cash_krw") or 0)
                 + float(toss.get("cash_krw") or 0)
@@ -756,6 +928,11 @@ def build_totals(accounts, strategies, manual_card, kis_holdings, fx_rate):
         # Value of live bot positions their OWN card no longer reports, rescued
         # from open_positions. Would otherwise be shown to Jae as his own money.
         "unreported_bot_positions_krw": round(bots_kis_krw - reported_kis_krw, 2),
+        "bots_breakdown": {
+            "kis_krw": round(bots_kis_krw, 2),
+            "upbit_krw": round(upbit_bot_krw, 2),
+            "toss_krw": round(toss_bots_krw, 2),
+        },
         "manual_breakdown": {
             "kis_krw": round(float(((manual_card or {}).get("extra") or {}).get("kis_krw") or 0), 2),
             "toss_krw": round(float(((manual_card or {}).get("extra") or {}).get("toss_krw") or 0), 2),
@@ -771,7 +948,10 @@ def build_totals(accounts, strategies, manual_card, kis_holdings, fx_rate):
 
 
 def load_manual_history(path=None):
-    """Rows of {date, value_krw, ...} from the manual-sleeve JSONL (never raises)."""
+    """Rows of {date, ...} from a date-keyed sleeve JSONL (never raises).
+
+    Generic over `path`: serves both the manual sleeve and NMF2's own history.
+    """
     rows = []
     try:
         with open(path or MANUAL_HISTORY_FILE) as f:
@@ -943,8 +1123,30 @@ def main(dry_run=False):
 
     kis_holdings = kis_holdings_map(totals)
     strategies = output.get("strategies") or []
-    manual = build_manual_sleeve(kis_holdings, strategies, fx, toss_rows)
-    strategies = [s for s in strategies if s.get("id") != "manual"] + [manual]
+
+    # NMF2 first: it claims its ledger's shares out of the Toss rows so the
+    # hands-on sleeve below can only ever see what is left. One carve-out, two
+    # sleeves — which is why the reconciliation gap cannot move.
+    nmf2 = build_nmf2_card(load_nmf2_ledger(), toss_rows, fx)
+    toss_claims = {r["ticker"]: r["qty"] for r in (nmf2 or {}).get("holdings", [])}
+    if nmf2:
+        nx = nmf2["extra"]
+        print("  NMF2: W{:,.0f} ({}/{} ledger positions marked, cost W{:,.0f}, "
+              "P/L W{:+,.0f}, budget W{:,.0f})".format(
+                  nmf2["value"], nx["ticker_count"], nx["ledger_position_count"],
+                  nmf2["cost_basis"], nmf2["total_pl_ytd"], nmf2["budget"]))
+        if nx["unmatched_symbols"]:
+            print("  NOTE: NMF2 ledger symbols absent from the Toss snapshot "
+                  "(valued at 0, NOT counted): {}".format(", ".join(nx["unmatched_symbols"])))
+    else:
+        print("  NMF2: no ledger positions readable — no card; "
+              "its Toss shares stay in the hands-on sleeve")
+
+    manual = build_manual_sleeve(kis_holdings, strategies, fx, toss_rows, toss_claims)
+    strategies = [s for s in strategies if s.get("id") not in ("manual", "nmf2")]
+    if nmf2:
+        strategies.append(nmf2)
+    strategies.append(manual)                     # hands-on always last in the grid
     output["strategies"] = strategies
     mx = manual["extra"]
     print("  Hands-on / Manual: W{:,.0f} ({} tickers — KIS W{:,.0f} / {}, Toss W{:,.0f} / {})".format(
@@ -969,6 +1171,31 @@ def main(dry_run=False):
             history = [hist_row]
     eq = output.setdefault("equity_series", {})
     eq["manual"] = [[r["date"], r.get("value_krw", 0)] for r in history]
+
+    # NMF2's comparison-chart series. It is built here rather than by
+    # pin_equity_endpoints because that helper only extends series that already
+    # exist, and dashboard_server has never snapshotted this bot — the Toss
+    # sleeve is invisible to the KIS-side equity loop. The chart is a Total P/L
+    # chart, so this series is P/L (W66k scale), not the W915k value: dropping a
+    # value series into a P/L chart would dwarf every other bot's line.
+    if nmf2:
+        nmf2_row = {"date": et_today(), "total_pl_krw": nmf2["total_pl_ytd"],
+                    "value_krw": nmf2["value"], "cost_krw": nmf2["cost_basis"],
+                    "ticker_count": nmf2["extra"]["ticker_count"],
+                    "toss_stale": bool(toss.get("stale"))}
+        if dry_run:
+            nmf2_hist = [r for r in load_manual_history(NMF2_HISTORY_FILE)
+                         if r.get("date") != nmf2_row["date"]] + [nmf2_row]
+        else:
+            try:
+                nmf2_hist = append_manual_history(nmf2_row, NMF2_HISTORY_FILE)
+            except Exception as e:
+                print("  WARNING: could not persist NMF2 history: {}".format(e))
+                nmf2_hist = [nmf2_row]
+        eq["nmf2"] = [[r["date"], r.get("total_pl_krw", 0)] for r in nmf2_hist]
+        if len(eq["nmf2"]) < 2:
+            print("  NOTE: NMF2 has {} history point(s) — the comparison chart shows "
+                  "'insufficient data' until the next publish".format(len(eq["nmf2"])))
 
     # build_accounts re-emits the very `toss` dict the Toss ingest produced, so
     # this update adds kis/upbit without ever rewriting Task 4's contract.
