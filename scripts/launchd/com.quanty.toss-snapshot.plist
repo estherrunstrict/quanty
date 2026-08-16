@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  com.quanty.toss-snapshot — read-only Toss account snapshot for the public dashboard.
+
+  NOT ARMED. Jae arms launchd himself (house rule — same as the NMF2 bot).
+  To install:
+      cp scripts/launchd/com.quanty.toss-snapshot.plist ~/Library/LaunchAgents/
+      launchctl load  ~/Library/LaunchAgents/com.quanty.toss-snapshot.plist
+      launchctl start com.quanty.toss-snapshot          # one-off test run
+  To disarm:
+      launchctl unload ~/Library/LaunchAgents/com.quanty.toss-snapshot.plist
+
+  What it does: reads Toss holdings + cash (no order code anywhere in the path),
+  writes ~/.quanty/toss_snapshot.json, scp's it to the trading server at
+  /home/ubuntu/koreainvestment-autotrade/strategy_results/toss_snapshot.json.
+  It writes nothing else, on either machine, and touches no bot state.
+
+  Times are the Mac's LOCAL clock (KST). 06:00 lands before the 06:30 KST
+  publish; 15:50 lands just before the 16:00 KST publish. If the Mac is asleep
+  launchd runs the job once on wake; a missed run just makes the dashboard's
+  Toss tile stale, which the generator handles (accounts.toss.stale = true).
+
+  Requires: ~/.ssh/oci_rsa, and the Mac's public IP allowlisted in Toss Open API
+  settings. Credentials are auto-located from the gitignored brokers/.env — set
+  TOSS_DOTENV below if you move them.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.quanty.toss-snapshot</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>/Users/jaelee/.gemini/antigravity/scratch/quanty/automation_oracle/scripts/toss_snapshot.py</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/jaelee/.gemini/antigravity/scratch/quanty/automation_oracle</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/opt/homebrew/bin</string>
+        <key>HOME</key>
+        <string>/Users/jaelee</string>
+        <!-- Optional: pin the credentials file, e.g.
+        <key>TOSS_DOTENV</key>
+        <string>/Users/jaelee/.gemini/antigravity/scratch/quanty/brokers/.env</string>
+        Optional: pin FX instead of letting yfinance fetch KRW=X
+        <key>TOSS_SNAPSHOT_FX</key>
+        <string>1380</string>
+        -->
+    </dict>
+
+    <key>StartCalendarInterval</key>
+    <array>
+        <dict>
+            <key>Hour</key><integer>6</integer>
+            <key>Minute</key><integer>0</integer>
+        </dict>
+        <dict>
+            <key>Hour</key><integer>15</integer>
+            <key>Minute</key><integer>50</integer>
+        </dict>
+    </array>
+
+    <key>RunAtLoad</key>
+    <false/>
+
+    <key>StandardOutPath</key>
+    <string>/Users/jaelee/Library/Logs/quanty-toss-snapshot.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/jaelee/Library/Logs/quanty-toss-snapshot.log</string>
+
+    <key>ProcessType</key>
+    <string>Background</string>
+</dict>
+</plist>
