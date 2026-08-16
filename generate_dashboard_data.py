@@ -20,6 +20,88 @@ sys.path.insert(0, os.path.join(TRADING_DIR, "open-trading-api", "examples_llm")
 sys.path.insert(0, TRADING_DIR)  # for dashboard_equity (shared with dashboard_server)
 from dashboard_equity import et_today, pin_equity_endpoints
 
+# Toss Securities snapshot: written on Jae's Mac by
+# automation_oracle/scripts/toss_snapshot.py and scp'd here. Nothing on this
+# server talks to Toss (the Open API IP allowlist covers the Mac only), so this
+# file is the account's only representation and it can legitimately go stale.
+TOSS_SNAPSHOT_FILE = os.path.join(TRADING_DIR, "strategy_results", "toss_snapshot.json")
+TOSS_MAX_AGE_HOURS = 30
+
+# Hands-on / Manual sleeve history (reporting-side only — no bot reads this).
+MANUAL_HISTORY_FILE = os.path.join(TRADING_DIR, "strategy_results", "manual_sleeve_history.jsonl")
+# |investments - (bots + manual + cash)| above this share of investments flips
+# totals.reconciliation_warning. The split is built by partitioning the account
+# rows themselves, so a non-zero gap means an INPUT is missing (KIS query failed,
+# a bot claims more shares than the account holds), not a rounding drift.
+RECONCILIATION_WARN_PCT = 1.0
+
+
+def load_toss_account(path=None, now=None, max_age_hours=TOSS_MAX_AGE_HOURS, fx_rate=None):
+    """Read the Mac-side Toss snapshot into the `accounts.toss` contract.
+
+    Returns ALWAYS — missing file, unreadable JSON, bad schema and stale data all
+    resolve to a zeroed, honestly-flagged dict rather than an exception or a
+    missing key. A publish must never fail because the Mac was asleep, and the
+    hero must never quietly drop the Toss sleeve from the total: a zero with
+    stale=true is a tile the front-end greys out, a missing key is a silent lie.
+
+    `as_of` is deliberately None whenever stale=true (the healthcheck asserts
+    "as_of fresher than max_age only when stale is false"); the snapshot's own
+    timestamp is preserved under `last_seen_at` for the UI.
+
+    When `fx_rate` is given and the snapshot carries native currency buckets, the
+    USD sleeve is re-converted at the dashboard's own KIS rate so the Toss tile
+    can't disagree with the KIS tile over FX. Otherwise the snapshot's own
+    fallback rate stands.
+    """
+    def _empty(note, last_seen=None):
+        return {"total_krw": 0.0, "cash_krw": 0.0, "holdings_krw": 0.0,
+                "as_of": None, "stale": True, "note": note,
+                "last_seen_at": last_seen}
+
+    path = path or TOSS_SNAPSHOT_FILE
+    if not os.path.exists(path):
+        return _empty("no snapshot at {} (Mac job never ran?)".format(path))
+    try:
+        with open(path) as f:
+            snap = json.load(f)
+    except Exception as e:
+        return _empty("unreadable snapshot: {}".format(e))
+    if not isinstance(snap, dict):
+        return _empty("snapshot is not an object")
+
+    raw_as_of = snap.get("as_of")
+    try:
+        stamp = datetime.fromisoformat(str(raw_as_of).replace("Z", "+00:00"))
+    except (TypeError, ValueError):
+        return _empty("unparseable as_of {!r}".format(raw_as_of))
+    if stamp.tzinfo is None:
+        stamp = stamp.replace(tzinfo=KST)          # snapshots are written in KST
+    now = now or datetime.now(KST)
+    age_h = (now - stamp).total_seconds() / 3600.0
+    if age_h > max_age_hours or age_h < -1:        # future stamps are broken clocks
+        return _empty("snapshot {:.1f}h old (limit {}h)".format(age_h, max_age_hours),
+                      last_seen=raw_as_of)
+
+    native = snap.get("native") or {}
+    holdings_krw = float(snap.get("holdings_krw") or 0)
+    cash_krw = float(snap.get("cash_krw") or 0)
+    if fx_rate and fx_rate > 0 and native:
+        # Re-price the USD sleeve at the dashboard's rate.
+        holdings_krw = float(native.get("holdings_krw") or 0) + float(native.get("holdings_usd") or 0) * fx_rate
+        cash_krw = float(native.get("cash_krw") or 0) + float(native.get("cash_usd") or 0) * fx_rate
+    total_krw = holdings_krw + cash_krw
+    return {
+        "total_krw": round(total_krw, 2),
+        "cash_krw": round(cash_krw, 2),
+        "holdings_krw": round(holdings_krw, 2),
+        "as_of": raw_as_of,
+        "stale": False,
+        "age_hours": round(age_h, 2),
+        "holdings_count": len(snap.get("holdings") or []),
+        "source": snap.get("source") or "unknown",
+    }
+
 
 def get_portfolio(totals=None):
     """Query KIS API for real account totals + Upbit.
@@ -326,10 +408,419 @@ def mark_to_market_strategies(api_data, totals):
     return {"marked": marked, "skipped": sorted(skipped)}
 
 
+# ═════════════════════════════════════════════════════════════════════════════
+# Hands-on / Manual sleeve  +  accounts / totals contract
+#
+# Jae runs most of his money by hand, in front of the bots. Everything below
+# exists so the published dashboard answers "what is my WHOLE investment
+# status", not just "what did the bots do". The split is built by PARTITIONING
+# the broker account rows — every share is either bot-claimed or hands-on, and
+# every won is either in a position or in cash — so bots + manual + cash is the
+# account total by construction, and `reconciliation_gap_krw` is a real alarm
+# rather than a rounding readout.
+#
+# All the builders below are pure functions over already-fetched payloads so
+# they unit-test with fixtures (tests/test_dashboard/test_manual_sleeve.py).
+# ═════════════════════════════════════════════════════════════════════════════
 
-def main():
+def kis_holdings_map(totals):
+    """{ticker: {qty, value_native, currency, name, profit}} for the WHOLE KIS account.
+
+    PURE — takes the already-fetched get_account_totals() payload. KIS's `value`
+    is mark-to-market (qty x current price), so slicing a position by quantity
+    is a straight pro-rate of both value and profit.
+    """
+    out = {}
+    for leg, cur in (("kr", "KRW"), ("us", "USD")):
+        for h in ((totals or {}).get(leg) or {}).get("holdings", []) or []:
+            ticker = h.get("ticker")
+            qty = float(h.get("quantity") or 0)
+            if not ticker or qty <= 0 or ticker in out:
+                continue                      # KR/US tickers never collide; first wins
+            out[ticker] = {
+                "qty": qty,
+                "value_native": float(h.get("value") or 0),
+                "currency": cur,
+                "name": h.get("name") or ticker,
+                "profit": float(h.get("profit") or 0),
+            }
+    return out
+
+
+def collect_bot_claims(strategies, sources=("holdings", "open_positions")):
+    """{ticker: qty} claimed by the bots, read off the dashboard's own cards. PURE.
+
+    Three claim sources per card, because a bot's *reported* holdings can drop
+    out while the position is live — the same intermittent KIS balance-page miss
+    that zeroes korea_etf. On 2026-08-16 Hybrid VB's KR leg reported no holdings
+    at all while it actually held 091170/132030/144600 (~W9.35M):
+      1. card `holdings`
+      2. `kr` / `us` leg holdings (hybrid_vb)
+      3. `open_positions` — the bot's own position ledger, already published by
+         dashboard_server; authoritative exactly when 1 and 2 have dropped out.
+    Without source 3 that W9.35M is reported to Jae as HIS hands-on money.
+
+    Within one card the sources overlap (hybrid's top-level `holdings` IS its US
+    leg), so we take the MAX per ticker rather than summing. Across cards we sum
+    — and the caller caps the sum at the account quantity, which absorbs two
+    cards claiming the same name (korea_etf's account-recovered 132030 vs
+    hybrid_vb's live open position in it).
+
+    `sources` narrows which of the three count, so the caller can measure the
+    dropout itself: claims(all) - claims(("holdings",)) is exactly the value of
+    live bot positions their own cards forgot to report.
+    """
+    claims = {}
+    for s in strategies or []:
+        if not isinstance(s, dict) or s.get("id") == "manual":
+            continue
+        per = {}
+
+        def _take_holdings(rows):
+            for h in rows or []:
+                if not isinstance(h, dict):
+                    continue
+                ticker = h.get("ticker")
+                qty = float(h.get("quantity") or h.get("qty") or 0)
+                if ticker and qty > 0:
+                    per[ticker] = max(per.get(ticker, 0.0), qty)
+
+        def _take_positions(book):
+            for ticker, pos in (book or {}).items():
+                if not isinstance(pos, dict):
+                    continue
+                if "shares" in pos or "quantity" in pos:
+                    qty = float(pos.get("shares") or pos.get("quantity") or 0)
+                    if ticker and qty > 0:
+                        per[ticker] = max(per.get(ticker, 0.0), qty)
+                else:
+                    _take_positions(pos)          # {"kr": {...}, "us": {...}}
+
+        if "holdings" in sources:
+            _take_holdings(s.get("holdings"))
+            for leg in ("kr", "us"):
+                leg_data = s.get(leg)
+                if isinstance(leg_data, dict):
+                    _take_holdings(leg_data.get("holdings"))
+        if "open_positions" in sources and isinstance(s.get("open_positions"), dict):
+            _take_positions(s["open_positions"])
+
+        for ticker, qty in per.items():
+            claims[ticker] = claims.get(ticker, 0.0) + qty
+    return claims
+
+
+def _attributed_krw(kis_holdings, claims, fx):
+    """KRW value of the account shares `claims` covers (capped at what is held)."""
+    total = 0.0
+    for ticker, acct in (kis_holdings or {}).items():
+        qty = float(acct.get("qty") or 0)
+        claimed = min(float(claims.get(ticker, 0.0)), qty)
+        if qty <= 0 or claimed <= 0:
+            continue
+        value_native = float(acct.get("value_native") or 0) * (claimed / qty)
+        total += value_native if acct.get("currency") == "KRW" else value_native * fx
+    return total
+
+
+def build_manual_sleeve(all_holdings, strategies, fx_rate, toss_holdings=None):
+    """The Hands-on / Manual sleeve, as a strategy-shaped card. PURE — no I/O.
+
+    manual_qty = account_qty - SUM(bot-claimed qty), per ticker, valued at the
+    mark the account itself reports and converted to KRW at the dashboard's FX
+    rate. Zero and negative diffs are dropped (a bot claiming more shares than
+    the account holds is a bot-side bug, never negative hands-on money).
+
+    Cash is deliberately NOT in the sleeve — it is totals.cash_krw.
+
+    `toss_holdings` (rows from the Mac-side Toss snapshot) are added whole:
+    no bot card represents the Toss account, so every Toss position is hands-on.
+    The one known exception is the ~W1M NMF2 Mac-side sleeve inside Toss (<1% of
+    the account, no dashboard card yet) — called out in extra.caveat rather than
+    silently netted out. Including Toss here is also what makes Task 5's
+    reconciliation meaningful: otherwise ~W187M of real money belongs to no
+    bucket at all and the gap check fires on every publish.
+    """
+    fx = float(fx_rate or 0)
+    claims = collect_bot_claims(strategies)
+    rows = []
+    kis_krw = 0.0
+    kis_unrealized_krw = 0.0
+
+    for ticker, acct in sorted((all_holdings or {}).items()):
+        qty = float(acct.get("qty") or 0)
+        if qty <= 0:
+            continue
+        claimed = min(float(claims.get(ticker, 0.0)), qty)
+        manual_qty = qty - claimed
+        if manual_qty <= 1e-9:
+            continue
+        share = manual_qty / qty
+        cur = acct.get("currency") or "KRW"
+        value_native = float(acct.get("value_native") or 0) * share
+        profit_native = float(acct.get("profit") or 0) * share
+        value_krw = value_native if cur == "KRW" else value_native * fx
+        profit_krw = profit_native if cur == "KRW" else profit_native * fx
+        price = value_native / manual_qty if manual_qty else 0.0
+        kis_krw += value_krw
+        kis_unrealized_krw += profit_krw
+        rows.append({
+            "ticker": ticker,
+            "name": acct.get("name") or ticker,
+            "qty": round(manual_qty, 6),
+            "quantity": round(manual_qty, 6),          # generic card renderer
+            "currency": cur,
+            "current_price": round(price, 4),
+            "value": round(value_native, 2),
+            "value_krw": round(value_krw, 2),
+            "profit": round(profit_native, 2),
+            "source": "kis",
+            "bot_claimed_qty": round(claimed, 6),
+        })
+
+    toss_krw = 0.0
+    toss_rows = 0
+    for h in toss_holdings or []:
+        if not isinstance(h, dict):
+            continue
+        qty = float(h.get("qty") or h.get("quantity") or 0)
+        cur = h.get("currency") or "KRW"
+        value_native = float(h.get("value_native") or h.get("value_krw") or 0)
+        # Re-price at the DASHBOARD's FX rate, not the snapshot's own fallback
+        # rate. accounts.toss.total_krw is already re-priced that way; leaving
+        # the sleeve on the snapshot's rate opens a reconciliation gap the size
+        # of the FX drift (W286k at a 3-won difference on a $98k US sleeve).
+        if fx > 0:
+            value_krw = value_native if cur == "KRW" else value_native * fx
+        else:
+            value_krw = float(h.get("value_krw") or value_native)
+        if qty <= 0 or value_krw <= 0:
+            continue
+        ticker = h.get("symbol") or h.get("ticker") or "?"
+        toss_krw += value_krw
+        toss_rows += 1
+        rows.append({
+            "ticker": ticker,
+            "name": h.get("name") or ticker,
+            "qty": round(qty, 6),
+            "quantity": round(qty, 6),
+            "currency": cur,
+            "current_price": round(value_native / qty, 4) if qty else 0.0,
+            "value": round(value_native, 2),
+            "value_krw": round(value_krw, 2),
+            "source": "toss",
+        })
+
+    rows.sort(key=lambda r: r.get("value_krw", 0), reverse=True)
+    total_krw = kis_krw + toss_krw
+    return {
+        "id": "manual",
+        "name": "Hands-on / Manual",
+        "currency": "KRW",
+        "mode": "manual",
+        "value": round(total_krw, 2),
+        "holdings": rows,
+        # unrealized_profit / realized_profit_ytd are deliberately ABSENT: the
+        # Toss snapshot carries no cost basis, so a P/L here would be partial,
+        # and both the hero strip and get_portfolio() sum those keys across
+        # strategies to build the headline "Total P&L". A half-covered number
+        # folded into that headline is worse than no number.
+        "extra": {
+            "note": "Broker positions attributed to no bot: KIS holdings minus every bot's claimed shares, plus the Toss account.",
+            "ticker_count": len(rows),
+            "kis_krw": round(kis_krw, 2),
+            "kis_ticker_count": sum(1 for r in rows if r.get("source") == "kis"),
+            "kis_unrealized_krw": round(kis_unrealized_krw, 2),
+            "toss_krw": round(toss_krw, 2),
+            "toss_ticker_count": toss_rows,
+            "caveat": "Toss rows include the ~W1M Mac-side NMF2 sleeve, which has no bot card yet. No cost basis exists for Toss, so no P/L is reported for this sleeve.",
+        },
+    }
+
+
+def build_accounts(totals, portfolio, toss, strategies, now):
+    """`accounts` block: KIS / Upbit / Toss, each honestly flagged. PURE.
+
+    Never raises and never omits a key — a missing account is a zeroed tile with
+    stale=true, because a silently dropped sleeve understates Jae's net worth
+    without saying so.
+    """
+    fx = float((portfolio or {}).get("exchange_rate") or 0) or 1380.0
+    stamp = now.strftime("%Y-%m-%d %H:%M KST")
+
+    if totals:
+        kr = totals.get("kr") or {}
+        us = totals.get("us") or {}
+        krw_cash = float(totals.get("krw_cash") or 0)
+        usd_cash = float(totals.get("usd_cash") or 0)
+        unsettled = float(totals.get("unsettled_us_sell_krw") or 0)
+        kr_stock = float(kr.get("stock_value") or 0)
+        us_stock_krw = float(us.get("stock_value") or 0) * fx
+        # Settlement-in-flight (KR pending inside prvs_rcdl_excc_amt, US T+3 via
+        # ustl_sll_amt_smtl) is money out of the positions and not yet in cash.
+        # It is counted as cash so the split can't lose it.
+        cash_krw = krw_cash + usd_cash * fx + unsettled
+        kis = {
+            "total_krw": round(kr_stock + us_stock_krw + cash_krw, 2),
+            "cash_krw": round(cash_krw, 2),
+            "stock_krw": round(kr_stock + us_stock_krw, 2),
+            "as_of": stamp,
+            "stale": False,
+            "kr_stock_krw": round(kr_stock, 2),
+            "us_stock_krw": round(us_stock_krw, 2),
+            "krw_cash_krw": round(krw_cash, 2),
+            "usd_cash_usd": round(usd_cash, 2),
+            "unsettled_us_sell_krw": round(unsettled, 2),
+            "holdings_count": len(kr.get("holdings") or []) + len(us.get("holdings") or []),
+        }
+    else:
+        kis = {"total_krw": 0.0, "cash_krw": 0.0, "stock_krw": 0.0, "as_of": None,
+               "stale": True, "note": "KIS account query failed at publish time"}
+
+    btc = next((s for s in (strategies or []) if s.get("id") == "btc_vb"), {}) or {}
+    upbit_total = float((portfolio or {}).get("upbit_krw") or btc.get("value") or 0)
+    holding = bool(btc.get("is_holding"))
+    upbit = {
+        "total_krw": round(upbit_total, 2),
+        # Flat bot => the whole sleeve is idle KRW. Calling that "deployed by a
+        # bot" would overstate how much of the portfolio is actually at work.
+        "cash_krw": 0.0 if holding else round(upbit_total, 2),
+        "position_krw": round(upbit_total, 2) if holding else 0.0,
+        "as_of": btc.get("last_run") or stamp,
+        "stale": upbit_total <= 0,
+        "is_holding": holding,
+    }
+
+    return {"kis": kis, "upbit": upbit, "toss": toss or {}}
+
+
+def build_totals(accounts, strategies, manual_card, kis_holdings, fx_rate):
+    """`totals` block — the Whole-Investment hero's numbers. PURE.
+
+    investments_krw = KIS + Upbit + Toss.
+    bots / manual / cash partition the SAME money:
+      bots   = every account share a bot claims, at the account's own mark
+               (+ the Upbit sleeve when the BTC bot is actually in a position)
+      manual = the hands-on sleeve (KIS leftovers + the whole Toss account)
+      cash   = KIS cash + settlement-in-flight + Toss cash + idle Upbit
+    so the gap is zero unless an input went missing. `bots_cards_krw` is the
+    naive "sum the bot cards" figure kept alongside for diagnosis: the
+    difference is exactly the value of live bot positions whose card dropped
+    its holdings (W8.1M of Hybrid VB KR on 2026-08-16).
+    """
+    fx = float(fx_rate or 0)
+    kis = accounts.get("kis") or {}
+    upbit = accounts.get("upbit") or {}
+    toss = accounts.get("toss") or {}
+
+    investments = (float(kis.get("total_krw") or 0)
+                   + float(upbit.get("total_krw") or 0)
+                   + float(toss.get("total_krw") or 0))
+
+    bots_kis_krw = _attributed_krw(kis_holdings, collect_bot_claims(strategies), fx)
+    reported_kis_krw = _attributed_krw(
+        kis_holdings, collect_bot_claims(strategies, sources=("holdings",)), fx)
+    bots_krw = bots_kis_krw + float(upbit.get("position_krw") or 0)
+    manual_krw = float((manual_card or {}).get("value") or 0)
+    cash_krw = (float(kis.get("cash_krw") or 0)
+                + float(toss.get("cash_krw") or 0)
+                + float(upbit.get("cash_krw") or 0))
+
+    bots_cards_krw = 0.0
+    for s in strategies or []:
+        if s.get("id") == "manual":
+            continue
+        if s.get("currency") == "MULTI":
+            for leg, cur in (("kr", "KRW"), ("us", "USD")):
+                val = float(((s.get(leg) or {}).get("value")) or 0)
+                bots_cards_krw += val if cur == "KRW" else val * fx
+        else:
+            val = float(s.get("value") or 0)
+            bots_cards_krw += val if s.get("currency") == "KRW" else val * fx
+
+    gap = investments - (bots_krw + manual_krw + cash_krw)
+    gap_pct = abs(gap) / investments * 100 if investments > 0 else 0.0
+    denom = bots_krw + manual_krw + cash_krw
+    pct = (lambda v: round(v / denom * 100, 2)) if denom > 0 else (lambda v: 0.0)
+
+    out = {
+        "investments_krw": round(investments, 2),
+        "bots_krw": round(bots_krw, 2),
+        "manual_krw": round(manual_krw, 2),
+        "cash_krw": round(cash_krw, 2),
+        "split_pct": {"bots": pct(bots_krw), "manual": pct(manual_krw), "cash": pct(cash_krw)},
+        "reconciliation_gap_krw": round(gap, 2),
+        "reconciliation_gap_pct": round(gap_pct, 4),
+        "reconciliation_warning": gap_pct > RECONCILIATION_WARN_PCT,
+        "bots_cards_krw": round(bots_cards_krw, 2),
+        # Value of live bot positions their OWN card no longer reports, rescued
+        # from open_positions. Would otherwise be shown to Jae as his own money.
+        "unreported_bot_positions_krw": round(bots_kis_krw - reported_kis_krw, 2),
+        "manual_breakdown": {
+            "kis_krw": round(float(((manual_card or {}).get("extra") or {}).get("kis_krw") or 0), 2),
+            "toss_krw": round(float(((manual_card or {}).get("extra") or {}).get("toss_krw") or 0), 2),
+        },
+        "cash_breakdown": {
+            "kis_krw": round(float(kis.get("cash_krw") or 0), 2),
+            "toss_krw": round(float(toss.get("cash_krw") or 0), 2),
+            "upbit_idle_krw": round(float(upbit.get("cash_krw") or 0), 2),
+        },
+        "fx_rate": fx,
+    }
+    return out
+
+
+def load_manual_history(path=None):
+    """Rows of {date, value_krw, ...} from the manual-sleeve JSONL (never raises)."""
+    rows = []
+    try:
+        with open(path or MANUAL_HISTORY_FILE) as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    row = json.loads(line)
+                except ValueError:
+                    continue
+                if isinstance(row, dict) and row.get("date"):
+                    rows.append(row)
+    except (IOError, OSError):
+        return []
+    rows.sort(key=lambda r: r["date"])
+    return rows
+
+
+def append_manual_history(row, path=None):
+    """Upsert one row per date, atomically (.tmp + os.replace).
+
+    Same durability contract as dashboard_server's equity snapshot: the reader
+    (next publish, healthcheck) either sees the old file or the new one, never a
+    half-written line. Publishing twice in a day replaces that day's row.
+    """
+    path = path or MANUAL_HISTORY_FILE
+    rows = [r for r in load_manual_history(path) if r.get("date") != row.get("date")]
+    rows.append(row)
+    rows.sort(key=lambda r: r["date"])
+    tmp = path + ".tmp"
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(tmp, "w") as f:
+        for r in rows:
+            f.write(json.dumps(r, default=str) + "\n")
+    os.replace(tmp, path)
+    return rows
+
+
+def main(dry_run=False):
+    """Build and publish dashboard_data.json.
+
+    dry_run writes to /tmp and skips the manual-history append, so the numbers
+    can be eyeballed on the server before anything the public site reads is
+    touched.
+    """
     now = datetime.now(KST)
-    print("[{}] Generating dashboard data...".format(now.strftime("%H:%M:%S KST")))
+    print("[{}] Generating dashboard data{}...".format(
+        now.strftime("%H:%M:%S KST"), " (DRY RUN)" if dry_run else ""))
 
     # Fetch live data from dashboard server API
     try:
@@ -427,16 +918,95 @@ def main():
     }
     output.update(api_data)
 
-    os.makedirs(DATA_DIR, exist_ok=True)
+    fx = (portfolio or {}).get("exchange_rate") or 1380
 
-    data_file = os.path.join(DATA_DIR, "dashboard_data.json")
+    # Toss Securities account (Mac-side read-only snapshot). setdefault so this
+    # merges with whatever else populates `accounts`, in any order.
+    toss = load_toss_account(fx_rate=fx)
+    output.setdefault("accounts", {})["toss"] = toss
+    print("  Toss: {}".format(
+        "STALE/absent — {}".format(toss.get("note")) if toss["stale"]
+        else "W{:,.0f} ({} holdings, as of {})".format(
+            toss["total_krw"], toss.get("holdings_count", 0), toss["as_of"])))
+
+    # ── Hands-on / Manual sleeve + whole-investment totals ───────────────────
+    # Everything below runs AFTER pin_equity_endpoints on purpose: the manual
+    # card is not a bot, so it must not have its chart endpoint pinned to a
+    # total_pl_ytd it does not have.
+    toss_rows = []
+    if not toss.get("stale"):
+        try:
+            with open(TOSS_SNAPSHOT_FILE) as f:
+                toss_rows = json.load(f).get("holdings") or []
+        except Exception as e:
+            print("  WARNING: Toss holdings unreadable for the manual sleeve: {}".format(e))
+
+    kis_holdings = kis_holdings_map(totals)
+    strategies = output.get("strategies") or []
+    manual = build_manual_sleeve(kis_holdings, strategies, fx, toss_rows)
+    strategies = [s for s in strategies if s.get("id") != "manual"] + [manual]
+    output["strategies"] = strategies
+    mx = manual["extra"]
+    print("  Hands-on / Manual: W{:,.0f} ({} tickers — KIS W{:,.0f} / {}, Toss W{:,.0f} / {})".format(
+        manual["value"], mx["ticker_count"], mx["kis_krw"], mx["kis_ticker_count"],
+        mx["toss_krw"], mx["toss_ticker_count"]))
+
+    # Manual history: one row per publish date, atomically upserted. The series
+    # is a VALUE series (the Toss half has no cost basis, so a P/L series would
+    # be half-covered); the comparison chart is a P/L chart and deliberately
+    # does NOT plot it — the manual card's own sparkline does.
+    hist_row = {"date": et_today(), "value_krw": manual["value"],
+                "kis_krw": mx["kis_krw"], "toss_krw": mx["toss_krw"],
+                "ticker_count": mx["ticker_count"],
+                "toss_stale": bool(toss.get("stale"))}
+    if dry_run:
+        history = [r for r in load_manual_history() if r.get("date") != hist_row["date"]] + [hist_row]
+    else:
+        try:
+            history = append_manual_history(hist_row)
+        except Exception as e:
+            print("  WARNING: could not persist manual sleeve history: {}".format(e))
+            history = [hist_row]
+    eq = output.setdefault("equity_series", {})
+    eq["manual"] = [[r["date"], r.get("value_krw", 0)] for r in history]
+
+    # build_accounts re-emits the very `toss` dict the Toss ingest produced, so
+    # this update adds kis/upbit without ever rewriting Task 4's contract.
+    accounts = build_accounts(totals, portfolio, toss, strategies, now)
+    output.setdefault("accounts", {}).update(accounts)
+    totals_block = build_totals(output["accounts"], strategies, manual, kis_holdings, fx)
+    output["totals"] = totals_block
+
+    print("  Accounts: KIS W{:,.0f} + Upbit W{:,.0f} + Toss W{:,.0f}".format(
+        accounts["kis"]["total_krw"], accounts["upbit"]["total_krw"],
+        (accounts.get("toss") or {}).get("total_krw", 0)))
+    print("  TOTAL INVESTMENTS W{:,.0f} = bots W{:,.0f} ({}%) + hands-on W{:,.0f} ({}%) + cash W{:,.0f} ({}%)".format(
+        totals_block["investments_krw"], totals_block["bots_krw"], totals_block["split_pct"]["bots"],
+        totals_block["manual_krw"], totals_block["split_pct"]["manual"],
+        totals_block["cash_krw"], totals_block["split_pct"]["cash"]))
+    if totals_block["unreported_bot_positions_krw"]:
+        print("  NOTE: W{:+,.0f} of live bot positions are missing from their own cards "
+              "(rescued via open_positions, so NOT counted as hands-on)".format(
+                  totals_block["unreported_bot_positions_krw"]))
+    if totals_block["reconciliation_warning"]:
+        print("  WARNING: reconciliation gap W{:+,.0f} ({:.2f}% of investments) exceeds {}%".format(
+            totals_block["reconciliation_gap_krw"], totals_block["reconciliation_gap_pct"],
+            RECONCILIATION_WARN_PCT))
+    else:
+        print("  Reconciliation gap W{:+,.0f} ({:.3f}%) — OK".format(
+            totals_block["reconciliation_gap_krw"], totals_block["reconciliation_gap_pct"]))
+
+    out_dir = "/tmp/dashboard_dryrun" if dry_run else DATA_DIR
+    os.makedirs(out_dir, exist_ok=True)
+
+    data_file = os.path.join(out_dir, "dashboard_data.json")
     with open(data_file, "w") as f:
         json.dump(output, f, indent=2, default=str)
     print("  Wrote {}".format(data_file))
 
-    eq_series = api_data.get("equity_series", {})
+    eq_series = output.get("equity_series", {})
     if eq_series:
-        eq_file = os.path.join(DATA_DIR, "equity_history.json")
+        eq_file = os.path.join(out_dir, "equity_history.json")
         with open(eq_file, "w") as f:
             json.dump(eq_series, f, indent=2)
         print("  Wrote {}".format(eq_file))
@@ -445,4 +1015,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main(dry_run="--dry-run" in sys.argv)

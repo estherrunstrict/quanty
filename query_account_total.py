@@ -42,6 +42,7 @@ def get_kr_account():
                 unrealized_pl += profit
                 holdings.append({
                     'ticker': row['pdno'],
+                    'name': str(row.get('prdt_name', '') or row['pdno']).strip(),
                     'quantity': qty,
                     'value': val,
                     'profit': profit,
@@ -126,6 +127,7 @@ def get_us_account(acct):
                     unrealized_pl += pf
                     holdings[t] = {
                         'ticker': t,
+                        'name': str(row.get('ovrs_item_name', '') or t).strip(),
                         'quantity': qty,
                         'value': val,
                         'avg_price': avg,
