@@ -28,6 +28,15 @@ if [ -f "$WIKI_DIR/tools/generate_decisions_json.py" ]; then
         || echo "[$(date)] WARN: decisions.json regen failed (continuing)"
 fi
 
+# Discovery: fetch new papers from arXiv + OpenAlex into the queue.
+# Non-blocking: a fetch failure must NOT prevent the operational push.
+if [ -f "$WIKI_DIR/tools/discover_papers.py" ]; then
+    QUANTY_WIKI_DIR="$WIKI_DIR" \
+    QUANTY_DISCOVERY_OUT="$DASHBOARD_DIR/docs/data/discovery_queue.json" \
+    $VENV_PYTHON "$WIKI_DIR/tools/discover_papers.py" \
+        || echo "[$(date)] WARN: discover_papers.py failed (continuing)"
+fi
+
 # Commit and push if there are changes (now covers docs/data/decisions.json too)
 if git diff --quiet docs/ 2>/dev/null && ! git status --porcelain docs/ | grep -q '^??'; then
     echo "[$(date)] No changes to push."

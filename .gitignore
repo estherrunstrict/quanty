@@ -1,0 +1,22 @@
+# quanty-dashboard (server working repo -> GitHub Pages)
+#
+# WHY THIS FILE EXISTS: push_dashboard.sh runs `git add docs/`, which stages
+# EVERY untracked file left under docs/. On 2026-08-16 agent backup files
+# (docs/index.html.bak.*) were published to the public Pages site this way and
+# had to be removed in commit 824fdbb. Keep backups in backups/, never docs/,
+# and let these patterns be the second line of defence.
+
+# Backups -- ALWAYS write them to backups/, never under docs/
+*.bak
+*.bak.*
+backups/
+
+# Local runtime noise
+__pycache__/
+*.pyc
+.pytest_cache/
+.healthcheck_state.json
+
+# Logs and nohup output (all written by cron redirection, not by the repo)
+*.log
+*.out
