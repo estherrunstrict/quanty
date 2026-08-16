@@ -22,6 +22,13 @@ Everything here is **reporting-side only** — no file in this runbook is read b
 | `quanty-dashboard/docs/data/dashboard_data.json` | generator | the published contract (below) |
 | `koreainvestment-autotrade/strategy_results/toss_snapshot.json` | **Mac** `toss_snapshot.py`, via scp | mode 600; the server never calls Toss |
 | `koreainvestment-autotrade/strategy_results/manual_sleeve_history.jsonl` | generator | one row per publish date (same date replaced, atomic `.tmp` + `os.replace`); feeds `equity_series["manual"]` |
+| `koreainvestment-autotrade/strategy_results/nmf2_history.jsonl` | generator | same upsert contract; stores the NMF2 sleeve's **Total P/L** (not its value) because the comparison chart is a P/L chart. Feeds `equity_series["nmf2"]` |
+
+### Files it only ever READS (never writes)
+
+| File | Owner | Why the generator touches it |
+|---|---|---|
+| `/home/ubuntu/toss-nmf2-bot/toss_nmf2_bot/state/ledger.json` | **the NMF2 live bot** | the only record of which Toss shares are the bot's, plus its cost basis and budget. **READ-ONLY — real money.** `load_nmf2_ledger()` swallows every error and returns `{}`; a publish must never fail, and must never move money between sleeves, because the bot rotated its state file mid-read |
 
 ---
 
@@ -44,11 +51,30 @@ All were added additively — old front-ends keep working, so **deploy JSON firs
   "reconciliation_gap_krw":, "reconciliation_gap_pct":,
   "reconciliation_warning": false,          // flips when |gap| > 1% of investments
   "unreported_bot_positions_krw":,          // see Known issues #1
+  "bots_breakdown": {"kis_krw":, "upbit_krw":, "toss_krw":},   // toss_krw = NMF2
   "manual_breakdown": {...}, "cash_breakdown": {...}, "fx_rate":
 },
-"strategies": [ ... {"id": "claude_bot"}, {"id": "manual"} ],   // manual = "Hands-on / Manual"
-"equity_series": { ..., "claude_bot": [...], "manual": [...] }
+"strategies": [ ... {"id": "claude_bot"}, {"id": "nmf2"}, {"id": "manual"} ],  // manual = "Hands-on / Manual", always last
+"equity_series": { ..., "claude_bot": [...], "nmf2": [...], "manual": [...] }
 ```
+
+**The sleeves partition one pot — never re-derive them independently.** `bots + manual + cash`
+must equal `investments`, so every builder carves shares *out of the same account rows*:
+
+- **KIS**: `manual_qty = account_qty − Σ bot-claimed qty` (`build_manual_sleeve`), and `bots_krw`
+  values the claimed side from the same rows (`_attributed_krw`).
+- **Toss**: `build_nmf2_card()` claims `min(ledger_qty, snapshot_qty)` per symbol and
+  `build_manual_sleeve(..., toss_claims=)` drops exactly those shares in the same pass.
+
+Two rules keep `reconciliation_gap_krw` at 0 and must survive any edit:
+
+1. **A ledger symbol absent from the Toss snapshot is worth 0, not `qty × avg_price`.** Cost basis
+   is not market value, and money the account does not report cannot enter a total built from
+   account rows. Such symbols are listed in `strategies[nmf2].extra.unmatched_symbols`.
+2. **A card with a non-KIS `account` never enters `collect_bot_claims()`.** Toss and KIS share
+   Korea's 6-digit ticker space, so an unguarded match would credit NMF2 with KIS shares it does
+   not own — inflating `bots_krw` while `manual_krw` stayed put. That is what the
+   `"account": "toss"` field on the card is *for*; it is load-bearing, not decoration.
 
 **Toss staleness is honest by construction.** When the snapshot is missing, unreadable or older
 than `TOSS_MAX_AGE_HOURS` (30h), `load_toss_account()` returns a zeroed block with
@@ -89,6 +115,41 @@ launchctl unload ~/Library/LaunchAgents/com.quanty.toss-snapshot.plist
 If the Mac sleeps through both runs the dashboard just greys the Toss tile
 (`accounts.toss.stale = true`) and the healthcheck stays green — a stale flag that tells the truth
 is not a fault. A **lying** fresh flag is (see `CONTENT` below).
+
+---
+
+## The NMF2 sleeve inside Toss
+
+NMF2 (신마법공식 2.0 + 계절성) is a **real-money automated bot** trading a ~₩1M slice of the Toss
+account from the Mac. It has a card because it is a bot — before 2026-08-16 its 30 positions were
+silently absorbed into the hands-on sleeve and reported to Jae as money he had picked himself.
+
+It needs **two** inputs, which is why it sits in this pipeline rather than in `dashboard_server.py`:
+
+| Input | Supplies | Where |
+|---|---|---|
+| `toss-nmf2-bot/.../state/ledger.json` | which shares are the bot's, `avg_price`, `budget_krw` | server, **read-only** |
+| `strategy_results/toss_snapshot.json` | today's market value of those shares | server, written from the Mac |
+
+The ledger is on the **server**, next to the generator — which is why the generator reads it
+directly instead of routing it through the Mac-side snapshot: no new transport, no extra Mac job,
+no snapshot schema change, and the card cannot go stale independently of the prices it uses.
+
+**Degradation is the pre-card behaviour, exactly.** Missing / truncated / wrong-shaped ledger →
+`load_nmf2_ledger()` returns `{}` → no `nmf2` card → every Toss share stays hands-on, gap still 0.
+The healthcheck deliberately does **not** require `nmf2` in `CONTENT_REQUIRED_STRATEGY_IDS`; adding
+it would turn that honest fallback into a page alert.
+
+Two consequences worth knowing before you read the card:
+
+- **Chart line hugs zero.** The comparison chart plots Total P/L; NMF2's runs at a ~±₩50k scale
+  against the other bots' millions. That is a ₩1M sleeve drawn honestly, not a broken series.
+- **No realized P/L, no win rate.** The ledger is a position book, not a closed-trade book, and the
+  sleeve has not sold since inception — so `realized_profit_ytd` is `0.0`, `total_pl_ytd` equals
+  unrealized, and the card omits win-rate/MDD/cycles rather than printing zeros that read as losses.
+
+⛔ The ledger is the live bot's own state and the subject of a past budget/cash incident. **Read it,
+never write it, never "fix" it** — the dashboard has no business editing a bot's ledger.
 
 ---
 
@@ -203,6 +264,18 @@ Pull the live public copy before patching it, so you edit what is actually serve
 scp -i ~/.ssh/oci_rsa ubuntu@193.123.246.52:/home/ubuntu/quanty-dashboard/docs/index.html \
     quanty-dashboard/docs/index.html
 ```
+
+The two files are **not** byte-identical (the internal page fetches `/api/data`, the public page
+fetches `data/dashboard_data.json`, and only the public page links the Decision Center). So verify
+a patch landed in both by diffing and confirming your change does **not** appear:
+
+```bash
+diff automation_oracle/dashboard.html quanty-dashboard/docs/index.html | grep -i nmf2   # empty = both patched
+```
+
+Two blocks must be edited together for a new bot: `seriesMeta` in `buildComparisonChart()` (chart
+line + legend) **and** the `else if (s.id === '…')` branch in the card renderer. There is no generic
+fallback branch — an unknown id renders a card with an empty metrics grid.
 
 ### Version control lives on the server
 
