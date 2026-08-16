@@ -1,0 +1,39 @@
+{
+  "updated_at": "2026-08-16 16:00 KST",
+  "accounts": {
+    "kis": {"total_krw": 126333622.25, "cash_krw": 31530962.55, "as_of": "2026-08-16 16:00 KST", "stale": false},
+    "upbit": {"total_krw": 9737967.0, "cash_krw": 9737967.0, "as_of": "2026-08-16", "stale": false},
+    "toss": {"total_krw": 192793640.34, "cash_krw": 5379088.88, "as_of": "2026-08-16T18:21:53+09:00", "stale": false, "source": "mac-launchd"}
+  },
+  "totals": {
+    "investments_krw": 328865229.59,
+    "bots_krw": 88219956.4,
+    "manual_krw": 193997254.76,
+    "cash_krw": 46648018.43,
+    "split_pct": {"bots": 26.83, "manual": 58.99, "cash": 14.18},
+    "reconciliation_gap_krw": -0.0,
+    "reconciliation_gap_pct": 0.0,
+    "reconciliation_warning": false
+  },
+  "strategies": [
+    {"id": "btc_vb", "name": "BTC Volatility Breakout", "value": 9737967.0},
+    {"id": "korea_etf", "name": "Korea ETF Momentum", "value": 1240000.0},
+    {"id": "quant40", "name": "USA Quant40", "value": 20000000.0},
+    {"id": "jd_strategy", "name": "JD Strategy", "value": 20000000.0},
+    {"id": "dual_momentum", "name": "Dual Momentum", "value": 10000000.0},
+    {"id": "hybrid_vb", "name": "Hybrid VB", "value": 15000000.0},
+    {"id": "claude_bot", "name": "Claude Trading Bot", "value": 12000000.0},
+    {"id": "manual", "name": "Hands-on / Manual", "value": 193997254.76}
+  ],
+  "equity_series": {
+    "btc_vb": [["2026-08-15", 9700000.0], ["2026-08-16", 9737967.0]],
+    "korea_etf": [["2026-08-15", 1200000.0], ["2026-08-16", 1240000.0]],
+    "quant40": [["2026-08-15", 19900000.0], ["2026-08-16", 20000000.0]],
+    "jd_strategy": [["2026-08-15", 19800000.0], ["2026-08-16", 20000000.0]],
+    "dual_momentum": [["2026-08-15", 9900000.0], ["2026-08-16", 10000000.0]],
+    "hybrid_vb_kr": [["2026-08-15", 8000000.0], ["2026-08-16", 8112520.0]],
+    "hybrid_vb_us": [["2026-08-15", 6800000.0], ["2026-08-16", 6887480.0]],
+    "claude_bot": [["2026-08-15", 11900000.0], ["2026-08-16", 12000000.0]],
+    "manual": [["2026-08-15", 193000000.0], ["2026-08-16", 193997254.76]]
+  }
+}

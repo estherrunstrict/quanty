@@ -1,0 +1,27 @@
+{
+  "_why": "Hand-corrupted copy of dashboard_data_healthy.json: claude_bot dropped from the chart AND the card grid, manual sleeve gone, Toss lies about being fresh, totals do not reconcile. Every CONTENT assertion should fire on this file.",
+  "updated_at": "2026-08-16 16:00 KST",
+  "accounts": {
+    "kis": {"total_krw": 126333622.25, "cash_krw": 31530962.55, "as_of": "2026-08-16 16:00 KST", "stale": false},
+    "upbit": {"total_krw": 9737967.0, "cash_krw": 9737967.0, "as_of": "2026-08-16", "stale": false},
+    "toss": {"total_krw": 192793640.34, "cash_krw": 5379088.88, "as_of": "2026-08-01T18:21:53+09:00", "stale": false, "source": "mac-launchd"}
+  },
+  "totals": {
+    "investments_krw": 328865229.59,
+    "bots_krw": 88219956.4,
+    "manual_krw": 0.0,
+    "cash_krw": 46648018.43,
+    "split_pct": {"bots": 26.83, "manual": 0.0, "cash": 14.18},
+    "reconciliation_gap_krw": 193997254.76,
+    "reconciliation_gap_pct": 59.0,
+    "reconciliation_warning": true
+  },
+  "strategies": [
+    {"id": "btc_vb", "name": "BTC Volatility Breakout", "value": 9737967.0},
+    {"id": "quant40", "name": "USA Quant40", "value": 20000000.0}
+  ],
+  "equity_series": {
+    "btc_vb": [["2026-08-15", 9700000.0], ["2026-08-16", 9737967.0]],
+    "quant40": [["2026-08-15", 19900000.0], ["2026-08-16", 20000000.0]]
+  }
+}
