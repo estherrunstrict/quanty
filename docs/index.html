@@ -188,6 +188,96 @@ a { color: var(--accent); text-decoration: none; }
 .dn { color: var(--r); }
 .amber { color: var(--accent); }
 
+/* ── Whole-Investment Hero ──
+   Row A total (KIS+Upbit+Toss) / Row B per-account tiles / Row C bots-manual-cash
+   split. Everything it reads is additive JSON (data.totals, data.accounts): when
+   an older generator publishes without them the whole block is skipped and the
+   metric strip below is unchanged. */
+.hero {
+  border: 1px solid var(--border);
+  background: var(--s1);
+  margin-bottom: 2rem;
+}
+
+.hero-top { padding: 1.4rem 1.4rem 1.2rem; }
+
+.hero-lbl {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--tx4);
+  margin-bottom: 0.55rem;
+}
+
+.hero-val {
+  font-family: var(--serif);
+  font-size: 2.6rem;
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.hero-sub { font-size: 0.72rem; color: var(--tx3); margin-top: 0.55rem; }
+.hero-pnl { font-size: 0.78rem; margin-top: 0.3rem; }
+
+.hero-accts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-top: 1px solid var(--border);
+}
+
+.hero-acct { background: var(--s1); padding: 0.9rem 1.4rem; }
+.hero-acct.stale .a-val { color: var(--tx3); }
+
+.hero-acct .a-name {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: var(--tx4);
+}
+
+.hero-acct .a-val {
+  font-size: 1.1rem;
+  margin-top: 0.35rem;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.hero-acct .a-meta { font-size: 0.62rem; color: var(--tx3); margin-top: 0.2rem; }
+
+.badge-stale {
+  font-size: 0.5rem;
+  letter-spacing: 0.1em;
+  padding: 0 0.3rem;
+  border: 1px solid var(--r);
+  color: var(--r);
+}
+
+.hero-split { padding: 1.1rem 1.4rem 1.3rem; border-top: 1px solid var(--border); }
+
+.split-bar { display: flex; height: 10px; background: var(--s3); overflow: hidden; }
+.split-seg { height: 100%; }
+
+.split-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.3rem;
+  margin-top: 0.7rem;
+  font-size: 0.68rem;
+  color: var(--tx2);
+}
+
+.split-legend .sl { display: flex; align-items: baseline; gap: 0.4rem; }
+.split-legend b { color: var(--tx); font-weight: 500; }
+.split-sw { width: 8px; height: 8px; align-self: center; }
+
+.recon-warn { color: var(--r); font-size: 0.66rem; margin-top: 0.6rem; }
+
 /* ── Grid ── */
 .grid {
   display: grid;
@@ -231,6 +321,10 @@ a { color: var(--accent); text-decoration: none; }
 .tag.live { border-color: var(--g); color: var(--g); }
 .tag.paper { border-color: var(--accent); color: var(--accent); }
 .tag.stale { border-color: var(--r); color: var(--r); }
+.tag.manual { border-color: #8a8a8a; color: #8a8a8a; }
+
+/* Hands-on sleeve: same card, no bot colour — it is Jae's own hand, not a bot. */
+.strat.manual { box-shadow: inset 2px 0 0 #8a8a8a; }
 
 .strat-grid {
   display: grid;
@@ -556,6 +650,13 @@ a { color: var(--accent); text-decoration: none; }
 
   .strip { grid-template-columns: repeat(2, 1fr); }
   .cell .val { font-size: 1.15rem; }
+
+  .hero-top { padding: 1.1rem 1rem 1rem; }
+  .hero-val { font-size: 1.9rem; }
+  .hero-accts { grid-template-columns: 1fr; }
+  .hero-acct { padding: 0.8rem 1rem; }
+  .hero-split { padding: 0.9rem 1rem 1.1rem; }
+  .split-legend { gap: 0.9rem; }
 
   .grid {
     grid-template-columns: 1fr;
@@ -1006,7 +1107,7 @@ function render(data) {
   hdr.innerHTML = `
     <h1>Automation <em>Oracle</em></h1>
     <div class="hdr-right">
-      <span class="hdr-meta"><span class="live-dot"></span>${data.strategies.length} strategies</span>
+      <span class="hdr-meta"><span class="live-dot"></span>${data.strategies.filter(s => s.id !== 'manual').length} strategies</span>
       <span class="hdr-meta">${data.meta.kst}</span>
       <a class="refresh-btn" href="decision.html" style="text-decoration:none">→ Decision Center</a>
       <button class="refresh-btn" onclick="load()">Refresh</button>
@@ -1045,6 +1146,76 @@ function render(data) {
   const originalDeposit = portfolio.original_deposit_krw || 1;
   const totalPnlPct = originalDeposit > 0 ? (totalPnlCombined / originalDeposit * 100) : 0;
 
+  // ── Whole-Investment hero
+  // Jae runs most of his money by hand, in front of the bots, and it lives in
+  // three brokers. The strip below only ever knew about KIS + Upbit; this block
+  // is the honest headline: KIS + Upbit + Toss, then where that money actually
+  // sits (bots / his own hand / cash). Rendered only when the generator supplies
+  // the additive `totals` + `accounts` keys, so an older JSON degrades to the
+  // pre-existing page instead of showing zeroes.
+  const T = data.totals || null;
+  const ACCT = data.accounts || {};
+  if (T && T.investments_krw > 0) {
+    const hero = h('section', 'hero fade-in');
+    const invUSD = exchangeRate > 0 ? T.investments_krw / exchangeRate : 0;
+
+    const tile = (key, label) => {
+      const a = ACCT[key] || {};
+      const val = a.total_krw || 0;
+      // A sleeve is greyed when the generator says so OR when it has no money to
+      // report — never silently dropped, because a missing tile reads as "I don't
+      // have that account" rather than "I couldn't see it today".
+      const stale = !!a.stale || !(val > 0);
+      let meta;
+      if (stale) {
+        meta = a.last_seen_at ? 'last seen ' + String(a.last_seen_at).substring(0, 10)
+                              : (a.note ? String(a.note).substring(0, 44) : 'no data');
+      } else {
+        meta = String(a.as_of || '').replace('T', ' ').substring(0, 16);
+      }
+      return `<div class="hero-acct${stale ? ' stale' : ''}">
+        <div class="a-name">${label}${stale ? '<span class="badge-stale">Stale</span>' : ''}</div>
+        <div class="a-val">₩${Math.round(val).toLocaleString()}</div>
+        <div class="a-meta">${meta}</div>
+      </div>`;
+    };
+
+    const sp = T.split_pct || {};
+    const seg = (pct, color) => (pct > 0)
+      ? `<div class="split-seg" style="width:${pct}%;background:${color}"></div>` : '';
+    const leg = (color, label, pct, krw) =>
+      `<span class="sl"><span class="split-sw" style="background:${color}"></span>` +
+      `${label} <b>${(pct || 0).toFixed(1)}%</b> <span style="color:var(--tx3)">₩${Math.round(krw || 0).toLocaleString()}</span></span>`;
+
+    const warn = T.reconciliation_warning
+      ? `<div class="recon-warn">⚠ ₩${Math.round(Math.abs(T.reconciliation_gap_krw || 0)).toLocaleString()} of the account totals is unaccounted for (${(T.reconciliation_gap_pct || 0).toFixed(2)}%) — treat the split as approximate.</div>`
+      : '';
+
+    hero.innerHTML = `
+      <div class="hero-top">
+        <div class="hero-lbl">Total Investments</div>
+        <div class="hero-val">₩${Math.round(T.investments_krw).toLocaleString()}</div>
+        <div class="hero-sub">≈ $${Math.round(invUSD).toLocaleString()} · KIS + Upbit + Toss</div>
+        <div class="hero-pnl ${pnlClass(totalPnlCombined)}">Bot P/L YTD ${fmtPnl(totalPnlCombined, 'KRW')} (${totalPnlPct >= 0 ? '+' : ''}${totalPnlPct.toFixed(2)}% of deposits)</div>
+      </div>
+      <div class="hero-accts">
+        ${tile('kis', 'KIS')}${tile('upbit', 'Upbit')}${tile('toss', 'Toss')}
+      </div>
+      <div class="hero-split">
+        <div class="split-bar">
+          ${seg(sp.bots, 'var(--accent)')}${seg(sp.manual, '#8a8a8a')}${seg(sp.cash, 'var(--blue)')}
+        </div>
+        <div class="split-legend">
+          ${leg('var(--accent)', 'Bots', sp.bots, T.bots_krw)}
+          ${leg('#8a8a8a', 'Hands-on', sp.manual, T.manual_krw)}
+          ${leg('var(--blue)', 'Cash', sp.cash, T.cash_krw)}
+        </div>
+        ${warn}
+      </div>
+    `;
+    app.appendChild(hero);
+  }
+
   // ── Strip
   const strip = h('section', 'strip fade-in d1');
   const stripData = totalAsset > 0 ? [
@@ -1054,10 +1225,10 @@ function render(data) {
     { lbl: 'Realized YTD', val: fmtPnl(realCombined, 'KRW'), cls: pnlClass(realCombined), sub: 'KRW ' + fmtPnl(realKRW, 'KRW') + ' + USD ' + fmtPnl(realUSD, 'USD') },
     { lbl: 'Unrealized', val: fmtPnl(unrealCombined, 'KRW'), cls: pnlClass(unrealCombined), sub: 'KRW ' + fmtPnl(unrealKRW, 'KRW') + ' + USD ' + fmtPnl(unrealUSD, 'USD') },
     { lbl: 'Total P&L', val: fmtPnl(totalPnlCombined, 'KRW'), cls: pnlClass(totalPnlCombined), sub: 'Realized + Unrealized · ' + (totalPnlPct >= 0 ? '+' : '') + totalPnlPct.toFixed(2) + '%' },
-    { lbl: 'Active Bots', val: data.strategies.length.toString(), sub: 'check_and_run.sh' },
+    { lbl: 'Active Bots', val: data.strategies.filter(s => s.id !== 'manual').length.toString(), sub: 'check_and_run.sh' },
   ] : [
     { lbl: 'Total Assets', val: '—', sub: 'Waiting for data update' },
-    { lbl: 'Active Bots', val: data.strategies.length.toString(), sub: 'check_and_run.sh' },
+    { lbl: 'Active Bots', val: data.strategies.filter(s => s.id !== 'manual').length.toString(), sub: 'check_and_run.sh' },
   ];
   stripData.forEach(d => {
     const cell = h('div', 'cell');
@@ -1095,10 +1266,12 @@ function render(data) {
   const strats = h('section', 'strats fade-in d2');
 
   data.strategies.forEach(s => {
-    const card = h('div', 'strat');
-    const isStale = (s.stale_hours || 0) > 6;
-    const modeTag = isStale ? 'stale' : (s.mode === 'paper' ? 'paper' : 'live');
-    const modeLabel = isStale ? 'Stale' : (s.mode === 'paper' ? 'Paper' : 'Live');
+    const isManual = s.id === 'manual';
+    const card = h('div', isManual ? 'strat manual' : 'strat');
+    // The hands-on sleeve has no run schedule, so staleness/paper-mode don't apply.
+    const isStale = !isManual && (s.stale_hours || 0) > 6;
+    const modeTag = isManual ? 'manual' : (isStale ? 'stale' : (s.mode === 'paper' ? 'paper' : 'live'));
+    const modeLabel = isManual ? 'Manual' : (isStale ? 'Stale' : (s.mode === 'paper' ? 'Paper' : 'Live'));
 
     let metricsHTML = '';
     let holdingsHTML = '';
@@ -1294,6 +1467,18 @@ function render(data) {
       }
     }
 
+    else if (isManual) {
+      const ex = s.extra || {};
+      metricsHTML = `
+        <div><div class="sg-lbl">Total Value</div><div class="sg-val">${fmtVal(s.value || 0, 'KRW')}</div></div>
+        <div><div class="sg-lbl">Positions</div><div class="sg-val">${ex.ticker_count || 0}</div></div>
+        <div><div class="sg-lbl">KIS (no bot)</div><div class="sg-val">${fmtVal(ex.kis_krw || 0, 'KRW')} <span style="color:var(--tx4)">(${ex.kis_ticker_count || 0})</span></div></div>
+        <div><div class="sg-lbl">Toss</div><div class="sg-val">${fmtVal(ex.toss_krw || 0, 'KRW')} <span style="color:var(--tx4)">(${ex.toss_ticker_count || 0})</span></div></div>
+        <div><div class="sg-lbl">KIS Unrealized</div><div class="sg-val ${pnlClass(ex.kis_unrealized_krw || 0)}">${fmtPnl(ex.kis_unrealized_krw || 0, 'KRW')}</div></div>
+      `;
+      signalHTML = `<div class="sig cash" style="font-size:0.5rem">HANDS-ON · NOT BOT-MANAGED</div>`;
+    }
+
     // Holdings
     const holdings = (s.id === 'hybrid_vb') ? s.holdings : (s.holdings || []);
     if (holdings.length > 0) {
@@ -1327,6 +1512,25 @@ function render(data) {
       if (posRows) {
         holdingsHTML = `<div class="holds">${posRows}</div>`;
       }
+    }
+
+    // Hands-on rows show VALUE, not P/L: the Toss half of this sleeve has no
+    // cost basis, and the generic renderer's `hld.profit || 0` would print a
+    // confident "₩0" gain for every Toss position.
+    if (isManual) {
+      const rows = (s.holdings || []).slice(0, 8).map(hld => {
+        const nm = (hld.name && hld.name !== hld.ticker) ? `${hld.name} · ` : '';
+        const qty = (hld.qty || 0).toLocaleString(undefined, { maximumFractionDigits: 2 });
+        return `<div class="hold-row">
+          <span class="hold-tk">${hld.ticker}</span>
+          <span class="hold-det">${nm}${qty} × ${sym(hld.currency || 'KRW')}${(hld.current_price || 0).toLocaleString(undefined, hld.currency === 'USD' ? {minimumFractionDigits:2, maximumFractionDigits:2} : {maximumFractionDigits:0})}</span>
+          <span class="hold-pl" style="color:var(--tx2)">₩${Math.round(hld.value_krw || 0).toLocaleString()}</span>
+        </div>`;
+      }).join('');
+      const extraCount = (s.holdings || []).length - 8;
+      const more = extraCount > 0
+        ? `<div class="hold-row"><span class="hold-det" style="color:var(--tx4)">+${extraCount} more positions</span></div>` : '';
+      holdingsHTML = rows ? `<div class="holds">${rows}${more}</div>` : '';
     }
 
     // Sparkline chart from equity_series
