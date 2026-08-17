@@ -991,6 +991,62 @@ def append_manual_history(row, path=None):
     return rows
 
 
+AGG_SKIP_IDS = ("manual",)          # 수동 슬리브는 봇 비교 차트의 대상이 아니다
+
+
+def pin_aggregate_endpoint(aggregate, strategies, rate, today,
+                           skip_ids=AGG_SKIP_IDS):
+    """Pin the Portfolio Total line's endpoint to the sum of the live bot cards.
+
+    dashboard_server already pins each BOT's series endpoint to its live Total
+    P/L, but equity_series_aggregate is rebuilt straight from the snapshot file
+    and never pinned. Two things go wrong because of that:
+
+      1. A lagged snapshot write leaves the total line on yesterday's number
+         while the bars around it show today's — on 2026-08-16 the total line
+         drew W2,038,699 next to bars summing to W2,914,311.
+      2. The aggregate is built in dashboard_server, BEFORE this file splices in
+         the Toss bots, so it can never include nmf2/usvb/event_bot at all. That
+         error grows with every Toss bot added.
+
+    Recomputing the endpoint from the finished `strategies` list fixes both.
+    Only the endpoint moves; earlier points are history and stay untouched.
+    """
+    if not aggregate:
+        return
+
+    def _to_krw(amount, currency):
+        return float(amount or 0) if currency == "KRW" else float(amount or 0) * rate
+
+    tot = {"realized": 0.0, "unrealized": 0.0, "total": 0.0}
+
+    def _add(src, cur):
+        tot["realized"] += _to_krw(src.get("realized_profit_ytd"), cur)
+        tot["unrealized"] += _to_krw(src.get("unrealized_profit"), cur)
+        tot["total"] += _to_krw(src.get("total_pl_ytd"), cur)
+
+    for s in strategies:
+        sid = s.get("id", "")
+        if sid in skip_ids:
+            continue
+        if sid == "hybrid_vb":              # legs carry different currencies
+            for leg, cur in (("kr", "KRW"), ("us", "USD")):
+                _add(s.get(leg) or {}, cur)
+            continue
+        _add(s, s.get("currency", "KRW"))
+
+    for key in ("realized", "unrealized", "total"):
+        series = aggregate.get(key)
+        if series is None:
+            continue
+        val = round(tot[key], 2)
+        if series and series[-1][0] == today:
+            series[-1][1] = val
+        else:
+            series.append([today, val])
+    return tot
+
+
 def main(dry_run=False):
     """Build and publish dashboard_data.json.
 
@@ -1196,6 +1252,16 @@ def main(dry_run=False):
         if len(eq["nmf2"]) < 2:
             print("  NOTE: NMF2 has {} history point(s) — the comparison chart shows "
                   "'insufficient data' until the next publish".format(len(eq["nmf2"])))
+
+    # The Portfolio Total line is the only series dashboard_server hands over
+    # unpinned, and it is built before the Toss bots exist. Re-derive its
+    # endpoint now that `strategies` is final, so the total line agrees with the
+    # bars beside it and with the hero panel above it.
+    _agg_tot = pin_aggregate_endpoint(
+        output.get("equity_series_aggregate"), strategies, fx, et_today())
+    if _agg_tot:
+        print("  Portfolio Total pinned: W{:,.0f} (realized W{:,.0f} + unrealized W{:,.0f})".format(
+            _agg_tot["total"], _agg_tot["realized"], _agg_tot["unrealized"]))
 
     # build_accounts re-emits the very `toss` dict the Toss ingest produced, so
     # this update adds kis/upbit without ever rewriting Task 4's contract.
