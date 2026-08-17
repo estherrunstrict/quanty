@@ -802,6 +802,43 @@ def build_manual_sleeve(all_holdings, strategies, fx_rate, toss_holdings=None,
     }
 
 
+CMA_PRODUCT_CODE = "21"     # 계좌번호는 코드에 두지 않는다 — 위탁계좌와 cano가 같다
+
+
+def get_cma_krw():
+    """KIS CMA 잔액(원). 실패하면 0 — 조회 실패가 발행을 막으면 안 된다.
+
+    CMA는 위탁계좌가 아니라서 inquire_balance / inquire_psbl_order 로는 안 잡힌다
+    (각각 "위탁계좌인 경우만 조회가능합니다", "해당계좌 정보가 없습니다"). 맞는 API는
+    투자계좌자산현황(inquire_account_balance)이고, 종합계좌번호는 위탁계좌와 같으며
+    계좌상품코드만 21로 다르다.
+    """
+    try:
+        sys.path.insert(0, os.path.join(TRADING_DIR, "open-trading-api", "examples_llm",
+                                        "domestic_stock", "inquire_account_balance"))
+        import kis_auth as ka
+        import inquire_account_balance as iab
+        ka.auth(svr="prod")
+        acct = ka.getTREnv()
+        _d1, d2 = iab.inquire_account_balance(cano=acct.my_acct,
+                                              acnt_prdt_cd=CMA_PRODUCT_CODE)
+        if d2 is None or getattr(d2, "empty", True):
+            return 0.0
+        row = d2.iloc[0]
+        for f in ("tot_asst_amt", "tot_dncl_amt", "dncl_amt"):
+            if f in row.index:
+                try:
+                    v = float(row[f])
+                except (TypeError, ValueError):
+                    continue
+                if v > 0:
+                    return v
+        return 0.0
+    except Exception as e:  # noqa: BLE001
+        print("  WARNING: CMA lookup failed: {}".format(e))
+        return 0.0
+
+
 def build_accounts(totals, portfolio, toss, strategies, now):
     """`accounts` block: KIS / Upbit / Toss, each honestly flagged. PURE.
 
@@ -879,7 +916,9 @@ def build_totals(accounts, strategies, manual_card, kis_holdings, fx_rate):
     upbit = accounts.get("upbit") or {}
     toss = accounts.get("toss") or {}
 
+    cma = accounts.get("cma") or {}
     investments = (float(kis.get("total_krw") or 0)
+                   + float(cma.get("total_krw") or 0)
                    + float(upbit.get("total_krw") or 0)
                    + float(toss.get("total_krw") or 0))
 
@@ -894,7 +933,10 @@ def build_totals(accounts, strategies, manual_card, kis_holdings, fx_rate):
                         if isinstance(s, dict) and s.get("account") == "toss")
     bots_krw = bots_kis_krw + upbit_bot_krw + toss_bots_krw
     manual_krw = float((manual_card or {}).get("value") or 0)
+    # CMA는 전액 예수금이라 현금 버킷에 넣는다. 안 넣으면 investments 에는 잡히는데
+    # bots/manual/cash 합에는 빠져서 히어로의 구성 막대가 총액과 어긋난다.
     cash_krw = (float(kis.get("cash_krw") or 0)
+                + float(cma.get("cash_krw") or 0)
                 + float(toss.get("cash_krw") or 0)
                 + float(upbit.get("cash_krw") or 0))
 
@@ -1045,6 +1087,90 @@ def pin_aggregate_endpoint(aggregate, strategies, rate, today,
         else:
             series.append([today, val])
     return tot
+
+
+EQUITY_HISTORY_JSONL = os.path.join(TRADING_DIR, "strategy_results",
+                                    "equity_history.jsonl")
+
+
+def write_equity_snapshot(strategies, fx, today, path=EQUITY_HISTORY_JSONL):
+    """Write today's per-bot P/L row from the FINAL, marked-to-market strategies.
+
+    dashboard_server also writes this file, but it only sees what each bot wrote
+    into strategy_results/*.json — numbers that can be days old on a weekend and
+    are never marked to market. It also cannot see the Toss bots at all. The
+    15-minute healthcheck hits that same code path, so the last write of any
+    given day was a stale one, and that is the value that froze into history.
+
+    This row is tagged `_src: "generator"`; dashboard_server refuses to overwrite
+    a today-row carrying that tag. Readers skip non-dict values, so the tag is
+    invisible to the chart builders.
+
+    Non-fatal by contract: history is a nice-to-have, publishing is not.
+    """
+    rows = []
+    try:
+        with open(path) as fh:
+            for line in fh:
+                line = line.strip()
+                if line:
+                    rows.append(json.loads(line))
+    except FileNotFoundError:
+        pass
+    except Exception as e:
+        print("  WARNING: equity history unreadable, not rewriting: {}".format(e))
+        return None
+
+    def _to_krw(amount, currency):
+        return float(amount or 0) if currency == "KRW" else float(amount or 0) * fx
+
+    def _cell(realized, unrealized, currency):
+        return {"realized_krw": round(_to_krw(realized, currency), 2),
+                "unrealized_krw": round(_to_krw(unrealized, currency), 2),
+                "total_pl_krw": round(_to_krw((realized or 0) + (unrealized or 0),
+                                              currency), 2),
+                "native": currency}
+
+    snap = {"date": today, "_src": "generator"}
+    for s in strategies:
+        sid = s.get("id", "")
+        if sid in AGG_SKIP_IDS:          # 수동 슬리브는 가치 카드지 P/L 카드가 아니다
+            continue
+        if sid == "hybrid_vb":
+            for leg, cur in (("kr", "KRW"), ("us", "USD")):
+                L = s.get(leg) or {}
+                u = L.get("unrealized_profit")
+                u = u if u is not None else L.get("profit")
+                if u is None and L.get("realized_profit_ytd") is None:
+                    continue
+                snap["hybrid_vb_" + leg] = _cell(L.get("realized_profit_ytd"), u, cur)
+            continue
+        u = s.get("unrealized_profit")
+        u = u if u is not None else s.get("profit")
+        if u is None and s.get("realized_profit_ytd") is None:
+            continue                     # P/L을 보고하지 않는 봇 — 0으로 날조하지 않는다
+        snap[sid] = _cell(s.get("realized_profit_ytd"), u,
+                          s.get("currency", "KRW"))
+
+    if len(snap) <= 2:                   # date + _src 뿐이면 쓸 게 없다
+        return None
+
+    other = [e for e in rows if e.get("date") != today]
+    tmp = path + ".tmp"
+    try:
+        with open(tmp, "w") as fh:
+            for e in other:
+                fh.write(json.dumps(e, default=str) + "\n")
+            fh.write(json.dumps(snap, default=str) + "\n")
+        os.replace(tmp, path)
+    except Exception as e:
+        print("  WARNING: could not write equity history: {}".format(e))
+        try:
+            os.remove(tmp)
+        except OSError:
+            pass
+        return None
+    return snap
 
 
 def main(dry_run=False):
@@ -1263,10 +1389,31 @@ def main(dry_run=False):
         print("  Portfolio Total pinned: W{:,.0f} (realized W{:,.0f} + unrealized W{:,.0f})".format(
             _agg_tot["total"], _agg_tot["realized"], _agg_tot["unrealized"]))
 
+    # equity_history.jsonl에 남는 행도 이 값으로 맞춘다. 안 그러면 차트의 과거
+    # 구간이 시가평가 전 값으로 굳고 토스 봇은 아예 빠진다 (끝점은 위 핀이
+    # 가려주지만 어제 이전은 못 고친다).
+    if not dry_run:
+        _snap = write_equity_snapshot(strategies, fx, et_today())
+        if _snap:
+            print("  Equity history row written for {} ({} bots)".format(
+                _snap["date"], len(_snap) - 2))
+    else:
+        print("  (dry run) equity history not written")
+
     # build_accounts re-emits the very `toss` dict the Toss ingest produced, so
     # this update adds kis/upbit without ever rewriting Task 4's contract.
     accounts = build_accounts(totals, portfolio, toss, strategies, now)
     output.setdefault("accounts", {}).update(accounts)
+    # CMA는 위탁계좌와 별개라 위 KIS 조회에 안 들어온다. 총자산에 포함시키려면
+    # 따로 불러야 한다 (0이면 계좌 자체를 만들지 않아 기존 표시가 그대로 유지된다).
+    _cma = get_cma_krw()
+    if _cma > 0:
+        output.setdefault("accounts", {})["cma"] = {
+            "total_krw": round(_cma, 2), "cash_krw": round(_cma, 2),
+            "krw_cash_krw": round(_cma, 2), "stock_krw": 0.0,
+            "label": "KIS CMA"}
+        print("  CMA: W{:,.0f}".format(_cma))
+
     totals_block = build_totals(output["accounts"], strategies, manual, kis_holdings, fx)
     output["totals"] = totals_block
 

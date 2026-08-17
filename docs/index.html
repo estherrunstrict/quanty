@@ -1198,11 +1198,11 @@ function render(data) {
       <div class="hero-top">
         <div class="hero-lbl">Total Investments</div>
         <div class="hero-val">₩${Math.round(T.investments_krw).toLocaleString()}</div>
-        <div class="hero-sub">≈ $${Math.round(invUSD).toLocaleString()} · KIS + Upbit + Toss</div>
+        <div class="hero-sub">≈ $${Math.round(invUSD).toLocaleString()} · KIS + CMA + Upbit + Toss</div>
         <div class="hero-pnl ${pnlClass(totalPnlCombined)}">Bot P/L YTD ${fmtPnl(totalPnlCombined, 'KRW')} (${totalPnlPct >= 0 ? '+' : ''}${totalPnlPct.toFixed(2)}% of deposits)</div>
       </div>
       <div class="hero-accts">
-        ${tile('kis', 'KIS')}${tile('upbit', 'Upbit')}${tile('toss', 'Toss')}
+        ${tile('kis', 'KIS')}${tile('cma', 'CMA')}${tile('upbit', 'Upbit')}${tile('toss', 'Toss')}
       </div>
       <div class="hero-split">
         <div class="split-bar">
