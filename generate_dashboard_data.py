@@ -697,12 +697,24 @@ def build_manual_sleeve(all_holdings, strategies, fx_rate, toss_holdings=None,
     kis_krw = 0.0
     kis_unrealized_krw = 0.0
 
+    bot_ticker_residual_krw = 0.0
+    bot_ticker_residual = {}
     for ticker, acct in sorted((all_holdings or {}).items()):
         qty = float(acct.get("qty") or 0)
         if qty <= 0:
             continue
         claimed = min(float(claims.get(ticker, 0.0)), qty)
         manual_qty = qty - claimed
+        # 봇이 조금이라도 잡고 있는 티커는 전량 봇 것으로 본다. 봇 결과파일이 계좌보다
+        # 적게 보고하면(캐시 지연, 카드가 타깃만 싣는 경우 등) 그 차액이 '사용자가 손으로
+        # 산 주식'으로 둔갑하기 때문이다 — SPY 6주·NVDA 19주가 그렇게 잘못 잡혔다.
+        # 차액은 버리지 않고 기록해서 봇 장부 문제를 볼 수 있게 남긴다.
+        if claims.get(ticker) and manual_qty > 1e-9:
+            cur_r = acct.get("currency") or "KRW"
+            v = float(acct.get("value_native") or 0) * (manual_qty / qty)
+            bot_ticker_residual_krw += v if cur_r == "KRW" else v * fx
+            bot_ticker_residual[ticker] = round(manual_qty, 6)
+            continue
         if manual_qty <= 1e-9:
             continue
         share = manual_qty / qty
@@ -822,6 +834,10 @@ def build_manual_sleeve(all_holdings, strategies, fx_rate, toss_holdings=None,
             "kis_krw": round(kis_krw, 2),
             "kis_ticker_count": sum(1 for r in rows if r.get("source") == "kis"),
             "kis_unrealized_krw": round(kis_unrealized_krw, 2),
+            # 봇이 거래하는 티커인데 봇 보고 수량이 계좌보다 적어 남은 몫.
+            # 수동으로 잡지 않고 여기 기록만 한다 (봇 장부 점검용).
+            "bot_ticker_residual_krw": round(bot_ticker_residual_krw, 2),
+            "bot_ticker_residual": bot_ticker_residual,
             "toss_krw": round(toss_krw, 2),
             "toss_ticker_count": toss_rows,
             # What the Toss-account bots (NMF2) took out of this sleeve. Kept
