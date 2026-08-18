@@ -1505,9 +1505,13 @@ function render(data) {
       metricsHTML = `
         <div><div class="sg-lbl">Total Value</div><div class="sg-val">${fmtVal(s.value || 0, 'KRW')}</div></div>
         <div><div class="sg-lbl">Positions</div><div class="sg-val">${ex.ticker_count || 0}</div></div>
+        <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(s.cost_basis || 0, 'KRW')}</div></div>
         <div><div class="sg-lbl">KIS (no bot)</div><div class="sg-val">${fmtVal(ex.kis_krw || 0, 'KRW')} <span style="color:var(--tx4)">(${ex.kis_ticker_count || 0})</span></div></div>
         <div><div class="sg-lbl">Toss</div><div class="sg-val">${fmtVal(ex.toss_krw || 0, 'KRW')} <span style="color:var(--tx4)">(${ex.toss_ticker_count || 0})</span></div></div>
+        ${totalPlCell(s.total_pl_ytd, 'KRW')}
+        ${profitPctCell(s.profit_rate_ytd_pct)}
         <div><div class="sg-lbl">KIS Unrealized</div><div class="sg-val ${pnlClass(ex.kis_unrealized_krw || 0)}">${fmtPnl(ex.kis_unrealized_krw || 0, 'KRW')}</div></div>
+        <div><div class="sg-lbl">Toss P/L</div><div class="sg-val ${pnlClass(ex.toss_pl_krw || 0)}">${fmtPnl(ex.toss_pl_krw || 0, 'KRW')}</div></div>
       `;
       signalHTML = `<div class="sig cash" style="font-size:0.5rem">HANDS-ON · NOT BOT-MANAGED</div>`;
     }
@@ -1564,7 +1568,7 @@ function render(data) {
         return `<div class="hold-row">
           <span class="${hld.name ? 'hold-nm' : 'hold-tk'}">${label}</span>
           <span class="hold-det">${code}${qty} × ${sym(hld.currency || 'KRW')}${(hld.current_price || 0).toLocaleString(undefined, hld.currency === 'USD' ? {minimumFractionDigits:2, maximumFractionDigits:2} : {maximumFractionDigits:0})}</span>
-          <span class="hold-pl" style="color:var(--tx2)">₩${Math.round(hld.value_krw || 0).toLocaleString()}</span>
+          <span class="hold-pl ${typeof hld.profit_rate === 'number' ? pnlClass(hld.pl_krw || 0) : ''}" ${typeof hld.profit_rate === 'number' ? '' : 'style="color:var(--tx2)"'}>${typeof hld.profit_rate === 'number' ? fmtPnl(hld.pl_krw || 0, 'KRW') + ' (' + (hld.profit_rate >= 0 ? '+' : '') + hld.profit_rate.toFixed(1) + '%)' : '₩' + Math.round(hld.value_krw || 0).toLocaleString()}</span>
         </div>`;
       }).join('');
       holdingsHTML = rows ? `<div class="holds${mHoldings.length > 6 ? ' scroll' : ''}">${rows}</div>` : '';

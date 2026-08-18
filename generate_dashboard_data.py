@@ -731,6 +731,8 @@ def build_manual_sleeve(all_holdings, strategies, fx_rate, toss_holdings=None,
     toss_krw = 0.0
     toss_rows = 0
     toss_bot_claimed_krw = 0.0
+    toss_cost_krw = 0.0
+    toss_pl_krw = 0.0
     for h in toss_holdings or []:
         if not isinstance(h, dict):
             continue
@@ -756,7 +758,16 @@ def build_manual_sleeve(all_holdings, strategies, fx_rate, toss_holdings=None,
         share = manual_qty / acct_qty
         value_native = acct_native * share
         value_krw = acct_krw * share
+        # 매입원가·평가손익도 같은 비율로 안분한다. 토스가 purchaseAmount/profitLoss 를
+        # 주는데 스냅샷이 버리고 있었고, 그래서 이 슬리브는 줄곧 '원가 없음'이었다.
+        cost_native = float(h.get("cost_native") or 0) * share
+        pl_native = float(h.get("pl_native") or 0) * share
+        k = 1.0 if cur == "KRW" else (fx if fx > 0 else 0.0)
+        cost_krw_h = cost_native * k
+        pl_krw_h = pl_native * k
         toss_krw += value_krw
+        toss_cost_krw += cost_krw_h
+        toss_pl_krw += pl_krw_h
         toss_rows += 1
         rows.append({
             "ticker": ticker,
@@ -767,12 +778,23 @@ def build_manual_sleeve(all_holdings, strategies, fx_rate, toss_holdings=None,
             "current_price": round(value_native / manual_qty, 4) if manual_qty else 0.0,
             "value": round(value_native, 2),
             "value_krw": round(value_krw, 2),
+            "cost_krw": round(cost_krw_h, 2),
+            "pl_krw": round(pl_krw_h, 2),
+            "profit": round(pl_native, 2),
+            "profit_rate": (round(pl_native / (cost_native) * 100, 2)
+                            if cost_native else None),
             "source": "toss",
             "bot_claimed_qty": round(claimed, 6),
         })
 
     rows.sort(key=lambda r: r.get("value_krw", 0), reverse=True)
     total_krw = kis_krw + toss_krw
+    # 이제 토스 스냅샷이 매입원가를 담아 오므로 이 슬리브도 실제 손익을 낼 수 있다.
+    # KIS 분은 원가를 평가-손익으로 역산한다(보유데이터가 손익을 준다).
+    kis_cost_krw = kis_krw - kis_unrealized_krw
+    manual_cost_krw = kis_cost_krw + toss_cost_krw
+    manual_pl_krw = kis_unrealized_krw + toss_pl_krw
+    manual_rate = (manual_pl_krw / manual_cost_krw * 100) if manual_cost_krw else None
     return {
         "id": "manual",
         "name": "Hands-on / Manual",
@@ -780,11 +802,14 @@ def build_manual_sleeve(all_holdings, strategies, fx_rate, toss_holdings=None,
         "mode": "manual",
         "value": round(total_krw, 2),
         "holdings": rows,
-        # unrealized_profit / realized_profit_ytd are deliberately ABSENT: the
-        # Toss snapshot carries no cost basis, so a P/L here would be partial,
-        # and both the hero strip and get_portfolio() sum those keys across
-        # strategies to build the headline "Total P&L". A half-covered number
-        # folded into that headline is worse than no number.
+        "cost_basis": round(manual_cost_krw, 2),
+        "total_pl_ytd": round(manual_pl_krw, 2),
+        "profit_rate_ytd_pct": (round(manual_rate, 2) if manual_rate is not None
+                                else None),
+        # unrealized_profit / realized_profit_ytd 는 여전히 **일부러 비운다**.
+        # 히어로 스트립과 get_portfolio() 가 이 두 키를 전 전략에 걸쳐 합산해
+        # "Bot P/L YTD" 헤드라인을 만드는데, 수동 슬리브를 거기 섞으면 '봇 손익'이라는
+        # 라벨이 거짓이 된다. 카드에 보여줄 값은 total_pl_ytd 로 따로 낸다.
         "extra": {
             "note": "Broker positions attributed to no bot: KIS and Toss holdings minus every bot's claimed shares.",
             "ticker_count": len(rows),
@@ -796,8 +821,11 @@ def build_manual_sleeve(all_holdings, strategies, fx_rate, toss_holdings=None,
             # What the Toss-account bots (NMF2) took out of this sleeve. Kept
             # here so the carve-out is auditable from the published JSON alone.
             "toss_bot_claimed_krw": round(toss_bot_claimed_krw, 2),
+            "toss_cost_krw": round(toss_cost_krw, 2),
+            "toss_pl_krw": round(toss_pl_krw, 2),
             "caveat": "The NMF2 sleeve inside Toss is now its own bot card and is excluded here. "
-                      "No cost basis exists for the remaining Toss rows, so no P/L is reported for this sleeve.",
+                      "P/L uses the broker's own purchase amounts (Toss purchaseAmount / KIS profit), "
+                      "pro-rated by the share no bot claims.",
         },
     }
 
