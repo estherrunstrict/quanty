@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-08-18T06:30:13.705795+09:00",
+  "generated_at": "2026-08-18T16:00:11.526366+09:00",
   "stats": {
-    "total": 251,
-    "queued": 169,
+    "total": 254,
+    "queued": 172,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-08-18T06:30:13.705665+09:00",
+    "last_gc_at": "2026-08-18T16:00:11.526263+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -7291,6 +7291,97 @@
       "discovered": "2026-08-17",
       "matched_keywords": [
         "multiple testing"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.15667",
+      "source": "arxiv",
+      "title": "Scalable Pontryagin-Guided Adjoint-to-Control Recovery for Constrained Dynamic Portfolio Choice",
+      "authors": [
+        "Jaegi Jeon",
+        "Jeonggyu Huh",
+        "Hyeng Keun Koo",
+        "Byung Hwa Lim"
+      ],
+      "abstract": "We develop a scalable adjoint-to-control framework for continuous-time portfolio choice under smooth pointwise constraints. A feasible direct-policy-optimization (DPO) policy supplies rollouts; after training, fixed-latent open-loop BPTT (OL-BPTT) yields first- and second-order pathwise sensitivities, whose conditional projections produce adapted adjoint inputs. A nested antithetic common-random-number regression estimates the shifted wealth-row martingale input, and deployment solves the local generalized-Hamiltonian problem by an exact QP for quadratic-affine blocks or by a log barrier otherwise. We prove an OL-BPTT--PMP correspondence retaining orthogonal projection residuals, a local barrier--KKT approximation, and a performance-to-adjoint bridge under local quadratic growth. In an n=100 constrained Merton benchmark, the learned first adjoint has 0.46% mean relative error; under the analytical policy, the first adjoint, wealth curvature, and Brownian coefficient have nRMSEs of 0.031%, 0.035%, and 0.326%. In a terminal-only predictable-return CRRA benchmark, wealth homogeneity gives $P^{X\\bullet,*}=D^2_{X\\bullet}V$ and $ζ^{X,*}=0$. At the primary $512\\times16$ projection budget, the full estimated-shift decoder has policy RMSE below $8.5\\times10^{-3}$, while the benchmark-specific zero-shift oracle is below $2\\times10^{-4}$. Across constraint, factor, barrier, and switching-region audits, recovery sharply reduces local KKT residuals and remains practical for portfolios with up to 100 risky assets.",
+      "categories": [
+        "q-fin.PM",
+        "math.OC",
+        "q-fin.MF"
+      ],
+      "url": "https://arxiv.org/abs/2608.15667v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.15667v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-16",
+      "discovered": "2026-08-18",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.16856",
+      "source": "arxiv",
+      "title": "zLend: A Dual-Scope Cash-Flow Reconstruction Framework for On-Chain Credit Underwriting",
+      "authors": [
+        "Girish G N",
+        "Ashutosh Sahoo",
+        "Akshay SP",
+        "Gurukiran S",
+        "Dhanashekar Kandaswamy"
+      ],
+      "abstract": "Decentralized lending lacks a credit bureau: a borrower's capacity to repay must be inferred entirely from public on-chain activity, without income verification or a liability record. This paper presents zLend, a deployed cash-flow underwriting framework that reconstructs a wallet's daily balance history from raw token transfers and derives short-duration repayment-capacity signals from it. The reconstruction is performed twice per wallet, once restricted to a fixed stablecoin basket and once over all fungible transfers, on the premise that a wallet's total token holdings and its liquid, spendable balance are distinct quantities whose conflation misprices risk. From each series we derive liquidity coverage against a fixed loan size, cash-flow volatility and regularity, a drawdown-and-recovery statistic adapted from quantitative finance, and a recurring-counterparty detector that identifies salary-like payment cadence from transfer timing alone. The two views are then compared: a wallet with large aggregate holdings whose stablecoin reserve rarely covers the loan size is flagged as a liquidity mismatch irrespective of total wealth. We specify the pipeline formally, document the golden-master methodology used to verify a cross-language production migration to numerical tolerance 1e-9, and characterize the tier function's parameter sensitivity with an independent reimplementation validated to exact agreement (78 of 78 field assertions) against the deployed system's reference fixtures. Tier assignment is governed predominantly by the reference loan size, with four of six reference wallets changing tier across loan sizes from USD 10 to USD 25,000; the drawdown and coverage criteria bind on disjoint wallets, so neither subsumes the other; and no criterion in the tier rule is inert. zLend is deployed in production, informing real lending decisions via third-party API integrations.",
+      "categories": [
+        "q-fin.RM",
+        "cs.LG"
+      ],
+      "url": "https://arxiv.org/abs/2608.16856v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.16856v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-17",
+      "discovered": "2026-08-18",
+      "matched_keywords": [
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.15447",
+      "source": "arxiv",
+      "title": "Detecting Money Laundering in Rwandan Mobile Money: A Machine Learning Framework",
+      "authors": [
+        "Emmanuel Nahimana",
+        "Yaé Ulrich Gaba"
+      ],
+      "abstract": "Mobile money has widened financial access across Sub-Saharan Africa and enlarged the surface for money-laundering and terrorism-financing (ML/TF) activity in ecosystems dominated by high-volume, low-value transactions. Rwanda is a case in point: several million active mobile-money users, telecom-led wallets on the MTN and Airtel networks, and a Financial Intelligence Centre (FIC) supervising transaction streams whose scale exceeds static rule-based monitoring. This paper develops and evaluates a transaction-monitoring framework aligned to the Rwandan AML/CFT regime under (i) extreme class imbalance (~0.1% prevalence), (ii) scarce and delayed labels, and (iii) bounded investigator capacity. Using SAML-D, a synthetic dataset of 9,504,852 transactions with 17 laundering typologies, we engineer account-centric behavioural features (rolling velocity, net-flow directionality, counterparty diversity, burstiness) and benchmark supervised classifiers (Logistic Regression, Random Forest, LightGBM), unsupervised anomaly detectors (Isolation Forest, Local Outlier Factor), a dense autoencoder, and a late-fusion meta-learner. Evaluation is operational: PR-AUC, recall at a calibrated ~90%-precision point, recall at top-K%, and alerts per 10,000. On the chronologically held-out test period, LightGBM attains PR-AUC = 0.0469, capturing 64 laundering cases at precision ~0.89 with 0.51 alerts per 10,000; the fusion stacker reaches PR-AUC = 0.0477 at precision ~0.91 and 0.46 alerts per 10,000, recovering 59 true positives. We map score bands to Rwanda-relevant analyst workflows and STR/SAR escalation, and outline a staged path from synthetic prototyping to real-data validation with the National Bank of Rwanda and FIC. The contribution is operational: a governance-aware pipeline and evaluation protocol calibrated to the constraints of an African mobile-money regulator, not a new algorithm.",
+      "categories": [
+        "cs.LG",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2608.15447v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.15447v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-15",
+      "discovered": "2026-08-18",
+      "matched_keywords": [
+        "factor",
+        "regime"
       ],
       "status": "queued",
       "ingested_into": null,
