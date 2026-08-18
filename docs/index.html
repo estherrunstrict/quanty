@@ -357,6 +357,16 @@ a { color: var(--accent); text-decoration: none; }
 }
 
 .hold-tk { color: var(--tx); min-width: 55px; font-weight: 400; }
+
+/* 종목이 많은 카드(NMF2 30종목, 수동 슬리브)는 잘라내지 않고 스크롤시킨다.
+   '+25 more' 로 접어 두면 정작 무엇을 들고 있는지 확인할 수가 없다. */
+.holds.scroll { max-height: 15rem; overflow-y: auto; }
+.holds.scroll::-webkit-scrollbar { width: 5px; }
+.holds.scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* 종목명은 코드보다 길고 한글은 폭이 제각각이라 별도 폭을 준다. */
+.hold-nm { color: var(--tx); font-weight: 400; min-width: 6.5rem; max-width: 11rem;
+           overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .hold-det { color: var(--tx3); flex: 1; text-align: right; padding: 0 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .hold-pl { min-width: 80px; text-align: right; }
 
@@ -1505,17 +1515,21 @@ function render(data) {
     // Holdings
     const holdings = (s.id === 'hybrid_vb') ? s.holdings : (s.holdings || []);
     if (holdings.length > 0) {
-      const rows = holdings.slice(0, 5).map(hld => {
+      // NMF2 는 30종목을 전부 보여주고 스크롤한다. 5개만 보이면 바스켓을 확인할 수 없다.
+      const showAll = (s.id === 'nmf2');
+      const rows = (showAll ? holdings : holdings.slice(0, 5)).map(hld => {
         const cur = hld.currency || s.currency || 'USD';
         const pnl = hld.profit || 0;
         const pRate = (typeof hld.profit_rate === 'number') ? ` (${hld.profit_rate >= 0 ? '+' : ''}${hld.profit_rate.toFixed(1)}%)` : '';
+        // 코드가 아니라 회사명. 069500 을 보고 무슨 종목인지 아는 사람은 없다.
+        const label = hld.name || hld.ticker;
         return `<div class="hold-row">
-          <span class="hold-tk">${hld.ticker}</span>
+          <span class="${hld.name ? 'hold-nm' : 'hold-tk'}">${label}</span>
           <span class="hold-det">${hld.quantity || 0} × ${sym(cur)}${(hld.current_price || hld.avg_price || 0).toLocaleString(undefined, cur === 'KRW' ? {maximumFractionDigits:0} : {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
           <span class="hold-pl ${pnlClass(pnl)}">${fmtPnl(pnl, cur)}${pRate}</span>
         </div>`;
       }).join('');
-      holdingsHTML = `<div class="holds">${rows}</div>`;
+      holdingsHTML = `<div class="holds${showAll && holdings.length > 6 ? ' scroll' : ''}">${rows}</div>`;
     }
 
     // Open positions for Hybrid VB
@@ -1541,19 +1555,19 @@ function render(data) {
     // cost basis, and the generic renderer's `hld.profit || 0` would print a
     // confident "₩0" gain for every Toss position.
     if (isManual) {
-      const rows = (s.holdings || []).slice(0, 8).map(hld => {
-        const nm = (hld.name && hld.name !== hld.ticker) ? `${hld.name} · ` : '';
+      // 잘라내지 않고 전부 보여준다(스크롤). 종목명이 앞, 코드는 상세줄로 뺀다.
+      const mHoldings = s.holdings || [];
+      const rows = mHoldings.map(hld => {
+        const label = hld.name || hld.ticker;
+        const code = (hld.name && hld.name !== hld.ticker) ? `${hld.ticker} · ` : '';
         const qty = (hld.qty || 0).toLocaleString(undefined, { maximumFractionDigits: 2 });
         return `<div class="hold-row">
-          <span class="hold-tk">${hld.ticker}</span>
-          <span class="hold-det">${nm}${qty} × ${sym(hld.currency || 'KRW')}${(hld.current_price || 0).toLocaleString(undefined, hld.currency === 'USD' ? {minimumFractionDigits:2, maximumFractionDigits:2} : {maximumFractionDigits:0})}</span>
+          <span class="${hld.name ? 'hold-nm' : 'hold-tk'}">${label}</span>
+          <span class="hold-det">${code}${qty} × ${sym(hld.currency || 'KRW')}${(hld.current_price || 0).toLocaleString(undefined, hld.currency === 'USD' ? {minimumFractionDigits:2, maximumFractionDigits:2} : {maximumFractionDigits:0})}</span>
           <span class="hold-pl" style="color:var(--tx2)">₩${Math.round(hld.value_krw || 0).toLocaleString()}</span>
         </div>`;
       }).join('');
-      const extraCount = (s.holdings || []).length - 8;
-      const more = extraCount > 0
-        ? `<div class="hold-row"><span class="hold-det" style="color:var(--tx4)">+${extraCount} more positions</span></div>` : '';
-      holdingsHTML = rows ? `<div class="holds">${rows}${more}</div>` : '';
+      holdingsHTML = rows ? `<div class="holds${mHoldings.length > 6 ? ' scroll' : ''}">${rows}</div>` : '';
     }
 
     // Sparkline chart from equity_series
