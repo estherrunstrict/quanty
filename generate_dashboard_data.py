@@ -44,6 +44,40 @@ NMF2_HISTORY_FILE = os.path.join(TRADING_DIR, "strategy_results", "nmf2_history.
 # rows themselves, so a non-zero gap means an INPUT is missing (KIS query failed,
 # a bot claims more shares than the account holds), not a rounding drift.
 RECONCILIATION_WARN_PCT = 1.0
+# accounts.upbit is replayed from the BTC VB bot's state file — no live exchange
+# call happens anywhere in this generator — so it goes stale on AGE, not on
+# value. The bot trades at the US close and rewrites state only when its monitor
+# window closes, which routinely leaves last_run a day or two behind at publish
+# time; three days is the first age that normal operation cannot explain.
+UPBIT_STALE_DAYS = float(os.environ.get("QUANTY_UPBIT_STALE_DAYS", "3"))
+
+
+def _days_since(stamp, now):
+    """Whole+fractional days between a bot's `last_run` and now, or None.
+
+    `last_run` arrives in whatever shape the bot wrote — "2026-08-17",
+    "2026-08-17 22:30 KST", an ISO timestamp — so an unparseable value must
+    return None (unknown), never 0 (fresh). Reporting "fresh" on a stamp we
+    could not read is the same silent lie the age check is here to remove.
+    """
+    if not stamp:
+        return None
+    text = str(stamp).strip().replace("KST", "").replace("T", " ").strip()
+    when = None
+    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M", "%Y-%m-%d"):
+        try:
+            when = datetime.strptime(text, fmt)
+            break
+        except ValueError:
+            continue
+    if when is None:
+        # Every shape above leads with the date; an ISO stamp carrying
+        # microseconds matches none of them but still yields a usable day.
+        try:
+            when = datetime.strptime(text[:10], "%Y-%m-%d")
+        except ValueError:
+            return None
+    return round((now.replace(tzinfo=None) - when).total_seconds() / 86400.0, 2)
 
 
 def load_toss_account(path=None, now=None, max_age_hours=TOSS_MAX_AGE_HOURS, fx_rate=None):
@@ -300,6 +334,105 @@ def recover_missing_bot_holdings(api_data, totals):
     return recovered
 
 
+def reconcile_underreported_bot_holdings(api_data, totals):
+    """Top a bot's holding up to the quantity the ACCOUNT reports.
+
+    A bot writes its result file within a second of placing its order — before
+    the KIS balance reflects the fill — so the file carries the PRE-trade
+    quantity while the account already carries the post-trade one. On
+    2026-08-17 quant40 bought 6 SPY at 22:30:08 and wrote holdings at
+    22:30:09 (card said 7, account held 13); jd_strategy bought 19 NVDA at
+    22:30:44 and wrote at 22:30:44 (card said 22, account held 41).
+
+    Those 25 shares (W12.46M) belonged to no bucket at all: build_manual_sleeve
+    deliberately refuses to call a bot-traded ticker "hands-on" (SPY/NVDA were
+    once misfiled as Jae's own), and nothing else claimed them — so they sat in
+    `totals.reconciliation_gap_krw` at 2.3% and the hero told him 2.3% of his
+    money was unaccounted for when in fact his own bots had just bought it.
+
+    Only a ticker claimed by EXACTLY ONE kis-account bot is topped up. When two
+    cards report the same name the excess is genuinely ambiguous, and guessing
+    an owner would put real money on the wrong card — that case stays in the
+    gap, which is what the gap is for. The broker's blended `avg_price` is
+    adopted along with the quantity, because the cost basis across the bot's
+    old and new lots is the broker's number, not the bot's. Runs BEFORE
+    mark_to_market_strategies, which then re-prices the topped-up quantity.
+    """
+    if not totals:
+        return []
+
+    acct = {}
+    for leg in ("kr", "us"):
+        for h in ((totals or {}).get(leg) or {}).get("holdings", []) or []:
+            ticker = h.get("ticker")
+            if ticker and float(h.get("quantity") or 0) > 0 and ticker not in acct:
+                acct[ticker] = h                  # KR/US never collide; first wins
+
+    # ticker -> [(card, row)], one entry per CARD. Within a card the same ticker
+    # can appear twice (hybrid_vb's top-level `holdings` IS its US leg), so the
+    # biggest row per card wins rather than counting as a second claimant.
+    holders = {}
+    for s in api_data.get("strategies", []) or []:
+        if not isinstance(s, dict) or s.get("id") == "manual":
+            continue
+        if s.get("account") not in (None, "", "kis"):
+            continue                              # NMF2 is Toss; its 6-digit
+                                                  # tickers would match KIS names
+        per = {}
+        for leg in (s, s.get("kr") or {}, s.get("us") or {}):
+            for h in (leg.get("holdings") or []):
+                if not isinstance(h, dict):
+                    continue
+                ticker = h.get("ticker")
+                qty = float(h.get("quantity") or h.get("qty") or 0)
+                if not ticker or qty <= 0:
+                    continue
+                prev = per.get(ticker)
+                if prev is None or qty > float(
+                        prev.get("quantity") or prev.get("qty") or 0):
+                    per[ticker] = h
+        for ticker, h in per.items():
+            holders.setdefault(ticker, []).append((s, h))
+
+    topped = []
+    for ticker, claimants in holders.items():
+        if len(claimants) != 1:
+            continue                              # ambiguous — leave in the gap
+        s, h = claimants[0]
+        row = acct.get(ticker)
+        if not row:
+            continue
+        acct_qty = float(row.get("quantity") or 0)
+        bot_qty = float(h.get("quantity") or h.get("qty") or 0)
+        if acct_qty <= bot_qty + 1e-9:
+            continue                              # nothing missing
+
+        value = float(row.get("value") or 0)
+        profit = float(row.get("profit") or 0)
+        h["quantity"] = acct_qty
+        if "qty" in h:
+            h["qty"] = acct_qty
+        h["avg_price"] = round((value - profit) / acct_qty, 6)
+        h["value"] = round(value, 2)
+        h["profit"] = round(profit, 2)
+        h["bot_reported_qty"] = bot_qty
+        h["topped_up_from_account"] = True
+        topped.append((s.get("id"), ticker, bot_qty, acct_qty))
+
+    # The card's own total must follow its holdings, or the tile shows the
+    # pre-trade value beside the post-trade share count.
+    for sid in {t[0] for t in topped}:
+        for s in api_data.get("strategies", []) or []:
+            if s.get("id") != sid or s.get("currency") == "MULTI":
+                continue
+            rows = s.get("holdings") or []
+            s["value"] = round(sum(float(r.get("value") or 0) for r in rows), 2)
+            s["profit"] = round(sum(float(r.get("profit") or 0) for r in rows), 2)
+            s["cost_basis"] = round(s["value"] - s["profit"], 2)
+
+    return topped
+
+
 def _build_kis_price_index(totals):
     """ticker -> (current_price_native, currency) from KIS positions.
 
@@ -408,6 +541,13 @@ def mark_to_market_strategies(api_data, totals):
         marked += sum(1 for h in s["holdings"] if h.get("mark_to_market"))
         s["unrealized_profit"] = round(new_un, 2)
         s["profit"] = s["unrealized_profit"]
+        # Re-sum the card total from the marked holdings, for the same reason
+        # the hybrid legs below do: _mark_holdings refreshes each row but leaves
+        # the card-level `value` at its pre-mark figure, so the tile showed a
+        # value that no longer matched the rows under it (quant40: card $5,433
+        # against holdings worth $5,384).
+        s["value"] = round(sum((h.get("value") or 0) for h in s["holdings"]), 2)
+        s["cost_basis"] = round(s["value"] - new_un, 2)
         real = s.get("realized_profit_ytd") or 0
         s["total_pl_ytd"] = round(real + new_un, 2)
         budget = s.get("budget") or 0
@@ -931,16 +1071,44 @@ def build_accounts(totals, portfolio, toss, strategies, now):
     btc = next((s for s in (strategies or []) if s.get("id") == "btc_vb"), {}) or {}
     upbit_total = float((portfolio or {}).get("upbit_krw") or btc.get("value") or 0)
     holding = bool(btc.get("is_holding"))
+    # NOTHING HERE QUERIES UPBIT. The figure is the last equity point the BTC VB
+    # bot wrote into its own state file, replayed at publish time. So staleness
+    # has to be judged on the AGE of that write: the old rule (`upbit_total <= 0`)
+    # could only ever fire on a zero, which means a bot that died — or an account
+    # that was emptied — would republish the same frozen number every day and
+    # never once be flagged. It reads identical to a healthy flat sleeve, because
+    # a flat sleeve genuinely does repeat the same number (W9,737,967.20081266
+    # sat unchanged from 08-12 to 08-17 while the bot was working perfectly).
+    last_run = btc.get("last_run")
+    age_days = _days_since(last_run, now)
+    # The bot runs daily at the US close and only rewrites state once its monitor
+    # window closes, so being a day or two behind is normal operation, not a
+    # fault. Three days is the first age that cannot be explained that way.
+    upbit_stale = (upbit_total <= 0) or (age_days is not None and age_days > UPBIT_STALE_DAYS)
     upbit = {
         "total_krw": round(upbit_total, 2),
         # Flat bot => the whole sleeve is idle KRW. Calling that "deployed by a
         # bot" would overstate how much of the portfolio is actually at work.
         "cash_krw": 0.0 if holding else round(upbit_total, 2),
         "position_krw": round(upbit_total, 2) if holding else 0.0,
-        "as_of": btc.get("last_run") or stamp,
-        "stale": upbit_total <= 0,
+        # Same contract the Toss sleeve uses: as_of is None whenever stale is
+        # true (the healthcheck asserts freshness only against a non-stale
+        # stamp) and the real stamp moves to last_seen_at for the tile.
+        "as_of": None if upbit_stale else (last_run or stamp),
+        "stale": upbit_stale,
         "is_holding": holding,
     }
+    if upbit_stale:
+        upbit["last_seen_at"] = last_run
+        upbit["note"] = (
+            "no live Upbit query — replayed from BTC VB bot state, last run {}"
+            .format(last_run or "unknown"))
+    if age_days is not None:
+        upbit["age_days"] = age_days
+    # The money is deliberately NOT zeroed when stale. Unlike a missing Toss
+    # snapshot (no data at all), this is a real balance we simply cannot re-
+    # confirm; dropping it would understate net worth by ~W9.7M without saying
+    # so, which is the exact failure this module exists to prevent.
 
     return {"kis": kis, "upbit": upbit, "toss": toss or {}}
 
@@ -1258,6 +1426,15 @@ def main(dry_run=False):
         rec = recover_missing_bot_holdings(api_data, totals)
         if rec:
             print("  Recovered {} bot position(s) from account balance".format(rec))
+
+    # Same idea one step further: a bot that reported SOME of a position (result
+    # file written a second after the fill) gets topped up to the account
+    # quantity, so its shares land on its own card instead of the gap.
+    if totals:
+        topped = reconcile_underreported_bot_holdings(api_data, totals)
+        for sid, ticker, was, now_qty in topped:
+            print("  Topped up {} {}: {:g} -> {:g} shares (result file predates fill)"
+                  .format(sid, ticker, was, now_qty))
 
     # Live mark-to-market: replace bot-saved holding values with current KIS
     # prices so the dashboard shows price moves up to publish time, not bot's
