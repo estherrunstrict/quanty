@@ -151,7 +151,14 @@ def strategy_rows(data, rate):
 
 def build_todos(data, today):
     """Asset-management action list, derived from the same JSON — so it cannot
-    recommend something the numbers do not support."""
+    recommend something the numbers do not support.
+
+    Each item is ``{kind, head, why}``. These are deliberately NOT a table: the
+    amounts are not comparable (one is won, one is a percentage), so a shared
+    "Amount" column put unlike things under one header and read as noise. A
+    checklist that leads with the verb and the number, and carries its
+    justification on its own line, is what actually gets acted on.
+    """
     todos = []
     totals = data.get("totals") or {}
     accounts = data.get("accounts") or {}
@@ -167,18 +174,29 @@ def build_todos(data, today):
         toss_cash = (accounts.get("toss") or {}).get("cash_krw") or 0
         nmf2 = next((s for s in data.get("strategies", [])
                      if s.get("id") == "nmf2"), {})
+        budget, deployed = (nmf2.get("budget") or 0), (nmf2.get("value") or 0)
         if TOSS_TARGET_KRW:
             gap = float(TOSS_TARGET_KRW) - toss_cash
-            why = "target"
+            why = f"Target {_kw(float(TOSS_TARGET_KRW))}, Toss cash {_kw(toss_cash)}"
         else:
-            gap = (nmf2.get("budget") or 0) - (nmf2.get("value") or 0) - toss_cash
-            why = "NMF2 budget"
+            gap = budget - deployed - toss_cash
+            why = (f"NMF2 has deployed {_kw(deployed)} of a {_kw(budget)} budget "
+                   f"— Toss cash is only {_kw(toss_cash)}")
         left = (deadline - today).days
+        when = f"{deadline.month}/{deadline.day}"
         if gap > 0:
-            todos.append(("Fund Toss", _kw(gap),
-                          f"D-{left} · {_kw(gap / max(left, 1))}/d · {why}"))
+            todos.append({
+                "kind": "toss",
+                "head": f"**Fund Toss {_kw(gap)}** by {when} — D-{left}, "
+                        f"{_kw(gap / max(left, 1))}/day",
+                "why": why,
+            })
         else:
-            todos.append(("Fund Toss", "done", f"D-{left} · {why} covered"))
+            todos.append({
+                "kind": "toss",
+                "head": f"**Toss funded** — {_kw(-gap)} spare, {when} target met",
+                "why": None,
+            })
 
     # 2) Idle cash. Nearly half the book is uninvested; the CMA is where it sits.
     cash_pct = split.get("cash") or 0
@@ -186,21 +204,31 @@ def build_todos(data, today):
         invested = totals.get("investments_krw") or 0
         excess = (totals.get("cash_krw") or 0) - invested * CASH_TARGET_PCT / 100
         cma = (accounts.get("cma") or {}).get("total_krw") or 0
-        todos.append(("Deploy cash", f"{cash_pct:.1f}%",
-                      f"{_kw(excess)} over {CASH_TARGET_PCT:.0f}% · CMA {_kw(cma)}"))
+        todos.append({
+            "kind": "cash",
+            "head": f"**Put {_kw(excess)} to work** — cash is {cash_pct:.1f}% "
+                    f"of the book vs {CASH_TARGET_PCT:.0f}% target",
+            "why": f"Sitting in CMA {_kw(cma)}",
+        })
 
-    # 3) Reconciliation gap — the split is only as good as this number.
+    # 3) Reconciliation gap — the split above is only as good as this number.
     if totals.get("reconciliation_warning"):
-        todos.append((
-            "Recon gap",
-            _kw(abs(totals.get("reconciliation_gap_krw") or 0)),
-            f"{totals.get('reconciliation_gap_pct') or 0:.2f}% unexplained",
-        ))
+        todos.append({
+            "kind": "recon",
+            "head": f"**Check {_kw(abs(totals.get('reconciliation_gap_krw') or 0))} "
+                    f"recon gap** — {totals.get('reconciliation_gap_pct') or 0:.2f}% "
+                    f"of accounts unexplained",
+            "why": "Treat the bots / hands-on / cash split as approximate",
+        })
 
     # 4) Any sleeve the generator could not see today.
     stale = [k.upper() for k, a in accounts.items() if a.get("stale")]
     if stale:
-        todos.append(("Stale feed", ", ".join(stale), "snapshot did not refresh"))
+        todos.append({
+            "kind": "stale",
+            "head": f"**Refresh {', '.join(stale)}** — snapshot did not update",
+            "why": None,
+        })
 
     return todos[:4]
 
@@ -256,11 +284,16 @@ def build_payload(data, today):
     todos = build_todos(data, today)
     if todos:
         lines.append("**Action items**")
-        lines += _tbl([("Task", "Amount", "Detail")] + todos, left=(0, 2))
+        for t in todos:
+            lines.append(f"▸ {t['head']}")
+            # The reason goes on its own line: "↳" rather than leading spaces,
+            # because Discord will not reliably keep indentation outside a fence.
+            if t["why"]:
+                lines.append(f"↳ {t['why']}")
 
     lines.append(f"[Open dashboard]({DASHBOARD_URL})")
 
-    if any(t[0] in ("Recon gap", "Stale feed") for t in todos):
+    if any(t["kind"] in ("recon", "stale") for t in todos):
         color = COLOR_WARN
     elif pl_pct >= 0.5:
         color = COLOR_UP
