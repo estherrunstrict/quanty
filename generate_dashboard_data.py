@@ -758,13 +758,18 @@ def build_manual_sleeve(all_holdings, strategies, fx_rate, toss_holdings=None,
         share = manual_qty / acct_qty
         value_native = acct_native * share
         value_krw = acct_krw * share
-        # 매입원가·평가손익도 같은 비율로 안분한다. 토스가 purchaseAmount/profitLoss 를
-        # 주는데 스냅샷이 버리고 있었고, 그래서 이 슬리브는 줄곧 '원가 없음'이었다.
+        # 매입원가·평가손익도 같은 비율로 안분한다.
+        #
+        # 원화 원가는 스냅샷이 계산해 준 cost_krw 를 **그대로** 쓴다. 미국 종목은
+        # 매입 시점 환율로 환산돼 있어서, 여기서 cost_native 에 오늘 환율을 곱하면
+        # 환율 효과가 지워진다 — 알파벳A 가 앱에서 -3.5% 인데 +1.0% 로 보이던 원인.
         cost_native = float(h.get("cost_native") or 0) * share
+        cost_krw_h = float(h.get("cost_krw") or 0) * share
+        if not cost_krw_h and cost_native:          # 구버전 스냅샷 폴백
+            cost_krw_h = cost_native * (1.0 if cur == "KRW" else (fx if fx > 0 else 0.0))
+        # 원화 손익 = 원화 평가 - 원화 원가 (달러 손익을 환산하는 것이 아니다).
+        pl_krw_h = value_krw - cost_krw_h
         pl_native = float(h.get("pl_native") or 0) * share
-        k = 1.0 if cur == "KRW" else (fx if fx > 0 else 0.0)
-        cost_krw_h = cost_native * k
-        pl_krw_h = pl_native * k
         toss_krw += value_krw
         toss_cost_krw += cost_krw_h
         toss_pl_krw += pl_krw_h
@@ -781,8 +786,9 @@ def build_manual_sleeve(all_holdings, strategies, fx_rate, toss_holdings=None,
             "cost_krw": round(cost_krw_h, 2),
             "pl_krw": round(pl_krw_h, 2),
             "profit": round(pl_native, 2),
-            "profit_rate": (round(pl_native / (cost_native) * 100, 2)
-                            if cost_native else None),
+            # 수익률도 원화 기준 — 토스 앱이 보여주는 것과 같은 기준이다.
+            "profit_rate": (round(pl_krw_h / cost_krw_h * 100, 2)
+                            if cost_krw_h else None),
             "source": "toss",
             "bot_claimed_qty": round(claimed, 6),
         })
