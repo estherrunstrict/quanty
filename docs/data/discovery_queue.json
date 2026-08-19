@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-08-19T06:30:12.975020+09:00",
+  "generated_at": "2026-08-19T16:00:32.010786+09:00",
   "stats": {
-    "total": 254,
-    "queued": 172,
+    "total": 257,
+    "queued": 175,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-08-19T06:30:12.974906+09:00",
+    "last_gc_at": "2026-08-19T16:00:32.010644+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -7382,6 +7382,95 @@
       "matched_keywords": [
         "factor",
         "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.18022",
+      "source": "arxiv",
+      "title": "Entropic Value-at-Risk portfolio optimization for tempered stable Lévy processes",
+      "authors": [
+        "Jaehyung Choi"
+      ],
+      "abstract": "We develop parametric Entropic Value-at-Risk (EVaR) portfolio optimization for tempered stable Lévy returns. We derive portfolio cumulant-generating functions and weight-dependent admissible moment-generating-function domains under two multivariate constructions: a multivariate normal tempered stable approach and an independent component factorization. These expressions allow portfolio EVaR to be evaluated from fitted asset- or component-level parameters without repeated portfolio-level distribution fitting. We construct minimum-EVaR portfolios and two entropic reward--risk portfolios. We test the portfolios in a rolling 2000 to 2026 out-of-sample U.S. sector ETF allocation. In this universe, several entropic portfolios have higher realized Sharpe ratios than their matched CVaR portfolios or standard allocation benchmarks.",
+      "categories": [
+        "q-fin.PM",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2608.18022v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.18022v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-18",
+      "discovered": "2026-08-19",
+      "matched_keywords": [
+        "factor",
+        "ETF"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.17808",
+      "source": "arxiv",
+      "title": "Self-Consistent Adjoint Policy Iteration for Constrained Dynamic Portfolio Choice",
+      "authors": [
+        "Jeonggyu Huh",
+        "Yeoneung Kim",
+        "Seungwon Jeong"
+      ],
+      "abstract": "We develop simulation-based policy iteration for continuous-time portfolio choice with predictable returns and convex constraints. Each outer step re-evaluates a fixed-latent OL-BPTT adjoint after deployment and solves the constrained update. Shifted-adjoint cancellation controls the adjoint--HJB Hamiltonian-gradient discrepancy by the policy-improvement residual. For CRRA portfolios, exact HJB policy iteration identifies the optimal reduced value factor, while population OL-BPTT iteration converges globally under an occupation-measure relative-error condition. A theorem-matched audit yields a maximal 95% upper endpoint of 0.074 against the required 0.75 threshold. In a three-factor, fifty-asset design, current-policy re-evaluation outperforms matched pooled refinement under both evaluation laws.",
+      "categories": [
+        "math.OC",
+        "q-fin.CP",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2608.17808v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.17808v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-18",
+      "discovered": "2026-08-19",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.17715",
+      "source": "arxiv",
+      "title": "Communicating Credit Risk with Large Language Models: Evaluation of Explanations from Standard and Alternative Data-Based Models",
+      "authors": [
+        "Sahab Zandi",
+        "Noah Kostesku",
+        "Christophe Mues",
+        "María Óskarsdóttir",
+        "Cristián Bravo"
+      ],
+      "abstract": "Credit decisioning is a high-stakes task in which model outputs must be accurate and explainable to support compliant decisions. Although modern credit risk models such as eXtreme Gradient Boosting (XGBoost) and Graph Neural Networks (GNNs) improve predictive performance, their explanations are often too technical for stakeholders creating communication gaps that can shape approvals, denials, and fairness judgments. We examine whether Large Language Models (LLMs) can serve as explanation layers that translate post-hoc explanation artefacts into stakeholder-appropriate risk narratives. Using Freddie Mac single-family loan-level data, we develop three pipelines: standard tabular (XGBoost + SHAP), and two with alternative data, a pure network-based (GNN + GNNExplainer), and a bimodal one (combining tabular and network data). We generate narratives with three LLM configurations: a small fine-tuned LLM (Gemma 3 4B), a large fine-tuned LLM (DeepSeek R1 70B), and a zero-shot commercial LLM (Gemini 2.5). Explanation quality is evaluated through automated checks across all pipelines and a human study of bimodal explanations comparing credit risk professionals and non-professionals on eight decision-relevant dimensions. We have three main findings. First, the pipeline accounts for higher variance in evidence-grounding scores than the language model, meaning that the binding constraint on explanation quality is the evidence representation, not the model used. Second, the explanation narratives reliably name the influential factors but are less reliable when stating the direction of influence, which may be consequential for adverse-action communication. Finally, professionals apply stricter evidentiary standards than non-professionals. We discuss implications for the governance of risk models, including deployment considerations and the value of domain-aligned LLMs in regulated credit settings.",
+      "categories": [
+        "q-fin.RM",
+        "cs.AI"
+      ],
+      "url": "https://arxiv.org/abs/2608.17715v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.17715v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-18",
+      "discovered": "2026-08-19",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
