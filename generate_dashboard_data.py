@@ -863,48 +863,32 @@ def build_manual_sleeve(all_holdings, strategies, fx_rate, toss_holdings=None,
     kis_krw = 0.0
     kis_unrealized_krw = 0.0
 
-    bot_ticker_residual_krw = 0.0
-    bot_ticker_residual = {}
+    # ── KIS contributes NOTHING to this sleeve. ──────────────────────────────
+    # KIS is the bots' account; Jae's own buying happens in Toss. So a KIS row
+    # that no card claims is a bot whose result file dropped it — never money he
+    # bought by hand. Deriving "his" from "what the bots forgot to mention" made
+    # the sleeve hostage to every bot reporting perfectly, and it misfired every
+    # time it mattered:
+    #   2026-08-17  SPY 6 + NVDA 19 (W12.6M) — result files written one second
+    #               after the fill, before KIS showed it
+    #   2026-08-19  069500/305720/364690 (W4.4M) — hybrid_vb_kr published
+    #               holdings:[] and open_positions:null while holding all three
+    # Both were his bots' positions, shown to him as his own hand-picked stock.
+    # The unclaimed remainder is recorded below for bot-ledger triage and is
+    # counted under bots in build_totals, so no won goes missing.
+    kis_unclaimed_krw = 0.0
+    kis_unclaimed = {}
     for ticker, acct in sorted((all_holdings or {}).items()):
         qty = float(acct.get("qty") or 0)
         if qty <= 0:
             continue
-        claimed = min(float(claims.get(ticker, 0.0)), qty)
-        manual_qty = qty - claimed
-        # 봇이 조금이라도 잡고 있는 티커는 전량 봇 것으로 본다. 봇 결과파일이 계좌보다
-        # 적게 보고하면(캐시 지연, 카드가 타깃만 싣는 경우 등) 그 차액이 '사용자가 손으로
-        # 산 주식'으로 둔갑하기 때문이다 — SPY 6주·NVDA 19주가 그렇게 잘못 잡혔다.
-        # 차액은 버리지 않고 기록해서 봇 장부 문제를 볼 수 있게 남긴다.
-        if claims.get(ticker) and manual_qty > 1e-9:
-            cur_r = acct.get("currency") or "KRW"
-            v = float(acct.get("value_native") or 0) * (manual_qty / qty)
-            bot_ticker_residual_krw += v if cur_r == "KRW" else v * fx
-            bot_ticker_residual[ticker] = round(manual_qty, 6)
+        unclaimed = qty - min(float(claims.get(ticker, 0.0)), qty)
+        if unclaimed <= 1e-9:
             continue
-        if manual_qty <= 1e-9:
-            continue
-        share = manual_qty / qty
-        cur = acct.get("currency") or "KRW"
-        value_native = float(acct.get("value_native") or 0) * share
-        profit_native = float(acct.get("profit") or 0) * share
-        value_krw = value_native if cur == "KRW" else value_native * fx
-        profit_krw = profit_native if cur == "KRW" else profit_native * fx
-        price = value_native / manual_qty if manual_qty else 0.0
-        kis_krw += value_krw
-        kis_unrealized_krw += profit_krw
-        rows.append({
-            "ticker": ticker,
-            "name": acct.get("name") or ticker,
-            "qty": round(manual_qty, 6),
-            "quantity": round(manual_qty, 6),          # generic card renderer
-            "currency": cur,
-            "current_price": round(price, 4),
-            "value": round(value_native, 2),
-            "value_krw": round(value_krw, 2),
-            "profit": round(profit_native, 2),
-            "source": "kis",
-            "bot_claimed_qty": round(claimed, 6),
-        })
+        cur_r = acct.get("currency") or "KRW"
+        v = float(acct.get("value_native") or 0) * (unclaimed / qty)
+        kis_unclaimed_krw += v if cur_r == "KRW" else v * fx
+        kis_unclaimed[ticker] = round(unclaimed, 6)
 
     toss_krw = 0.0
     toss_rows = 0
@@ -997,13 +981,16 @@ def build_manual_sleeve(all_holdings, strategies, fx_rate, toss_holdings=None,
         "extra": {
             "note": "Broker positions attributed to no bot: KIS and Toss holdings minus every bot's claimed shares.",
             "ticker_count": len(rows),
+            # KIS is bot territory by definition, so these are always 0 now.
+            # Kept as keys so anything reading the old shape still parses.
             "kis_krw": round(kis_krw, 2),
             "kis_ticker_count": sum(1 for r in rows if r.get("source") == "kis"),
             "kis_unrealized_krw": round(kis_unrealized_krw, 2),
-            # 봇이 거래하는 티커인데 봇 보고 수량이 계좌보다 적어 남은 몫.
-            # 수동으로 잡지 않고 여기 기록만 한다 (봇 장부 점검용).
-            "bot_ticker_residual_krw": round(bot_ticker_residual_krw, 2),
-            "bot_ticker_residual": bot_ticker_residual,
+            # KIS 주식 중 어떤 봇 카드도 주장하지 않은 몫. 수동이 아니라 봇 것이며
+            # (build_totals 에서 봇으로 계상), 값이 크면 그 봇의 결과파일이 포지션을
+            # 빠뜨렸다는 신호다 — 여기 남겨 두는 이유가 그것이다.
+            "kis_unclaimed_krw": round(kis_unclaimed_krw, 2),
+            "kis_unclaimed": kis_unclaimed,
             "toss_krw": round(toss_krw, 2),
             "toss_ticker_count": toss_rows,
             # What the Toss-account bots (NMF2) took out of this sleeve. Kept
@@ -1166,7 +1153,16 @@ def build_totals(accounts, strategies, manual_card, kis_holdings, fx_rate):
                    + float(upbit.get("total_krw") or 0)
                    + float(toss.get("total_krw") or 0))
 
-    bots_kis_krw = _attributed_krw(kis_holdings, collect_bot_claims(strategies), fx)
+    # EVERY KIS share is bot money — that account is not where Jae buys by hand,
+    # and the hands-on sleeve no longer takes anything from it. Summing the
+    # account rather than the bots' claims is also what makes the split immune
+    # to a card dropping its holdings: hybrid_vb_kr publishing holdings:[] used
+    # to move W4.4M into "his" money, and now moves nothing at all.
+    bots_kis_krw = sum(
+        (float(a.get("value_native") or 0)
+         if (a.get("currency") or "KRW") == "KRW"
+         else float(a.get("value_native") or 0) * fx)
+        for a in (kis_holdings or {}).values() if float(a.get("qty") or 0) > 0)
     reported_kis_krw = _attributed_krw(
         kis_holdings, collect_bot_claims(strategies, sources=("holdings",)), fx)
     # Bots trading a non-KIS account carry their own already-KRW marked value
