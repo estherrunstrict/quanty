@@ -25,7 +25,12 @@ from dashboard_equity import et_today, pin_equity_endpoints
 # server talks to Toss (the Open API IP allowlist covers the Mac only), so this
 # file is the account's only representation and it can legitimately go stale.
 TOSS_SNAPSHOT_FILE = os.path.join(TRADING_DIR, "strategy_results", "toss_snapshot.json")
-TOSS_MAX_AGE_HOURS = 30
+# The Mac job runs 06:00 and 15:50, so a healthy snapshot is never older than
+# ~14h. 30h silently passed a snapshot that had missed an entire day (2026-08-19:
+# 25.5h old, flagged fresh, hands-on sleeve a full day behind). 20h flags a
+# missed cycle while still tolerating one late run — safe to tighten only
+# because an aged snapshot is now kept and labelled rather than zeroed.
+TOSS_MAX_AGE_HOURS = float(os.environ.get("QUANTY_TOSS_MAX_AGE_HOURS", "20"))
 
 # NMF2 (신마법공식 2.0) sleeve — a real automated bot trading a ~W1M slice of the
 # Toss account. Its ledger is the ONLY record of which Toss positions are the
@@ -99,8 +104,11 @@ def load_toss_account(path=None, now=None, max_age_hours=TOSS_MAX_AGE_HOURS, fx_
     fallback rate stands.
     """
     def _empty(note, last_seen=None):
+        # usable=False means "there is no position to show", which is a
+        # different thing from "the position we have is old" — see the aged
+        # branch below. Callers gate the holdings rows on `usable`, not `stale`.
         return {"total_krw": 0.0, "cash_krw": 0.0, "holdings_krw": 0.0,
-                "as_of": None, "stale": True, "note": note,
+                "as_of": None, "stale": True, "usable": False, "note": note,
                 "last_seen_at": last_seen}
 
     path = path or TOSS_SNAPSHOT_FILE
@@ -123,9 +131,11 @@ def load_toss_account(path=None, now=None, max_age_hours=TOSS_MAX_AGE_HOURS, fx_
         stamp = stamp.replace(tzinfo=KST)          # snapshots are written in KST
     now = now or datetime.now(KST)
     age_h = (now - stamp).total_seconds() / 3600.0
-    if age_h > max_age_hours or age_h < -1:        # future stamps are broken clocks
-        return _empty("snapshot {:.1f}h old (limit {}h)".format(age_h, max_age_hours),
-                      last_seen=raw_as_of)
+    if age_h < -1:
+        # A stamp from the future means a broken clock somewhere, which makes
+        # the numbers themselves untrustworthy — unlike mere age.
+        return _empty("as_of {} is {:.1f}h in the future — clock skew".format(
+            raw_as_of, -age_h), last_seen=raw_as_of)
 
     native = snap.get("native") or {}
     holdings_krw = float(snap.get("holdings_krw") or 0)
@@ -135,16 +145,32 @@ def load_toss_account(path=None, now=None, max_age_hours=TOSS_MAX_AGE_HOURS, fx_
         holdings_krw = float(native.get("holdings_krw") or 0) + float(native.get("holdings_usd") or 0) * fx_rate
         cash_krw = float(native.get("cash_krw") or 0) + float(native.get("cash_usd") or 0) * fx_rate
     total_krw = holdings_krw + cash_krw
-    return {
+    # An OLD snapshot is flagged but KEPT. Zeroing it (what this used to do)
+    # deleted ~W190M from the hero the moment the Mac missed a run — on
+    # 2026-08-17 the hands-on sleeve fell from W193M to W12.6M and the split
+    # went with it, which reads as "Jae sold everything", not "the laptop was
+    # off". The last known position is the honest thing to show; `stale` and
+    # `last_seen_at` are how the tile says so. Only a snapshot we cannot read at
+    # all (above) has nothing to show and is zeroed.
+    aged = age_h > max_age_hours
+    out = {
         "total_krw": round(total_krw, 2),
         "cash_krw": round(cash_krw, 2),
         "holdings_krw": round(holdings_krw, 2),
-        "as_of": raw_as_of,
-        "stale": False,
+        # Same contract as the other sleeves: as_of is None whenever stale is
+        # true, and the real stamp moves to last_seen_at.
+        "as_of": None if aged else raw_as_of,
+        "stale": aged,
+        "usable": True,
         "age_hours": round(age_h, 2),
         "holdings_count": len(snap.get("holdings") or []),
         "source": snap.get("source") or "unknown",
     }
+    if aged:
+        out["last_seen_at"] = raw_as_of
+        out["note"] = ("snapshot {:.1f}h old (limit {}h) — Mac job has not run; "
+                       "showing the last known position".format(age_h, max_age_hours))
+    return out
 
 
 def get_portfolio(totals=None):
@@ -1513,17 +1539,24 @@ def main(dry_run=False):
     # merges with whatever else populates `accounts`, in any order.
     toss = load_toss_account(fx_rate=fx)
     output.setdefault("accounts", {})["toss"] = toss
-    print("  Toss: {}".format(
-        "STALE/absent — {}".format(toss.get("note")) if toss["stale"]
-        else "W{:,.0f} ({} holdings, as of {})".format(
-            toss["total_krw"], toss.get("holdings_count", 0), toss["as_of"])))
+    if not toss.get("usable"):
+        print("  Toss: ABSENT — {}".format(toss.get("note")))
+    elif toss["stale"]:
+        print("  Toss: STALE W{:,.0f} ({} holdings) — {}".format(
+            toss["total_krw"], toss.get("holdings_count", 0), toss.get("note")))
+    else:
+        print("  Toss: W{:,.0f} ({} holdings, as of {})".format(
+            toss["total_krw"], toss.get("holdings_count", 0), toss["as_of"]))
 
     # ── Hands-on / Manual sleeve + whole-investment totals ───────────────────
     # Everything below runs AFTER pin_equity_endpoints on purpose: the manual
     # card is not a bot, so it must not have its chart endpoint pinned to a
     # total_pl_ytd it does not have.
     toss_rows = []
-    if not toss.get("stale"):
+    # Gated on `usable`, not `stale`: an aged snapshot still carries real rows,
+    # and dropping them took the whole hands-on sleeve AND NMF2's marks down
+    # with it whenever the Mac missed a single run.
+    if toss.get("usable", not toss.get("stale")):
         try:
             with open(TOSS_SNAPSHOT_FILE) as f:
                 toss_rows = json.load(f).get("holdings") or []
