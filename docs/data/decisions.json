@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T21:25:08.535446+09:00",
+  "generated_at": "2026-08-20T22:13:21.868786+09:00",
   "portfolio_constraints": {
     "max_single_bot_pct": 40,
     "max_leverage": 1.5,
@@ -132,7 +132,7 @@
       "verdict": "watch",
       "schedule": "09:30 ET weekdays (+120s delay)",
       "paper_source": "home-grown",
-      "capital_allocated_pct": 21.3,
+      "capital_allocated_pct": 21.2,
       "capital_pct_source": "computed",
       "dashboard_id": "claude_bot",
       "wiki_path": "quanty-wiki/bots/claude-trading-bot.md",
@@ -164,7 +164,7 @@
       "dashboard_id": "hybrid_vb",
       "wiki_path": "quanty-wiki/bots/hybrid-vb.md",
       "last_update": "2026-08-20T09:01:05.072627+09:00",
-      "days_since_update": 0.5,
+      "days_since_update": 0.6,
       "period_pl_krw": -3180620.76,
       "mdd_pl_krw": 7486331.51,
       "best_day_krw": 2092929.9999999998,
@@ -203,7 +203,7 @@
       "backtest_window": "qualitative source (JD Wealth Research); no quantified OOS backtest in the wiki",
       "realized_sharpe_annualized": 0.69,
       "realized_sharpe_ci_low_95": 0.47,
-      "realized_mdd_pct": 3.15,
+      "realized_mdd_pct": 3.14,
       "sharpe_decay": null,
       "mdd_excess": null
     },
@@ -218,7 +218,7 @@
       "dashboard_id": "korea_etf",
       "wiki_path": "quanty-wiki/bots/korea-etf-momentum.md",
       "last_update": "2026-08-20T09:00:18.341608+09:00",
-      "days_since_update": 0.5,
+      "days_since_update": 0.6,
       "period_pl_krw": -4535370.0,
       "mdd_pl_krw": 6429870.0,
       "best_day_krw": 2304975.0,
@@ -267,7 +267,7 @@
       "verdict": "keep",
       "schedule": "monthly, first trading day",
       "paper_source": "[[kang-hwankook-modified-dual-momentum]]",
-      "capital_allocated_pct": 21.9,
+      "capital_allocated_pct": 21.8,
       "capital_pct_source": "computed",
       "dashboard_id": "dual_momentum",
       "wiki_path": "quanty-wiki/bots/modified-dual-momentum.md",
@@ -284,7 +284,7 @@
       "backtest_window": "7.1y (2019-2026) via backtest_modified_dual_momentum.py (Sortino 1.09, Calmar 0.69). Note: 강환국 original-source 53-year numbers were CAGR 18.3/MDD 16.3/Sharpe-not-reported — the recent OOS window underperforms the headline claim, notably losing to plain SPY buy-and-hold (CAGR 14.9, Sharpe 0.91) and to 60/40 (Sharpe 0.86) over the same period.",
       "realized_sharpe_annualized": -0.04,
       "realized_sharpe_ci_low_95": -0.23,
-      "realized_mdd_pct": 6.61,
+      "realized_mdd_pct": 6.62,
       "sharpe_decay": -0.05,
       "mdd_excess": 0.4
     },
@@ -365,7 +365,7 @@
       "backtest_window": "framework/ backtests exist but not summarized; book-driven (퀀트가 대신 한다 40)",
       "realized_sharpe_annualized": 0.65,
       "realized_sharpe_ci_low_95": 0.44,
-      "realized_mdd_pct": 19.55,
+      "realized_mdd_pct": 19.53,
       "sharpe_decay": null,
       "mdd_excess": null
     }
@@ -514,7 +514,7 @@
         "sharpe_annualized": -0.04,
         "sharpe_ci_low_95": -0.23,
         "sharpe_ci_high_95": 0.15,
-        "weight": 0.219
+        "weight": 0.218
       },
       "hybrid-vb": {
         "daily_pnl_krw_mean": -30291.63,
@@ -530,7 +530,7 @@
         "sharpe_annualized": 0.41,
         "sharpe_ci_low_95": 0.21,
         "sharpe_ci_high_95": 0.6,
-        "weight": 0.213
+        "weight": 0.212
       }
     },
     "correlation_matrix": {
@@ -624,7 +624,7 @@
           },
           "modified-dual-momentum": {
             "sharpe": -0.04,
-            "weight": 0.219
+            "weight": 0.218
           },
           "hybrid-vb": {
             "sharpe": -0.7,
@@ -632,7 +632,7 @@
           },
           "claude-trading-bot": {
             "sharpe": 0.41,
-            "weight": 0.213
+            "weight": 0.212
           }
         }
       }
