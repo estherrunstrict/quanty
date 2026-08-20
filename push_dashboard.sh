@@ -11,7 +11,15 @@ set -e
 # stops the re-exec from looping.
 if [ -z "${QUANTY_PUBLISH_LOCKED:-}" ]; then
     export QUANTY_PUBLISH_LOCKED=1
-    exec flock -w 900 /tmp/quanty-publish.lock "$0" "$@"
+    # Resolve $0 to an ABSOLUTE path first. flock execs its command
+    # directly, so a bare relative $0 ("push_dashboard.sh", which is what
+    # $0 is when the script is run from its own directory) goes through
+    # execvp and gets looked up on PATH, not in the cwd. The run then dies
+    # with "flock: failed to execute push_dashboard.sh: No such file or
+    # directory" and exit 69. Cron passes an absolute path so it never saw
+    # this, which is exactly what made it look intermittent.
+    SELF="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
+    exec flock -w 900 /tmp/quanty-publish.lock /bin/bash "$SELF" "$@"
 fi
 
 DASHBOARD_DIR="/home/ubuntu/quanty-dashboard"
