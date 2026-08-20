@@ -131,3 +131,69 @@ def test_missing_state_returns_none_rather_than_raising(tmp_path):
 def test_unreadable_proposal_returns_none(tmp_path):
     (tmp_path / "proposed_20260820.json").write_text("{ not json")
     assert G.load_allocation(str(tmp_path), now=NOW, fx_rate=FX) is None
+
+
+def test_ramp_explains_why_target_is_below_the_1_over_n_share(tmp_path):
+    """The panel showed 'per bot W40.3M' beside a W27.7M target and looked broken.
+
+    The missing sentence was the ramp: no bot grows more than RAMP_MAX per daily
+    run, so today's target is current x factor, not the 1/N share. Both numbers
+    have to travel together or the arithmetic reads as a contradiction.
+    """
+    a = G.load_allocation(_state(tmp_path), now=NOW, fx_rate=FX)
+    q = [b for b in a["bots"] if b["id"] == "quant40"][0]
+
+    assert q["uncapped_krw"] == 40276604          # what 1/N alone would give
+    assert q["target_krw"] == 27683452            # what the ramp allows today
+    assert q["limited_by"] == "ramp"
+    # Derived from the data, never hard-coded: 27,683,452 / 20,506,261 = 1.35
+    assert abs(q["ramp_factor"] - 1.35) < 0.001
+    # And it says how long the gap takes to close, because "capped" alone does
+    # not distinguish two days from two months.
+    assert q["runs_to_target"] == 3
+
+
+def test_bots_at_target_are_not_labelled_as_limited(tmp_path):
+    """A bot already at its 1/N share has nothing holding it back."""
+    prop = json.loads(json.dumps(PROPOSAL))
+    prop["allocations"]["nmf2"]["target_krw"] = prop["level2"]["per_bot_krw"]
+    a = G.load_allocation(_state(tmp_path, proposal=prop), now=NOW, fx_rate=FX)
+    n = [b for b in a["bots"] if b["id"] == "nmf2"][0]
+
+    assert n["limited_by"] == ""
+    assert n["ramp_factor"] is None
+    assert n["runs_to_target"] is None
+
+
+def test_capital_provenance_travels_with_the_number(tmp_path):
+    """The hero and this panel price the same money hours apart.
+
+    Without the measurement time and FX on the panel, the two totals just look
+    like a contradiction (W541.3M here vs W540.1M in the hero on 2026-08-20).
+    """
+    (tmp_path / "bots.json").write_text(json.dumps({
+        "as_of": "2026-08-20 06:30 KST", "capital_basis": "measured+external",
+        "total_capital_krw": 541270441, "fx_usdkrw": FX}))
+    a = G.load_allocation(_state(tmp_path), now=NOW, fx_rate=1402.5)
+
+    assert a["capital_as_of"] == "2026-08-20 06:30 KST"
+    assert a["capital_basis"] == "measured+external"
+    # The block stays in the ALLOCATOR's frame even when the dashboard's own FX
+    # differs — otherwise residual x X would stop equalling the fleet pool.
+    assert a["fx"] == FX
+
+
+def test_block_holds_together_arithmetically(tmp_path):
+    """residual x X == fleet pool, and pool / N == the 1/N share."""
+    a = G.load_allocation(_state(tmp_path), now=NOW, fx_rate=FX)
+    L0, L1, L2 = a["level0"], a["level1"], a["level2"]
+
+    assert abs(L0["residual_krw"] * L1["X"] - L2["fleet_pool_krw"]) < 2
+    assert abs(L2["fleet_pool_krw"] / L2["N"] - L2["per_bot_krw"]) < 2
+
+
+def test_runs_to_target_is_none_when_it_cannot_be_known(tmp_path):
+    assert G._runs_to_target(0, 100, 50) is None          # no current budget
+    assert G._runs_to_target(100, 50, 60) is None         # already past 1/N
+    assert G._runs_to_target(100, 200, 100) is None       # factor 1.0, never arrives
+    assert G._runs_to_target(None, 200, 100) is None

@@ -325,7 +325,7 @@ a { color: var(--accent); text-decoration: none; }
 .alloc-row.minus .v { color: var(--tx2); }
 
 .alloc-bots { border-top: 1px solid var(--border); padding: 1rem 1.4rem 1.2rem; overflow-x: auto; }
-.alloc-tbl { width: 100%; border-collapse: collapse; font-size: 0.7rem; min-width: 440px; }
+.alloc-tbl { width: 100%; border-collapse: collapse; font-size: 0.7rem; min-width: 620px; }
 .alloc-tbl th {
   text-align: right; font-weight: 400; font-size: 0.56rem; letter-spacing: 0.11em;
   text-transform: uppercase; color: var(--tx4); padding: 0 0 0.5rem;
@@ -341,6 +341,16 @@ a { color: var(--accent); text-decoration: none; }
    500px and leaves Level 2 beside an empty cell that reads as a missing
    panel. The levels are a sequence (capital -> exposure -> per bot), so
    stacking them keeps the reading order intact. */
+.alloc-lv .lv-foot {
+  margin-top: 0.75rem; padding-top: 0.6rem; border-top: 1px dashed var(--border-h);
+  font-size: 0.64rem; color: var(--tx3); line-height: 1.55;
+}
+.alloc-lv .lv-foot b { color: var(--accent); font-weight: 400; }
+.alloc-row.eq { border-top: 1px solid var(--border-h); margin-top: 0.3rem; }
+.alloc-row .bind { color: var(--accent); font-weight: 400; font-size: 0.62rem; }
+.alloc-tbl td.dim { color: var(--tx3); }
+.alloc-tbl .lim { color: var(--accent); font-size: 0.64rem; }
+.alloc-note b { color: var(--tx2); font-weight: 500; }
 @media (max-width: 900px) {
   .alloc-levels { grid-template-columns: 1fr; }
 }
@@ -1192,9 +1202,6 @@ function buildAllocation(a) {
 
   const sec = h('section', 'alloc fade-in d1');
 
-  // Applied vs merely proposed is the governance distinction: apply.py is the
-  // step a human owns, so a proposal that was never applied must not read as
-  // the live state.
   let badge = a.applied
     ? '<span class="alloc-badge ok">Applied</span>'
     : '<span class="alloc-badge warn">Proposed only</span>';
@@ -1210,63 +1217,106 @@ function buildAllocation(a) {
     (a.policy_version ? ' · ' + a.policy_version : '') + '</span></div>';
   sec.appendChild(hd);
 
-  const bindLabel = {
-    kelly: 'half-Kelly', cash_floor: 'cash floor', vol_cap: 'volatility cap',
-    dd_brake: 'drawdown brake', x_min: 'governance floor', x_max: 'exposure cap',
-  }[L1.binding] || (L1.binding || '—');
+  // Which constraint set X. The allocator emits these exact strings.
+  const BIND = {
+    kelly: 'half-Kelly', cash_floor: 'cash floor',
+    vol_target: 'volatility cap', X_MIN: 'governance floor',
+  };
+  const bindName = BIND[L1.binding] || (L1.binding || '—');
+  const mark = key => L1.binding === key ? ' <b class="bind">← binds</b>' : '';
+
+  const capMeta = (a.capital_as_of ? 'measured ' + a.capital_as_of : '') +
+    (a.fx ? ' · FX ' + Math.round(a.fx).toLocaleString() : '');
 
   const levels = h('div', 'alloc-levels');
   levels.innerHTML =
     '<div class="alloc-lv">' +
       '<div class="lv-tag">Level 0 · hands-on is senior</div>' +
-      '<div class="lv-sub">Your own positions are carved out first. The fleet only ever sees what is left.</div>' +
+      '<div class="lv-sub">Your own positions are carved out first. The fleet only ever sees the residual.</div>' +
       '<div class="alloc-row"><span class="k">Total capital</span><span class="v">' + won(a.capital_krw) + '</span></div>' +
       '<div class="alloc-row minus"><span class="k">− Hands-on</span><span class="v">' + won(L0.manual_krw) + '</span></div>' +
-      '<div class="alloc-row big"><span class="k">Residual</span><span class="v">' + won(L0.residual_krw) + '</span></div>' +
+      '<div class="alloc-row big eq"><span class="k">= Residual</span><span class="v">' + won(L0.residual_krw) + '</span></div>' +
+      (capMeta ? '<div class="lv-foot">' + capMeta + '</div>' : '') +
     '</div>' +
     '<div class="alloc-lv">' +
       '<div class="lv-tag">Level 1 · one system exposure</div>' +
-      '<div class="lv-sub">A single X for the whole fleet — not per bot. Bound here by <b>' + bindLabel + '</b>.</div>' +
-      '<div class="alloc-row big"><span class="k">Exposure X</span><span class="v">' + pc(L1.X) + '</span></div>' +
-      '<div class="alloc-row"><span class="k">half-Kelly</span><span class="v">' + pc(L1.kelly_half) + '</span></div>' +
-      '<div class="alloc-row"><span class="k">vol cap</span><span class="v">' + pc(L1.x_vol_cap) + '</span></div>' +
-      '<div class="alloc-row"><span class="k">DD brake</span><span class="v">' + (L1.brake === null || L1.brake === undefined ? '—' : L1.brake.toFixed(2)) + '</span></div>' +
-      '<div class="alloc-row"><span class="k">fleet DD · σ</span><span class="v">' + pc(L1.fleet_dd) + ' · ' + pc(L1.sigma) + '</span></div>' +
+      '<div class="lv-sub">X = min(half-Kelly, cash floor, vol cap) × DD brake. One number for the whole fleet, not per bot.</div>' +
+      '<div class="alloc-row"><span class="k">half-Kelly' + mark('kelly') + '</span><span class="v">' + pc(L1.kelly_half) + '</span></div>' +
+      '<div class="alloc-row"><span class="k">cash floor' + mark('cash_floor') + '</span><span class="v">80%</span></div>' +
+      '<div class="alloc-row"><span class="k">vol cap' + mark('vol_target') + '</span><span class="v">' + pc(L1.x_vol_cap) + '</span></div>' +
+      '<div class="alloc-row"><span class="k">× DD brake</span><span class="v">' + (L1.brake == null ? '—' : L1.brake.toFixed(2)) + '</span></div>' +
+      '<div class="alloc-row big eq"><span class="k">= X</span><span class="v">' + pc(L1.X) + '</span></div>' +
+      '<div class="lv-foot">' + won(L0.residual_krw) + ' × ' + pc(L1.X) + ' = <b>' + won(L2.fleet_pool_krw) + '</b> fleet pool</div>' +
     '</div>' +
     '<div class="alloc-lv">' +
       '<div class="lv-tag">Level 2 · equal weight</div>' +
-      '<div class="lv-sub">1/N by policy, not by optimisation — four months of track record cannot justify tilting.</div>' +
+      '<div class="lv-sub">1/N by policy, not optimisation — four months of record cannot justify tilting.</div>' +
       '<div class="alloc-row"><span class="k">Fleet pool</span><span class="v">' + won(L2.fleet_pool_krw) + '</span></div>' +
-      '<div class="alloc-row"><span class="k">Bots in fleet (N)</span><span class="v">' + (L2.N || 0) + '</span></div>' +
-      '<div class="alloc-row big"><span class="k">Per bot</span><span class="v">' + won(L2.per_bot_krw) + '</span></div>' +
+      '<div class="alloc-row minus"><span class="k">÷ bots in fleet (N)</span><span class="v">' + (L2.N || 0) + '</span></div>' +
+      '<div class="alloc-row big eq"><span class="k">= 1/N share</span><span class="v">' + won(L2.per_bot_krw) + '</span></div>' +
+      '<div class="lv-foot">Today\'s targets are lower: no bot moves more than one ramp step per run — see the table.</div>' +
     '</div>';
   sec.appendChild(levels);
 
   const inFleet = (a.bots || []).filter(b => b.in_etf);
   const out = (a.bots || []).filter(b => !b.in_etf);
   if (inFleet.length || out.length) {
+    // The ramp factor is derived from the data (target ÷ current), never
+    // hard-coded here — a constant copied into the UI is a constant that drifts
+    // from the allocator the first time someone tunes AM_RAMP_MAX.
+    const ramped = inFleet.filter(b => b.limited_by === 'ramp' && b.ramp_factor);
+    const factor = ramped.length ? ramped[0].ramp_factor : null;
+    const runs = ramped.length
+      ? Math.max.apply(null, ramped.map(b => b.runs_to_target || 0)) : 0;
+
+    const limitCell = b => {
+      if (b.limited_by === 'ramp') {
+        return '<span class="lim">ramp ×' + (b.ramp_factor || 0).toFixed(2) + '</span>';
+      }
+      if (b.limited_by === 'band') return '<span class="lim">held · band</span>';
+      return '<span class="why">at 1/N</span>';
+    };
+
     const rows = inFleet.map(b =>
       '<tr><td>' + b.name + '</td>' +
       '<td class="why">' + (b.account || '') + '</td>' +
       '<td>' + won(b.current_krw) + '</td>' +
+      '<td class="dim">' + won(b.uncapped_krw) + '</td>' +
       '<td>' + won(b.target_krw) + '</td>' +
+      '<td>' + limitCell(b) + '</td>' +
       '<td class="' + pnlClass(b.drift_krw) + '">' + fmtPnl(b.drift_krw, 'KRW') + '</td></tr>'
     ).join('') + out.map(b =>
       '<tr class="out"><td>' + b.name + '</td>' +
       '<td class="why">' + (b.account || '') + '</td>' +
       '<td>' + won(b.current_krw) + '</td>' +
-      '<td>—</td>' +
-      '<td class="why">' + (b.why || 'excluded') + '</td></tr>'
+      '<td class="dim">—</td><td>—</td>' +
+      '<td colspan="2" class="why">' + (b.why || 'excluded') + '</td></tr>'
     ).join('');
+
+    let note = 'Drift is target − current. ';
+    if (factor) {
+      note += 'Targets sit below the 1/N share because a bot may grow at most ' +
+        '<b>×' + factor.toFixed(2) + ' per daily run</b> — a jump straight to 1/N ' +
+        'would have the fleet chasing every manual trade. ' +
+        (runs ? 'At this rate the fleet reaches 1/N in about <b>' + runs +
+                ' more run' + (runs === 1 ? '' : 's') + '</b>.' : '');
+    }
+    note += ' A bot already within 20% of target is held where it is, ' +
+            'so small drifts do not churn the book.';
 
     const tbl = h('div', 'alloc-bots');
     tbl.innerHTML =
       '<table class="alloc-tbl"><thead><tr>' +
-      '<th>Bot</th><th>Account</th><th>Current</th><th>Target</th><th>Drift</th>' +
+      '<th>Bot</th><th>Account</th><th>Current</th><th>1/N share</th>' +
+      '<th>Target</th><th>Limited by</th><th>Drift</th>' +
       '</tr></thead><tbody>' + rows + '</tbody></table>' +
-      '<div class="alloc-note">Drift is target − current budget. It closes over a few cycles: ' +
-      'the allocator ramps at most 3× per run and holds a 20% turnover band, so a bot does not ' +
-      'jump straight to target.</div>';
+      '<div class="alloc-note">' + note + '</div>' +
+      '<div class="alloc-note">Capital here is the allocator\'s own measurement' +
+      (a.capital_as_of ? ' from ' + a.capital_as_of : '') +
+      (a.fx ? ' at FX ' + Math.round(a.fx).toLocaleString() : '') +
+      '. The Total Investments figure at the top of this page is the same money ' +
+      'marked again just now, so the two differ by whatever prices and FX did in between — ' +
+      'the panel keeps the allocator\'s frame so its arithmetic still adds up.</div>';
     sec.appendChild(tbl);
   }
   return sec;

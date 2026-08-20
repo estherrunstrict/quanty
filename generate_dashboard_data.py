@@ -1157,6 +1157,26 @@ def get_cma_krw():
         return 0.0
 
 
+def _runs_to_target(current_krw, uncapped_krw, target_krw):
+    """Daily runs until a ramped bot reaches its 1/N share. None if unknowable.
+
+    The ramp is multiplicative (target = current x factor each run), so the
+    answer is a logarithm, not a division. Reported because "capped at 1.35x"
+    alone does not say whether that means two days or two months.
+    """
+    try:
+        cur, cap, tgt = float(current_krw), float(uncapped_krw), float(target_krw)
+    except (TypeError, ValueError):
+        return None
+    if cur <= 0 or cap <= cur or tgt <= cur:
+        return None
+    factor = tgt / cur
+    if factor <= 1.0:
+        return None
+    import math
+    return int(math.ceil(math.log(cap / cur) / math.log(factor)))
+
+
 def load_allocation(state_dir=None, now=None, fx_rate=None):
     """The asset-management layer as a dashboard block. Never raises.
 
@@ -1211,7 +1231,27 @@ def load_allocation(state_dir=None, now=None, fx_rate=None):
         except (TypeError, ValueError):
             age_h = None
 
-    fx = float(fx_rate or (prop.get("capital") or {}).get("fx") or 0) or 1400.0
+    # The allocator priced everything at ITS OWN fx, at ITS OWN collection time.
+    # Re-pricing the panel at the dashboard's current rate would make the
+    # arithmetic stop adding up on screen (residual x X would no longer equal
+    # the pool), so the block is reported entirely in the allocator's frame
+    # and labelled with when that frame was taken.
+    alloc_fx = float((prop.get("capital") or {}).get("fx") or 0) or float(fx_rate or 1400.0)
+    fx = alloc_fx
+
+    # Where the capital figure came from, so the hero and this panel can
+    # disagree without either looking wrong: they are the same quantity
+    # measured hours apart at different FX.
+    basis, cap_as_of = "", None
+    try:
+        with open(os.path.join(state, "bots.json")) as f:
+            _b = json.load(f) or {}
+        basis = _b.get("capital_basis") or ""
+        cap_as_of = _b.get("as_of") or _b.get("collected_at")
+    except Exception:
+        pass
+
+    per_bot = float((prop.get("level2") or {}).get("per_bot_krw") or 0)
     targets = applied.get("targets") or {}
     rows = []
     for bid, p in sorted((prop.get("allocations") or {}).items()):
@@ -1232,6 +1272,16 @@ def load_allocation(state_dir=None, now=None, fx_rate=None):
             "drift_krw": round(tgt_krw - cur_krw, 2),
             "ramped": bool(p.get("ramped")),
             "held_by_band": bool(p.get("kept_by_turnover_band")),
+            # What the bot WOULD get on pure 1/N, and what cut it back. Without
+            # this the panel shows "per bot W40.3M" beside a W27.7M target and
+            # simply looks broken — the ramp is the missing sentence.
+            "uncapped_krw": round(per_bot, 2) if p.get("in_etf") else None,
+            "limited_by": ("ramp" if p.get("ramped") else
+                           "band" if p.get("kept_by_turnover_band") else ""),
+            "ramp_factor": (round(tgt_krw / cur_krw, 4)
+                            if p.get("ramped") and cur_krw > 0 else None),
+            "runs_to_target": (_runs_to_target(cur_krw, per_bot, tgt_krw)
+                               if p.get("ramped") else None),
             # Did apply.py actually write this target, or is it still only a
             # proposal? Governance says nothing moves without that step.
             "applied_krw": (round(float(targets[bid]), 2)
@@ -1249,6 +1299,8 @@ def load_allocation(state_dir=None, now=None, fx_rate=None):
         "applied_at": applied.get("applied_at"),
         "policy_version": prop.get("policy_version") or "",
         "capital_krw": float((prop.get("capital") or {}).get("total_krw") or 0),
+        "capital_as_of": cap_as_of,
+        "capital_basis": basis,
         "fx": fx,
         # LEVEL 0 — the hands-on sleeve is senior to the bots: it is carved
         # out first and the fleet only ever sees the residual.
