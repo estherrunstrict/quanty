@@ -25,6 +25,43 @@ echo "[$(date)] Starting dashboard update..."
 # Pull latest (in case of manual edits)
 git pull --rebase --quiet 2>/dev/null || true
 
+# ── Toss snapshot ─────────────────────────────────────────────────────────
+# Taken HERE, immediately before generating, so the snapshot is exactly as
+# fresh as the build BY CONSTRUCTION. There is no window left for the two to
+# race, which is the failure this replaces.
+#
+# This used to be Mac-only. toss_snapshot.py's own docstring still says the
+# Toss API allowlists the Mac and that this server would 403 on every call —
+# that stopped being true once NMF2 started placing live Toss orders from
+# this box. The stale rationale is what kept the dashboard hostage to a
+# laptop being awake, and on 2026-08-20 it published a 19h-old hands-on
+# sleeve because the Mac slept through 15:50.
+#
+# The Mac job still runs and still uploads to the same path. It is now
+# redundancy — if this box ever loses Toss access, the Mac's upload is
+# already on disk and the generator picks it up unchanged.
+#
+# TOSS_US_PURCHASE_FX is NOT optional. It converts US cost basis at the
+# PURCHASE-time rate; without it cost and value inflate together, the FX
+# component of P/L cancels out, and a -3.5% position reads as +1.1%. The
+# Mac keeps its own copy of this number in
+# ~/Library/LaunchAgents/com.quanty.toss-snapshot.plist — change one,
+# change both.
+#
+# Non-blocking on purpose: a Toss outage must not stop the publish. The
+# generator keeps the previous snapshot and flags it stale, which is
+# exactly the path that exists for this.
+TOSS_SNAP="/home/ubuntu/koreainvestment-autotrade/strategy_results/toss_snapshot.json"
+if TOSS_DOTENV=/home/ubuntu/toss-nmf2-bot/brokers/.env \
+   TOSS_US_PURCHASE_FX=1480.76 \
+   $VENV_PYTHON /home/ubuntu/toss-snapshot/scripts/toss_snapshot.py \
+       --out "$TOSS_SNAP" --no-upload --no-trigger --source server-cron; then
+    echo "[$(date)] Toss snapshot refreshed server-side."
+else
+    echo "[$(date)] WARN: server-side Toss snapshot failed — publishing with"
+    echo "         the snapshot already on disk (the generator will flag it)."
+fi
+
 # Generate operational data (existing flow)
 $VENV_PYTHON generate_dashboard_data.py
 
