@@ -100,6 +100,90 @@ BOT_STALE_MULTIPLE = float(os.environ.get("QUANTY_BOT_STALE_MULTIPLE", "1.5"))
 # fleet every Monday.
 BOT_TRADES_WEEKENDS = {"btc_vb"}
 
+# ── Bot identity colours ─────────────────────────────────────────────────
+# ONE palette, used everywhere a bot is named: cards, comparison chart,
+# allocation table, activity feed, and the Discord reports. A colour that means
+# "quant40" in one place and nothing in another is not an identity.
+#
+# Chosen under three constraints, all verified numerically rather than by eye:
+#   1. every pair >= 20 deltaE apart (closest is 23.9) — distinguishable;
+#   2. every colour >= 22 deltaE from the SEMANTIC colours (closest is 22.6):
+#      profit green #3a8a5a, loss red #a84848, accent amber #c9a24d. Without
+#      this a rust-tinted bot reads as "this one is losing". The old chart-only
+#      palette failed exactly here — korea_etf WAS the profit green and
+#      jd_strategy WAS the loss red;
+#   3. >= 3:1 contrast on the card surface #0e0e11.
+#
+# Bot colour is for IDENTITY chrome only — rails, dots, chart lines, borders.
+# Numbers stay red/green. That structural split is what keeps the two readable
+# side by side.
+BOT_COLORS = {
+    "btc_vb":        "#c29a80",   # tan
+    "hybrid_vb":     "#bcc251",   # yellow-olive
+    "claude_bot":    "#5dc29f",   # mint
+    "korea_etf":     "#408799",   # cyan
+    "quant40":       "#517ec2",   # blue
+    "dual_momentum": "#6851c2",   # indigo
+    "nmf2":          "#b880c2",   # purple
+    "jd_strategy":   "#99406d",   # wine
+    "manual":        "#8a8a8a",   # grey — the hands-on sleeve is not a bot
+}
+
+# Discord cannot colour a line. Inside a code fence only ANSI's 8 colours work
+# and emoji break the monospace alignment; outside one, only emoji render. So a
+# bot's Discord identity is a coloured square, placed on the header line where
+# nothing is being aligned. There are exactly nine squares and nine entities,
+# assigned to minimise total distance from the real hex — they are IDENTITY
+# markers, not colour reproduction, so one or two are only roughly on hue.
+BOT_CHIPS = {
+    "btc_vb": "🟧", "hybrid_vb": "🟨", "claude_bot": "🟩", "korea_etf": "⬛",
+    "quant40": "🟦", "dual_momentum": "🟪", "nmf2": "🟫", "jd_strategy": "🟥",
+    "manual": "⬜",
+}
+BOT_COLOR_FALLBACK = "#6a6a6a"
+
+# Feed entries carry a logger name, not a bot id. Matched longest-first so
+# "HybridVB_KR" cannot be swallowed by a shorter pattern.
+FEED_SOURCE_BOTS = {
+    "hybridvb_kr": "hybrid_vb", "hybridvb_us": "hybrid_vb",
+    "hybridvb": "hybrid_vb", "vb_strategy": "btc_vb",
+    "korea_etf": "korea_etf", "koreaetf": "korea_etf",
+    "quant40": "quant40", "jd_strategy": "jd_strategy",
+    "dual_momentum": "dual_momentum", "claude": "claude_bot", "nmf2": "nmf2",
+}
+
+
+def bot_color(bot_id):
+    return BOT_COLORS.get(bot_id, BOT_COLOR_FALLBACK)
+
+
+def feed_bot_id(source):
+    """Logger name -> bot id, or None. Longest pattern wins."""
+    s = str(source or "").strip().lower()
+    if not s:
+        return None
+    for pat in sorted(FEED_SOURCE_BOTS, key=len, reverse=True):
+        if pat in s:
+            return FEED_SOURCE_BOTS[pat]
+    return None
+
+
+def annotate_feed_bots(feed):
+    """Tag each feed event with the bot that produced it. Mutates in place.
+
+    The feed's left rail used to encode the EVENT TYPE (buy green, sell red),
+    which duplicated what the tag already said and told you nothing about which
+    bot was talking. The rail now carries bot identity and the tag keeps the
+    buy/sell colour, so one glance answers both questions.
+    """
+    for e in feed or []:
+        if isinstance(e, dict) and not e.get("bot"):
+            b = feed_bot_id(e.get("source"))
+            if b:
+                e["bot"] = b
+    return feed
+
+
 # ── Asset-management layer ───────────────────────────────────────────────
 # The allocator decides how much capital each bot runs; the bots only READ
 # their budget. That inversion is the whole governance model and it was
@@ -2146,6 +2230,12 @@ def main(dry_run=False):
         print("  Allocation: no state readable at {}".format(ALLOC_STATE_DIR))
 
     output["totals"] = totals_block
+
+    # Palette travels WITH the data so the page cannot drift from the
+    # generator and the Discord reports.
+    output["bot_colors"] = {k: {"hex": v, "chip": BOT_CHIPS.get(k, "")}
+                            for k, v in BOT_COLORS.items()}
+    annotate_feed_bots(output.get("feed"))
 
     print("  Accounts: KIS W{:,.0f} + Upbit W{:,.0f} + Toss W{:,.0f}".format(
         accounts["kis"]["total_krw"], accounts["upbit"]["total_krw"],

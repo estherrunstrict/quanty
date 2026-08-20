@@ -419,6 +419,16 @@ a { color: var(--accent); text-decoration: none; }
 .sg-val { font-size: 0.88rem; }
 .sg-val.bold { font-weight: 500; }
 
+/* Bot identity dot. Same colour as the card rail, chart line and feed. */
+.bot-dot {
+  display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+  margin-right: 0.5rem; vertical-align: middle;
+}
+.alloc-dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-right: 0.45rem; vertical-align: middle;
+}
+
 /* Full-width row inside .strat-grid. grid-column: 1/-1 is what forces the
    next field onto a fresh line — Hybrid VB's US leg used to start wherever
    the KR leg happened to stop, so 'KR Cycles' sat beside 'US Invested' and
@@ -851,6 +861,27 @@ a { color: var(--accent); text-decoration: none; }
 <script>
 // ═══ Helpers ═══════════════════════════════════════════════
 const $ = s => document.querySelector(s);
+// ── Bot identity colour ───────────────────────────────────────────────────
+// The palette lives in the generator and travels in the data, so the page can
+// never drift from what Discord uses. The literal below is a FALLBACK for an
+// older cached JSON — keep it in sync, but the data always wins.
+let BOT_COLORS = {
+  btc_vb: '#c29a80', hybrid_vb: '#bcc251', claude_bot: '#5dc29f',
+  korea_etf: '#408799', quant40: '#517ec2', dual_momentum: '#6851c2',
+  nmf2: '#b880c2', jd_strategy: '#99406d', manual: '#8a8a8a',
+};
+function botColor(id) { return BOT_COLORS[id] || '#6a6a6a'; }
+// Same hue, low alpha — for fills that sit behind text.
+function botTint(id, alpha) { return botColor(id) + (alpha || '22'); }
+// Hybrid VB charts its KR and US legs separately. They must stay the same
+// hue (one bot, one identity) while remaining tellable apart, so the second
+// leg is the same colour mixed toward white rather than a different one.
+function botLighten(id, f) {
+  const c = botColor(id).replace('#', '');
+  const m = i => Math.round(parseInt(c.substr(i, 2), 16) * (1 - f) + 255 * f);
+  return '#' + [0, 2, 4].map(i => m(i).toString(16).padStart(2, '0')).join('');
+}
+
 const h = (tag, cls, html) => {
   const el = document.createElement(tag);
   if (cls) el.className = cls;
@@ -1044,17 +1075,18 @@ function renderSparkline(series, width = 280, height = 60) {
 // plus a bold "Portfolio Total" overlay summing all bots per date.
 function buildComparisonChart(equitySeries, aggregateSeries, strategies) {
   const seriesMeta = {
-    btc_vb:        { name: 'BTC Volatility Breakout', stratId: 'btc_vb',        color: '#c9a24d' },
-    korea_etf:     { name: 'Korea ETF Momentum',      stratId: 'korea_etf',     color: '#3a8a5a' },
-    quant40:       { name: 'US Quant40',              stratId: 'quant40',       color: '#4a78a8' },
-    jd_strategy:   { name: 'JD Strategy',             stratId: 'jd_strategy',   color: '#a84848' },
-    dual_momentum: { name: 'Dual Momentum',           stratId: 'dual_momentum', color: '#7a68a8' }, // sole purple by spec
-    claude_bot:    { name: 'Claude Trading Bot',      stratId: 'claude_bot',    color: '#5a9a8a' },
+    // color comes from botColor() below — this table only maps series to bots.
+    btc_vb:        { name: 'BTC Volatility Breakout', stratId: 'btc_vb' },
+    korea_etf:     { name: 'Korea ETF Momentum',      stratId: 'korea_etf' },
+    quant40:       { name: 'US Quant40',              stratId: 'quant40' },
+    jd_strategy:   { name: 'JD Strategy',             stratId: 'jd_strategy' },
+    dual_momentum: { name: 'Dual Momentum',           stratId: 'dual_momentum' },
+    claude_bot:    { name: 'Claude Trading Bot',      stratId: 'claude_bot' },
     // Toss-account bot. Its P/L runs at a ~W50k scale against the others' millions,
     // so the line hugs zero — that is honest for a W1M sleeve, not a bug.
-    nmf2:          { name: 'NMF2 (신마법공식 2.0)',     stratId: 'nmf2',          color: '#a8688a' },
-    hybrid_vb_kr:  { name: 'Hybrid VB (KR)',          stratId: 'hybrid_vb',     sub: 'kr', color: '#c9a24d99' },
-    hybrid_vb_us:  { name: 'Hybrid VB (US)',          stratId: 'hybrid_vb',     sub: 'us', color: '#4a78a899' },
+    nmf2:          { name: 'NMF2 (신마법공식 2.0)',     stratId: 'nmf2' },
+    hybrid_vb_kr:  { name: 'Hybrid VB (KR)',          stratId: 'hybrid_vb',     sub: 'kr' },
+    hybrid_vb_us:  { name: 'Hybrid VB (US)',          stratId: 'hybrid_vb',     sub: 'us' },
   };
 
   const stratIndex = {};
@@ -1069,7 +1101,8 @@ function buildComparisonChart(equitySeries, aggregateSeries, strategies) {
     const wr = sub.win_rate_pct;
     const cycles = sub.cycles_ytd;
     const entry = {
-      key, name: meta.name, color: meta.color,
+      key, name: meta.name,
+      color: meta.sub === 'us' ? botLighten(meta.stratId, 0.4) : botColor(meta.stratId),
       wr, cycles, points: [], finalVal: null, insufficient: false,
       isPortfolio: false,
     };
@@ -1399,7 +1432,8 @@ function buildAllocation(a) {
     };
 
     const rows = inFleet.map(b =>
-      '<tr><td>' + b.name + '</td>' +
+      '<tr><td><span class="alloc-dot" style="background:' + botColor(b.id) +
+      '"></span>' + b.name + '</td>' +
       '<td class="why">' + (b.account || '') + '</td>' +
       '<td>' + won(b.current_krw) + '</td>' +
       '<td class="dim">' + won(b.uncapped_krw) + '</td>' +
@@ -1407,7 +1441,8 @@ function buildAllocation(a) {
       '<td>' + limitCell(b) + '</td>' +
       '<td class="' + pnlClass(b.drift_krw) + '">' + fmtPnl(b.drift_krw, 'KRW') + '</td></tr>'
     ).join('') + out.map(b =>
-      '<tr class="out"><td>' + b.name + '</td>' +
+      '<tr class="out"><td><span class="alloc-dot" style="background:' +
+      botColor(b.id) + '"></span>' + b.name + '</td>' +
       '<td class="why">' + (b.account || '') + '</td>' +
       '<td>' + won(b.current_krw) + '</td>' +
       '<td class="dim">—</td><td>—</td>' +
@@ -1440,6 +1475,11 @@ function buildAllocation(a) {
 
 
 function render(data) {
+  // Adopt the generator's palette; the literal above is only a fallback.
+  if (data.bot_colors) {
+    BOT_COLORS = Object.fromEntries(
+      Object.entries(data.bot_colors).map(([k, v]) => [k, v.hex || v]));
+  }
   const app = $('#app');
   app.innerHTML = '';
 
@@ -1614,6 +1654,9 @@ function render(data) {
   data.strategies.forEach(s => {
     const isManual = s.id === 'manual';
     const card = h('div', isManual ? 'strat manual' : 'strat');
+    // Identity rail. Same colour as this bot's chart line, allocation dot
+    // and feed entries — that repetition is what makes it an identity.
+    card.style.boxShadow = 'inset 3px 0 0 ' + botColor(s.id);
     // The hands-on sleeve has no run schedule, so staleness/paper-mode don't apply.
     //
     // is_stale comes from the generator, which knows each bot's CADENCE. The
@@ -1917,7 +1960,7 @@ function render(data) {
 
     card.innerHTML = `
       <div class="strat-top">
-        <span class="strat-name">${s.name}</span>
+        <span class="strat-name"><span class="bot-dot" style="background:${botColor(s.id)}"></span>${s.name}</span>
         <span class="tag ${modeTag}">${modeLabel}</span>
       </div>
       <div class="strat-grid">${metricsHTML}</div>
@@ -1956,6 +1999,10 @@ function render(data) {
       const tag = tagMap[ev.type] || ev.type;
 
       const m = h('div', `msg ${cls}`);
+      // The rail used to encode the EVENT TYPE, duplicating what the tag already
+      // says while telling you nothing about which bot was talking. Rail = bot
+      // identity, tag = buy/sell. One glance now answers both.
+      if (ev.bot) m.style.borderLeftColor = botColor(ev.bot);
       m.innerHTML = `
         <div class="msg-top">
           <span class="msg-tag">${tag}</span>
@@ -1963,7 +2010,7 @@ function render(data) {
         </div>
         <div class="msg-title">${ev.title}</div>
         <div class="msg-body">${ev.body || ''}</div>
-        <div class="msg-src">${ev.source || ''} · ${relTime(ev.timestamp)}</div>
+        <div class="msg-src">${ev.bot ? `<span class="bot-dot" style="background:${botColor(ev.bot)};width:5px;height:5px;margin-right:0.35rem"></span>` : ''}${ev.source || ''} · ${relTime(ev.timestamp)}</div>
       `;
       msgs.appendChild(m);
     });
