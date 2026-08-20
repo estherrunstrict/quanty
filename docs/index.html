@@ -417,6 +417,7 @@ a { color: var(--accent); text-decoration: none; }
 }
 
 .sg-val { font-size: 0.88rem; }
+.sg-val.bold { font-weight: 500; }
 
 /* Holdings table */
 .holds {
@@ -858,34 +859,94 @@ function pnlClass(v) { return v >= 0 ? 'up' : 'dn'; }
 
 // Realized YTD cell — only rendered when the bot has closed at least one trade YTD.
 // Intentionally silent on zero-trade bots so cards don't fill with meaningless zeros.
-function realizedCell(realized, trades, currency) {
-  if (!trades || trades <= 0) return '';
-  const tradeSub = trades === 1 ? '(1 trade)' : `(${trades} trades)`;
-  return `<div><div class="sg-lbl">Realized YTD</div><div class="sg-val ${pnlClass(realized || 0)}">${fmtPnl(realized || 0, currency)} <span style="color:var(--tx4);font-size:0.6rem">${tradeSub}</span></div></div>`;
+// ── Card metrics: one shape for every bot ─────────────────────────────────
+// Every card reports the SAME core fields in the SAME order, Invested → Cycles,
+// so you can read across bots without relearning each layout. These blocks used
+// to be hand-written per bot and had drifted apart: korea_etf slipped "Target"
+// into the middle of the run, nmf2 put Market Value third and skipped three
+// fields, and every cell vanished outright whenever its data was missing — so
+// no two cards had the same shape and a gap looked like a different bot.
+//
+// Missing DATA now renders as an em dash: the field stays in place, it simply
+// has no value yet. A field a bot structurally CANNOT have is declared in
+// `omit` and left out entirely — the hands-on sleeve has no cycles because
+// nobody trades it on a schedule, and a permanent "—" there would read as a
+// broken feed rather than as "not applicable".
+//
+// Bot-specific fields are appended AFTER the core run, never interleaved.
+const MDASH = '<span style="color:var(--tx4)">—</span>';
+
+function mCell(lbl, val, cls) {
+  return '<div><div class="sg-lbl">' + lbl + '</div><div class="sg-val ' +
+         (cls || '') + '">' + val + '</div></div>';
+}
+function mSub(t) {
+  return ' <span style="color:var(--tx4);font-size:0.6rem">' + t + '</span>';
+}
+function nil(v) { return v === null || v === undefined; }
+
+function coreMetrics(d) {
+  const cur = d.cur || 'KRW';
+  const p = d.prefix ? d.prefix + ' ' : '';
+  const omit = d.omit || [];
+  const on = k => omit.indexOf(k) < 0;
+  let o = '';
+
+  if (on('invested')) {
+    const pct = (!nil(d.invested) && d.budget > 0)
+      ? mSub('(' + Math.round(d.invested / d.budget * 100) + '%)') : '';
+    o += mCell(p + 'Invested', nil(d.invested) ? MDASH : fmtVal(d.invested, cur) + pct);
+  }
+  if (on('budget')) {
+    o += mCell(p + 'Budget Cap', d.budgetLabel ||
+      (nil(d.budget) || d.budget <= 0 ? MDASH : fmtVal(d.budget, cur)));
+  }
+  if (on('value')) {
+    o += mCell(p + 'Market Value', nil(d.value) ? MDASH : fmtVal(d.value, cur));
+  }
+  if (on('unrealized')) {
+    o += mCell(p + 'Unrealized', nil(d.unrealized) ? MDASH : fmtPnl(d.unrealized, cur),
+               nil(d.unrealized) ? '' : pnlClass(d.unrealized));
+  }
+  if (on('realized')) {
+    const t = d.trades || 0;
+    o += mCell(p + 'Realized YTD',
+      // "(18t)", not "(18 trades)": the long form wraps inside its cell and
+      // makes that one cell two lines tall, so the metric row grows and stops
+      // lining up with the card above it. Matches the "(18c)" cycle style.
+      nil(d.realized) ? MDASH : fmtPnl(d.realized, cur) +
+        (t ? mSub('(' + t + 't)') : ''),
+      nil(d.realized) ? '' : pnlClass(d.realized));
+  }
+  if (on('totalPl')) {
+    o += mCell(p + 'Total P/L', nil(d.totalPl) ? MDASH : fmtPnl(d.totalPl, cur),
+               nil(d.totalPl) ? '' : pnlClass(d.totalPl));
+  }
+  if (on('profitPct')) {
+    o += mCell(p + 'Profit %', nil(d.profitPct) ? MDASH :
+      (d.profitPct >= 0 ? '+' : '') + d.profitPct.toFixed(2) + '%',
+      nil(d.profitPct) ? '' : pnlClass(d.profitPct));
+  }
+  if (on('winRate')) {
+    o += mCell(p + 'Win Rate', nil(d.winRate) ? MDASH :
+      d.winRate.toFixed(1) + '%' + mSub('(' + (d.cycles || 0) + 'c)'));
+  }
+  if (on('mdd')) {
+    o += mCell(p + 'MDD', nil(d.mdd) ? MDASH : d.mdd.toFixed(2) + '%',
+               nil(d.mdd) ? '' : 'dn');
+  }
+  if (on('cycles')) {
+    o += mCell(p + 'Cycles', nil(d.cycles) ? MDASH : String(d.cycles));
+  }
+  return o;
 }
 
-// Per-bot derived metric cells (sourced from realized_pl_{year}.json + dashboard_server _enrich).
-// Skip nulls silently — a freshly-deployed bot has no win-rate or MDD until trades land.
-function totalPlCell(totalPl, currency, label) {
-  const v = totalPl || 0;
-  return `<div><div class="sg-lbl">${label || 'Total P/L'}</div><div class="sg-val ${pnlClass(v)}">${fmtPnl(v, currency)}</div></div>`;
-}
-function profitPctCell(pct, label) {
-  if (pct === null || pct === undefined) return '';
-  const sign = pct >= 0 ? '+' : '';
-  return `<div><div class="sg-lbl">${label || 'Profit %'}</div><div class="sg-val ${pnlClass(pct)}">${sign}${pct.toFixed(2)}%</div></div>`;
-}
-function winRateCell(wr, cycles, label) {
-  if (wr === null || wr === undefined) return '';
-  return `<div><div class="sg-lbl">${label || 'Win Rate'}</div><div class="sg-val">${wr.toFixed(1)}% <span style="color:var(--tx4);font-size:0.6rem">(${cycles || 0}c)</span></div></div>`;
-}
-function mddCell(mdd, label) {
-  if (mdd === null || mdd === undefined) return '';
-  return `<div><div class="sg-lbl">${label || 'MDD'}</div><div class="sg-val dn">${mdd.toFixed(2)}%</div></div>`;
-}
-function cyclesCell(n, label) {
-  return `<div><div class="sg-lbl">${label || 'Cycles'}</div><div class="sg-val">${n || 0}</div></div>`;
-}
+
+// The per-metric cell helpers that used to live here (realizedCell,
+// totalPlCell, profitPctCell, winRateCell, mddCell, cyclesCell) are gone.
+// coreMetrics() renders the same fields in a fixed order for every bot, and
+// keeping the old helpers around would leave a second way to build a cell
+// that silently drifts from the first.
 
 function relTime(ts) {
   if (!ts) return '';
@@ -1194,6 +1255,36 @@ function buildComparisonChart(equitySeries, aggregateSeries, strategies) {
 // proposal it wrote. Deliberately shows WHICH constraint bound X: kelly, the
 // vol cap, the cash floor and the drawdown brake all produce a single number,
 // and that number means very different things depending on which one won.
+// The allocator sized the bots from ITS OWN snapshot, hours before this page
+// was built. Usually the gap is just FX and intraday drift and is not worth a
+// sentence. When the HANDS-ON figure differs materially it is worth a loud one:
+// residual = capital − hands-on, so an overstated sleeve understates the
+// residual and every bot is sized low. That is exactly what happened on
+// 2026-08-20, when collect.py read a dashboard whose Toss sleeve was a day old.
+function allocatorFrameNote(a) {
+  const f = a.allocator_frame || {};
+  const won = v => '₩' + Math.round(v || 0).toLocaleString();
+  if (!f.capital_krw) return '';
+
+  const manGap = (a.level0.manual_krw || 0) - (f.manual_krw || 0);
+  const rel = f.manual_krw ? Math.abs(manGap) / f.manual_krw : 0;
+  let s = '<div class="alloc-note">Figures above are priced now, so Total capital ' +
+    'matches Total Investments at the top of the page. When it sized these bots at ' +
+    (a.capital_as_of || 'its last run') + ' the allocator saw capital ' +
+    won(f.capital_krw) + ' and hands-on ' + won(f.manual_krw) +
+    ' at FX ' + Math.round(f.fx || 0).toLocaleString() + ', giving residual ' +
+    won(f.residual_krw) + '.';
+
+  if (rel > 0.02) {
+    s += ' <b>Its hands-on figure was off by ' + won(Math.abs(manGap)) +
+      (manGap < 0 ? ' (too high)' : ' (too low)') + '</b> — residual is capital minus ' +
+      'hands-on, so the fleet was sized off a residual that was ' +
+      (manGap < 0 ? 'understated' : 'overstated') +
+      ' by the same amount. Today\'s targets carry that error until the next run.';
+  }
+  return s + '</div>';
+}
+
 function buildAllocation(a) {
   if (!a) return null;
   const won = v => '₩' + Math.round(v || 0).toLocaleString();
@@ -1225,7 +1316,11 @@ function buildAllocation(a) {
   const bindName = BIND[L1.binding] || (L1.binding || '—');
   const mark = key => L1.binding === key ? ' <b class="bind">← binds</b>' : '';
 
-  const capMeta = (a.capital_as_of ? 'measured ' + a.capital_as_of : '') +
+  // The panel is priced in the dashboard's frame now, so this line must say so.
+  // It used to read "measured <allocator time>", which was true of the old
+  // behaviour and became a lie the moment the figures were re-priced live.
+  const capMeta = (a.repriced_live ? 'priced now, same as Total Investments above' :
+                   (a.capital_as_of ? 'allocator frame, measured ' + a.capital_as_of : '')) +
     (a.fx ? ' · FX ' + Math.round(a.fx).toLocaleString() : '');
 
   const levels = h('div', 'alloc-levels');
@@ -1311,12 +1406,7 @@ function buildAllocation(a) {
       '<th>Target</th><th>Limited by</th><th>Drift</th>' +
       '</tr></thead><tbody>' + rows + '</tbody></table>' +
       '<div class="alloc-note">' + note + '</div>' +
-      '<div class="alloc-note">Capital here is the allocator\'s own measurement' +
-      (a.capital_as_of ? ' from ' + a.capital_as_of : '') +
-      (a.fx ? ' at FX ' + Math.round(a.fx).toLocaleString() : '') +
-      '. The Total Investments figure at the top of this page is the same money ' +
-      'marked again just now, so the two differ by whatever prices and FX did in between — ' +
-      'the panel keeps the allocator\'s frame so its arithmetic still adds up.</div>';
+      allocatorFrameNote(a);
     sec.appendChild(tbl);
   }
   return sec;
@@ -1523,17 +1613,13 @@ function render(data) {
     if (s.id === 'btc_vb') {
       const allocLabel = s.allocation >= 0.8 ? 'Full' : 'Reduced';
       const btcBudgetLabel = s.budget > 0 ? fmtVal(s.budget, 'KRW') : 'Unlimited';
-      metricsHTML = `
-        <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(s.value, 'KRW')}</div></div>
-        <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${btcBudgetLabel}</div></div>
-        <div><div class="sg-lbl">Unrealized</div><div class="sg-val ${pnlClass(s.unrealized_profit || 0)}">${fmtPnl(s.unrealized_profit || 0, 'KRW')}</div></div>
-        ${realizedCell(s.realized_profit_ytd, s.realized_trades, 'KRW')}
-        ${totalPlCell(s.total_pl_ytd, 'KRW')}
-        ${profitPctCell(s.profit_rate_ytd_pct)}
-        ${winRateCell(s.win_rate_pct, s.cycles_ytd)}
-        ${mddCell(s.mdd_pct)}
-        ${cyclesCell(s.cycles_ytd)}
-      `;
+      // Invested is null, not 0: this bot books no cost basis, and a bold W0
+      // beside a W9.8M position reads as a loss rather than as "not recorded".
+      metricsHTML = coreMetrics({cur: 'KRW', invested: s.cost_basis || null, budget: s.budget, value: s.value,
+        unrealized: s.unrealized_profit, realized: s.realized_profit_ytd, trades: s.realized_trades,
+        totalPl: s.total_pl_ytd, profitPct: s.profit_rate_ytd_pct,
+        winRate: s.win_rate_pct, mdd: s.mdd_pct, cycles: s.cycles_ytd})
+        + mCell('Allocation', allocLabel);
       const sigClass = s.is_holding ? 'long' : 'cash';
       const sigLabel = s.is_holding ? 'Holding BTC' : 'Cash — No Signal';
       signalHTML = `<div class="sig ${sigClass}">${sigLabel}</div>`;
@@ -1543,18 +1629,11 @@ function render(data) {
       const ketfBudget = s.budget || 0;
       const ketfInvested = s.cost_basis || 0;
       const ketfPct = ketfBudget > 0 ? Math.round(ketfInvested / ketfBudget * 100) : 0;
-      metricsHTML = `
-        <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(ketfInvested, 'KRW')}</div></div>
-        <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(ketfBudget, 'KRW')} <span style="color:var(--tx4)">(${ketfPct}%)</span></div></div>
-        <div><div class="sg-lbl">Unrealized</div><div class="sg-val ${pnlClass(s.unrealized_profit || 0)}">${fmtPnl(s.unrealized_profit || 0, 'KRW')}</div></div>
-        ${realizedCell(s.realized_profit_ytd, s.realized_trades, 'KRW')}
-        <div><div class="sg-lbl">Target</div><div class="sg-val">${s.extra?.target_ticker || '—'}</div></div>
-        ${totalPlCell(s.total_pl_ytd, 'KRW')}
-        ${profitPctCell(s.profit_rate_ytd_pct)}
-        ${winRateCell(s.win_rate_pct, s.cycles_ytd)}
-        ${mddCell(s.mdd_pct)}
-        ${cyclesCell(s.cycles_ytd)}
-      `;
+      metricsHTML = coreMetrics({cur: 'KRW', invested: ketfInvested, budget: ketfBudget, value: s.value,
+        unrealized: s.unrealized_profit, realized: s.realized_profit_ytd, trades: s.realized_trades,
+        totalPl: s.total_pl_ytd, profitPct: s.profit_rate_ytd_pct,
+        winRate: s.win_rate_pct, mdd: s.mdd_pct, cycles: s.cycles_ytd})
+        + mCell('Target', s.extra?.target_ticker || MDASH);
       if (s.extra?.target) {
         signalHTML = `<div class="sig long">${s.extra.target}</div>`;
       }
@@ -1564,17 +1643,10 @@ function render(data) {
       const posBudget = s.budget || 0;
       const posInvested = s.cost_basis || 0;
       const posPct = posBudget > 0 ? Math.round(posInvested / posBudget * 100) : 0;
-      metricsHTML = `
-        <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(posInvested, 'USD')} <span style="color:var(--tx4)">(${posPct}%)</span></div></div>
-        <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(posBudget, 'USD')}</div></div>
-        <div><div class="sg-lbl">Unrealized</div><div class="sg-val ${pnlClass(s.unrealized_profit || 0)}">${fmtPnl(s.unrealized_profit || 0, 'USD')}</div></div>
-        ${realizedCell(s.realized_profit_ytd, s.realized_trades, 'USD')}
-        ${totalPlCell(s.total_pl_ytd, 'USD')}
-        ${profitPctCell(s.profit_rate_ytd_pct)}
-        ${winRateCell(s.win_rate_pct, s.cycles_ytd)}
-        ${mddCell(s.mdd_pct)}
-        ${cyclesCell(s.cycles_ytd)}
-      `;
+      metricsHTML = coreMetrics({cur: 'USD', invested: posInvested, budget: posBudget, value: s.value,
+        unrealized: s.unrealized_profit, realized: s.realized_profit_ytd, trades: s.realized_trades,
+        totalPl: s.total_pl_ytd, profitPct: s.profit_rate_ytd_pct,
+        winRate: s.win_rate_pct, mdd: s.mdd_pct, cycles: s.cycles_ytd});
       if (s.id === 'jd_strategy') {
         // JD Strategy: two badges — market state + holding state
         const stateMap = { 'NORMAL': 'cash', 'ALERT': 'bear', 'PANIC': 'bear' };
@@ -1596,17 +1668,10 @@ function render(data) {
       const dmBudget = s.budget || 0;
       const dmInvested = s.cost_basis || 0;
       const dmPct = dmBudget > 0 ? Math.round(dmInvested / dmBudget * 100) : 0;
-      metricsHTML = `
-        <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(dmInvested, 'USD')} <span style="color:var(--tx4)">(${dmPct}%)</span></div></div>
-        <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(dmBudget, 'USD')}</div></div>
-        <div><div class="sg-lbl">Unrealized</div><div class="sg-val ${pnlClass(s.unrealized_profit || 0)}">${fmtPnl(s.unrealized_profit || 0, 'USD')}</div></div>
-        ${realizedCell(s.realized_profit_ytd, s.realized_trades, 'USD')}
-        ${totalPlCell(s.total_pl_ytd, 'USD')}
-        ${profitPctCell(s.profit_rate_ytd_pct)}
-        ${winRateCell(s.win_rate_pct, s.cycles_ytd)}
-        ${mddCell(s.mdd_pct)}
-        ${cyclesCell(s.cycles_ytd)}
-      `;
+      metricsHTML = coreMetrics({cur: 'USD', invested: dmInvested, budget: dmBudget, value: s.value,
+        unrealized: s.unrealized_profit, realized: s.realized_profit_ytd, trades: s.realized_trades,
+        totalPl: s.total_pl_ytd, profitPct: s.profit_rate_ytd_pct,
+        winRate: s.win_rate_pct, mdd: s.mdd_pct, cycles: s.cycles_ytd});
     }
 
     else if (s.id === 'hybrid_vb') {
@@ -1626,27 +1691,19 @@ function render(data) {
       const usPct = usBudget > 0 ? Math.round(usInvested / usBudget * 100) : 0;
       const krPos = Object.keys(s.open_positions?.kr || {}).length;
       const usPos = Object.keys(s.open_positions?.us || {}).length;
-      metricsHTML = `
-        <div><div class="sg-lbl">KR Invested</div><div class="sg-val">${fmtVal(krInvested, 'KRW')} <span style="color:var(--tx4)">(${krPct}%)</span></div></div>
-        <div><div class="sg-lbl">KR Budget</div><div class="sg-val">${fmtVal(krBudget, 'KRW')}</div></div>
-        <div><div class="sg-lbl">KR Unrealized</div><div class="sg-val ${pnlClass(krUnreal)}">${fmtPnl(krUnreal, 'KRW')}</div></div>
-        ${realizedCell(krRealized, krTrades, 'KRW').replace('Realized YTD', 'KR Realized YTD')}
-        ${totalPlCell(kr.total_pl_ytd, 'KRW', 'KR Total P/L')}
-        ${profitPctCell(kr.profit_rate_ytd_pct, 'KR Profit %')}
-        ${winRateCell(kr.win_rate_pct, kr.cycles_ytd, 'KR Win Rate')}
-        ${mddCell(kr.mdd_pct, 'KR MDD')}
-        ${cyclesCell(kr.cycles_ytd, 'KR Cycles')}
-        <div><div class="sg-lbl">US Invested</div><div class="sg-val">${fmtVal(usInvested, 'USD')} <span style="color:var(--tx4)">(${usPct}%)</span></div></div>
-        <div><div class="sg-lbl">US Budget</div><div class="sg-val">${fmtVal(usBudget, 'USD')}</div></div>
-        <div><div class="sg-lbl">US Unrealized</div><div class="sg-val ${pnlClass(usUnreal)}">${fmtPnl(usUnreal, 'USD')}</div></div>
-        ${realizedCell(usRealized, usTrades, 'USD').replace('Realized YTD', 'US Realized YTD')}
-        ${totalPlCell(us.total_pl_ytd, 'USD', 'US Total P/L')}
-        ${profitPctCell(us.profit_rate_ytd_pct, 'US Profit %')}
-        ${winRateCell(us.win_rate_pct, us.cycles_ytd, 'US Win Rate')}
-        ${mddCell(us.mdd_pct, 'US MDD')}
-        ${cyclesCell(us.cycles_ytd, 'US Cycles')}
-        <div><div class="sg-lbl">Positions</div><div class="sg-val">${krPos} KR · ${usPos} US</div></div>
-      `;
+      // Two legs, each through the SAME core in the SAME order — only the
+      // prefix and the currency differ. Reading the US half is then exactly the
+      // habit you already built on the KR half.
+      metricsHTML =
+        coreMetrics({cur: 'KRW', prefix: 'KR', invested: krInvested, budget: krBudget,
+          value: kr.value, unrealized: krUnreal, realized: krRealized, trades: krTrades,
+          totalPl: kr.total_pl_ytd, profitPct: kr.profit_rate_ytd_pct,
+          winRate: kr.win_rate_pct, mdd: kr.mdd_pct, cycles: kr.cycles_ytd})
+        + coreMetrics({cur: 'USD', prefix: 'US', invested: usInvested, budget: usBudget,
+          value: us.value, unrealized: usUnreal, realized: usRealized, trades: usTrades,
+          totalPl: us.total_pl_ytd, profitPct: us.profit_rate_ytd_pct,
+          winRate: us.win_rate_pct, mdd: us.mdd_pct, cycles: us.cycles_ytd})
+        + mCell('Positions', krPos + ' KR · ' + usPos + ' US');
     }
 
     else if (s.id === 'claude_bot') {
@@ -1661,23 +1718,19 @@ function render(data) {
       const cbBudget = s.budget || 0;
       const cbInvested = s.cost_basis || 0;
       const cbPct = cbBudget > 0 ? Math.round(cbInvested / cbBudget * 100) : 0;
-      metricsHTML = `
-        <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(cbInvested, 'USD')} <span style="color:var(--tx4)">(${cbPct}%)</span></div></div>
-        <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(cbBudget, 'USD')}</div></div>
-        <div><div class="sg-lbl">Unrealized</div><div class="sg-val ${pnlClass(s.unrealized_profit || 0)}">${fmtPnl(s.unrealized_profit || 0, 'USD')}</div></div>
-        ${realizedCell(s.realized_profit_ytd, s.realized_trades, 'USD')}
-        ${totalPlCell(s.total_pl_ytd, 'USD')}
-        ${profitPctCell(s.profit_rate_ytd_pct)}
-        ${winRateCell(s.win_rate_pct, s.cycles_ytd)}
-        ${mddCell(s.mdd_pct)}
-        ${cyclesCell(s.cycles_ytd)}
-        <div><div class="sg-lbl">Regime</div><div class="sg-val ${regimeCls}" style="font-weight:500">${regime}</div></div>
-        <div><div class="sg-lbl">Confidence</div><div class="sg-val">${ex.confidence || 0}%</div></div>
-        <div><div class="sg-lbl">Breadth</div><div class="sg-val ${breadth >= 60 ? 'up' : breadth >= 40 ? 'amber' : 'dn'}">${breadth}/100</div></div>
-        <div><div class="sg-lbl">Uptrend</div><div class="sg-val ${uptrend >= 60 ? 'up' : uptrend >= 40 ? 'amber' : 'dn'}">${uptrend}/100</div></div>
-        <div><div class="sg-lbl">Trend Passes</div><div class="sg-val">${trendPasses}/100</div></div>
-        <div><div class="sg-lbl">VCP Candidates</div><div class="sg-val">${vcpCount}</div></div>
-      `;
+      metricsHTML =
+        coreMetrics({cur: 'USD', invested: cbInvested, budget: cbBudget, value: s.value,
+          unrealized: s.unrealized_profit, realized: s.realized_profit_ytd,
+          trades: s.realized_trades, totalPl: s.total_pl_ytd,
+          profitPct: s.profit_rate_ytd_pct, winRate: s.win_rate_pct,
+          mdd: s.mdd_pct, cycles: s.cycles_ytd})
+        // Bot-specific: this is the only bot that publishes a market regime read.
+        + mCell('Regime', regime, regimeCls + ' bold')
+        + mCell('Confidence', (ex.confidence || 0) + '%')
+        + mCell('Breadth', breadth + '/100', breadth >= 60 ? 'up' : breadth >= 40 ? 'amber' : 'dn')
+        + mCell('Uptrend', uptrend + '/100', uptrend >= 60 ? 'up' : uptrend >= 40 ? 'amber' : 'dn')
+        + mCell('Trend Passes', trendPasses + '/100')
+        + mCell('VCP Candidates', String(vcpCount));
       // Show exposure recommendation as signal badge
       const expMap = { 'FULL_EXPOSURE': 'long', 'NORMAL': 'cash', 'SELECTIVE_LONGS': 'cash', 'REDUCE_EXPOSURE': 'bear', 'CASH_PRIORITY': 'bear' };
       const expCls = expMap[ex.exposure] || 'cash';
@@ -1717,32 +1770,40 @@ function render(data) {
       const nPct = nBudget > 0 ? Math.round(nInvested / nBudget * 100) : 0;
       // No win-rate / MDD / cycles row: this sleeve keeps a position ledger, not
       // a closed-trade book, so those cells would all read 0 and imply "never won".
-      metricsHTML = `
-        <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(nInvested, 'KRW')} <span style="color:var(--tx4)">(${nPct}%)</span></div></div>
-        <div><div class="sg-lbl">Budget Cap</div><div class="sg-val">${fmtVal(nBudget, 'KRW')}</div></div>
-        <div><div class="sg-lbl">Market Value</div><div class="sg-val">${fmtVal(s.value || 0, 'KRW')}</div></div>
-        <div><div class="sg-lbl">Unrealized</div><div class="sg-val ${pnlClass(s.unrealized_profit || 0)}">${fmtPnl(s.unrealized_profit || 0, 'KRW')}</div></div>
-        ${totalPlCell(s.total_pl_ytd, 'KRW')}
-        ${profitPctCell(s.profit_rate_ytd_pct)}
-        <div><div class="sg-lbl">Positions</div><div class="sg-val">${ex.ticker_count || 0}<span style="color:var(--tx4)">/${ex.ledger_position_count || 0}</span></div></div>
-        <div><div class="sg-lbl">Ledger Cash</div><div class="sg-val">${fmtVal(ex.cash_krw || 0, 'KRW')}</div></div>
-      `;
+      metricsHTML =
+        coreMetrics({cur: 'KRW', invested: nInvested, budget: nBudget, value: s.value,
+          unrealized: s.unrealized_profit, realized: s.realized_profit_ytd,
+          trades: s.realized_trades, totalPl: s.total_pl_ytd,
+          profitPct: s.profit_rate_ytd_pct,
+          // Omitted, not missing: this sleeve keeps a POSITION ledger, not a
+          // closed-trade book, so a win rate would be 0/0 and read as "never won".
+          omit: ['winRate', 'mdd', 'cycles']})
+        + mCell('Positions', (ex.ticker_count || 0) +
+            '<span style="color:var(--tx4)">/' + (ex.ledger_position_count || 0) + '</span>')
+        + mCell('Ledger Cash', fmtVal(ex.cash_krw || 0, 'KRW'));
       signalHTML = `<div class="sig long" style="font-size:0.5rem">TOSS · 신마법공식 2.0 + 계절성</div>`;
     }
 
     else if (isManual) {
       const ex = s.extra || {};
-      metricsHTML = `
-        <div><div class="sg-lbl">Total Value</div><div class="sg-val">${fmtVal(s.value || 0, 'KRW')}</div></div>
-        <div><div class="sg-lbl">Positions</div><div class="sg-val">${ex.ticker_count || 0}</div></div>
-        <div><div class="sg-lbl">Invested</div><div class="sg-val">${fmtVal(s.cost_basis || 0, 'KRW')}</div></div>
-        <div><div class="sg-lbl">KIS (no bot)</div><div class="sg-val">${fmtVal(ex.kis_krw || 0, 'KRW')} <span style="color:var(--tx4)">(${ex.kis_ticker_count || 0})</span></div></div>
-        <div><div class="sg-lbl">Toss</div><div class="sg-val">${fmtVal(ex.toss_krw || 0, 'KRW')} <span style="color:var(--tx4)">(${ex.toss_ticker_count || 0})</span></div></div>
-        ${totalPlCell(s.total_pl_ytd, 'KRW')}
-        ${profitPctCell(s.profit_rate_ytd_pct)}
-        <div><div class="sg-lbl">KIS Unrealized</div><div class="sg-val ${pnlClass(ex.kis_unrealized_krw || 0)}">${fmtPnl(ex.kis_unrealized_krw || 0, 'KRW')}</div></div>
-        <div><div class="sg-lbl">Toss P/L</div><div class="sg-val ${pnlClass(ex.toss_pl_krw || 0)}">${fmtPnl(ex.toss_pl_krw || 0, 'KRW')}</div></div>
-      `;
+      // Same core, same order as every bot — but four fields are omitted rather
+      // than dashed, because this sleeve structurally cannot have them: nobody
+      // allocates it a budget (it is senior capital, not a bot), and it keeps no
+      // closed-trade book, so win rate, MDD and cycles have no meaning here.
+      metricsHTML =
+        coreMetrics({cur: 'KRW', invested: s.cost_basis, value: s.value,
+          unrealized: s.unrealized_profit, totalPl: s.total_pl_ytd,
+          profitPct: s.profit_rate_ytd_pct,
+          omit: ['budget', 'realized', 'winRate', 'mdd', 'cycles']})
+        + mCell('Positions', String(ex.ticker_count || 0))
+        + mCell('KIS (no bot)', fmtVal(ex.kis_krw || 0, 'KRW') +
+            mSub('(' + (ex.kis_ticker_count || 0) + ')'))
+        + mCell('Toss', fmtVal(ex.toss_krw || 0, 'KRW') +
+            mSub('(' + (ex.toss_ticker_count || 0) + ')'))
+        + mCell('KIS Unrealized', fmtPnl(ex.kis_unrealized_krw || 0, 'KRW'),
+            pnlClass(ex.kis_unrealized_krw || 0))
+        + mCell('Toss P/L', fmtPnl(ex.toss_pl_krw || 0, 'KRW'),
+            pnlClass(ex.toss_pl_krw || 0));
       signalHTML = `<div class="sig cash" style="font-size:0.5rem">HANDS-ON · NOT BOT-MANAGED</div>`;
     }
 

@@ -1177,7 +1177,7 @@ def _runs_to_target(current_krw, uncapped_krw, target_krw):
     return int(math.ceil(math.log(cap / cur) / math.log(factor)))
 
 
-def load_allocation(state_dir=None, now=None, fx_rate=None):
+def load_allocation(state_dir=None, now=None, fx_rate=None, live_totals=None):
     """The asset-management layer as a dashboard block. Never raises.
 
     Reads the newest `proposed_*.json` plus `last_applied.json` written by
@@ -1231,13 +1231,23 @@ def load_allocation(state_dir=None, now=None, fx_rate=None):
         except (TypeError, ValueError):
             age_h = None
 
-    # The allocator priced everything at ITS OWN fx, at ITS OWN collection time.
-    # Re-pricing the panel at the dashboard's current rate would make the
-    # arithmetic stop adding up on screen (residual x X would no longer equal
-    # the pool), so the block is reported entirely in the allocator's frame
-    # and labelled with when that frame was taken.
+    # Everything money-shaped is re-priced into the DASHBOARD's frame — same
+    # FX, same instant as the hero — so "Total capital" here and "Total
+    # Investments" up there are the same number. Two different totals on one
+    # page read as a bug no matter how well the footnote explains them.
+    #
+    # The arithmetic still closes because the whole chain is recomputed, not
+    # rescaled: capital and hands-on come from the live totals, residual is
+    # their difference, and pool/per-bot are derived from that residual using
+    # the allocator's X and N. X and N are POLICY — they carry no currency and
+    # need no conversion.
+    #
+    # Per-bot budgets are converted from their NATIVE amounts, never rescaled
+    # from the allocator's KRW: the ramp factor is target/current in native
+    # units and is therefore exactly 1.35 at any FX. Rescaling KRW figures
+    # would smear rounding into that ratio and make the ramp look arbitrary.
     alloc_fx = float((prop.get("capital") or {}).get("fx") or 0) or float(fx_rate or 1400.0)
-    fx = alloc_fx
+    fx = float(fx_rate or 0) or alloc_fx
 
     # Where the capital figure came from, so the hero and this panel can
     # disagree without either looking wrong: they are the same quantity
@@ -1257,9 +1267,16 @@ def load_allocation(state_dir=None, now=None, fx_rate=None):
     for bid, p in sorted((prop.get("allocations") or {}).items()):
         if not isinstance(p, dict):
             continue
+        # BOTH sides converted from their native amounts at the SAME rate.
+        # Taking target_krw straight from the proposal (written at the
+        # allocator's FX) while converting current at the dashboard's rate
+        # smears the difference into their ratio — the ramp then reads x1.36
+        # instead of the x1.35 the allocator actually applied.
         k = fx if (p.get("currency") == "USD") else 1.0
-        cur_krw = float(p.get("current_budget") or 0) * k
-        tgt_krw = float(p.get("target_krw") or 0)
+        cur_native = float(p.get("current_budget") or 0)
+        tgt_native = float(p.get("target_budget") or 0)
+        cur_krw = cur_native * k
+        tgt_krw = tgt_native * k
         rows.append({
             "id": bid,
             "name": ALLOC_NAMES.get(bid, bid),
@@ -1278,8 +1295,10 @@ def load_allocation(state_dir=None, now=None, fx_rate=None):
             "uncapped_krw": round(per_bot, 2) if p.get("in_etf") else None,
             "limited_by": ("ramp" if p.get("ramped") else
                            "band" if p.get("kept_by_turnover_band") else ""),
-            "ramp_factor": (round(tgt_krw / cur_krw, 4)
-                            if p.get("ramped") and cur_krw > 0 else None),
+            # Native ratio: FX cancels, so this is exactly the allocator's
+            # RAMP_MAX no matter which rate the panel is priced at.
+            "ramp_factor": (round(tgt_native / cur_native, 4)
+                            if p.get("ramped") and cur_native > 0 else None),
             "runs_to_target": (_runs_to_target(cur_krw, per_bot, tgt_krw)
                                if p.get("ramped") else None),
             # Did apply.py actually write this target, or is it still only a
@@ -1291,6 +1310,23 @@ def load_allocation(state_dir=None, now=None, fx_rate=None):
 
     lv1 = prop.get("level1") or {}
     lv2 = prop.get("level2") or {}
+
+    # Live re-derivation. Falls back to the allocator's own figures when the
+    # totals block is absent, so the panel still renders in a dry run.
+    lt = live_totals or {}
+    a_manual = float((prop.get("level0") or {}).get("manual_krw") or 0)
+    a_resid = float((prop.get("level0") or {}).get("residual_krw") or 0)
+    a_cap = float((prop.get("capital") or {}).get("total_krw") or 0)
+    cap = float(lt.get("investments_krw") or 0) or a_cap
+    man = float(lt.get("manual_krw") or 0) or a_manual
+    resid = max(0.0, cap - man) if lt.get("investments_krw") else a_resid
+    X = float(lv1.get("X") or 0)
+    N = int(lv2.get("N") or 0)
+    pool = resid * X
+    per_bot_live = pool / N if N else 0.0
+    for r in rows:
+        if r["in_etf"]:
+            r["uncapped_krw"] = round(per_bot_live, 2)
     return {
         "as_of": stamp,
         "age_hours": None if age_h is None else round(age_h, 2),
@@ -1298,16 +1334,22 @@ def load_allocation(state_dir=None, now=None, fx_rate=None):
         "applied": bool(targets),
         "applied_at": applied.get("applied_at"),
         "policy_version": prop.get("policy_version") or "",
-        "capital_krw": float((prop.get("capital") or {}).get("total_krw") or 0),
+        "capital_krw": round(cap, 2),
         "capital_as_of": cap_as_of,
         "capital_basis": basis,
         "fx": fx,
+        "repriced_live": bool(lt.get("investments_krw")),
+        # What the allocator ACTUALLY used when it sized the bots. Kept so the
+        # gap stays visible: on 2026-08-20 collect.py read a dashboard whose
+        # Toss sleeve was a day stale, so hands-on came in W12.1M high and
+        # every bot was sized off an understated residual.
+        "allocator_frame": {
+            "capital_krw": a_cap, "manual_krw": a_manual,
+            "residual_krw": a_resid, "fx": alloc_fx,
+        },
         # LEVEL 0 — the hands-on sleeve is senior to the bots: it is carved
         # out first and the fleet only ever sees the residual.
-        "level0": {
-            "manual_krw": float((prop.get("level0") or {}).get("manual_krw") or 0),
-            "residual_krw": float((prop.get("level0") or {}).get("residual_krw") or 0),
-        },
+        "level0": {"manual_krw": round(man, 2), "residual_krw": round(resid, 2)},
         # LEVEL 1 — one system-wide exposure X, and WHICH constraint set it.
         # `binding` is the interesting field: kelly / vol cap / cash floor /
         # drawdown brake are different stories with the same number.
@@ -1324,9 +1366,9 @@ def load_allocation(state_dir=None, now=None, fx_rate=None):
         },
         # LEVEL 2 — equal weight, deliberately (DeMiguel-Garlappi-Uppal 1/N).
         "level2": {
-            "N": int(lv2.get("N") or 0),
-            "per_bot_krw": float(lv2.get("per_bot_krw") or 0),
-            "fleet_pool_krw": float(lv2.get("fleet_pool_krw") or 0),
+            "N": N,
+            "per_bot_krw": round(per_bot_live, 2),
+            "fleet_pool_krw": round(pool, 2),
             "roster": list(lv2.get("roster") or []),
         },
         "totals": prop.get("totals") or {},
@@ -1969,10 +2011,15 @@ def main(dry_run=False):
             "label": "KIS CMA"}
         print("  CMA: W{:,.0f}".format(_cma))
 
-    # Asset-management layer. Non-blocking: the dashboard publishes with or
-    # without it, because a missing allocator panel is a gap in reporting
-    # while a failed publish is a gap in everything.
-    alloc = load_allocation(now=datetime.now(KST).replace(tzinfo=None), fx_rate=fx)
+    totals_block = build_totals(output["accounts"], strategies, manual, kis_holdings, fx)
+
+    # Asset-management layer. Runs AFTER build_totals so it can price itself in
+    # the same frame as the hero — the panel and the headline must not show two
+    # different "total capital" figures. Non-blocking: the dashboard publishes
+    # with or without it, because a missing allocator panel is a gap in
+    # reporting while a failed publish is a gap in everything.
+    alloc = load_allocation(now=datetime.now(KST).replace(tzinfo=None), fx_rate=fx,
+                            live_totals=totals_block)
     if alloc:
         output["allocation"] = alloc
         print("  Allocation: X {:.0%} ({}) - 1/N {} x W{:,.0f}, {}{}".format(
@@ -1984,7 +2031,6 @@ def main(dry_run=False):
     else:
         print("  Allocation: no state readable at {}".format(ALLOC_STATE_DIR))
 
-    totals_block = build_totals(output["accounts"], strategies, manual, kis_holdings, fx)
     output["totals"] = totals_block
 
     print("  Accounts: KIS W{:,.0f} + Upbit W{:,.0f} + Toss W{:,.0f}".format(

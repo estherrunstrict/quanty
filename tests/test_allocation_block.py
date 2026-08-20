@@ -40,14 +40,18 @@ PROPOSAL = {
     "level2": {"roster": ["quant40", "nmf2"], "N": 7,
                "fleet_pool_krw": 281936229, "per_bot_krw": 40276604},
     "allocations": {
+        # target_budget is the NATIVE amount and is what the panel converts;
+        # target_krw is the allocator's own conversion, kept for reference.
         "quant40": {"in_etf": True, "account": "kis_us", "currency": "USD",
-                    "current_budget": 14533.14, "target_krw": 27683452,
+                    "current_budget": 14533.14, "target_budget": 19619.74,
+                    "target_krw": 27683452,
                     "ramped": True, "kept_by_turnover_band": False},
         "nmf2": {"in_etf": True, "account": "toss", "currency": "KRW",
-                 "current_budget": 20055742.03, "target_krw": 27075252},
+                 "current_budget": 20055742.03, "target_budget": 27075251.74,
+                 "target_krw": 27075252},
         "btc_vb": {"in_etf": False, "account": "upbit", "currency": "KRW",
                    "why": "계좌 제외(Upbit)", "current_budget": 10000000,
-                   "target_krw": 0},
+                   "target_budget": 0.0, "target_krw": 0},
     },
     "totals": {"deployed_krw": 381417919, "cash_pct": 0.2953},
 }
@@ -70,7 +74,7 @@ def test_usd_budgets_are_normalised_to_krw(tmp_path):
     q = [b for b in a["bots"] if b["id"] == "quant40"][0]
 
     assert abs(q["current_krw"] - 14533.14 * FX) < 1
-    assert q["target_krw"] == 27683452
+    assert abs(q["target_krw"] - 19619.74 * FX) < 1
     assert abs(q["drift_krw"] - (q["target_krw"] - q["current_krw"])) < 1
     # KRW bots pass through untouched.
     n = [b for b in a["bots"] if b["id"] == "nmf2"][0]
@@ -87,7 +91,7 @@ def test_three_levels_are_reported(tmp_path):
     # the cash floor produce one number with three different meanings.
     assert a["level1"]["binding"] == "cash_floor"
     assert a["level2"]["N"] == 7
-    assert a["level2"]["per_bot_krw"] == 40276604
+    assert abs(a["level2"]["per_bot_krw"] - 40276604) < 2
 
 
 def test_applied_is_distinct_from_proposed(tmp_path):
@@ -143,8 +147,8 @@ def test_ramp_explains_why_target_is_below_the_1_over_n_share(tmp_path):
     a = G.load_allocation(_state(tmp_path), now=NOW, fx_rate=FX)
     q = [b for b in a["bots"] if b["id"] == "quant40"][0]
 
-    assert q["uncapped_krw"] == 40276604          # what 1/N alone would give
-    assert q["target_krw"] == 27683452            # what the ramp allows today
+    assert abs(q["uncapped_krw"] - 40276604) < 2  # what 1/N alone would give
+    assert abs(q["target_krw"] - 19619.74 * FX) < 1   # what the ramp allows today
     assert q["limited_by"] == "ramp"
     # Derived from the data, never hard-coded: 27,683,452 / 20,506,261 = 1.35
     assert abs(q["ramp_factor"] - 1.35) < 0.001
@@ -178,9 +182,11 @@ def test_capital_provenance_travels_with_the_number(tmp_path):
 
     assert a["capital_as_of"] == "2026-08-20 06:30 KST"
     assert a["capital_basis"] == "measured+external"
-    # The block stays in the ALLOCATOR's frame even when the dashboard's own FX
-    # differs — otherwise residual x X would stop equalling the fleet pool.
-    assert a["fx"] == FX
+    # Provenance travels even though the panel now prices itself in the
+    # DASHBOARD's frame (see test_panel_is_priced_in_the_dashboards_frame):
+    # knowing WHEN the allocator measured is what explains a stale input.
+    assert a["fx"] == 1402.5
+    assert a["allocator_frame"]["fx"] == FX
 
 
 def test_block_holds_together_arithmetically(tmp_path):
@@ -197,3 +203,67 @@ def test_runs_to_target_is_none_when_it_cannot_be_known(tmp_path):
     assert G._runs_to_target(100, 50, 60) is None         # already past 1/N
     assert G._runs_to_target(100, 200, 100) is None       # factor 1.0, never arrives
     assert G._runs_to_target(None, 200, 100) is None
+
+
+def test_panel_is_priced_in_the_dashboards_frame(tmp_path):
+    """Total capital on the panel must equal Total Investments in the hero.
+
+    Two different "total capital" figures on one page read as a bug no matter
+    how carefully the footnote explains the FX and the clock. The chain is
+    RECOMPUTED at the dashboard's frame rather than rescaled, so it still closes.
+    """
+    live = {"investments_krw": 539329199.0, "manual_krw": 176757222.0}
+    a = G.load_allocation(_state(tmp_path), now=NOW, fx_rate=1402.5, live_totals=live)
+
+    assert a["capital_krw"] == live["investments_krw"]      # matches the hero
+    assert a["level0"]["manual_krw"] == live["manual_krw"]
+    assert a["fx"] == 1402.5                                # dashboard's rate, not 1411
+    assert a["repriced_live"] is True
+
+    # And the arithmetic still closes in the new frame.
+    L0, L1, L2 = a["level0"], a["level1"], a["level2"]
+    assert abs(L0["residual_krw"] - (live["investments_krw"] - live["manual_krw"])) < 1
+    assert abs(L0["residual_krw"] * L1["X"] - L2["fleet_pool_krw"]) < 2
+    assert abs(L2["fleet_pool_krw"] / L2["N"] - L2["per_bot_krw"]) < 2
+
+
+def test_ramp_factor_survives_the_reprice(tmp_path):
+    """FX must cancel out of the ramp ratio.
+
+    Converting `current` at the dashboard rate while taking `target_krw` straight
+    from the proposal (written at the allocator's rate) smears the FX difference
+    into their ratio — the ramp then reads x1.36 instead of the x1.35 actually
+    applied. Both sides come from the native amounts.
+    """
+    live = {"investments_krw": 539329199.0, "manual_krw": 176757222.0}
+    for rate in (1402.5, 1411.0, 1500.0):
+        a = G.load_allocation(_state(tmp_path), now=NOW, fx_rate=rate, live_totals=live)
+        q = [b for b in a["bots"] if b["id"] == "quant40"][0]
+        assert abs(q["ramp_factor"] - 1.35) < 0.001, "ramp drifted at fx {}".format(rate)
+        # target/current in KRW must agree with the native ratio at every rate.
+        assert abs(q["target_krw"] / q["current_krw"] - 1.35) < 0.001
+
+
+def test_allocator_frame_is_preserved_for_comparison(tmp_path):
+    """What the allocator actually used stays visible, so a stale input shows.
+
+    On 2026-08-20 collect.py read a dashboard whose Toss sleeve was a day old,
+    so hands-on came in W12.1M high and every bot was sized off an understated
+    residual. That is only findable if both frames are reported.
+    """
+    live = {"investments_krw": 539329199.0, "manual_krw": 176757222.0}
+    a = G.load_allocation(_state(tmp_path), now=NOW, fx_rate=1402.5, live_totals=live)
+
+    assert a["allocator_frame"]["manual_krw"] == 188850155
+    assert a["allocator_frame"]["residual_krw"] == 352420286
+    assert a["allocator_frame"]["fx"] == FX
+    # The live figure and the allocator's differ — that gap is the point.
+    assert a["level0"]["manual_krw"] != a["allocator_frame"]["manual_krw"]
+
+
+def test_falls_back_to_allocator_frame_without_live_totals(tmp_path):
+    """A dry run has no totals block; the panel must still render."""
+    a = G.load_allocation(_state(tmp_path), now=NOW, fx_rate=FX, live_totals=None)
+    assert a["capital_krw"] == 541270441
+    assert a["level0"]["residual_krw"] == 352420286
+    assert a["repriced_live"] is False
