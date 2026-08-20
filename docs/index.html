@@ -1854,10 +1854,13 @@ function render(data) {
         const pnl = hld.profit || 0;
         const pRate = (typeof hld.profit_rate === 'number') ? ` (${hld.profit_rate >= 0 ? '+' : ''}${hld.profit_rate.toFixed(1)}%)` : '';
         // 코드가 아니라 회사명. 069500 을 보고 무슨 종목인지 아는 사람은 없다.
+        // 코드는 버리지 않고 상세줄로 옮긴다 — 주문을 넣을 때는 코드가 필요하다.
+        // NMF2·수동 슬리브가 쓰던 방식 그대로다.
         const label = hld.name || hld.ticker;
+        const code = (hld.name && hld.name !== hld.ticker) ? `${hld.ticker} · ` : '';
         return `<div class="hold-row">
           <span class="${hld.name ? 'hold-nm' : 'hold-tk'}">${label}</span>
-          <span class="hold-det">${hld.quantity || 0} × ${sym(cur)}${(hld.current_price || hld.avg_price || 0).toLocaleString(undefined, cur === 'KRW' ? {maximumFractionDigits:0} : {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+          <span class="hold-det">${code}${hld.quantity || 0} × ${sym(cur)}${(hld.current_price || hld.avg_price || 0).toLocaleString(undefined, cur === 'KRW' ? {maximumFractionDigits:0} : {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
           <span class="hold-pl ${pnlClass(pnl)}">${fmtPnl(pnl, cur)}${pRate}</span>
         </div>`;
       }).join('');
@@ -1871,9 +1874,11 @@ function render(data) {
       for (const [market, positions] of Object.entries(ops)) {
         for (const [ticker, pos] of Object.entries(positions)) {
           const cur = market === 'kr' ? 'KRW' : 'USD';
+          const pName = pos.name || ticker;
+          const pCode = (pos.name && pos.name !== ticker) ? `${ticker} · ` : '';
           posRows += `<div class="hold-row">
-            <span class="hold-tk">${ticker}</span>
-            <span class="hold-det">${pos.shares}sh @ ${sym(cur)}${Math.round(pos.entry_price).toLocaleString()} · stop ${sym(cur)}${Math.round(pos.stop_price).toLocaleString()}</span>
+            <span class="${pos.name ? 'hold-nm' : 'hold-tk'}">${pName}</span>
+            <span class="hold-det">${pCode}${pos.shares}sh @ ${sym(cur)}${Math.round(pos.entry_price).toLocaleString()} · stop ${sym(cur)}${Math.round(pos.stop_price).toLocaleString()}</span>
             <span class="hold-pl" style="color:var(--tx3)">${market.toUpperCase()}</span>
           </div>`;
         }

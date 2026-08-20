@@ -145,6 +145,65 @@ def weekday_age_hours(age_hours, now, skip_weekends=True):
     return max(0.0, float(age_hours) - closed)
 
 
+def account_name_map(totals):
+    """ticker -> company name, taken from the BROKER's own labels.
+
+    KIS returns a display name with every holding (`prdt_name` for KR,
+    `ovrs_item_name` for US) and query_account_total already keeps it, but the
+    bots' own result files store tickers only. So the cards rendered raw codes:
+    069500, 132030, 364690, GLTR. Nobody reads 364690 and thinks "KODEX
+    Innovation Tech Active" — and the two sleeves that DID show names (NMF2 and
+    hands-on, which come from the Toss snapshot) proved how much easier the
+    cards are to scan that way.
+
+    Using the broker's labels rather than a hand-kept table means the names
+    cannot drift from the account, and a newly bought ticker is named the day it
+    appears.
+    """
+    out = {}
+    for leg in ("kr", "us"):
+        for h in ((totals or {}).get(leg) or {}).get("holdings") or []:
+            t = str(h.get("ticker") or "").strip()
+            n = str(h.get("name") or "").strip()
+            if t and n and n != t:
+                out[t] = n
+    return out
+
+
+def annotate_holding_names(strategies, names):
+    """Fill `name` on holdings and open positions. Mutates in place.
+
+    Never overwrites a name that is already there — the Toss-sourced sleeves
+    carry Korean names the KIS account does not have. A ticker the broker cannot
+    label keeps the code, which is the honest fallback.
+    """
+    if not names:
+        return strategies
+    for s in strategies or []:
+        if not isinstance(s, dict):
+            continue
+        buckets = [s] + [s[leg] for leg in ("kr", "us")
+                         if isinstance(s.get(leg), dict)]
+        for b in buckets:
+            for h in b.get("holdings") or []:
+                if isinstance(h, dict) and not h.get("name"):
+                    t = str(h.get("ticker") or h.get("symbol") or "").strip()
+                    if names.get(t):
+                        h["name"] = names[t]
+        # hybrid_vb's open positions are keyed BY ticker, so the name has to go
+        # inside the value for the row renderer to reach it.
+        ops = s.get("open_positions")
+        if isinstance(ops, dict):
+            for positions in ops.values():
+                if not isinstance(positions, dict):
+                    continue
+                for ticker, pos in positions.items():
+                    if isinstance(pos, dict) and not pos.get("name"):
+                        if names.get(str(ticker).strip()):
+                            pos["name"] = names[str(ticker).strip()]
+    return strategies
+
+
 def annotate_capital_fields(strategies):
     """Fill budget / cost basis / profit rate for a bot that owns its account.
 
@@ -1975,6 +2034,9 @@ def main(dry_run=False):
     # silently skip them.
     annotate_bot_staleness(strategies, datetime.now(KST).replace(tzinfo=None))
     annotate_capital_fields(strategies)
+    _names = account_name_map(totals)
+    annotate_holding_names(strategies, _names)
+    print("  Holding names: {} tickers labelled from the broker".format(len(_names)))
     output["strategies"] = strategies
     _stale = [s["id"] for s in strategies if s.get("is_stale")]
     print("  Bot staleness: {}".format(
