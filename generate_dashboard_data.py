@@ -5,7 +5,7 @@ import json
 import os
 import sys
 import urllib.request
-from datetime import datetime
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
 KST = ZoneInfo("Asia/Seoul")
@@ -66,6 +66,110 @@ RECONCILIATION_WARN_PCT = 1.0
 # window closes, which routinely leaves last_run a day or two behind at publish
 # time; three days is the first age that normal operation cannot explain.
 UPBIT_STALE_DAYS = float(os.environ.get("QUANTY_UPBIT_STALE_DAYS", "3"))
+
+# ── Bot staleness ────────────────────────────────────────────────────────
+# How long each bot is NORMALLY silent between runs, in hours.
+#
+# A flat threshold cannot express this. Every stock bot fires ONCE per
+# session and then sits quiet until the next one: the US bots run at the
+# open (22:30 KST) and are honestly 21h "old" by dinner time, every single
+# day, while working perfectly. The page used `stale_hours > 6`, which lit
+# up seven of the eight bots at once on 2026-08-20 while all of them were
+# live. A warning that is always on is furniture — you stop reading it, and
+# then it cannot tell you about the one bot that really did die.
+#
+# The question worth asking is not "how long since it ran" but "has it
+# missed its OWN next run".
+BOT_CADENCE_HOURS = {
+    "btc_vb":        24,   # 16:00 ET, 365 days — BTC trades weekends too
+    "korea_etf":     24,   # KR open, weekdays
+    "hybrid_vb":     24,   # KR and US legs, weekdays
+    "quant40":       24,   # US open, weekdays
+    "jd_strategy":   24,
+    "dual_momentum": 24,
+    "claude_bot":    24,
+    "nmf2":          24,   # daily sync 09:05/15:40; the rebalance is monthly
+}
+BOT_CADENCE_DEFAULT = 24
+# Flag only once a bot is half a cycle PAST its next run — a late start or a
+# slow session must not raise an alarm.
+BOT_STALE_MULTIPLE = float(os.environ.get("QUANTY_BOT_STALE_MULTIPLE", "1.5"))
+# Everything except BTC trades on market days only, so weekend silence is
+# not staleness. Friday 22:30 -> Monday 20:00 is 69 wall-clock hours and
+# exactly ONE missed session; counting the weekend would flag the whole
+# fleet every Monday.
+BOT_TRADES_WEEKENDS = {"btc_vb"}
+
+# ── Asset-management layer ───────────────────────────────────────────────
+# The allocator decides how much capital each bot runs; the bots only READ
+# their budget. That inversion is the whole governance model and it was
+# invisible here — the dashboard showed what the bots DID with the money and
+# never showed who decided the amount, so an X of 80% or a bot dropped from
+# the roster could only be found by reading a cron log.
+ALLOC_STATE_DIR = os.environ.get(
+    "QUANTY_ALLOC_STATE", "/home/ubuntu/asset-mgmt/asset_mgmt/state")
+# The allocator runs 08:20 daily. Past a day and a half it has missed a run.
+ALLOC_MAX_AGE_HOURS = float(os.environ.get("QUANTY_ALLOC_MAX_AGE_HOURS", "36"))
+# The allocator splits hybrid_vb into its two legs and carries bots the
+# dashboard has no card for. Names for the ones the grid cannot label.
+ALLOC_NAMES = {
+    "quant40": "US Quant40", "jd_strategy": "JD Strategy",
+    "dual_momentum": "Dual Momentum", "claude_bot": "Claude Trading Bot",
+    "hybrid_vb_kr": "Hybrid VB (KR)", "hybrid_vb_us": "Hybrid VB (US)",
+    "nmf2": "NMF2", "btc_vb": "BTC Volatility Breakout",
+    "korea_etf": "Korea ETF Momentum", "event_bot": "Event Bot",
+    "usvb": "US VB",
+}
+
+
+def weekday_age_hours(age_hours, now, skip_weekends=True):
+    """`age_hours` with whole Saturday/Sunday hours removed. PURE.
+
+    Returns the age unchanged when the bot trades weekends, and never
+    returns less than zero. None in, None out — an unknown age must stay
+    unknown rather than collapse to "fresh".
+    """
+    if age_hours is None:
+        return None
+    if not skip_weekends:
+        return float(age_hours)
+    start = now - timedelta(hours=float(age_hours))
+    closed, cur = 0.0, start
+    while cur < now:
+        midnight = (cur + timedelta(days=1)).replace(
+            hour=0, minute=0, second=0, microsecond=0)
+        nxt = min(now, midnight)
+        if cur.weekday() >= 5:                 # 5=Sat, 6=Sun
+            closed += (nxt - cur).total_seconds() / 3600.0
+        cur = nxt
+    return max(0.0, float(age_hours) - closed)
+
+
+def annotate_bot_staleness(strategies, now):
+    """Add `is_stale` + `stale_weekday_hours` to each bot card. PURE-ish.
+
+    `is_stale` is None when the age is unknown — the front end must be able
+    to tell "no answer" from "fine", because those call for different
+    behaviour and only one of them is safe to ignore.
+
+    The hands-on sleeve is skipped: it has no run schedule at all, and its
+    freshness is the Toss snapshot's, reported on accounts.toss.
+    """
+    for s in strategies or []:
+        if not isinstance(s, dict) or s.get("id") == "manual":
+            continue
+        sid = s.get("id")
+        raw = s.get("stale_hours")
+        eff = weekday_age_hours(
+            raw, now, skip_weekends=sid not in BOT_TRADES_WEEKENDS)
+        s["stale_weekday_hours"] = None if eff is None else round(eff, 2)
+        if eff is None:
+            s["is_stale"] = None
+            continue
+        limit = BOT_CADENCE_HOURS.get(sid, BOT_CADENCE_DEFAULT) * BOT_STALE_MULTIPLE
+        s["is_stale"] = eff > limit
+        s["stale_limit_hours"] = round(limit, 2)
+    return strategies
 
 
 def _days_since(stamp, now):
@@ -1053,6 +1157,131 @@ def get_cma_krw():
         return 0.0
 
 
+def load_allocation(state_dir=None, now=None, fx_rate=None):
+    """The asset-management layer as a dashboard block. Never raises.
+
+    Reads the newest `proposed_*.json` plus `last_applied.json` written by
+    asset_mgmt/allocate.py + apply.py. Returns None when there is nothing to
+    show — an absent allocator must not break a publish, and a half-read
+    proposal is worse than no panel.
+
+    Two numbers deserve care:
+      * `current_budget` is in the bot's NATIVE currency (USD for the KIS-US
+        bots) while `target_krw` is already KRW. Comparing them directly
+        makes a $14.5k budget look like a rounding error next to a W27.7M
+        target. Both are normalised to KRW here.
+      * `applied` is not the same as `proposed`. The proposal file keeps
+        status "proposed" even after apply.py has written the budgets, so
+        freshness comes from last_applied.json, not from the proposal.
+    """
+    import glob
+
+    state = state_dir or ALLOC_STATE_DIR
+    try:
+        files = sorted(glob.glob(os.path.join(state, "proposed_*.json")))
+    except Exception:
+        return None
+    if not files:
+        return None
+    try:
+        with open(files[-1]) as f:
+            prop = json.load(f)
+    except Exception as e:
+        print("  WARNING: allocation proposal unreadable: {}".format(e))
+        return None
+    if not isinstance(prop, dict):
+        return None
+
+    applied = {}
+    try:
+        with open(os.path.join(state, "last_applied.json")) as f:
+            applied = json.load(f) or {}
+    except Exception:
+        applied = {}
+
+    now = now or datetime.now(KST).replace(tzinfo=None)
+    stamp = applied.get("applied_at") or prop.get("proposed_at")
+    age_h = None
+    if stamp:
+        try:
+            when = datetime.fromisoformat(str(stamp))
+            if when.tzinfo is not None:
+                when = when.replace(tzinfo=None)
+            age_h = (now - when).total_seconds() / 3600.0
+        except (TypeError, ValueError):
+            age_h = None
+
+    fx = float(fx_rate or (prop.get("capital") or {}).get("fx") or 0) or 1400.0
+    targets = applied.get("targets") or {}
+    rows = []
+    for bid, p in sorted((prop.get("allocations") or {}).items()):
+        if not isinstance(p, dict):
+            continue
+        k = fx if (p.get("currency") == "USD") else 1.0
+        cur_krw = float(p.get("current_budget") or 0) * k
+        tgt_krw = float(p.get("target_krw") or 0)
+        rows.append({
+            "id": bid,
+            "name": ALLOC_NAMES.get(bid, bid),
+            "in_etf": bool(p.get("in_etf")),
+            "account": p.get("account") or "",
+            "why": p.get("why") or "",
+            "currency": p.get("currency") or "KRW",
+            "current_krw": round(cur_krw, 2),
+            "target_krw": round(tgt_krw, 2),
+            "drift_krw": round(tgt_krw - cur_krw, 2),
+            "ramped": bool(p.get("ramped")),
+            "held_by_band": bool(p.get("kept_by_turnover_band")),
+            # Did apply.py actually write this target, or is it still only a
+            # proposal? Governance says nothing moves without that step.
+            "applied_krw": (round(float(targets[bid]), 2)
+                            if bid in targets else None),
+        })
+    rows.sort(key=lambda r: (not r["in_etf"], -r["target_krw"]))
+
+    lv1 = prop.get("level1") or {}
+    lv2 = prop.get("level2") or {}
+    return {
+        "as_of": stamp,
+        "age_hours": None if age_h is None else round(age_h, 2),
+        "stale": bool(age_h is not None and age_h > ALLOC_MAX_AGE_HOURS),
+        "applied": bool(targets),
+        "applied_at": applied.get("applied_at"),
+        "policy_version": prop.get("policy_version") or "",
+        "capital_krw": float((prop.get("capital") or {}).get("total_krw") or 0),
+        "fx": fx,
+        # LEVEL 0 — the hands-on sleeve is senior to the bots: it is carved
+        # out first and the fleet only ever sees the residual.
+        "level0": {
+            "manual_krw": float((prop.get("level0") or {}).get("manual_krw") or 0),
+            "residual_krw": float((prop.get("level0") or {}).get("residual_krw") or 0),
+        },
+        # LEVEL 1 — one system-wide exposure X, and WHICH constraint set it.
+        # `binding` is the interesting field: kelly / vol cap / cash floor /
+        # drawdown brake are different stories with the same number.
+        "level1": {
+            "X": float(lv1.get("X") or 0),
+            "binding": lv1.get("binding") or "",
+            "brake": float(lv1.get("brake") or 1.0),
+            "kelly_half": lv1.get("kelly_half"),
+            "x_vol_cap": lv1.get("x_vol_cap"),
+            "mu_shrunk": lv1.get("mu_shrunk"),
+            "sigma": lv1.get("sigma"),
+            "fleet_dd": lv1.get("fleet_dd"),
+            "n_days": lv1.get("n_days"),
+        },
+        # LEVEL 2 — equal weight, deliberately (DeMiguel-Garlappi-Uppal 1/N).
+        "level2": {
+            "N": int(lv2.get("N") or 0),
+            "per_bot_krw": float(lv2.get("per_bot_krw") or 0),
+            "fleet_pool_krw": float(lv2.get("fleet_pool_krw") or 0),
+            "roster": list(lv2.get("roster") or []),
+        },
+        "totals": prop.get("totals") or {},
+        "bots": rows,
+    }
+
+
 def build_accounts(totals, portfolio, toss, strategies, now):
     """`accounts` block: KIS / Upbit / Toss, each honestly flagged. PURE.
 
@@ -1596,7 +1825,14 @@ def main(dry_run=False):
     if nmf2:
         strategies.append(nmf2)
     strategies.append(manual)                     # hands-on always last in the grid
+    # Staleness last, once every card exists — nmf2 and the hands-on sleeve
+    # are assembled here rather than by the API, so an earlier pass would
+    # silently skip them.
+    annotate_bot_staleness(strategies, datetime.now(KST).replace(tzinfo=None))
     output["strategies"] = strategies
+    _stale = [s["id"] for s in strategies if s.get("is_stale")]
+    print("  Bot staleness: {}".format(
+        "all fresh" if not _stale else "STALE -> " + ", ".join(_stale)))
     mx = manual["extra"]
     print("  Hands-on / Manual: W{:,.0f} ({} tickers — KIS W{:,.0f} / {}, Toss W{:,.0f} / {})".format(
         manual["value"], mx["ticker_count"], mx["kis_krw"], mx["kis_ticker_count"],
@@ -1680,6 +1916,21 @@ def main(dry_run=False):
             "krw_cash_krw": round(_cma, 2), "stock_krw": 0.0,
             "label": "KIS CMA"}
         print("  CMA: W{:,.0f}".format(_cma))
+
+    # Asset-management layer. Non-blocking: the dashboard publishes with or
+    # without it, because a missing allocator panel is a gap in reporting
+    # while a failed publish is a gap in everything.
+    alloc = load_allocation(now=datetime.now(KST).replace(tzinfo=None), fx_rate=fx)
+    if alloc:
+        output["allocation"] = alloc
+        print("  Allocation: X {:.0%} ({}) - 1/N {} x W{:,.0f}, {}{}".format(
+            alloc["level1"]["X"], alloc["level1"]["binding"] or "-",
+            alloc["level2"]["N"], alloc["level2"]["per_bot_krw"],
+            "applied" if alloc["applied"] else "PROPOSED ONLY",
+            " (STALE {:.0f}h)".format(alloc["age_hours"])
+            if alloc["stale"] else ""))
+    else:
+        print("  Allocation: no state readable at {}".format(ALLOC_STATE_DIR))
 
     totals_block = build_totals(output["accounts"], strategies, manual, kis_holdings, fx)
     output["totals"] = totals_block

@@ -282,6 +282,69 @@ a { color: var(--accent); text-decoration: none; }
 
 .recon-warn { color: var(--r); font-size: 0.66rem; margin-top: 0.6rem; }
 
+/* ── Asset allocation — the layer ABOVE the bots ──
+   The bots never choose their own size; this layer does, and the bots only read
+   the budget it writes. That inversion is the governance model, and it used to
+   be invisible on this page: you could see what each bot DID with its money and
+   never see who decided the amount. Placed above the bot grid on purpose —
+   capital is allocated before it is traded. */
+.alloc { background: var(--s1); border: 1px solid var(--border); margin-bottom: 2rem; }
+
+.alloc-hd {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 1rem; flex-wrap: wrap;
+  padding: 1rem 1.4rem; border-bottom: 1px solid var(--border);
+}
+.alloc-hd h2 {
+  font-family: var(--serif); font-weight: 300;
+  font-size: 1.05rem; letter-spacing: -0.02em;
+}
+.alloc-hd .meta { font-size: 0.64rem; color: var(--tx3); }
+.alloc-badge {
+  font-size: 0.56rem; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 0.15rem 0.45rem; border: 1px solid var(--border-h); color: var(--tx2);
+}
+.alloc-badge.ok   { border-color: var(--g); color: var(--g); }
+.alloc-badge.warn { border-color: var(--accent); color: var(--accent); }
+
+.alloc-levels {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1px; background: var(--border);
+}
+.alloc-lv { background: var(--s1); padding: 1.05rem 1.4rem; }
+.alloc-lv .lv-tag {
+  font-size: 0.56rem; letter-spacing: 0.13em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 0.15rem;
+}
+.alloc-lv .lv-sub { font-size: 0.62rem; color: var(--tx3); margin-bottom: 0.7rem; line-height: 1.5; }
+.alloc-row { display: flex; justify-content: space-between; gap: 0.8rem; font-size: 0.71rem; padding: 0.17rem 0; }
+.alloc-row .k { color: var(--tx2); }
+.alloc-row .v { color: var(--tx); white-space: nowrap; }
+.alloc-row.big { padding-top: 0.45rem; }
+.alloc-row.big .v { font-size: 1rem; color: var(--accent); }
+.alloc-row.minus .v { color: var(--tx2); }
+
+.alloc-bots { border-top: 1px solid var(--border); padding: 1rem 1.4rem 1.2rem; overflow-x: auto; }
+.alloc-tbl { width: 100%; border-collapse: collapse; font-size: 0.7rem; min-width: 440px; }
+.alloc-tbl th {
+  text-align: right; font-weight: 400; font-size: 0.56rem; letter-spacing: 0.11em;
+  text-transform: uppercase; color: var(--tx4); padding: 0 0 0.5rem;
+}
+.alloc-tbl th:first-child, .alloc-tbl td:first-child { text-align: left; }
+.alloc-tbl td { text-align: right; padding: 0.34rem 0; border-top: 1px solid var(--border); }
+.alloc-tbl td + td, .alloc-tbl th + th { padding-left: 1rem; }
+.alloc-tbl tr.out td { color: var(--tx3); }
+.alloc-tbl .why { font-size: 0.62rem; color: var(--tx3); }
+.alloc-note { font-size: 0.62rem; color: var(--tx3); margin-top: 0.7rem; line-height: 1.55; }
+
+/* Three levels or one, never two — auto-fit lands on two columns around
+   500px and leaves Level 2 beside an empty cell that reads as a missing
+   panel. The levels are a sequence (capital -> exposure -> per bot), so
+   stacking them keeps the reading order intact. */
+@media (max-width: 900px) {
+  .alloc-levels { grid-template-columns: 1fr; }
+}
+
 /* ── Grid ── */
 .grid {
   display: grid;
@@ -1115,6 +1178,101 @@ function buildComparisonChart(equitySeries, aggregateSeries, strategies) {
 }
 
 // ═══ Render ═══════════════════════════════════════════════
+
+// ── Asset allocation panel ────────────────────────────────────────────────
+// Renders the three-level policy the allocator actually ran, straight from the
+// proposal it wrote. Deliberately shows WHICH constraint bound X: kelly, the
+// vol cap, the cash floor and the drawdown brake all produce a single number,
+// and that number means very different things depending on which one won.
+function buildAllocation(a) {
+  if (!a) return null;
+  const won = v => '₩' + Math.round(v || 0).toLocaleString();
+  const L0 = a.level0 || {}, L1 = a.level1 || {}, L2 = a.level2 || {};
+  const pc = v => (v === null || v === undefined) ? '—' : (v * 100).toFixed(0) + '%';
+
+  const sec = h('section', 'alloc fade-in d1');
+
+  // Applied vs merely proposed is the governance distinction: apply.py is the
+  // step a human owns, so a proposal that was never applied must not read as
+  // the live state.
+  let badge = a.applied
+    ? '<span class="alloc-badge ok">Applied</span>'
+    : '<span class="alloc-badge warn">Proposed only</span>';
+  if (a.stale) badge += ' <span class="alloc-badge warn">Stale</span>';
+  const when = (a.applied_at || a.as_of || '').replace('T', ' ').slice(0, 16);
+  const age = (a.age_hours === null || a.age_hours === undefined)
+    ? '' : ' · ' + a.age_hours.toFixed(1) + 'h ago';
+
+  const hd = h('div', 'alloc-hd');
+  hd.innerHTML =
+    '<h2>Asset Allocation</h2>' +
+    '<div class="meta">' + badge + ' <span>' + when + age +
+    (a.policy_version ? ' · ' + a.policy_version : '') + '</span></div>';
+  sec.appendChild(hd);
+
+  const bindLabel = {
+    kelly: 'half-Kelly', cash_floor: 'cash floor', vol_cap: 'volatility cap',
+    dd_brake: 'drawdown brake', x_min: 'governance floor', x_max: 'exposure cap',
+  }[L1.binding] || (L1.binding || '—');
+
+  const levels = h('div', 'alloc-levels');
+  levels.innerHTML =
+    '<div class="alloc-lv">' +
+      '<div class="lv-tag">Level 0 · hands-on is senior</div>' +
+      '<div class="lv-sub">Your own positions are carved out first. The fleet only ever sees what is left.</div>' +
+      '<div class="alloc-row"><span class="k">Total capital</span><span class="v">' + won(a.capital_krw) + '</span></div>' +
+      '<div class="alloc-row minus"><span class="k">− Hands-on</span><span class="v">' + won(L0.manual_krw) + '</span></div>' +
+      '<div class="alloc-row big"><span class="k">Residual</span><span class="v">' + won(L0.residual_krw) + '</span></div>' +
+    '</div>' +
+    '<div class="alloc-lv">' +
+      '<div class="lv-tag">Level 1 · one system exposure</div>' +
+      '<div class="lv-sub">A single X for the whole fleet — not per bot. Bound here by <b>' + bindLabel + '</b>.</div>' +
+      '<div class="alloc-row big"><span class="k">Exposure X</span><span class="v">' + pc(L1.X) + '</span></div>' +
+      '<div class="alloc-row"><span class="k">half-Kelly</span><span class="v">' + pc(L1.kelly_half) + '</span></div>' +
+      '<div class="alloc-row"><span class="k">vol cap</span><span class="v">' + pc(L1.x_vol_cap) + '</span></div>' +
+      '<div class="alloc-row"><span class="k">DD brake</span><span class="v">' + (L1.brake === null || L1.brake === undefined ? '—' : L1.brake.toFixed(2)) + '</span></div>' +
+      '<div class="alloc-row"><span class="k">fleet DD · σ</span><span class="v">' + pc(L1.fleet_dd) + ' · ' + pc(L1.sigma) + '</span></div>' +
+    '</div>' +
+    '<div class="alloc-lv">' +
+      '<div class="lv-tag">Level 2 · equal weight</div>' +
+      '<div class="lv-sub">1/N by policy, not by optimisation — four months of track record cannot justify tilting.</div>' +
+      '<div class="alloc-row"><span class="k">Fleet pool</span><span class="v">' + won(L2.fleet_pool_krw) + '</span></div>' +
+      '<div class="alloc-row"><span class="k">Bots in fleet (N)</span><span class="v">' + (L2.N || 0) + '</span></div>' +
+      '<div class="alloc-row big"><span class="k">Per bot</span><span class="v">' + won(L2.per_bot_krw) + '</span></div>' +
+    '</div>';
+  sec.appendChild(levels);
+
+  const inFleet = (a.bots || []).filter(b => b.in_etf);
+  const out = (a.bots || []).filter(b => !b.in_etf);
+  if (inFleet.length || out.length) {
+    const rows = inFleet.map(b =>
+      '<tr><td>' + b.name + '</td>' +
+      '<td class="why">' + (b.account || '') + '</td>' +
+      '<td>' + won(b.current_krw) + '</td>' +
+      '<td>' + won(b.target_krw) + '</td>' +
+      '<td class="' + pnlClass(b.drift_krw) + '">' + fmtPnl(b.drift_krw, 'KRW') + '</td></tr>'
+    ).join('') + out.map(b =>
+      '<tr class="out"><td>' + b.name + '</td>' +
+      '<td class="why">' + (b.account || '') + '</td>' +
+      '<td>' + won(b.current_krw) + '</td>' +
+      '<td>—</td>' +
+      '<td class="why">' + (b.why || 'excluded') + '</td></tr>'
+    ).join('');
+
+    const tbl = h('div', 'alloc-bots');
+    tbl.innerHTML =
+      '<table class="alloc-tbl"><thead><tr>' +
+      '<th>Bot</th><th>Account</th><th>Current</th><th>Target</th><th>Drift</th>' +
+      '</tr></thead><tbody>' + rows + '</tbody></table>' +
+      '<div class="alloc-note">Drift is target − current budget. It closes over a few cycles: ' +
+      'the allocator ramps at most 3× per run and holds a 20% turnover band, so a bot does not ' +
+      'jump straight to target.</div>';
+    sec.appendChild(tbl);
+  }
+  return sec;
+}
+
+
 function render(data) {
   const app = $('#app');
   app.innerHTML = '';
@@ -1254,6 +1412,11 @@ function render(data) {
   });
   app.appendChild(strip);
 
+  // Allocation goes ABOVE the bots: this is the layer that decided their
+  // budgets, and reading it after the results inverts the causality.
+  const allocSec = buildAllocation(data.allocation);
+  if (allocSec) app.appendChild(allocSec);
+
   // ── Strategy Comparison Chart (per-bot Total P/L + Portfolio Sum overlay)
   const cmp = buildComparisonChart(data.equity_series || {}, data.equity_series_aggregate || {}, data.strategies || []);
   if (cmp) app.appendChild(cmp);
@@ -1286,9 +1449,22 @@ function render(data) {
     const isManual = s.id === 'manual';
     const card = h('div', isManual ? 'strat manual' : 'strat');
     // The hands-on sleeve has no run schedule, so staleness/paper-mode don't apply.
-    const isStale = !isManual && (s.stale_hours || 0) > 6;
-    const modeTag = isManual ? 'manual' : (isStale ? 'stale' : (s.mode === 'paper' ? 'paper' : 'live'));
-    const modeLabel = isManual ? 'Manual' : (isStale ? 'Stale' : (s.mode === 'paper' ? 'Paper' : 'Live'));
+    //
+    // is_stale comes from the generator, which knows each bot's CADENCE. The
+    // old test here was `stale_hours > 6`, and every stock bot fires once per
+    // session — so the US bots read 21h by dinner every day and seven of the
+    // eight cards showed STALE at once while all of them were live. A badge
+    // that is always lit is furniture; it cannot report the bot that did die.
+    // Explicit === true: is_stale is null when the age is unknown, and
+    // "unknown" must not render as a confident "Stale".
+    const isStale = !isManual && s.is_stale === true;
+    // Paper outranks stale. Paper is a DEPLOYMENT fact (no capital at risk),
+    // stale is a HEALTH fact, and letting the health badge overwrite the
+    // deployment one made an unfunded paper bot indistinguishable from a
+    // dead live bot — korea_etf reads paper/budget 0 and had run that morning.
+    const isPaper = !isManual && s.mode === 'paper';
+    const modeTag = isManual ? 'manual' : (isPaper ? 'paper' : (isStale ? 'stale' : 'live'));
+    const modeLabel = isManual ? 'Manual' : (isPaper ? 'Paper' : (isStale ? 'Stale' : 'Live'));
 
     let metricsHTML = '';
     let holdingsHTML = '';
