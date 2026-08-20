@@ -1663,8 +1663,13 @@ let refreshTimer = null;
 async function load() {
   try {
     const [res, histRes] = await Promise.all([
-      fetch('data/dashboard_data.json'),
-      fetch('data/equity_history.json').catch(()=>null)
+      // no-store 필수. 기본 캐시로 두면 발행이 끝난 뒤에도 브라우저가 직전
+      // 빌드의 JSON 을 그대로 재생한다 — 2026-08-20 19:27 발행 직후에도
+      // 열려 있던 탭은 16:00 값(수동 1.85억, 이미 판 빙그레 포함)을 계속
+      // 보여줬다. 60초 자동 새로고침도 같은 캐시를 다시 읽으니 소용없다.
+      // decision.html 은 처음부터 no-store 였다 — 여기만 빠져 있었다.
+      fetch('data/dashboard_data.json', { cache: 'no-store' }),
+      fetch('data/equity_history.json', { cache: 'no-store' }).catch(()=>null)
     ]);
     if (!res.ok) throw new Error(res.status);
     const data = await res.json();
