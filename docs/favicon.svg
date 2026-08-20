@@ -1,11 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"
      role="img" aria-label="Automation Oracle">
-  <!-- Automation Oracle — the wordmark's amber italic "O" on the dashboard's
-       near-black ground. Colours are the site's own tokens: --bg #08080a,
-       --border #1e1e24, --accent #c9a24d.
-       width/height are NOT optional: an SVG with only a viewBox has no intrinsic
-       size, and Chrome then refuses to decode it as an icon — the tab falls back
-       to the default globe and the file looks fine in every other check. -->
+  <!--
+    Automation Oracle. The wordmark's amber italic "O" on the dashboard's
+    near-black ground, in the site's own colours (bg #08080a, border #1e1e24,
+    accent #c9a24d).
+
+    Two things here are load-bearing, both learned the hard way on 2026-08-20:
+    1. width/height are required. With only a viewBox the file has no intrinsic
+       size and Chrome will not decode it as an icon.
+    2. No CSS custom-property names in this comment. Writing them with their
+       leading double hyphen puts that sequence inside an XML comment, which is
+       illegal; the whole file then fails to parse and the tab silently falls
+       back to the default globe while every other check still passes.
+  -->
   <rect width="64" height="64" rx="12" fill="#08080a"/>
   <rect x="0.5" y="0.5" width="63" height="63" rx="11.5" fill="none" stroke="#1e1e24"/>
   <ellipse cx="32" cy="32" rx="14" ry="19.5" fill="none" stroke="#c9a24d"
