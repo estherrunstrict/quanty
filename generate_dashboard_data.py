@@ -25,12 +25,23 @@ from dashboard_equity import et_today, pin_equity_endpoints
 # server talks to Toss (the Open API IP allowlist covers the Mac only), so this
 # file is the account's only representation and it can legitimately go stale.
 TOSS_SNAPSHOT_FILE = os.path.join(TRADING_DIR, "strategy_results", "toss_snapshot.json")
-# The Mac job runs 06:00 and 15:50, so a healthy snapshot is never older than
-# ~14h. 30h silently passed a snapshot that had missed an entire day (2026-08-19:
-# 25.5h old, flagged fresh, hands-on sleeve a full day behind). 20h flags a
-# missed cycle while still tolerating one late run — safe to tighten only
-# because an aged snapshot is now kept and labelled rather than zeroed.
-TOSS_MAX_AGE_HOURS = float(os.environ.get("QUANTY_TOSS_MAX_AGE_HOURS", "20"))
+# What matters is the snapshot's age AT BUILD TIME, not how old it gets sitting
+# on disk between cycles. The Mac job runs 06:00 and 15:50 and the publish runs
+# 06:30 and 16:15, so the generator should never see a snapshot older than ~30
+# minutes; a snapshot older than one cycle (>=14h) has missed its run outright.
+#
+# The history is a story of this number being too generous. 30h passed a
+# snapshot that had missed an entire day (2026-08-19, 25.5h). 20h then passed
+# 2026-08-20's 19.1h snapshot — yesterday's close, published as if current,
+# hands-on still listing a stock that had already been sold. 6h is the first
+# value that catches a missed cycle: far above the 30-minute normal case, far
+# below the 14h a skipped run costs, and still tolerant of a late catch-up run
+# that at least landed the same day.
+#
+# Tightening is safe because an aged snapshot is KEPT and labelled, never
+# zeroed: `usable` stays true, the rows still feed the hands-on sleeve and
+# NMF2's marks, and only the `stale` flag changes. See load_toss_account.
+TOSS_MAX_AGE_HOURS = float(os.environ.get("QUANTY_TOSS_MAX_AGE_HOURS", "6"))
 
 # NMF2 (신마법공식 2.0) sleeve — a real automated bot trading a ~W1M slice of the
 # Toss account. Its ledger is the ONLY record of which Toss positions are the

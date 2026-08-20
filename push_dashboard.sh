@@ -4,6 +4,16 @@
 
 set -e
 
+# One publish at a time. The Mac snapshot now triggers a publish the moment
+# fresh Toss data lands, so a catch-up run can overlap the scheduled cron.
+# Two concurrent `git pull --rebase` + commit + push sequences in the SAME
+# working tree corrupt each other. Re-exec under flock; the guard variable
+# stops the re-exec from looping.
+if [ -z "${QUANTY_PUBLISH_LOCKED:-}" ]; then
+    export QUANTY_PUBLISH_LOCKED=1
+    exec flock -w 900 /tmp/quanty-publish.lock "$0" "$@"
+fi
+
 DASHBOARD_DIR="/home/ubuntu/quanty-dashboard"
 VENV_PYTHON="$HOME/myenv/bin/python3"
 WIKI_DIR="/home/ubuntu/quanty-wiki"
@@ -48,6 +58,16 @@ git commit -m "update $(TZ='Asia/Seoul' date +'%Y-%m-%d %H:%M KST')" --quiet
 git push --quiet
 echo "[$(date)] Dashboard updated and pushed."
 
-# Send Discord notification via Python (avoids bash JSON escaping issues)
-$VENV_PYTHON notify_discord.py
-echo "[$(date)] Discord notification sent."
+# Discord card (Python, to avoid bash JSON escaping issues).
+#
+# A snapshot-triggered catch-up sets QUANTY_SKIP_DISCORD=1. It still has to
+# rebuild and publish — that is the whole point, the page must stop showing
+# yesterday's balance — but the daily card belongs to the scheduled publish.
+# Two cards for one day's numbers is noise, and noise is how a real staleness
+# warning gets scrolled past.
+if [ -n "${QUANTY_SKIP_DISCORD:-}" ]; then
+    echo "[$(date)] Discord notification skipped (QUANTY_SKIP_DISCORD)."
+else
+    $VENV_PYTHON notify_discord.py
+    echo "[$(date)] Discord notification sent."
+fi
