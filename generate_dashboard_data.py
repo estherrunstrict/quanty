@@ -145,6 +145,57 @@ def weekday_age_hours(age_hours, now, skip_weekends=True):
     return max(0.0, float(age_hours) - closed)
 
 
+def annotate_capital_fields(strategies):
+    """Fill budget / cost basis / profit rate for a bot that owns its account.
+
+    btc_vb is the one bot the allocator leaves out — Upbit is not an investable
+    account under the capital policy — so it carries no allocated budget and
+    simply runs on whatever the exchange holds. dashboard_server computes
+    profit_rate_ytd_pct as total_pl / BUDGET and returns None when the budget is
+    zero, so a bot with a real W363k YTD P/L reported Budget Cap "Unlimited",
+    Invested "—" and Profit % "—": three blanks for a bot that is fully invested.
+
+    For a bot that owns its whole account the account balance IS the budget, and
+    `value` already IS that balance (the card is built from the Upbit total).
+    Deployed cost is then value minus unrealized gain — equal to value when the
+    bot is sitting in cash, slightly below it while a position is in profit.
+
+    Scoped by `budget falsy AND value > 0`, so it cannot touch a bot that is
+    genuinely unfunded: korea_etf is paper at value 0 and stays untouched.
+    """
+    for s in strategies or []:
+        if not isinstance(s, dict) or s.get("id") == "manual":
+            continue
+        val = float(s.get("value") or 0)
+        if not float(s.get("budget") or 0) and val > 0:
+            s["budget"] = round(val, 2)
+            s["budget_basis"] = "account"
+            if not float(s.get("cost_basis") or 0):
+                unreal = float(s.get("unrealized_profit") or 0)
+                s["cost_basis"] = round(max(0.0, val - unreal), 2)
+                s["cost_basis_basis"] = "derived"
+
+        if s.get("profit_rate_ytd_pct") is not None:
+            s.setdefault("profit_rate_basis", "budget")
+            continue
+        pl = s.get("total_pl_ytd")
+        if pl is None:
+            continue
+        # Prefer the budget denominator so this bot's return is comparable with
+        # every other bot's; fall back to deployed cost only if there is still
+        # no budget, and LABEL it, because the two are not the same question.
+        budget = float(s.get("budget") or 0)
+        if budget > 0:
+            s["profit_rate_ytd_pct"] = round(float(pl) / budget * 100, 2)
+            s["profit_rate_basis"] = "budget"
+            continue
+        basis = float(s.get("cost_basis") or 0)
+        if basis > 0:
+            s["profit_rate_ytd_pct"] = round(float(pl) / basis * 100, 2)
+            s["profit_rate_basis"] = "deployed"
+    return strategies
+
+
 def annotate_bot_staleness(strategies, now):
     """Add `is_stale` + `stale_weekday_hours` to each bot card. PURE-ish.
 
@@ -1923,6 +1974,7 @@ def main(dry_run=False):
     # are assembled here rather than by the API, so an earlier pass would
     # silently skip them.
     annotate_bot_staleness(strategies, datetime.now(KST).replace(tzinfo=None))
+    annotate_capital_fields(strategies)
     output["strategies"] = strategies
     _stale = [s["id"] for s in strategies if s.get("is_stale")]
     print("  Bot staleness: {}".format(

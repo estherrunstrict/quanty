@@ -419,6 +419,23 @@ a { color: var(--accent); text-decoration: none; }
 .sg-val { font-size: 0.88rem; }
 .sg-val.bold { font-weight: 500; }
 
+/* Full-width row inside .strat-grid. grid-column: 1/-1 is what forces the
+   next field onto a fresh line — Hybrid VB's US leg used to start wherever
+   the KR leg happened to stop, so 'KR Cycles' sat beside 'US Invested' and
+   the two halves read as one undifferentiated block. */
+.sg-sep {
+  grid-column: 1 / -1;
+  margin-top: 0.7rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.56rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--tx4);
+}
+/* The first separator on a card has nothing above it to divide. */
+.strat-grid > .sg-sep:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+
 /* Holdings table */
 .holds {
   margin-top: 0.8rem;
@@ -885,6 +902,10 @@ function mSub(t) {
 }
 function nil(v) { return v === null || v === undefined; }
 
+function mSep(label) {
+  return '<div class="sg-sep">' + label + '</div>';
+}
+
 function coreMetrics(d) {
   const cur = d.cur || 'KRW';
   const p = d.prefix ? d.prefix + ' ' : '';
@@ -923,8 +944,13 @@ function coreMetrics(d) {
                nil(d.totalPl) ? '' : pnlClass(d.totalPl));
   }
   if (on('profitPct')) {
+    // Say what the rate is a rate OF. Most bots divide by their allocated
+    // budget; a bot with no budget (btc_vb runs uncapped on the Upbit balance)
+    // divides by capital deployed. Different denominators, not comparable.
+    const basisTag = (!nil(d.profitPct) && d.basis === 'deployed')
+      ? mSub('(on deployed)') : '';
     o += mCell(p + 'Profit %', nil(d.profitPct) ? MDASH :
-      (d.profitPct >= 0 ? '+' : '') + d.profitPct.toFixed(2) + '%',
+      (d.profitPct >= 0 ? '+' : '') + d.profitPct.toFixed(2) + '%' + basisTag,
       nil(d.profitPct) ? '' : pnlClass(d.profitPct));
   }
   if (on('winRate')) {
@@ -1612,12 +1638,19 @@ function render(data) {
 
     if (s.id === 'btc_vb') {
       const allocLabel = s.allocation >= 0.8 ? 'Full' : 'Reduced';
-      const btcBudgetLabel = s.budget > 0 ? fmtVal(s.budget, 'KRW') : 'Unlimited';
-      // Invested is null, not 0: this bot books no cost basis, and a bold W0
-      // beside a W9.8M position reads as a loss rather than as "not recorded".
-      metricsHTML = coreMetrics({cur: 'KRW', invested: s.cost_basis || null, budget: s.budget, value: s.value,
+      // "Unlimited" was true but useless: this bot has no imposed cap because it
+      // runs on the whole Upbit balance, and that balance is the budget. The
+      // generator now fills it, so show the amount and say where it comes from.
+      const btcBudgetLabel = s.budget > 0
+        ? fmtVal(s.budget, 'KRW') + (s.budget_basis === 'account' ? mSub('(full account)') : '')
+        : 'Unlimited';
+      // cost_basis is filled by the generator for account-owning bots (value
+      // minus unrealized), so Invested is a real number here rather than the
+      // dash it used to be.
+      metricsHTML = coreMetrics({cur: 'KRW', invested: s.cost_basis, budget: s.budget,
+        budgetLabel: btcBudgetLabel, value: s.value,
         unrealized: s.unrealized_profit, realized: s.realized_profit_ytd, trades: s.realized_trades,
-        totalPl: s.total_pl_ytd, profitPct: s.profit_rate_ytd_pct,
+        totalPl: s.total_pl_ytd, profitPct: s.profit_rate_ytd_pct, basis: s.profit_rate_basis,
         winRate: s.win_rate_pct, mdd: s.mdd_pct, cycles: s.cycles_ytd})
         + mCell('Allocation', allocLabel);
       const sigClass = s.is_holding ? 'long' : 'cash';
@@ -1631,7 +1664,7 @@ function render(data) {
       const ketfPct = ketfBudget > 0 ? Math.round(ketfInvested / ketfBudget * 100) : 0;
       metricsHTML = coreMetrics({cur: 'KRW', invested: ketfInvested, budget: ketfBudget, value: s.value,
         unrealized: s.unrealized_profit, realized: s.realized_profit_ytd, trades: s.realized_trades,
-        totalPl: s.total_pl_ytd, profitPct: s.profit_rate_ytd_pct,
+        totalPl: s.total_pl_ytd, profitPct: s.profit_rate_ytd_pct, basis: s.profit_rate_basis,
         winRate: s.win_rate_pct, mdd: s.mdd_pct, cycles: s.cycles_ytd})
         + mCell('Target', s.extra?.target_ticker || MDASH);
       if (s.extra?.target) {
@@ -1645,7 +1678,7 @@ function render(data) {
       const posPct = posBudget > 0 ? Math.round(posInvested / posBudget * 100) : 0;
       metricsHTML = coreMetrics({cur: 'USD', invested: posInvested, budget: posBudget, value: s.value,
         unrealized: s.unrealized_profit, realized: s.realized_profit_ytd, trades: s.realized_trades,
-        totalPl: s.total_pl_ytd, profitPct: s.profit_rate_ytd_pct,
+        totalPl: s.total_pl_ytd, profitPct: s.profit_rate_ytd_pct, basis: s.profit_rate_basis,
         winRate: s.win_rate_pct, mdd: s.mdd_pct, cycles: s.cycles_ytd});
       if (s.id === 'jd_strategy') {
         // JD Strategy: two badges — market state + holding state
@@ -1670,7 +1703,7 @@ function render(data) {
       const dmPct = dmBudget > 0 ? Math.round(dmInvested / dmBudget * 100) : 0;
       metricsHTML = coreMetrics({cur: 'USD', invested: dmInvested, budget: dmBudget, value: s.value,
         unrealized: s.unrealized_profit, realized: s.realized_profit_ytd, trades: s.realized_trades,
-        totalPl: s.total_pl_ytd, profitPct: s.profit_rate_ytd_pct,
+        totalPl: s.total_pl_ytd, profitPct: s.profit_rate_ytd_pct, basis: s.profit_rate_basis,
         winRate: s.win_rate_pct, mdd: s.mdd_pct, cycles: s.cycles_ytd});
     }
 
@@ -1695,10 +1728,14 @@ function render(data) {
       // prefix and the currency differ. Reading the US half is then exactly the
       // habit you already built on the KR half.
       metricsHTML =
-        coreMetrics({cur: 'KRW', prefix: 'KR', invested: krInvested, budget: krBudget,
+        mSep('KR leg')
+        + coreMetrics({cur: 'KRW', prefix: 'KR', invested: krInvested, budget: krBudget,
           value: kr.value, unrealized: krUnreal, realized: krRealized, trades: krTrades,
           totalPl: kr.total_pl_ytd, profitPct: kr.profit_rate_ytd_pct,
           winRate: kr.win_rate_pct, mdd: kr.mdd_pct, cycles: kr.cycles_ytd})
+        // Force a fresh row: without it the US leg begins wherever the KR leg
+        // ran out and the halves run together mid-row.
+        + mSep('US leg')
         + coreMetrics({cur: 'USD', prefix: 'US', invested: usInvested, budget: usBudget,
           value: us.value, unrealized: usUnreal, realized: usRealized, trades: usTrades,
           totalPl: us.total_pl_ytd, profitPct: us.profit_rate_ytd_pct,
@@ -1722,7 +1759,7 @@ function render(data) {
         coreMetrics({cur: 'USD', invested: cbInvested, budget: cbBudget, value: s.value,
           unrealized: s.unrealized_profit, realized: s.realized_profit_ytd,
           trades: s.realized_trades, totalPl: s.total_pl_ytd,
-          profitPct: s.profit_rate_ytd_pct, winRate: s.win_rate_pct,
+          profitPct: s.profit_rate_ytd_pct, basis: s.profit_rate_basis, winRate: s.win_rate_pct,
           mdd: s.mdd_pct, cycles: s.cycles_ytd})
         // Bot-specific: this is the only bot that publishes a market regime read.
         + mCell('Regime', regime, regimeCls + ' bold')
@@ -1774,7 +1811,7 @@ function render(data) {
         coreMetrics({cur: 'KRW', invested: nInvested, budget: nBudget, value: s.value,
           unrealized: s.unrealized_profit, realized: s.realized_profit_ytd,
           trades: s.realized_trades, totalPl: s.total_pl_ytd,
-          profitPct: s.profit_rate_ytd_pct,
+          profitPct: s.profit_rate_ytd_pct, basis: s.profit_rate_basis,
           // Omitted, not missing: this sleeve keeps a POSITION ledger, not a
           // closed-trade book, so a win rate would be 0/0 and read as "never won".
           omit: ['winRate', 'mdd', 'cycles']})
@@ -1793,7 +1830,7 @@ function render(data) {
       metricsHTML =
         coreMetrics({cur: 'KRW', invested: s.cost_basis, value: s.value,
           unrealized: s.unrealized_profit, totalPl: s.total_pl_ytd,
-          profitPct: s.profit_rate_ytd_pct,
+          profitPct: s.profit_rate_ytd_pct, basis: s.profit_rate_basis,
           omit: ['budget', 'realized', 'winRate', 'mdd', 'cycles']})
         + mCell('Positions', String(ex.ticker_count || 0))
         + mCell('KIS (no bot)', fmtVal(ex.kis_krw || 0, 'KRW') +
