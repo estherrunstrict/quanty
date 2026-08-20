@@ -1,7 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Automation Oracle">
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"
+     role="img" aria-label="Automation Oracle">
   <!-- Automation Oracle — the wordmark's amber italic "O" on the dashboard's
        near-black ground. Colours are the site's own tokens: --bg #08080a,
-       --border #1e1e24, --accent #c9a24d. -->
+       --border #1e1e24, --accent #c9a24d.
+       width/height are NOT optional: an SVG with only a viewBox has no intrinsic
+       size, and Chrome then refuses to decode it as an icon — the tab falls back
+       to the default globe and the file looks fine in every other check. -->
   <rect width="64" height="64" rx="12" fill="#08080a"/>
   <rect x="0.5" y="0.5" width="63" height="63" rx="11.5" fill="none" stroke="#1e1e24"/>
   <ellipse cx="32" cy="32" rx="14" ry="19.5" fill="none" stroke="#c9a24d"
