@@ -89,6 +89,7 @@ BOT_CADENCE_HOURS = {
     "dual_momentum": 24,
     "claude_bot":    24,
     "nmf2":          24,   # daily sync 09:05/15:40; the rebalance is monthly
+    "usvb":          24,   # paper settle each US morning 07:15 KST, weekdays
 }
 BOT_CADENCE_DEFAULT = 24
 # Flag only once a bot is half a cycle PAST its next run — a late start or a
@@ -126,6 +127,7 @@ BOT_COLORS = {
     "dual_momentum": "#6851c2",   # indigo
     "nmf2":          "#b880c2",   # purple
     "jd_strategy":   "#99406d",   # wine
+    "usvb":          "#c754c7",   # magenta — dE 31.3 to nearest bot, 63.3 to semantics
     "manual":        "#8a8a8a",   # grey — the hands-on sleeve is not a bot
 }
 
@@ -139,6 +141,9 @@ BOT_CHIPS = {
     "btc_vb": "🟧", "hybrid_vb": "🟨", "claude_bot": "🟩", "korea_etf": "⬛",
     "quant40": "🟦", "dual_momentum": "🟪", "nmf2": "🟫", "jd_strategy": "🟥",
     "manual": "⬜",
+    # The nine squares are spent. Bots ten onward take CIRCLES — the shape
+    # separates usvb's 🟣 from dual_momentum's 🟪 even at chat size.
+    "usvb": "🟣",
 }
 BOT_COLOR_FALLBACK = "#6a6a6a"
 
@@ -1666,6 +1671,64 @@ def load_allocation(state_dir=None, now=None, fx_rate=None, live_totals=None):
     }
 
 
+USVB_STATUS_FILE = os.environ.get(
+    "QUANTY_USVB_STATUS", "/home/ubuntu/toss-usvb-bot/toss_usvb_bot/state/status.json")
+
+
+def build_usvb_card(path=None, now=None):
+    """USVB paper bot as a strategy card. Never raises; None when unreadable.
+
+    `paper_equity: True` is the load-bearing field: this equity exists in no
+    real account, so build_totals and the equity-history writer must skip it.
+    The card exists so a promotion-track bot is WATCHED — a paper track nobody
+    can see is a paper track nobody audits. (Its spec passed every promotion
+    gate on 2026-08-21 — docs/result-usvb-spec-review.md; what remains is the
+    live-order checklist in docs/decision-usvb-golive.md.)
+    """
+    try:
+        with open(path or USVB_STATUS_FILE) as f:
+            st = json.load(f)
+    except Exception:
+        return None
+    if not isinstance(st, dict) or st.get("equity_usd") is None:
+        return None
+    now = now or datetime.now(KST).replace(tzinfo=None)
+    age_h = None
+    try:
+        when = datetime.fromisoformat(str(st.get("updated_at")))
+        age_h = (now - when.replace(tzinfo=None)).total_seconds() / 3600.0
+    except (TypeError, ValueError):
+        pass
+    start = float(st.get("start_usd") or 0)
+    equity = float(st.get("equity_usd") or 0)
+    holdings = []
+    if st.get("core_units") and st.get("qqq_close"):
+        holdings.append({
+            "ticker": "QQQ", "name": "Invesco QQQ (core 70%)",
+            "quantity": round(float(st["core_units"]), 4),
+            "currency": "USD", "current_price": float(st["qqq_close"]),
+            "value": round(float(st["core_units"]) * float(st["qqq_close"]), 2),
+        })
+    return {
+        "id": "usvb", "name": "US VB (QQQ70+VB30)", "currency": "USD",
+        "mode": "paper", "paper_equity": True,
+        "value": round(equity, 2),
+        "cost_basis": round(start, 2), "budget": round(start, 2),
+        "total_pl_ytd": round(equity - start, 2),
+        "profit_rate_ytd_pct": (round((equity / start - 1) * 100, 2) if start else None),
+        "stale_hours": None if age_h is None else round(age_h, 2),
+        "holdings": holdings,
+        "extra": {
+            "sleeve_cash_usd": st.get("sleeve_cash_usd"),
+            "core_usd": st.get("core_usd"),
+            "paper_since": st.get("start"),
+            "pending": len(st.get("pending") or []),
+            "note": "Paper track for the promotion pipeline — equity is simulated, "
+                    "kept out of all real-money totals via paper_equity.",
+        },
+    }
+
+
 def build_accounts(totals, portfolio, toss, strategies, now):
     """`accounts` block: KIS / Upbit / Toss, each honestly flagged. PURE.
 
@@ -1808,6 +1871,11 @@ def build_totals(accounts, strategies, manual_card, kis_holdings, fx_rate):
     for s in strategies or []:
         if s.get("id") == "manual":
             continue
+        # Paper equity is not money in any account. Summing it here would make
+        # the card total disagree with the account-anchored bots_krw and read
+        # as "a live bot dropped its positions".
+        if s.get("paper_equity"):
+            continue
         if s.get("currency") == "MULTI":
             for leg, cur in (("kr", "KRW"), ("us", "USD")):
                 val = float(((s.get(leg) or {}).get("value")) or 0)
@@ -1897,7 +1965,7 @@ def append_manual_history(row, path=None):
     return rows
 
 
-AGG_SKIP_IDS = ("manual",)          # 수동 슬리브는 봇 비교 차트의 대상이 아니다
+AGG_SKIP_IDS = ("manual", "usvb")   # 수동=가치 카드, usvb=페이퍼 자산 — 실계좌 P/L 집계 밖
 
 
 def pin_aggregate_endpoint(aggregate, strategies, rate, today,
@@ -2208,6 +2276,14 @@ def main(dry_run=False):
     strategies = [s for s in strategies if s.get("id") not in ("manual", "nmf2")]
     if nmf2:
         strategies.append(nmf2)
+    usvb_card = build_usvb_card()
+    if usvb_card:
+        strategies.append(usvb_card)
+        print("  USVB (paper): ${:,.2f} vs start ${:,.0f} ({:+.2f}%)".format(
+            usvb_card["value"], usvb_card["cost_basis"],
+            usvb_card["profit_rate_ytd_pct"] or 0))
+    else:
+        print("  USVB (paper): status.json unreadable — no card")
     strategies.append(manual)                     # hands-on always last in the grid
     # Staleness last, once every card exists — nmf2 and the hands-on sleeve
     # are assembled here rather than by the API, so an earlier pass would
