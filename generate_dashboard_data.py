@@ -51,6 +51,7 @@ TOSS_MAX_AGE_HOURS = float(os.environ.get("QUANTY_TOSS_MAX_AGE_HOURS", "6"))
 # because the ledger already lives on THIS host next to the generator, so a
 # direct read needs no new transport, no Mac job, and no snapshot schema bump.
 NMF2_LEDGER_FILE = "/home/ubuntu/toss-nmf2-bot/toss_nmf2_bot/state/ledger.json"
+USVB_LEDGER_FILE = "/home/ubuntu/toss-usvb-bot/toss_usvb_bot/state/ledger.json"
 # Hands-on / Manual and NMF2 sleeve history (reporting-side only — no bot reads
 # these; they live beside the other reporting artefacts, never in the bot's dir).
 MANUAL_HISTORY_FILE = os.path.join(TRADING_DIR, "strategy_results", "manual_sleeve_history.jsonl")
@@ -1148,6 +1149,140 @@ def build_nmf2_card(ledger, toss_holdings, fx_rate=None):
             "caveat": "Value is marked from the Toss snapshot, so it is only as fresh as that "
                       "snapshot. Ledger cash is shown but excluded from `value` — Toss cash is "
                       "counted once, in totals.cash_krw.",
+        },
+    }
+
+
+def load_usvb_ledger(path=None):
+    """USVB's own ledger, READ-ONLY. {} on any problem, never raises."""
+    try:
+        with open(path or USVB_LEDGER_FILE) as f:
+            led = json.load(f)
+    except Exception:
+        return {}
+    if not isinstance(led, dict) or not isinstance(led.get("positions"), dict):
+        return {}
+    return led
+
+
+def build_usvb_live_card(ledger, toss_holdings, fx_rate=None):
+    """USVB once it trades REAL money. PURE. None when the ledger is not live.
+
+    Why this exists at all: the card used to be hardcoded `mode: "paper"` and read
+    the paper track's status.json. USVB went live 2026-08-21 and the paper crons
+    were removed in the same change, so the dashboard was showing a FROZEN
+    simulated equity while real orders were being placed against the Toss account
+    — and, worse, the shares it bought were unclaimed, so the hands-on sleeve
+    silently absorbed them as Jae's own buying.
+
+    It is labelled **testing**, not paper and not live: the money is real, but the
+    sleeve runs solo and un-gated (docs/decision-usvb-golive.md §3 — sleeve-only is
+    +8.61% CAGR / MDD -47.6%, which fails both promotion gates; the deployment is
+    there to measure execution, not to earn).
+
+    Marking follows build_nmf2_card exactly — claim min(ledger_qty, account_qty)
+    and pro-rate the account's own mark — so a share can never be counted by both
+    this card and the hands-on sleeve.
+
+    ONE DELIBERATE DIFFERENCE from NMF2: an empty book returns a card, not None.
+    This is a same-day strategy, so flat IS its normal resting state — vanishing
+    from the dashboard every night is exactly the wrong behaviour for the bot
+    that most needs watching.
+    """
+    if str((ledger or {}).get("mode") or "") != "testing":
+        return None                      # paper track, or a ledger from before the stamp
+    fx = float(fx_rate or 0)
+    positions = (ledger or {}).get("positions") or {}
+    by_symbol = {}
+    for h in toss_holdings or []:
+        if isinstance(h, dict):
+            sym = h.get("symbol") or h.get("ticker")
+            if sym and sym not in by_symbol:
+                by_symbol[sym] = h
+
+    rows, unmatched = [], []
+    value_krw = cost_usd = 0.0
+    for symbol, pos in sorted(positions.items()):
+        if not isinstance(pos, dict):
+            continue
+        led_qty = float(pos.get("qty") or 0)
+        if led_qty <= 0:
+            continue
+        acct = by_symbol.get(symbol)
+        acct_qty = float((acct or {}).get("qty") or (acct or {}).get("quantity") or 0)
+        avg = float(pos.get("avg_price") or 0)
+        if not acct or acct_qty <= 0:
+            # Same rule as NMF2: cost basis is not market value, and money the
+            # account does not report cannot be added to an account-anchored total.
+            unmatched.append(symbol)
+            continue
+        claimed = min(led_qty, acct_qty)
+        share = claimed / acct_qty
+        cur = acct.get("currency") or "USD"
+        acct_native = float(acct.get("value_native") or acct.get("value_krw") or 0)
+        native = acct_native * share
+        krw = native if cur == "KRW" else (native * fx if fx > 0
+                                           else float(acct.get("value_krw") or 0) * share)
+        cost = claimed * avg
+        value_krw += krw
+        cost_usd += cost
+        rows.append({
+            "ticker": symbol,
+            "name": acct.get("name") or symbol,
+            "qty": round(claimed, 6), "quantity": round(claimed, 6),
+            "currency": cur,
+            "avg_price": round(avg, 4),
+            "current_price": round(native / claimed, 4) if claimed else 0.0,
+            "value": round(native, 2), "value_krw": round(krw, 2),
+            "profit": round(native - cost, 2),
+            "profit_rate": round((native - cost) / cost * 100, 2) if cost > 0 else 0.0,
+            "source": "toss", "ledger_qty": round(led_qty, 6),
+        })
+
+    rows.sort(key=lambda r: r.get("value_krw", 0), reverse=True)
+    budget_usd = float((ledger or {}).get("budget_usd") or 0)
+    cash_usd = float((ledger or {}).get("cash_usd") or 0)
+    cost_krw = cost_usd * fx if fx > 0 else 0.0
+    unrealized = value_krw - cost_krw
+    flat = not rows
+    return {
+        "id": "usvb",
+        "name": "US VB (TQQQ/SQQQ 당일)",
+        # KRW because totals.toss_bots_krw sums `value` straight into a KRW total.
+        # The USD detail lives in `extra` rather than in the unit of the card.
+        "currency": "KRW",
+        "mode": "testing",
+        "account": "toss",
+        "value": round(value_krw, 2),
+        "cost_basis": round(cost_krw, 2),
+        "budget": round(budget_usd * fx, 2) if fx > 0 else 0.0,
+        "unrealized_profit": round(unrealized, 2),
+        # The ledger holds positions, not a closed-trade book. Realised P/L for a
+        # same-day strategy lives in orders.jsonl and is not summarised yet — 0.0
+        # is the honest value rather than a number this card cannot substantiate.
+        "realized_profit_ytd": 0.0,
+        "realized_trades": 0,
+        "total_pl_ytd": round(unrealized, 2),
+        "profit_rate_ytd_pct": (round(unrealized / cost_krw * 100, 2)
+                                if cost_krw > 0 else None),
+        "holdings": rows,
+        "last_run": (ledger or {}).get("updated"),
+        "extra": {
+            "note": ("검증 가동(testing) — 실제 돈, 실제 체결. 다만 QQQ 코어 없이 "
+                     "슬리브 단독이라 백테스트로 승격 게이트를 통과한 구성이 아니다. "
+                     "지금 목적은 수익이 아니라 체결 슬리피지 실측이다."),
+            "status": "관망 (돌파 대기)" if flat else "보유 중 (당일 청산 예정)",
+            "budget_usd": round(budget_usd, 2),
+            "cash_usd": round(cash_usd, 2),
+            "position_usd": round(cost_usd, 2),
+            "ticker_count": len(rows),
+            "ledger_position_count": len(positions),
+            "unmatched_symbols": unmatched,
+            "ledger_updated": (ledger or {}).get("updated"),
+            "schedule_kst": "진입 22:33/23:33 (월-금) · 청산 04:50/05:50 (화-토)",
+            "caveat": ("Value is marked from the Toss snapshot, so it is only as fresh "
+                       "as that snapshot. A flat book is NORMAL — every position is "
+                       "closed the same session."),
         },
     }
 
@@ -2259,6 +2394,13 @@ def main(dry_run=False):
     # sleeves — which is why the reconciliation gap cannot move.
     nmf2 = build_nmf2_card(load_nmf2_ledger(), toss_rows, fx)
     toss_claims = {r["ticker"]: r["qty"] for r in (nmf2 or {}).get("holdings", [])}
+    # USVB claims in the SAME carve-out, and it must happen here rather than later:
+    # build_manual_sleeve runs a few lines down and gives the hands-on sleeve
+    # everything no bot claimed. Before this, USVB's live TQQQ/SQQQ showed up as
+    # Jae's own hand-picked stock.
+    usvb_live = build_usvb_live_card(load_usvb_ledger(), toss_rows, fx)
+    for r in (usvb_live or {}).get("holdings", []):
+        toss_claims[r["ticker"]] = toss_claims.get(r["ticker"], 0.0) + r["qty"]
     if nmf2:
         nx = nmf2["extra"]
         print("  NMF2: W{:,.0f} ({}/{} ledger positions marked, cost W{:,.0f}, "
@@ -2276,14 +2418,27 @@ def main(dry_run=False):
     strategies = [s for s in strategies if s.get("id") not in ("manual", "nmf2")]
     if nmf2:
         strategies.append(nmf2)
-    usvb_card = build_usvb_card()
-    if usvb_card:
-        strategies.append(usvb_card)
-        print("  USVB (paper): ${:,.2f} vs start ${:,.0f} ({:+.2f}%)".format(
-            usvb_card["value"], usvb_card["cost_basis"],
-            usvb_card["profit_rate_ytd_pct"] or 0))
+    # Live testing beats the paper track: showing both would put two USVB cards on
+    # the grid, one of them a simulation frozen at go-live.
+    if usvb_live:
+        strategies.append(usvb_live)
+        ux = usvb_live["extra"]
+        print("  USVB (testing, REAL money): W{:,.0f} — {} · {} position(s), "
+              "budget ${:,.0f}, cash ${:,.2f}".format(
+                  usvb_live["value"], ux["status"], ux["ticker_count"],
+                  ux["budget_usd"], ux["cash_usd"]))
+        if ux["unmatched_symbols"]:
+            print("  NOTE: USVB ledger symbols absent from the Toss snapshot "
+                  "(valued at 0, NOT counted): {}".format(", ".join(ux["unmatched_symbols"])))
     else:
-        print("  USVB (paper): status.json unreadable — no card")
+        usvb_card = build_usvb_card()
+        if usvb_card:
+            strategies.append(usvb_card)
+            print("  USVB (paper): ${:,.2f} vs start ${:,.0f} ({:+.2f}%)".format(
+                usvb_card["value"], usvb_card["cost_basis"],
+                usvb_card["profit_rate_ytd_pct"] or 0))
+        else:
+            print("  USVB (paper): status.json unreadable — no card")
     strategies.append(manual)                     # hands-on always last in the grid
     # Staleness last, once every card exists — nmf2 and the hands-on sleeve
     # are assembled here rather than by the API, so an earlier pass would
