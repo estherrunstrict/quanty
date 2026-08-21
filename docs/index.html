@@ -868,7 +868,7 @@ const $ = s => document.querySelector(s);
 let BOT_COLORS = {
   btc_vb: '#c29a80', hybrid_vb: '#bcc251', claude_bot: '#5dc29f',
   korea_etf: '#408799', quant40: '#517ec2', dual_momentum: '#6851c2',
-  nmf2: '#b880c2', jd_strategy: '#99406d', manual: '#8a8a8a',
+  nmf2: '#b880c2', jd_strategy: '#99406d', usvb: '#c754c7', manual: '#8a8a8a',
 };
 function botColor(id) { return BOT_COLORS[id] || '#6a6a6a'; }
 // Same hue, low alpha — for fills that sit behind text.
@@ -1877,6 +1877,23 @@ function render(data) {
             '<span style="color:var(--tx4)">/' + (ex.ledger_position_count || 0) + '</span>')
         + mCell('Ledger Cash', fmtVal(ex.cash_krw || 0, 'KRW'));
       signalHTML = `<div class="sig long" style="font-size:0.5rem">TOSS · 신마법공식 2.0 + 계절성</div>`;
+    }
+
+    else if (s.id === 'usvb') {
+      const ex = s.extra || {};
+      // Paper-equity card: same core run as every bot, minus the closed-trade
+      // stats a 2-week-old paper track cannot meaningfully have yet.
+      metricsHTML =
+        coreMetrics({cur: 'USD', invested: s.cost_basis, budget: s.budget,
+          value: s.value, unrealized: s.total_pl_ytd,
+          totalPl: s.total_pl_ytd, profitPct: s.profit_rate_ytd_pct,
+          basis: s.profit_rate_basis,
+          omit: ['realized', 'winRate', 'mdd', 'cycles']})
+        + mCell('Core (QQQ)', fmtVal(ex.core_usd || 0, 'USD'))
+        + mCell('Sleeve cash', fmtVal(ex.sleeve_cash_usd || 0, 'USD'))
+        + mCell('Pending orders', String(ex.pending || 0))
+        + mCell('Paper since', ex.paper_since || '—');
+      signalHTML = '<div class="sig cash" style="font-size:0.5rem">PAPER · promotion track · gates passed 2026-08-21</div>';
     }
 
     else if (isManual) {
