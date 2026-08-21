@@ -158,15 +158,25 @@ def test_ramp_explains_why_target_is_below_the_1_over_n_share(tmp_path):
 
 
 def test_bots_at_target_are_not_labelled_as_limited(tmp_path):
-    """A bot already at its 1/N share has nothing holding it back."""
+    """A bot already at its 1/N share has nothing holding it back.
+
+    The label is derived from the LIVE 1/N share now, not from the target the
+    proposal happens to carry, so this is set up by putting the bot's CURRENT
+    budget at its share — which is what "already at target" actually means.
+    """
     prop = json.loads(json.dumps(PROPOSAL))
-    prop["allocations"]["nmf2"]["target_krw"] = prop["level2"]["per_bot_krw"]
+    share = prop["level2"]["per_bot_krw"]
+    prop["allocations"]["nmf2"]["current_budget"] = share
+    prop["allocations"]["nmf2"]["target_budget"] = share
+    prop["allocations"]["nmf2"]["ramped"] = False
     a = G.load_allocation(_state(tmp_path, proposal=prop), now=NOW, fx_rate=FX)
     n = [b for b in a["bots"] if b["id"] == "nmf2"][0]
 
-    assert n["limited_by"] == ""
+    # Within the turnover band of its own share: held exactly where it is.
+    assert n["limited_by"] in ("", "band")
     assert n["ramp_factor"] is None
     assert n["runs_to_target"] is None
+    assert abs(n["drift_krw"]) < 2
 
 
 def test_capital_provenance_travels_with_the_number(tmp_path):

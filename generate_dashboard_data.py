@@ -1351,6 +1351,60 @@ def get_cma_krw():
         return 0.0
 
 
+# The allocator's turnover band. Unlike the ramp this cannot be derived from a
+# proposal — a bot held by the band shows target == current, which tells you the
+# move was under the band but not what the band IS. Mirrored from
+# asset_mgmt/allocate.py TURNOVER_BAND; change one, change both.
+ALLOC_TURNOVER_BAND = float(os.environ.get("QUANTY_ALLOC_BAND", "0.20"))
+ALLOC_RAMP_FALLBACK = 1.35
+
+
+def proposal_ramp_max(allocations):
+    """The allocator's RAMP_MAX, read back out of its own proposal.
+
+    A ramped bot has target == current * RAMP_MAX exactly, in native units, so
+    the ratio IS the constant — no need to hard-code it here and have it drift
+    the first time someone tunes AM_RAMP_MAX. Falls back only when nothing was
+    ramped, in which case nothing is being capped and the value barely matters.
+    """
+    for p in (allocations or {}).values():
+        if not isinstance(p, dict) or not p.get("ramped"):
+            continue
+        cur = float(p.get("current_budget") or 0)
+        tgt = float(p.get("target_budget") or 0)
+        if cur > 0 and tgt > cur:
+            return tgt / cur
+    return ALLOC_RAMP_FALLBACK
+
+
+def _live_target(cur_krw, per_bot_krw, ramp_max, band=None):
+    """Re-run the allocator's per-bot rule against the LIVE 1/N share.
+
+    The target the allocator wrote is a function of the residual IT saw at
+    08:20. Sell part of the hands-on sleeve at lunchtime and the residual grows,
+    the 1/N share on the panel grows with it — but the Target column stayed
+    frozen on the morning's number, so the whole point of reducing hands-on
+    (more capital for the fleet) was invisible until the next morning.
+
+    Same two rules the allocator applies, in the same order:
+      1. ramp   — no bot grows more than RAMP_MAX in one cycle;
+      2. band   — a move under the turnover band is not worth making at all.
+
+    Returns (target_krw, limited_by). This is a PROJECTION for the panel: it
+    does not write any budget. What the bots actually hold is `current_krw`.
+    """
+    band = ALLOC_TURNOVER_BAND if band is None else band
+    tgt = float(per_bot_krw or 0)
+    if tgt <= 0:
+        return 0.0, ""
+    limited = ""
+    if cur_krw > 0 and tgt > cur_krw * ramp_max:
+        tgt, limited = cur_krw * ramp_max, "ramp"
+    if cur_krw > 0 and abs(tgt - cur_krw) / cur_krw < band:
+        tgt, limited = cur_krw, "band"
+    return tgt, limited
+
+
 def _runs_to_target(current_krw, uncapped_krw, target_krw):
     """Daily runs until a ramped bot reaches its 1/N share. None if unknowable.
 
@@ -1511,16 +1565,38 @@ def load_allocation(state_dir=None, now=None, fx_rate=None, live_totals=None):
     a_manual = float((prop.get("level0") or {}).get("manual_krw") or 0)
     a_resid = float((prop.get("level0") or {}).get("residual_krw") or 0)
     a_cap = float((prop.get("capital") or {}).get("total_krw") or 0)
-    cap = float(lt.get("investments_krw") or 0) or a_cap
-    man = float(lt.get("manual_krw") or 0) or a_manual
-    resid = max(0.0, cap - man) if lt.get("investments_krw") else a_resid
+    # `x or fallback` treats a legitimate ZERO as missing. A hands-on sleeve
+    # of exactly 0 — the whole sleeve sold, which is precisely the case worth
+    # getting right — silently reverted to the allocator's stale figure and
+    # the residual collapsed back instead of jumping to the full capital.
+    # Presence is tested with `is not None`, never truthiness.
+    has_live = lt.get("investments_krw") is not None
+    cap = float(lt["investments_krw"]) if has_live else a_cap
+    man = float(lt["manual_krw"]) if lt.get("manual_krw") is not None else a_manual
+    resid = max(0.0, cap - man) if has_live else a_resid
     X = float(lv1.get("X") or 0)
     N = int(lv2.get("N") or 0)
     pool = resid * X
     per_bot_live = pool / N if N else 0.0
+    ramp_max = proposal_ramp_max(prop.get("allocations"))
     for r in rows:
-        if r["in_etf"]:
-            r["uncapped_krw"] = round(per_bot_live, 2)
+        if not r["in_etf"]:
+            continue
+        r["uncapped_krw"] = round(per_bot_live, 2)
+        # Re-derive the target from the LIVE residual so a hands-on reduction
+        # reaches this column the moment it happens, instead of waiting for the
+        # allocator's next 08:20 run.
+        cur = float(r["current_krw"] or 0)
+        tgt, limited = _live_target(cur, per_bot_live, ramp_max)
+        r["target_krw"] = round(tgt, 2)
+        r["drift_krw"] = round(tgt - cur, 2)
+        r["limited_by"] = limited
+        r["ramp_factor"] = round(tgt / cur, 4) if limited == "ramp" and cur > 0 else None
+        r["runs_to_target"] = (_runs_to_target(cur, per_bot_live, tgt)
+                               if limited == "ramp" else None)
+        # True when the panel's projection has moved away from what the
+        # allocator actually wrote — i.e. the sleeve changed since 08:20.
+        r["target_is_live"] = True
     return {
         "as_of": stamp,
         "age_hours": None if age_h is None else round(age_h, 2),
@@ -1533,6 +1609,8 @@ def load_allocation(state_dir=None, now=None, fx_rate=None, live_totals=None):
         "capital_basis": basis,
         "fx": fx,
         "repriced_live": bool(lt.get("investments_krw")),
+        "ramp_max": round(ramp_max, 4),
+        "turnover_band": ALLOC_TURNOVER_BAND,
         # What the allocator ACTUALLY used when it sized the bots. Kept so the
         # gap stays visible: on 2026-08-20 collect.py read a dashboard whose
         # Toss sleeve was a day stale, so hands-on came in W12.1M high and

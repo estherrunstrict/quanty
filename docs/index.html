@@ -1449,16 +1449,24 @@ function buildAllocation(a) {
       '<td colspan="2" class="why">' + (b.why || 'excluded') + '</td></tr>'
     ).join('');
 
-    let note = 'Drift is target − current. ';
+    // Target is derived from the CURRENT residual, not from the allocator's
+    // morning run — so selling part of the hands-on sleeve raises the 1/N share
+    // here immediately. It does NOT raise today's target past one ramp step:
+    // that cap is the allocator's own rule, and pretending otherwise would show
+    // a budget no bot is going to be given.
+    let note = 'Drift is target − current. Both are recomputed from the residual ' +
+      'as it stands now, so reducing hands-on capital lifts the 1/N share the ' +
+      'moment it happens. ';
     if (factor) {
-      note += 'Targets sit below the 1/N share because a bot may grow at most ' +
-        '<b>×' + factor.toFixed(2) + ' per daily run</b> — a jump straight to 1/N ' +
-        'would have the fleet chasing every manual trade. ' +
-        (runs ? 'At this rate the fleet reaches 1/N in about <b>' + runs +
-                ' more run' + (runs === 1 ? '' : 's') + '</b>.' : '');
+      note += 'Today\'s target is still capped at <b>×' + factor.toFixed(2) +
+        ' per daily run</b> — a jump straight to 1/N would have the fleet chasing ' +
+        'every manual trade — so freed capital arrives over the next ' +
+        (runs ? '<b>' + runs + ' run' + (runs === 1 ? '' : 's') + '</b>' : 'few runs') +
+        ' rather than at once. ';
     }
-    note += ' A bot already within 20% of target is held where it is, ' +
-            'so small drifts do not churn the book.';
+    note += 'A bot already within 20% of target is held where it is, ' +
+            'so small drifts do not churn the book. These are projections: what ' +
+            'each bot actually holds is the Current column.';
 
     const tbl = h('div', 'alloc-bots');
     tbl.innerHTML =
