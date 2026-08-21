@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-08-21T06:30:16.841099+09:00",
+  "generated_at": "2026-08-21T16:15:18.391337+09:00",
   "stats": {
-    "total": 259,
-    "queued": 177,
+    "total": 261,
+    "queued": 179,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-08-21T06:30:16.840996+09:00",
+    "last_gc_at": "2026-08-21T16:15:18.391235+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -7524,6 +7524,68 @@
       "discovered": "2026-08-20",
       "matched_keywords": [
         "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.19389",
+      "source": "arxiv",
+      "title": "Concentrated Liquidity Provision: a Reinforcement Learning Perspective",
+      "authors": [
+        "Georgios Chionas",
+        "Charalampos Kleitsikas",
+        "Stefanos Leonardos",
+        "Leandro Sánchez-Betancourt",
+        "Carmine Ventre"
+      ],
+      "abstract": "Automated market makers (AMMs) are a cornerstone of decentralised finance (DeFi). Constant product markets with concentrated liquidity, such as UniswapV3, are now a well-established design. In these markets, liquidity providers (LPs) face a sequential decision problem: they must decide when to rebalance their positions and which price ranges to allocate capital to as market conditions evolve. We formulate dynamic liquidity provision as a stochastic impulse control problem and use reinforcement learning (RL) to solve it, focusing on providing interpretable solutions. We show that learned policies exhibit rich state-dependent behaviour, allocating liquidity according to mispricing, rebalancing costs, uncertainty, inventory exposure, and heterogeneous risk preferences. These behaviours help compress the left tail of the Profit and Loss (PnL) distribution and avoid catastrophic outcomes under high uncertainty. Finally, we benchmark the RL agents against baseline and sophisticated agents from the AMM microstructure literature and analyse their performance.",
+      "categories": [
+        "q-fin.TR",
+        "cs.AI",
+        "cs.LG",
+        "q-fin.CP",
+        "q-fin.MF"
+      ],
+      "url": "https://arxiv.org/abs/2608.19389v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.19389v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-19",
+      "discovered": "2026-08-21",
+      "matched_keywords": [
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.20020",
+      "source": "arxiv",
+      "title": "The Reconfiguration Premium: Co-movement Structure as an Unspanned Dimension of the Variance Risk Premium",
+      "authors": [
+        "Lucas Carvalho"
+      ],
+      "abstract": "Hedge ratios, factor models and diversified portfolios all rest on an estimate of which firms move together. That estimate is not stable: firms migrate between the groupings the market treats as coherent, and when enough migrate the organizing axes of the cross-section turn. We measure the rate of that turning as the mean squared sine of the principal angles between subdominant eigenspaces of consecutive twelve-month S&P 500 correlation matrices. A typical month rewrites a fifth of the structure and carries four-fifths forward. That rate is priced: it couples to the aggregate variance risk premium at t = 5.40, no level measure correlates above 0.32, and the implied-correlation surface spans at most 6.7 percent of it. Only the persistent component is priced - the premium compensates the pace of revision, not the distance traveled. The mechanism is prepayment: implied variance rises on impact, volatility follows two to three quarters later (simulated-null p < 0.03 at h = 1-9), and the premium converges as it arrives. Three pre-registered boundaries hold: no timing alpha, no crash protection, and a downside version inseparable from intensity. The premium is, in part, rent on exposure held over a map still being redrawn.",
+      "categories": [
+        "q-fin.MF",
+        "q-fin.PR",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2608.20020v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.20020v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-20",
+      "discovered": "2026-08-21",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
