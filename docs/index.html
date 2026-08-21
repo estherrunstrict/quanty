@@ -1385,11 +1385,11 @@ function buildAllocation(a) {
   const levels = h('div', 'alloc-levels');
   levels.innerHTML =
     '<div class="alloc-lv">' +
-      '<div class="lv-tag">Level 0 · hands-on is senior</div>' +
-      '<div class="lv-sub">Your own positions are carved out first. The fleet only ever sees the residual.</div>' +
-      '<div class="alloc-row"><span class="k">Total capital</span><span class="v">' + won(a.capital_krw) + '</span></div>' +
-      '<div class="alloc-row minus"><span class="k">− Hands-on</span><span class="v">' + won(L0.manual_krw) + '</span></div>' +
-      '<div class="alloc-row big eq"><span class="k">= Residual</span><span class="v">' + won(L0.residual_krw) + '</span></div>' +
+      '<div class="lv-tag">Level 0 · total capital</div>' +
+      '<div class="lv-sub">Everything under management, across every account.</div>' +
+      '<div class="alloc-row big eq"><span class="k">Total capital</span><span class="v">' + won(a.capital_krw) + '</span></div>' +
+      '<div class="alloc-row"><span class="k">of which hands-on</span><span class="v">' + won(L0.manual_krw) + '</span></div>' +
+      '<div class="alloc-row"><span class="k">not in hands-on</span><span class="v">' + won(L0.residual_krw) + '</span></div>' +
       (capMeta ? '<div class="lv-foot">' + capMeta + '</div>' : '') +
     '</div>' +
     '<div class="alloc-lv">' +
@@ -1400,15 +1400,22 @@ function buildAllocation(a) {
       '<div class="alloc-row"><span class="k">vol cap' + mark('vol_target') + '</span><span class="v">' + pc(L1.x_vol_cap) + '</span></div>' +
       '<div class="alloc-row"><span class="k">× DD brake</span><span class="v">' + (L1.brake == null ? '—' : L1.brake.toFixed(2)) + '</span></div>' +
       '<div class="alloc-row big eq"><span class="k">= X</span><span class="v">' + pc(L1.X) + '</span></div>' +
-      '<div class="lv-foot">' + won(L0.residual_krw) + ' × ' + pc(L1.X) + ' = <b>' + won(L2.fleet_pool_krw) + '</b> fleet pool</div>' +
+      '<div class="lv-foot">' + won(a.capital_krw) + ' × ' + pc(L1.X) + ' = <b>' +
+        won(L2.exposure_budget_krw) + '</b> exposure budget — the total the system is ' +
+        'willing to have at risk, hands-on included.</div>' +
     '</div>' +
     '<div class="alloc-lv">' +
-      '<div class="lv-tag">Level 2 · equal weight</div>' +
-      '<div class="lv-sub">1/N by policy, not optimisation — four months of record cannot justify tilting.</div>' +
-      '<div class="alloc-row"><span class="k">Fleet pool</span><span class="v">' + won(L2.fleet_pool_krw) + '</span></div>' +
+      '<div class="lv-tag">Level 2 · hands-on comes out, then 1/N</div>' +
+      '<div class="lv-sub">Hands-on is senior AND counts inside X — it is exposure too. Deducting it here is what keeps total exposure at X and the cash floor intact.</div>' +
+      '<div class="alloc-row"><span class="k">Exposure budget</span><span class="v">' + won(L2.exposure_budget_krw) + '</span></div>' +
+      '<div class="alloc-row minus"><span class="k">− Hands-on</span><span class="v">' + won(L0.manual_krw) + '</span></div>' +
+      '<div class="alloc-row eq"><span class="k">= Fleet pool</span><span class="v">' + won(L2.fleet_pool_krw) + '</span></div>' +
       '<div class="alloc-row minus"><span class="k">÷ bots in fleet (N)</span><span class="v">' + (L2.N || 0) + '</span></div>' +
-      '<div class="alloc-row big eq"><span class="k">= 1/N share</span><span class="v">' + won(L2.per_bot_krw) + '</span></div>' +
-      '<div class="lv-foot">Today\'s targets are lower: no bot moves more than one ramp step per run — see the table.</div>' +
+      '<div class="alloc-row big"><span class="k">= 1/N share</span><span class="v">' + won(L2.per_bot_krw) + '</span></div>' +
+      (L2.fleet_recalled
+        ? '<div class="lv-foot"><b>Hands-on alone exceeds the exposure budget</b> — at this X the fleet is recalled to zero. A change that large is held for approval, not auto-applied.</div>'
+        : '<div class="lv-foot">Total exposure = hands-on + fleet pool = <b>' + pc(L1.X) +
+          '</b> of capital, so the ' + pc(1 - (L1.X || 0)) + ' cash floor holds.</div>') +
     '</div>';
   sec.appendChild(levels);
 

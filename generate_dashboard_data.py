@@ -1576,7 +1576,23 @@ def load_allocation(state_dir=None, now=None, fx_rate=None, live_totals=None):
     resid = max(0.0, cap - man) if has_live else a_resid
     X = float(lv1.get("X") or 0)
     N = int(lv2.get("N") or 0)
-    pool = resid * X
+    # Hands-on is deducted INSIDE X, not before it (policy set 2026-08-21).
+    #
+    # The old chain was pool = X * (C - manual), which quietly broke the cash
+    # floor: hands-on positions are exposure too, so total exposure came to
+    # manual + X*(C-manual) — 86.4% of capital on a day X was 80%, leaving 13.6%
+    # cash against a 20% floor, while `binding` reported "cash_floor".
+    #
+    #   exposure budget = X * C          <- the whole risk allowance
+    #   fleet pool      = budget - manual <- what is left after the senior sleeve
+    #
+    # Total exposure is then exactly X*C and the floor holds. The cost: when X is
+    # low the fleet can go to zero (X*C < manual) — on 2026-08-08..13 X sat at
+    # X_MIN 10% and X*C was W60M against W177M hands-on. daily.py's MAX_STEP rail
+    # holds a change that large for a human, so it cannot silently recall a fleet.
+    exposure = cap * X
+    pool = max(0.0, exposure - man)
+    fleet_recalled = bool(N) and exposure <= man
     per_bot_live = pool / N if N else 0.0
     ramp_max = proposal_ramp_max(prop.get("allocations"))
     for r in rows:
@@ -1639,8 +1655,10 @@ def load_allocation(state_dir=None, now=None, fx_rate=None, live_totals=None):
         # LEVEL 2 — equal weight, deliberately (DeMiguel-Garlappi-Uppal 1/N).
         "level2": {
             "N": N,
+            "exposure_budget_krw": round(exposure, 2),
             "per_bot_krw": round(per_bot_live, 2),
             "fleet_pool_krw": round(pool, 2),
+            "fleet_recalled": fleet_recalled,
             "roster": list(lv2.get("roster") or []),
         },
         "totals": prop.get("totals") or {},

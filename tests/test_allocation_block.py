@@ -91,7 +91,10 @@ def test_three_levels_are_reported(tmp_path):
     # the cash floor produce one number with three different meanings.
     assert a["level1"]["binding"] == "cash_floor"
     assert a["level2"]["N"] == 7
-    assert abs(a["level2"]["per_bot_krw"] - 40276604) < 2
+    # Hands-on comes out INSIDE X: pool = C*X - manual. Derived, not hard-coded,
+    # so the assertion follows the policy rather than one day's number.
+    expect = (541270441 * 0.8 - 188850155) / 7
+    assert abs(a["level2"]["per_bot_krw"] - expect) < 2
 
 
 def test_applied_is_distinct_from_proposed(tmp_path):
@@ -147,14 +150,15 @@ def test_ramp_explains_why_target_is_below_the_1_over_n_share(tmp_path):
     a = G.load_allocation(_state(tmp_path), now=NOW, fx_rate=FX)
     q = [b for b in a["bots"] if b["id"] == "quant40"][0]
 
-    assert abs(q["uncapped_krw"] - 40276604) < 2  # what 1/N alone would give
+    share = (541270441 * 0.8 - 188850155) / 7
+    assert abs(q["uncapped_krw"] - share) < 2     # what 1/N alone would give
     assert abs(q["target_krw"] - 19619.74 * FX) < 1   # what the ramp allows today
     assert q["limited_by"] == "ramp"
     # Derived from the data, never hard-coded: 27,683,452 / 20,506,261 = 1.35
     assert abs(q["ramp_factor"] - 1.35) < 0.001
     # And it says how long the gap takes to close, because "capped" alone does
     # not distinguish two days from two months.
-    assert q["runs_to_target"] == 3
+    assert q["runs_to_target"] == 2
 
 
 def test_bots_at_target_are_not_labelled_as_limited(tmp_path):
@@ -204,7 +208,9 @@ def test_block_holds_together_arithmetically(tmp_path):
     a = G.load_allocation(_state(tmp_path), now=NOW, fx_rate=FX)
     L0, L1, L2 = a["level0"], a["level1"], a["level2"]
 
-    assert abs(L0["residual_krw"] * L1["X"] - L2["fleet_pool_krw"]) < 2
+    # capital x X = exposure budget; budget - hands-on = pool; pool / N = share.
+    assert abs(a["capital_krw"] * L1["X"] - L2["exposure_budget_krw"]) < 2
+    assert abs(L2["exposure_budget_krw"] - L0["manual_krw"] - L2["fleet_pool_krw"]) < 2
     assert abs(L2["fleet_pool_krw"] / L2["N"] - L2["per_bot_krw"]) < 2
 
 
@@ -233,7 +239,8 @@ def test_panel_is_priced_in_the_dashboards_frame(tmp_path):
     # And the arithmetic still closes in the new frame.
     L0, L1, L2 = a["level0"], a["level1"], a["level2"]
     assert abs(L0["residual_krw"] - (live["investments_krw"] - live["manual_krw"])) < 1
-    assert abs(L0["residual_krw"] * L1["X"] - L2["fleet_pool_krw"]) < 2
+    assert abs(a["capital_krw"] * L1["X"] - L2["exposure_budget_krw"]) < 2
+    assert abs(L2["exposure_budget_krw"] - L0["manual_krw"] - L2["fleet_pool_krw"]) < 2
     assert abs(L2["fleet_pool_krw"] / L2["N"] - L2["per_bot_krw"]) < 2
 
 
