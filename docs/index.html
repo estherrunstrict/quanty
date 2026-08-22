@@ -242,7 +242,14 @@ a { color: var(--accent); text-decoration: none; }
 .dn { color: var(--r); }
 .amber { color: var(--accent); }
 
-/* ── Whole-Investment Hero ──
+/* ── Total-Capital Hero ──
+   Named "Total Capital", not "Total Investments": ~44% of this figure is cash,
+   so "investments" was simply wrong, and the allocation panel below derives
+   everything from the same number under the name Total capital. One number
+   with two names on one page is a number the reader has to reconcile.
+   The JSON key stays `totals.investments_krw` — four test files, two fixtures
+   and notify_discord.py read it, and none of that is worth churning for a label.
+
    Row A total (KIS+Upbit+Toss) / Row B per-account tiles / Row C bots-manual-cash
    split. Everything it reads is additive JSON (data.totals, data.accounts): when
    an older generator publishes without them the whole block is skipped and the
@@ -1476,8 +1483,8 @@ function allocatorFrameNote(a) {
 
   const manGap = (a.level0.manual_krw || 0) - (f.manual_krw || 0);
   const rel = f.manual_krw ? Math.abs(manGap) / f.manual_krw : 0;
-  let s = '<div class="alloc-note">Figures above are priced now, so Total capital ' +
-    'matches Total Investments at the top of the page. When it sized these bots at ' +
+  let s = '<div class="alloc-note">Figures above are priced now, so this Total ' +
+    'capital matches the headline at the top of the page. When it sized these bots at ' +
     (a.capital_as_of || 'its last run') + ' the allocator saw capital ' +
     won(f.capital_krw) + ' and hands-on ' + won(f.manual_krw) +
     ' at FX ' + Math.round(f.fx || 0).toLocaleString() + ', giving residual ' +
@@ -1527,7 +1534,7 @@ function buildAllocation(a) {
   // The panel is priced in the dashboard's frame now, so this line must say so.
   // It used to read "measured <allocator time>", which was true of the old
   // behaviour and became a lie the moment the figures were re-priced live.
-  const capMeta = (a.repriced_live ? 'priced now, same as Total Investments above' :
+  const capMeta = (a.repriced_live ? 'priced now, same as Total Capital above' :
                    (a.capital_as_of ? 'allocator frame, measured ' + a.capital_as_of : '')) +
     (a.fx ? ' · FX ' + Math.round(a.fx).toLocaleString() : '');
 
@@ -1700,7 +1707,7 @@ function render(data) {
   const originalDeposit = portfolio.original_deposit_krw || 1;
   const totalPnlPct = originalDeposit > 0 ? (totalPnlCombined / originalDeposit * 100) : 0;
 
-  // ── Whole-Investment hero
+  // ── Total-Capital hero
   // Jae runs most of his money by hand, in front of the bots, and it lives in
   // three brokers. The strip below only ever knew about KIS + Upbit; this block
   // is the honest headline: KIS + Upbit + Toss, then where that money actually
@@ -1747,7 +1754,7 @@ function render(data) {
 
     hero.innerHTML = `
       <div class="hero-top">
-        <div class="hero-lbl">Total Investments</div>
+        <div class="hero-lbl">Total Capital</div>
         <div class="hero-val">₩${Math.round(T.investments_krw).toLocaleString()}</div>
         <div class="hero-sub">≈ $${Math.round(invUSD).toLocaleString()} · KIS + CMA + Upbit + Toss</div>
         <div class="hero-pnl ${pnlClass(totalPnlCombined)}">Bot P/L YTD ${fmtPnl(totalPnlCombined, 'KRW')} (${totalPnlPct >= 0 ? '+' : ''}${totalPnlPct.toFixed(2)}% of deposits)</div>
