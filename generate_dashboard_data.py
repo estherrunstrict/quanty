@@ -2611,7 +2611,7 @@ def main(dry_run=False):
     print("  Accounts: KIS W{:,.0f} + Upbit W{:,.0f} + Toss W{:,.0f}".format(
         accounts["kis"]["total_krw"], accounts["upbit"]["total_krw"],
         (accounts.get("toss") or {}).get("total_krw", 0)))
-    print("  TOTAL INVESTMENTS W{:,.0f} = bots W{:,.0f} ({}%) + hands-on W{:,.0f} ({}%) + cash W{:,.0f} ({}%)".format(
+    print("  TOTAL CAPITAL W{:,.0f} = bots W{:,.0f} ({}%) + hands-on W{:,.0f} ({}%) + cash W{:,.0f} ({}%)".format(
         totals_block["investments_krw"], totals_block["bots_krw"], totals_block["split_pct"]["bots"],
         totals_block["manual_krw"], totals_block["split_pct"]["manual"],
         totals_block["cash_krw"], totals_block["split_pct"]["cash"]))
