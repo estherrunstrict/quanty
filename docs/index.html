@@ -22,11 +22,16 @@
 
 :root {
   --bg: #08080a;
-  --s1: #0e0e11;
-  --s2: #141418;
-  --s3: #1a1a1f;
-  --s4: #222228;
-  --border: #1e1e24;
+  /* Surfaces are translucent so the chrome backdrop drifts THROUGH the page
+     rather than only around it. 0.82 over a backdrop whose own peak luminance
+     is held near #1a1c22 keeps every panel within a couple of points of the
+     old flat #0e0e11 — the sheen has to be visible on six-figure numbers
+     without ever competing with them. */
+  --s1: rgba(14, 14, 17, 0.82);
+  --s2: rgba(22, 22, 27, 0.88);
+  --s3: rgba(26, 26, 31, 0.9);
+  --s4: rgba(34, 34, 40, 0.9);
+  --border: rgba(52, 52, 62, 0.55);
   --border-h: #2a2a32;
   --tx: #e2ded8;
   --tx2: #8a857e;
@@ -67,6 +72,43 @@ body::after {
   pointer-events: none;
   z-index: 9999;
 }
+
+/* ── Chrome backdrop ──
+   A drifting metallic sheen. It is painted into a deliberately TINY buffer
+   (see startBackdrop()) and stretched across the viewport, so the softness is
+   the browser's own bilinear upscale rather than a per-pixel blur — the whole
+   effect costs a few hundred pixels of fill per frame.
+
+   It sits BEHIND translucent panels rather than in the gutters, because at the
+   1440px shell cap a wide screen has no gutters and the effect would be
+   invisible on exactly the monitor it was asked for. */
+#bgfx {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  display: block;
+}
+
+/* Brushed-metal micro-streaks. Deliberately STATIC: the drift already comes
+   from the canvas, and animating the grain too reads as a failing panel
+   rather than as metal. */
+#bgfx-brush {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    102deg,
+    transparent 0 2px,
+    rgba(214, 222, 236, 0.028) 2px 3px,
+    transparent 3px 7px);
+}
+
+/* Everything the page draws rides above the backdrop. */
+.shell { position: relative; z-index: 1; }
 
 a { color: var(--accent); text-decoration: none; }
 
@@ -152,16 +194,24 @@ a { color: var(--accent); text-decoration: none; }
 .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
 
 /* ── Metric Strip ── */
+ /* Hairlines are drawn by each CELL's box-shadow bleeding into the 1px gap,
+    not by letting a --border container show through it. With the old
+    technique any grid area without a cell in it — a 7th tile wrapping under a
+    row of six — painted as a solid grey block that read as a panel that had
+    failed to load. Shadows only exist where a cell exists, so a short last
+    row is now just surface. The same fix is applied to .hero-accts. */
 .strip {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1px;
-  background: var(--border);
+  background: var(--s1);
+  border: 1px solid var(--border);
   margin-bottom: 2rem;
 }
 
 .strip .cell {
   background: var(--s1);
+  box-shadow: 0 0 0 1px var(--border);
   padding: 1rem 1.2rem;
 }
 
@@ -224,15 +274,21 @@ a { color: var(--accent); text-decoration: none; }
 .hero-sub { font-size: 0.72rem; color: var(--tx3); margin-top: 0.55rem; }
 .hero-pnl { font-size: 0.78rem; margin-top: 0.3rem; }
 
+/* Four accounts, four columns. It was three, so Toss wrapped alone onto a
+   second row beside a grey ghost cell two thirds of the panel wide. */
 .hero-accts {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1px;
-  background: var(--border);
+  background: var(--s1);
   border-top: 1px solid var(--border);
 }
 
-.hero-acct { background: var(--s1); padding: 0.9rem 1.4rem; }
+.hero-acct {
+  background: var(--s1);
+  box-shadow: 0 0 0 1px var(--border);
+  padding: 0.9rem 1.2rem;
+}
 .hero-acct.stale .a-val { color: var(--tx3); }
 
 .hero-acct .a-name {
@@ -399,14 +455,18 @@ a { color: var(--accent); text-decoration: none; }
 .tag.paper { border-color: var(--accent); color: var(--accent); }
 .tag.stale { border-color: var(--r); color: var(--r); }
 .tag.manual { border-color: #8a8a8a; color: #8a8a8a; }
+/* Real money, real fills, but a sleeve-only configuration that is NOT the one
+   that passed the promotion gates. "Live" overstates it and "Paper" is simply
+   false — the card used to claim both at once. */
+.tag.testing { border-color: var(--purple); color: var(--purple); }
 
 /* Hands-on sleeve: same card, no bot colour — it is Jae's own hand, not a bot. */
 .strat.manual { box-shadow: inset 2px 0 0 #8a8a8a; }
 
 .strat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 0.2rem 1.2rem;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.45rem 1.2rem;
 }
 
 .sg-lbl {
@@ -431,7 +491,7 @@ a { color: var(--accent); text-decoration: none; }
 
 /* Full-width row inside .strat-grid. grid-column: 1/-1 is what forces the
    next field onto a fresh line — Hybrid VB's US leg used to start wherever
-   the KR leg happened to stop, so 'KR Cycles' sat beside 'US Invested' and
+   the KR leg happened to stop, so 'KR Win Rate' sat beside 'US Invested' and
    the two halves read as one undifferentiated block. */
 .sg-sep {
   grid-column: 1 / -1;
@@ -761,7 +821,11 @@ a { color: var(--accent); text-decoration: none; }
 
   .hdr { flex-direction: column; gap: 0.6rem; margin-bottom: 1.2rem; padding-bottom: 0.8rem; }
   .hdr h1 { font-size: 1.4rem; }
-  .hdr-right { width: 100%; justify-content: space-between; }
+  /* wrap, or the four header items add up to ~470px of min-content and push
+     the whole document wider than the phone — which is what put the split bar
+     and half of "Decision Center" past the right edge, and made every panel
+     on the page scroll sideways with them. */
+  .hdr-right { width: 100%; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 0.9rem; }
 
   .strip { grid-template-columns: repeat(2, 1fr); }
   .cell .val { font-size: 1.15rem; }
@@ -851,6 +915,8 @@ a { color: var(--accent); text-decoration: none; }
 </head>
 <body>
 
+<canvas id="bgfx" aria-hidden="true"></canvas>
+<div id="bgfx-brush" aria-hidden="true"></div>
 <div class="shell" id="app">
   <div class="loading-state" id="loader">
     <div class="spinner"></div>
@@ -859,6 +925,85 @@ a { color: var(--accent); text-decoration: none; }
 </div>
 
 <script>
+// ═══ Chrome backdrop ═══════════════════════════════════════
+// Five soft lobes drifting on incommensurable sine periods, composited
+// additively into a 96x60 buffer that CSS stretches over the viewport. The
+// upscale IS the blur, which is why a full-screen animated gradient costs
+// about six thousand pixels of fill per frame instead of two million.
+//
+// Three things keep it from being a liability on a page of six-figure numbers:
+//   - peak luminance is capped near #1a1c22, so panels at 0.82 alpha land
+//     within a couple of points of the flat colour they used to be;
+//   - it stops dead when the tab is hidden — this page is left open all day
+//     behind other windows, and a rAF loop nobody is looking at is pure heat;
+//   - prefers-reduced-motion gets one static frame, not a stopped animation.
+function startBackdrop() {
+  const cv = document.getElementById('bgfx');
+  if (!cv) return;
+  const ctx = cv.getContext('2d');
+  if (!ctx) return;
+
+  // Buffer size is fixed, NOT derived from the viewport: the lobes are drawn
+  // in buffer space, so a resize that changed it would change the composition.
+  const W = 96, H = 60;
+  cv.width = W;
+  cv.height = H;
+
+  // Brushed steel, not aurora. The hues sit within a narrow band around
+  // neutral — warm graphite, cold silver, a slightly blue shadow — because a
+  // saturated backdrop turns an amber-accented page into a different brand,
+  // and because every bot colour on this page was chosen against a NEUTRAL
+  // card surface at a measured ΔE. One low amber lobe ties the metal to the
+  // page accent. Alphas are small: these composite additively.
+  const LOBES = [
+    { c: '150,152,158', a: 0.26, r: 0.62, px: [0.22, 0.78], py: [0.18, 0.62], sx: 41, sy: 29 },
+    { c: '208,212,220', a: 0.15, r: 0.42, px: [0.70, 0.26], py: [0.70, 0.24], sx: 53, sy: 37 },
+    { c: '52, 60, 78',  a: 0.34, r: 0.85, px: [0.50, 0.14], py: [0.80, 0.10], sx: 67, sy: 43 },
+    { c: '201,162,77',  a: 0.10, r: 0.36, px: [0.14, 0.62], py: [0.30, 0.78], sx: 79, sy: 59 },
+    { c: '104,102,120', a: 0.12, r: 0.50, px: [0.84, 0.34], py: [0.42, 0.86], sx: 97, sy: 71 },
+  ];
+
+  // t is seconds; every period is a prime-ish number of seconds so the whole
+  // field never visibly repeats.
+  function frame(t) {
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = '#08080a';
+    ctx.fillRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'lighter';
+    for (const L of LOBES) {
+      const fx = (Math.sin(t / L.sx * 2 * Math.PI) + 1) / 2;
+      const fy = (Math.sin(t / L.sy * 2 * Math.PI + 1.7) + 1) / 2;
+      const x = (L.px[0] + (L.px[1] - L.px[0]) * fx) * W;
+      const y = (L.py[0] + (L.py[1] - L.py[0]) * fy) * H;
+      const r = L.r * W;
+      const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0, 'rgba(' + L.c + ',' + L.a + ')');
+      g.addColorStop(0.55, 'rgba(' + L.c + ',' + (L.a * 0.32).toFixed(4) + ')');
+      g.addColorStop(1, 'rgba(' + L.c + ',0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+    }
+  }
+
+  const still = window.matchMedia &&
+                window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (still) { frame(11); return; }
+
+  let raf = null, t0 = null;
+  const tick = (ms) => {
+    if (t0 === null) t0 = ms;
+    frame((ms - t0) / 1000);
+    raf = requestAnimationFrame(tick);
+  };
+  const play = () => { if (raf === null) raf = requestAnimationFrame(tick); };
+  const stop = () => {
+    if (raf !== null) { cancelAnimationFrame(raf); raf = null; }
+  };
+  document.addEventListener('visibilitychange',
+    () => (document.hidden ? stop() : play()));
+  play();
+}
+
 // ═══ Helpers ═══════════════════════════════════════════════
 const $ = s => document.querySelector(s);
 // ── Bot identity colour ───────────────────────────────────────────────────
@@ -908,7 +1053,7 @@ function pnlClass(v) { return v >= 0 ? 'up' : 'dn'; }
 // Realized YTD cell — only rendered when the bot has closed at least one trade YTD.
 // Intentionally silent on zero-trade bots so cards don't fill with meaningless zeros.
 // ── Card metrics: one shape for every bot ─────────────────────────────────
-// Every card reports the SAME core fields in the SAME order, Invested → Cycles,
+// Every card reports the SAME core fields in the SAME order, Invested → Win Rate,
 // so you can read across bots without relearning each layout. These blocks used
 // to be hand-written per bot and had drifted apart: korea_etf slipped "Target"
 // into the middle of the run, nmf2 put Market Value third and skipped three
@@ -917,7 +1062,7 @@ function pnlClass(v) { return v >= 0 ? 'up' : 'dn'; }
 //
 // Missing DATA now renders as an em dash: the field stays in place, it simply
 // has no value yet. A field a bot structurally CANNOT have is declared in
-// `omit` and left out entirely — the hands-on sleeve has no cycles because
+// `omit` and left out entirely — the hands-on sleeve has no win rate because
 // nobody trades it on a schedule, and a permanent "—" there would read as a
 // broken feed rather than as "not applicable".
 //
@@ -985,18 +1130,22 @@ function coreMetrics(d) {
       nil(d.profitPct) ? '' : pnlClass(d.profitPct));
   }
   if (on('winRate')) {
+    // The cycle count rides HERE, as "(30c)". There used to be a separate
+    // Cycles cell carrying the same integer one column later; on seven of the
+    // eight cards it was a verbatim duplicate, and on the eighth it read "0"
+    // next to a win rate already dashed out for having no closed trades.
     o += mCell(p + 'Win Rate', nil(d.winRate) ? MDASH :
       d.winRate.toFixed(1) + '%' + mSub('(' + (d.cycles || 0) + 'c)'));
   }
-  if (on('mdd')) {
-    o += mCell(p + 'MDD', nil(d.mdd) ? MDASH : d.mdd.toFixed(2) + '%',
-               nil(d.mdd) ? '' : 'dn');
-  }
-  if (on('cycles')) {
-    o += mCell(p + 'Cycles', nil(d.cycles) ? MDASH : String(d.cycles));
-  }
   return o;
 }
+
+// MDD is not rendered. No bot has ever published `mdd_pct` — it is null for
+// all ten entities in every payload the generator produces — so the cell was a
+// permanent em dash on every card, twice on Hybrid VB. This file's own rule is
+// that a field which is structurally absent gets dropped rather than dashed,
+// because a standing "—" reads as a feed that broke. If a bot starts reporting
+// drawdown, add the cell back here and it re-joins the fixed run.
 
 
 // The per-metric cell helpers that used to live here (realizedCell,
@@ -1444,7 +1593,6 @@ function buildAllocation(a) {
       '<td class="why">' + (b.account || '') + '</td>' +
       '<td>' + won(b.current_krw) + '</td>' +
       '<td class="dim">' + (b.held_krw == null ? '—' : won(b.held_krw)) + '</td>' +
-      '<td class="dim">' + won(b.uncapped_krw) + '</td>' +
       '<td>' + won(b.target_krw) + '</td>' +
       '<td>' + limitCell(b) + '</td>' +
       '<td class="' + pnlClass(b.drift_krw) + '">' + fmtPnl(b.drift_krw, 'KRW') + '</td></tr>'
@@ -1454,7 +1602,7 @@ function buildAllocation(a) {
       '<td class="why">' + (b.account || '') + '</td>' +
       '<td>' + won(b.current_krw) + '</td>' +
       '<td class="dim">' + (b.held_krw == null ? '—' : won(b.held_krw)) + '</td>' +
-      '<td class="dim">—</td><td>—</td>' +
+      '<td>—</td>' +
       '<td colspan="2" class="why">' + (b.why || 'excluded') + '</td></tr>'
     ).join('');
 
@@ -1482,8 +1630,13 @@ function buildAllocation(a) {
 
     const tbl = h('div', 'alloc-bots');
     tbl.innerHTML =
+      // The "1/N share" column is gone. It is pool ÷ N — one number by
+      // construction, so it printed the SAME ₩36,657,850 on all seven fleet
+      // rows and an em dash on the rest, while the Level 2 panel directly
+      // above already states it once, on its own line, as the step that
+      // produced it. A column that cannot vary by row is not a column.
       '<table class="alloc-tbl"><thead><tr>' +
-      '<th>Bot</th><th>Account</th><th>Budget</th><th>Held</th><th>1/N share</th>' +
+      '<th>Bot</th><th>Account</th><th>Budget</th><th>Held</th>' +
       '<th>Target</th><th>Limited by</th><th>Drift</th>' +
       '</tr></thead><tbody>' + rows + '</tbody></table>' +
       '<div class="alloc-note">' + note + '</div>' +
@@ -1619,17 +1772,30 @@ function render(data) {
 
   // ── Strip
   const strip = h('section', 'strip fade-in d1');
+  // This strip is now exactly one thing: where the bot P/L came from, plus the
+  // dry powder behind it. Four of the seven tiles were removed because each one
+  // restated a number the reader had already passed on the way down:
+  //
+  //   Total Assets  ₩135,699,389  = the KIS tile + the Upbit tile, immediately
+  //                                 above it, added together
+  //   Upbit (BTC)   ₩10,759,835   = the Upbit account tile, verbatim
+  //   Total P&L     ₩+1,258,926   = the hero's own "Bot P/L YTD" line, same
+  //                                 figure and same percentage
+  //   Active Bots   9             = the "9 strategies" counter in the header,
+  //                                 with the cron name that is already printed
+  //                                 in the footer
+  //
+  // What is left — Realized and Unrealized — are the two halves the hero's
+  // total is made of and appear nowhere else, and KIS Cash is the only view of
+  // uninvested broker cash on the page.
   const stripData = totalAsset > 0 ? [
-    { lbl: 'Total Assets', val: '₩' + Math.round(totalAsset).toLocaleString(), sub: 'KIS + Upbit combined' },
     { lbl: 'KIS Cash', val: '₩' + Math.round(cashKRW).toLocaleString(), sub: '$' + cashUSD.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' USD' },
-    { lbl: 'Upbit (BTC)', val: '₩' + Math.round(upbitKRW).toLocaleString(), sub: 'Separate account' },
     { lbl: 'Realized YTD', val: fmtPnl(realCombined, 'KRW'), cls: pnlClass(realCombined), sub: 'KRW ' + fmtPnl(realKRW, 'KRW') + ' + USD ' + fmtPnl(realUSD, 'USD') },
     { lbl: 'Unrealized', val: fmtPnl(unrealCombined, 'KRW'), cls: pnlClass(unrealCombined), sub: 'KRW ' + fmtPnl(unrealKRW, 'KRW') + ' + USD ' + fmtPnl(unrealUSD, 'USD') },
-    { lbl: 'Total P&L', val: fmtPnl(totalPnlCombined, 'KRW'), cls: pnlClass(totalPnlCombined), sub: 'Realized + Unrealized · ' + (totalPnlPct >= 0 ? '+' : '') + totalPnlPct.toFixed(2) + '%' },
-    { lbl: 'Active Bots', val: data.strategies.filter(s => s.id !== 'manual').length.toString(), sub: 'check_and_run.sh' },
   ] : [
-    { lbl: 'Total Assets', val: '—', sub: 'Waiting for data update' },
-    { lbl: 'Active Bots', val: data.strategies.filter(s => s.id !== 'manual').length.toString(), sub: 'check_and_run.sh' },
+    { lbl: 'KIS Cash', val: '—', sub: 'Waiting for data update' },
+    { lbl: 'Realized YTD', val: '—', sub: 'Waiting for data update' },
+    { lbl: 'Unrealized', val: '—', sub: 'Waiting for data update' },
   ];
   stripData.forEach(d => {
     const cell = h('div', 'cell');
@@ -1692,15 +1858,22 @@ function render(data) {
     // deployment one made an unfunded paper bot indistinguishable from a
     // dead live bot — korea_etf reads paper/budget 0 and had run that morning.
     const isPaper = !isManual && s.mode === 'paper';
-    const modeTag = isManual ? 'manual' : (isPaper ? 'paper' : (isStale ? 'stale' : 'live'));
-    const modeLabel = isManual ? 'Manual' : (isPaper ? 'Paper' : (isStale ? 'Stale' : 'Live'));
+    // "testing" is its own deployment fact, between paper and live: real money
+    // and real fills, but a configuration that did NOT pass the promotion gates
+    // (USVB runs sleeve-only, USVB_CORE_WEIGHT=0). Folding it into "live" is
+    // what let the USVB card wear a green LIVE badge above a footer that called
+    // itself PAPER — two contradictory claims about the same bot, on one card.
+    const isTesting = !isManual && s.mode === 'testing';
+    const modeTag = isManual ? 'manual'
+      : (isPaper ? 'paper' : (isTesting ? 'testing' : (isStale ? 'stale' : 'live')));
+    const modeLabel = isManual ? 'Manual'
+      : (isPaper ? 'Paper' : (isTesting ? 'Testing' : (isStale ? 'Stale' : 'Live')));
 
     let metricsHTML = '';
     let holdingsHTML = '';
     let signalHTML = '';
 
     if (s.id === 'btc_vb') {
-      const allocLabel = s.allocation >= 0.8 ? 'Full' : 'Reduced';
       // "Unlimited" was true but useless: this bot has no imposed cap because it
       // runs on the whole Upbit balance, and that balance is the budget. The
       // generator now fills it, so show the amount and say where it comes from.
@@ -1714,8 +1887,12 @@ function render(data) {
         budgetLabel: btcBudgetLabel, value: s.value,
         unrealized: s.unrealized_profit, realized: s.realized_profit_ytd, trades: s.realized_trades,
         totalPl: s.total_pl_ytd, profitPct: s.profit_rate_ytd_pct, basis: s.profit_rate_basis,
-        winRate: s.win_rate_pct, mdd: s.mdd_pct, cycles: s.cycles_ytd})
-        + mCell('Allocation', allocLabel);
+        winRate: s.win_rate_pct, cycles: s.cycles_ytd});
+      // The "Allocation: Full / Reduced" cell is gone. It was a word for the
+      // ratio the Budget Cap cell states three columns earlier in currency,
+      // and that cell already carries "(full account)" when the budget IS the
+      // whole Upbit balance — which is the only condition under which this one
+      // ever said "Full".
       const sigClass = s.is_holding ? 'long' : 'cash';
       const sigLabel = s.is_holding ? 'Holding BTC' : 'Cash — No Signal';
       signalHTML = `<div class="sig ${sigClass}">${sigLabel}</div>`;
@@ -1728,7 +1905,7 @@ function render(data) {
       metricsHTML = coreMetrics({cur: 'KRW', invested: ketfInvested, budget: ketfBudget, value: s.value,
         unrealized: s.unrealized_profit, realized: s.realized_profit_ytd, trades: s.realized_trades,
         totalPl: s.total_pl_ytd, profitPct: s.profit_rate_ytd_pct, basis: s.profit_rate_basis,
-        winRate: s.win_rate_pct, mdd: s.mdd_pct, cycles: s.cycles_ytd})
+        winRate: s.win_rate_pct, cycles: s.cycles_ytd})
         + mCell('Target', s.extra?.target_ticker || MDASH);
       if (s.extra?.target) {
         signalHTML = `<div class="sig long">${s.extra.target}</div>`;
@@ -1742,7 +1919,7 @@ function render(data) {
       metricsHTML = coreMetrics({cur: 'USD', invested: posInvested, budget: posBudget, value: s.value,
         unrealized: s.unrealized_profit, realized: s.realized_profit_ytd, trades: s.realized_trades,
         totalPl: s.total_pl_ytd, profitPct: s.profit_rate_ytd_pct, basis: s.profit_rate_basis,
-        winRate: s.win_rate_pct, mdd: s.mdd_pct, cycles: s.cycles_ytd});
+        winRate: s.win_rate_pct, cycles: s.cycles_ytd});
       if (s.id === 'jd_strategy') {
         // JD Strategy: two badges — market state + holding state
         const stateMap = { 'NORMAL': 'cash', 'ALERT': 'bear', 'PANIC': 'bear' };
@@ -1767,7 +1944,7 @@ function render(data) {
       metricsHTML = coreMetrics({cur: 'USD', invested: dmInvested, budget: dmBudget, value: s.value,
         unrealized: s.unrealized_profit, realized: s.realized_profit_ytd, trades: s.realized_trades,
         totalPl: s.total_pl_ytd, profitPct: s.profit_rate_ytd_pct, basis: s.profit_rate_basis,
-        winRate: s.win_rate_pct, mdd: s.mdd_pct, cycles: s.cycles_ytd});
+        winRate: s.win_rate_pct, cycles: s.cycles_ytd});
     }
 
     else if (s.id === 'hybrid_vb') {
@@ -1795,14 +1972,14 @@ function render(data) {
         + coreMetrics({cur: 'KRW', prefix: 'KR', invested: krInvested, budget: krBudget,
           value: kr.value, unrealized: krUnreal, realized: krRealized, trades: krTrades,
           totalPl: kr.total_pl_ytd, profitPct: kr.profit_rate_ytd_pct,
-          winRate: kr.win_rate_pct, mdd: kr.mdd_pct, cycles: kr.cycles_ytd})
+          winRate: kr.win_rate_pct, cycles: kr.cycles_ytd})
         // Force a fresh row: without it the US leg begins wherever the KR leg
         // ran out and the halves run together mid-row.
         + mSep('US leg')
         + coreMetrics({cur: 'USD', prefix: 'US', invested: usInvested, budget: usBudget,
           value: us.value, unrealized: usUnreal, realized: usRealized, trades: usTrades,
           totalPl: us.total_pl_ytd, profitPct: us.profit_rate_ytd_pct,
-          winRate: us.win_rate_pct, mdd: us.mdd_pct, cycles: us.cycles_ytd})
+          winRate: us.win_rate_pct, cycles: us.cycles_ytd})
         + mCell('Positions', krPos + ' KR · ' + usPos + ' US');
     }
 
@@ -1822,8 +1999,7 @@ function render(data) {
         coreMetrics({cur: 'USD', invested: cbInvested, budget: cbBudget, value: s.value,
           unrealized: s.unrealized_profit, realized: s.realized_profit_ytd,
           trades: s.realized_trades, totalPl: s.total_pl_ytd,
-          profitPct: s.profit_rate_ytd_pct, basis: s.profit_rate_basis, winRate: s.win_rate_pct,
-          mdd: s.mdd_pct, cycles: s.cycles_ytd})
+          profitPct: s.profit_rate_ytd_pct, basis: s.profit_rate_basis, winRate: s.win_rate_pct, cycles: s.cycles_ytd})
         // Bot-specific: this is the only bot that publishes a market regime read.
         + mCell('Regime', regime, regimeCls + ' bold')
         + mCell('Confidence', (ex.confidence || 0) + '%')
@@ -1868,8 +2044,8 @@ function render(data) {
       const nBudget = s.budget || 0;
       const nInvested = s.cost_basis || 0;
       const nPct = nBudget > 0 ? Math.round(nInvested / nBudget * 100) : 0;
-      // No win-rate / MDD / cycles row: this sleeve keeps a position ledger, not
-      // a closed-trade book, so those cells would all read 0 and imply "never won".
+      // No win-rate row: this sleeve keeps a position ledger, not a closed-trade
+      // book, so the cell would read 0 and imply "never won".
       metricsHTML =
         coreMetrics({cur: 'KRW', invested: nInvested, budget: nBudget, value: s.value,
           unrealized: s.unrealized_profit, realized: s.realized_profit_ytd,
@@ -1877,7 +2053,7 @@ function render(data) {
           profitPct: s.profit_rate_ytd_pct, basis: s.profit_rate_basis,
           // Omitted, not missing: this sleeve keeps a POSITION ledger, not a
           // closed-trade book, so a win rate would be 0/0 and read as "never won".
-          omit: ['winRate', 'mdd', 'cycles']})
+          omit: ['winRate']})
         + mCell('Positions', (ex.ticker_count || 0) +
             '<span style="color:var(--tx4)">/' + (ex.ledger_position_count || 0) + '</span>')
         + mCell('Ledger Cash', fmtVal(ex.cash_krw || 0, 'KRW'));
@@ -1886,19 +2062,36 @@ function render(data) {
 
     else if (s.id === 'usvb') {
       const ex = s.extra || {};
-      // Paper-equity card: same core run as every bot, minus the closed-trade
-      // stats a 2-week-old paper track cannot meaningfully have yet.
+      // Currency comes from the DATA, never from a literal here. This bot has
+      // two generator paths that disagree: build_usvb_live_card() reads the
+      // ledger and publishes KRW, build_usvb_card() is the paper status.json
+      // fallback and publishes USD. The card hard-coded 'USD', so on the live
+      // path it printed the ₩2,786,000 budget as "$2,786,000.00" — a
+      // thousand-fold overstatement of a $2,000 sleeve, sitting directly above
+      // a single share of TQQQ worth $71. Hard-coding 'KRW' instead would just
+      // move the same bug onto the other path.
       metricsHTML =
-        coreMetrics({cur: 'USD', invested: s.cost_basis, budget: s.budget,
+        coreMetrics({cur: s.currency || 'KRW', invested: s.cost_basis, budget: s.budget,
           value: s.value, unrealized: s.total_pl_ytd,
           totalPl: s.total_pl_ytd, profitPct: s.profit_rate_ytd_pct,
           basis: s.profit_rate_basis,
-          omit: ['realized', 'winRate', 'mdd', 'cycles']})
-        + mCell('Core (QQQ)', fmtVal(ex.core_usd || 0, 'USD'))
-        + mCell('Sleeve cash', fmtVal(ex.sleeve_cash_usd || 0, 'USD'))
-        + mCell('Pending orders', String(ex.pending || 0))
-        + mCell('Paper since', ex.paper_since || '—');
-      signalHTML = '<div class="sig cash" style="font-size:0.5rem">PAPER · promotion track · gates passed 2026-08-21</div>';
+          omit: ['realized', 'winRate']})
+        // Dropped from this card: Core (QQQ), Pending orders and Paper since.
+        // All three read keys the generator does not emit (`core_usd`,
+        // `pending`, `paper_since`), so they were frozen at $0.00 / 0 / "—".
+        // Core is zero by DESIGN besides — this deployment runs
+        // USVB_CORE_WEIGHT=0 — and "Paper since" contradicts a bot that has
+        // been trading real money since 2026-08-21.
+        //
+        // Sleeve cash stays — it is the one number that says whether the bot
+        // can still take a trade tonight — but it now reads whichever key the
+        // active path actually fills. It was reading `sleeve_cash_usd` only,
+        // which the ledger path never writes, so it showed $0.00 while the
+        // sleeve held $1,927.89.
+        + mCell('Sleeve cash',
+            fmtVal(ex.cash_usd ?? ex.sleeve_cash_usd ?? 0, 'USD'))
+        + (ex.budget_usd ? mCell('Budget', fmtVal(ex.budget_usd, 'USD')) : '');
+      signalHTML = '<div class="sig cash" style="font-size:0.5rem">TESTING · sleeve-only, not the gate-passing blend · real money</div>';
     }
 
     else if (isManual) {
@@ -1906,21 +2099,32 @@ function render(data) {
       // Same core, same order as every bot — but four fields are omitted rather
       // than dashed, because this sleeve structurally cannot have them: nobody
       // allocates it a budget (it is senior capital, not a bot), and it keeps no
-      // closed-trade book, so win rate, MDD and cycles have no meaning here.
+      // closed-trade book, so realized P/L and win rate have no meaning here.
+      //
+      // Unrealized is omitted for BOTH reasons at once. The generator publishes
+      // no unrealized_profit for this sleeve, so the cell was a standing em
+      // dash — and it could only ever have repeated Total P/L, because with no
+      // realized book every won of this sleeve's P/L is unrealized by
+      // definition.
       metricsHTML =
         coreMetrics({cur: 'KRW', invested: s.cost_basis, value: s.value,
           unrealized: s.unrealized_profit, totalPl: s.total_pl_ytd,
           profitPct: s.profit_rate_ytd_pct, basis: s.profit_rate_basis,
-          omit: ['budget', 'realized', 'winRate', 'mdd', 'cycles']})
-        + mCell('Positions', String(ex.ticker_count || 0))
-        + mCell('KIS (no bot)', fmtVal(ex.kis_krw || 0, 'KRW') +
-            mSub('(' + (ex.kis_ticker_count || 0) + ')'))
-        + mCell('Toss', fmtVal(ex.toss_krw || 0, 'KRW') +
-            mSub('(' + (ex.toss_ticker_count || 0) + ')'))
-        + mCell('KIS Unrealized', fmtPnl(ex.kis_unrealized_krw || 0, 'KRW'),
-            pnlClass(ex.kis_unrealized_krw || 0))
-        + mCell('Toss P/L', fmtPnl(ex.toss_pl_krw || 0, 'KRW'),
-            pnlClass(ex.toss_pl_krw || 0));
+          omit: ['budget', 'unrealized', 'realized', 'winRate']})
+        + mCell('Positions', String(ex.ticker_count || 0));
+        // Four cells removed here, all of them restating something already on
+        // the card:
+        //   Toss           = Market Value, and its (5) = Positions
+        //   Toss P/L       = Total P/L
+        //   KIS (no bot)   = ₩0 (0), permanently
+        //   KIS Unrealized = ₩+0, permanently
+        // The sleeve is DEFINED as Toss stock minus NMF2's claimed shares, so
+        // the two Toss cells could only ever echo the core run, and the two
+        // KIS cells could only ever be zero. Unclaimed KIS stock is still
+        // recorded in the data as extra.kis_unclaimed_krw, where it belongs:
+        // it is a bot-ledger alarm, not a line item of his own money. If it
+        // ever goes non-zero it deserves a warning, not a zero-valued cell
+        // that nobody reads because it has never once moved.
       signalHTML = `<div class="sig cash" style="font-size:0.5rem">HANDS-ON · NOT BOT-MANAGED</div>`;
     }
 
@@ -2103,6 +2307,7 @@ async function load() {
   }
 }
 
+startBackdrop();
 load();
 </script>
 
