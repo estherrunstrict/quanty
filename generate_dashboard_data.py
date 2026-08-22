@@ -129,6 +129,9 @@ BOT_COLORS = {
     "nmf2":          "#b880c2",   # purple
     "jd_strategy":   "#99406d",   # wine
     "usvb":          "#c754c7",   # magenta — dE 31.3 to nearest bot, 63.3 to semantics
+    # 열한 번째. 초록(80~170°)·빨강(340~20°) 색상각은 후보에서 통째로 제외했다 —
+    # dE 가 충분해도 초록 테두리는 '수익'으로 읽힌다. 남은 각도 중 최대 거리(36.9).
+    "event_bot":     "#7f4219",   # russet
     "manual":        "#8a8a8a",   # grey — the hands-on sleeve is not a bot
 }
 
@@ -144,7 +147,7 @@ BOT_CHIPS = {
     "manual": "⬜",
     # The nine squares are spent. Bots ten onward take CIRCLES — the shape
     # separates usvb's 🟣 from dual_momentum's 🟪 even at chat size.
-    "usvb": "🟣",
+    "usvb": "🟣", "event_bot": "🟤",
 }
 BOT_COLOR_FALLBACK = "#6a6a6a"
 
