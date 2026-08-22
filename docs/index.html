@@ -369,6 +369,7 @@ a { color: var(--accent); text-decoration: none; }
 }
 .alloc-badge.ok   { border-color: var(--g); color: var(--g); }
 .alloc-badge.warn { border-color: var(--accent); color: var(--accent); }
+.alloc-badge.crit { border-color: var(--r); color: var(--r); }
 
 .alloc-levels {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -477,6 +478,11 @@ a { color: var(--accent); text-decoration: none; }
    that passed the promotion gates. "Live" overstates it and "Paper" is simply
    false — the card used to claim both at once. */
 .tag.testing { border-color: var(--purple); color: var(--purple); }
+/* MDD kill switch fired: live drawdown breached the bot's own backtest MDD
+   (asset_mgmt/portfolio_model.py). Solid red fill, not just an outline —
+   this is the one badge that means "stopped by policy", not a mode or a
+   feed-health note. */
+.tag.killed { border-color: var(--r); color: #fff; background: var(--r); }
 
 /* Hands-on sleeve: same card, no bot colour — it is Jae's own hand, not a bot. */
 .strat.manual { box-shadow: inset 2px 0 0 #8a8a8a; }
@@ -1170,6 +1176,35 @@ function coreMetrics(d) {
 // because a standing "—" reads as a feed that broke. If a bot starts reporting
 // drawdown, add the cell back here and it re-joins the fixed run.
 
+// BACKTEST MDD is a different animal from the live mdd_pct above: it comes
+// from asset_mgmt/backtest_registry.json (the numbers that also arm the kill
+// switch), attached by the generator as `s.backtest` (or `backtest_kr`/`_us`
+// on Hybrid VB). Six of ten entities have one filed, so the block is
+// omit-shaped per the rule above: no backtest, no cells — never a dash.
+function btCells(bt, label) {
+  if (!bt || nil(bt.cagr_pct) || nil(bt.mdd_pct)) return '';
+  let o = mSep(label || 'Backtest');
+  o += mCell('BT CAGR', (bt.cagr_pct >= 0 ? '+' : '') + bt.cagr_pct.toFixed(1) + '%' +
+             mSub('/yr'));
+  o += mCell('BT MDD', bt.mdd_pct.toFixed(1) + '%' +
+             (bt.asof ? mSub('(' + bt.asof + ')') : ''));
+  if (!nil(bt.sharpe)) o += mCell('BT Sharpe', bt.sharpe.toFixed(2));
+  return o;
+}
+
+// How much of the bot's tested drawdown envelope its LIVE drawdown has used —
+// the kill switch trips at 100% (two consecutive daily readings). Only bots
+// the model evaluated carry a ratio.
+function ddUsedCell(s) {
+  if (typeof s.dd_ratio !== 'number') return '';
+  const pct = Math.round(s.dd_ratio * 100);
+  const cls = s.dd_ratio >= 1.0 ? 'neg' : '';
+  const style = (s.dd_ratio >= 0.8 && s.dd_ratio < 1.0)
+    ? ' style="color:var(--accent)"' : '';
+  return '<div><div class="sg-lbl">MDD Used</div><div class="sg-val ' + cls +
+         '"' + style + '>' + pct + '%' + mSub('of BT MDD') + '</div></div>';
+}
+
 
 // The per-metric cell helpers that used to live here (realizedCell,
 // totalPlCell, profitPctCell, winRateCell, mddCell, cyclesCell) are gone.
@@ -1602,6 +1637,61 @@ function fundingBlock(inFleet, accounts) {
     '<div class="alloc-note">' + note + '</div></div>';
 }
 
+// ── Portfolio Health (asset_mgmt/portfolio_model.py, passed through verbatim
+// by the generator). Targets are user policy 2026-08-22: CAGR 15%/yr, MDD
+// -20%. The panel only renders when the model has run — no health file, no
+// panel, never a grid of dashes.
+function buildHealth(ph) {
+  if (!ph || !ph.portfolio) return null;
+  const P = ph.portfolio, T = P.targets || {}, L = P.live || {};
+  const V = P.verdict || {};
+  const sec = h('section', 'alloc fade-in d1');
+  const cls = V.overall === 'healthy' ? 'ok' : (V.overall === 'critical' ? 'crit' : 'warn');
+  const hd = h('div', 'alloc-hd');
+  hd.innerHTML = '<h2>Portfolio Health</h2><div class="meta">' +
+    '<span class="alloc-badge ' + cls + '">' + (V.overall || '—') + '</span>' +
+    ' <span>target CAGR ' + (T.cagr_pct != null ? T.cagr_pct + '%' : '—') +
+    ' · MDD ' + (T.mdd_pct != null ? T.mdd_pct + '%' : '—') +
+    (ph.evaluated_at ? ' · ' + ph.evaluated_at.replace('T', ' ').slice(0, 16) : '') +
+    '</span></div>';
+  sec.appendChild(hd);
+  const strip = h('div', 'strip');
+  const cell = (lbl, val, sub, vcls) => {
+    const c = h('div', 'cell');
+    c.innerHTML = '<div class="lbl">' + lbl + '</div><div class="val ' + (vcls || '') +
+      '">' + val + '</div><div class="sub">' + (sub || '') + '</div>';
+    return c;
+  };
+  const cagr = L.cagr_pct;
+  strip.appendChild(cell('Fleet CAGR (est)',
+    cagr == null ? '—' : (cagr >= 0 ? '+' : '') + cagr.toFixed(1) + '%',
+    'allocator μ, deploy-normalised · verdict: ' + (V.cagr || '—'),
+    cagr == null ? '' : (V.cagr === 'on_target' ? 'pos' : '')));
+  const mdd = L.mdd_pct;
+  strip.appendChild(cell('Fleet MDD',
+    mdd == null ? '—' : mdd.toFixed(1) + '%',
+    'aggregate curve · verdict: ' + (V.mdd || '—'),
+    mdd == null ? '' : (V.mdd === 'breach' ? 'neg' : 'pos')));
+  strip.appendChild(cell('Roster blend (BT)',
+    P.expected_blend_cagr_pct == null ? '—' :
+      (P.expected_blend_cagr_pct >= 0 ? '+' : '') + P.expected_blend_cagr_pct.toFixed(1) + '%',
+    'backtest CAGR × exposure X' +
+    (L.X != null ? ' (X ' + Math.round(L.X * 100) + '%, ' + (L.binding || '') + ')' : '')));
+  sec.appendChild(strip);
+  const notes = [];
+  if ((P.killed || []).length) notes.push('☠ killed: ' + P.killed.join(', '));
+  if ((P.warned || []).length) notes.push('⚠ ' + P.warned.join(', '));
+  (P.recommendations || []).slice(0, 4).forEach(r => notes.push('· ' + r));
+  if (notes.length) {
+    const n = h('div', 'alloc-note');
+    n.style.cssText = 'font-size:0.66rem;color:var(--tx3);padding:0.5rem 0.75rem;line-height:1.7';
+    n.innerHTML = notes.map(x => x.replace(/</g, '&lt;')).join('<br>');
+    sec.appendChild(n);
+  }
+  return sec;
+}
+
+
 function buildAllocation(a, accounts) {
   if (!a) return null;
   const L0 = a.level0 || {}, L1 = a.level1 || {}, L2 = a.level2 || {};
@@ -1927,6 +2017,11 @@ function render(data) {
   });
   app.appendChild(strip);
 
+  // Health above allocation: pass/fail against the user's targets is the
+  // first question; how capital is being steered is the second.
+  const healthSec = buildHealth(data.portfolio_health);
+  if (healthSec) app.appendChild(healthSec);
+
   // Allocation goes ABOVE the bots: this is the layer that decided their
   // budgets, and reading it after the results inverts the causality.
   const allocSec = buildAllocation(data.allocation, data.accounts);
@@ -1987,10 +2082,15 @@ function render(data) {
     // what let the USVB card wear a green LIVE badge above a footer that called
     // itself PAPER — two contradictory claims about the same bot, on one card.
     const isTesting = !isManual && s.mode === 'testing';
+    // Killed outranks every mode badge below it: the MDD kill switch stopping
+    // a bot is a policy fact that must not be paintable-over by paper/testing,
+    // and a killed bot is also always "stale" soon after — the stale badge
+    // would bury the reason.
+    const isKilled = !isManual && s.kill_state === 'killed';
     const modeTag = isManual ? 'manual'
-      : (isPaper ? 'paper' : (isTesting ? 'testing' : (isStale ? 'stale' : 'live')));
+      : (isKilled ? 'killed' : (isPaper ? 'paper' : (isTesting ? 'testing' : (isStale ? 'stale' : 'live'))));
     const modeLabel = isManual ? 'Manual'
-      : (isPaper ? 'Paper' : (isTesting ? 'Testing' : (isStale ? 'Stale' : 'Live')));
+      : (isKilled ? 'Killed' : (isPaper ? 'Paper' : (isTesting ? 'Testing' : (isStale ? 'Stale' : 'Live'))));
 
     let metricsHTML = '';
     let holdingsHTML = '';
@@ -2312,6 +2412,19 @@ function render(data) {
         </div>`;
       }).join('');
       holdingsHTML = rows ? `<div class="holds${mHoldings.length > 6 ? ' scroll' : ''}">${rows}</div>` : '';
+    }
+
+    // Backtest block + MDD-envelope usage, appended AFTER every bot-specific
+    // extra so the core run and the extras keep their fixed order. Hybrid VB
+    // gets one labelled block per leg (different universes, different
+    // backtests); everyone else at most one.
+    if (s.backtest_kr || s.backtest_us) {
+      metricsHTML += btCells(s.backtest_kr, 'Backtest — KR leg');
+      metricsHTML += btCells(s.backtest_us, 'Backtest — US leg');
+      metricsHTML += ddUsedCell(s);
+    } else if (s.backtest) {
+      metricsHTML += btCells(s.backtest);
+      metricsHTML += ddUsedCell(s);
     }
 
     // Sparkline chart from equity_series
