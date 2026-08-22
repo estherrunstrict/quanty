@@ -297,6 +297,77 @@ def annotate_holding_names(strategies, names):
     return strategies
 
 
+# ── Backtest block (registry-fed) ────────────────────────────────────────
+# asset_mgmt/backtest_registry.json is the operational record of each bot's
+# DEPLOYED-config backtest (usvb carries the sleeve-only numbers, not the
+# gate-passing blend) plus its kill threshold. It also drives the MDD kill
+# switch (asset_mgmt/portfolio_model.py); the card block and the switch read
+# the SAME file so a card can never advertise a backtest the switch ignores.
+ASSET_MGMT_DIR = ("/home/ubuntu/asset-mgmt/asset_mgmt"
+                  if os.path.exists("/home/ubuntu/asset-mgmt/asset_mgmt")
+                  else os.path.join(os.path.dirname(DASHBOARD_DIR), "asset_mgmt"))
+BACKTEST_REGISTRY_FILE = os.path.join(ASSET_MGMT_DIR, "backtest_registry.json")
+PORTFOLIO_HEALTH_FILE = os.path.join(ASSET_MGMT_DIR, "state", "portfolio_health.json")
+
+
+def _load_json_or(path, default):
+    try:
+        with open(path, encoding="utf-8") as fh:
+            return json.load(fh)
+    except (OSError, ValueError):
+        return default
+
+
+def _bt_block(entry):
+    """Registry entry -> card block, or None. A bot with no filed backtest gets
+    NO block at all — the card renders nothing rather than a standing em dash
+    (the same omit rule that removed the always-null mdd_pct cell)."""
+    if not entry or entry.get("cagr_pct") is None or entry.get("mdd_pct") is None:
+        return None
+    return {"cagr_pct": entry["cagr_pct"], "mdd_pct": entry["mdd_pct"],
+            "sharpe": entry.get("sharpe"), "window": entry.get("window"),
+            "asof": entry.get("asof"),
+            "kill_threshold_pct": entry.get("kill_threshold_pct")}
+
+
+def annotate_backtest(strategies, registry=None, health=None):
+    """Attach each card's backtest block + kill-switch state.
+
+    hybrid_vb is one card but two registry entries (the legs trade different
+    universes and hold different backtests), so it gets backtest_kr /
+    backtest_us and the worse leg's kill state.
+    """
+    registry = registry if registry is not None else \
+        _load_json_or(BACKTEST_REGISTRY_FILE, {})
+    health = health if health is not None else \
+        _load_json_or(PORTFOLIO_HEALTH_FILE, {})
+    bots = registry.get("bots") or {}
+    hbots = health.get("bots") or {}
+    RANK = {"ok": 0, "warn": 1, "breach_pending": 2, "killed": 3}
+    for s in strategies:
+        sid = s.get("id")
+        if sid == "hybrid_vb":
+            kr, us = _bt_block(bots.get("hybrid_vb_kr")), _bt_block(bots.get("hybrid_vb_us"))
+            if kr:
+                s["backtest_kr"] = kr
+            if us:
+                s["backtest_us"] = us
+            states = [hbots.get("hybrid_vb_kr") or {}, hbots.get("hybrid_vb_us") or {}]
+            state = max((x.get("kill_state") or "ok" for x in states),
+                        key=lambda k: RANK.get(k, 0))
+            ratios = [x.get("dd_ratio") for x in states if x.get("dd_ratio") is not None]
+            s["kill_state"] = state
+            s["dd_ratio"] = max(ratios) if ratios else None
+        else:
+            blk = _bt_block(bots.get(sid))
+            if blk:
+                s["backtest"] = blk
+            h = hbots.get(sid) or {}
+            s["kill_state"] = h.get("kill_state") or "ok"
+            s["dd_ratio"] = h.get("dd_ratio")
+    return strategies
+
+
 def annotate_capital_fields(strategies):
     """Fill budget / cost basis / profit rate for a bot that owns its account.
 
@@ -2489,6 +2560,18 @@ def main(dry_run=False):
     # silently skip them.
     annotate_bot_staleness(strategies, datetime.now(KST).replace(tzinfo=None))
     annotate_capital_fields(strategies)
+    annotate_backtest(strategies)
+    _bt_n = sum(1 for s in strategies
+                if s.get("backtest") or s.get("backtest_kr") or s.get("backtest_us"))
+    _killed = [s["id"] for s in strategies if s.get("kill_state") == "killed"]
+    print("  Backtest blocks: {}/{} cards{}".format(
+        _bt_n, len(strategies),
+        "" if not _killed else " · KILLED -> " + ", ".join(_killed)))
+    # Portfolio health panel: the model's own output, passed through verbatim
+    # so the page and the Discord report can never tell two stories.
+    _health = _load_json_or(PORTFOLIO_HEALTH_FILE, None)
+    if _health:
+        output["portfolio_health"] = _health
     _names = account_name_map(totals)
     annotate_holding_names(strategies, _names)
     print("  Holding names: {} tickers labelled from the broker".format(len(_names)))
