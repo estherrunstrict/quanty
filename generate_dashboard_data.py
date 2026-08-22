@@ -1531,7 +1531,8 @@ def _live_target(cur_krw, per_bot_krw, ramp_max, band=None):
       2. band   — a move under the turnover band is not worth making at all.
 
     Returns (target_krw, limited_by). This is a PROJECTION for the panel: it
-    does not write any budget. What the bots actually hold is `current_krw`.
+    does not write any budget. NOTE `current_krw` is the bot's APPLIED BUDGET,
+    not its holdings — see build_allocation_held().
     """
     band = ALLOC_TURNOVER_BAND if band is None else band
     tgt = float(per_bot_krw or 0)
@@ -1565,7 +1566,43 @@ def _runs_to_target(current_krw, uncapped_krw, target_krw):
     return int(math.ceil(math.log(cap / cur) / math.log(factor)))
 
 
-def load_allocation(state_dir=None, now=None, fx_rate=None, live_totals=None):
+def allocation_held_krw(strategies, fx_rate):
+    """{bot_id: market value in KRW} for the allocation panel. PURE.
+
+    The panel's `current_krw` is the bot's APPLIED BUDGET — the ceiling the
+    allocator just wrote to config.yaml. It is NOT what the bot is holding, and
+    for a whole day after an allocation change the two are far apart: on
+    2026-08-21 the KIS-US bots each showed a W36.9M budget while actually
+    holding about W19M, and the panel's own caption called that column "what
+    each bot actually holds". Both numbers are legitimate; presenting one under
+    the other's name is not.
+
+    Hybrid VB is one card with two legs (MULTI) but two rows in the allocator,
+    so its legs are unpacked to hybrid_vb_kr / hybrid_vb_us.
+    """
+    fx = float(fx_rate or 0)
+    out = {}
+
+    def krw(val, cur):
+        v = float(val or 0)
+        return v if (cur or "KRW") == "KRW" else v * fx
+
+    for s in strategies or []:
+        if not isinstance(s, dict) or s.get("id") == "manual":
+            continue
+        sid = s.get("id")
+        if s.get("currency") == "MULTI":
+            for leg, cur in (("kr", "KRW"), ("us", "USD")):
+                L = s.get(leg) or {}
+                if L:
+                    out["{}_{}".format(sid, leg)] = round(krw(L.get("value"), cur), 2)
+            continue
+        out[sid] = round(krw(s.get("value"), s.get("currency")), 2)
+    return out
+
+
+def load_allocation(state_dir=None, now=None, fx_rate=None, live_totals=None,
+                    strategies=None):
     """The asset-management layer as a dashboard block. Never raises.
 
     Reads the newest `proposed_*.json` plus `last_applied.json` written by
@@ -1652,6 +1689,7 @@ def load_allocation(state_dir=None, now=None, fx_rate=None, live_totals=None):
     per_bot = float((prop.get("level2") or {}).get("per_bot_krw") or 0)
     targets = applied.get("targets") or {}
     rows = []
+    held = allocation_held_krw(strategies, fx)
     for bid, p in sorted((prop.get("allocations") or {}).items()):
         if not isinstance(p, dict):
             continue
@@ -1673,6 +1711,9 @@ def load_allocation(state_dir=None, now=None, fx_rate=None, live_totals=None):
             "why": p.get("why") or "",
             "currency": p.get("currency") or "KRW",
             "current_krw": round(cur_krw, 2),
+            # What the bot is actually holding right now, so the panel can stop
+            # calling the budget column "what each bot actually holds".
+            "held_krw": held.get(bid),
             "target_krw": round(tgt_krw, 2),
             "drift_krw": round(tgt_krw - cur_krw, 2),
             "ramped": bool(p.get("ramped")),
@@ -2544,7 +2585,7 @@ def main(dry_run=False):
     # with or without it, because a missing allocator panel is a gap in
     # reporting while a failed publish is a gap in everything.
     alloc = load_allocation(now=datetime.now(KST).replace(tzinfo=None), fx_rate=fx,
-                            live_totals=totals_block)
+                            live_totals=totals_block, strategies=strategies)
     if alloc:
         output["allocation"] = alloc
         print("  Allocation: X {:.0%} ({}) - 1/N {} x W{:,.0f}, {}{}".format(

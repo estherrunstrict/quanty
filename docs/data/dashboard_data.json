@@ -1,19 +1,19 @@
 {
-  "updated_at": "2026-08-22 06:30 KST",
+  "updated_at": "2026-08-22 11:10 KST",
   "portfolio": {
-    "total_value_krw": 135239492,
+    "total_value_krw": 135699389,
     "original_deposit_krw": 75714217,
-    "total_profit_krw": 1182038,
-    "total_profit_pct": 1.56,
+    "total_profit_krw": 1186992,
+    "total_profit_pct": 1.57,
     "cash_krw": 8249630,
     "cash_usd": 0.0,
-    "unsettled_us_sell_krw": 289340,
-    "upbit_krw": 10301275,
+    "unsettled_us_sell_krw": 290677,
+    "upbit_krw": 10759835,
     "exchange_rate": 1393.0,
-    "unrealized_krw": 666749,
+    "unrealized_krw": 671704,
     "realized_krw": 515289,
     "unrealized_native": {
-      "krw": -789075,
+      "krw": -784121,
       "usd": 1045.1
     },
     "realized_native": {
@@ -22,8 +22,8 @@
     }
   },
   "meta": {
-    "timestamp": "2026-08-22T06:30:11.711235+09:00",
-    "kst": "2026-08-22 06:30 KST",
+    "timestamp": "2026-08-22T11:10:14.417999+09:00",
+    "kst": "2026-08-22 11:10 KST",
     "equity_start": "2026-01-01"
   },
   "strategies": [
@@ -32,14 +32,14 @@
       "name": "BTC Volatility Breakout",
       "currency": "KRW",
       "mode": "live",
-      "value": 10301274.81929572,
-      "profit": 0.0,
-      "budget": 10301274.82,
-      "is_holding": false,
+      "value": 10759834.75992416,
+      "profit": 4954.433995839208,
+      "budget": 10759834.76,
+      "is_holding": true,
       "total_trades": 30,
       "winning_trades": 15,
       "allocation": 1.0,
-      "last_run": "2026-08-21",
+      "last_run": "2026-08-22",
       "holdings": [],
       "extra": {
         "k": 0.4,
@@ -47,8 +47,8 @@
         "ma_period": 5,
         "equity_days": 100
       },
-      "stale_hours": 1.5002924258179136,
-      "unrealized_profit": 0,
+      "stale_hours": 4.626798043847084,
+      "unrealized_profit": 4954.433995839208,
       "realized_profit_ytd": 885114.57,
       "realized_trades": 30,
       "wins_ytd": 15,
@@ -57,13 +57,13 @@
       "mdd_pct": null,
       "realized_source": "upbit",
       "cycles_ytd": 30,
-      "total_pl_ytd": 885114.57,
-      "profit_rate_ytd_pct": 8.59,
-      "stale_weekday_hours": 1.5,
+      "total_pl_ytd": 890069.0039958392,
+      "profit_rate_ytd_pct": 8.27,
+      "stale_weekday_hours": 4.63,
       "is_stale": false,
       "stale_limit_hours": 36.0,
       "budget_basis": "account",
-      "cost_basis": 10301274.82,
+      "cost_basis": 10754880.33,
       "cost_basis_basis": "derived",
       "profit_rate_basis": "budget"
     },
@@ -82,7 +82,7 @@
         "target_ticker": "132030",
         "rebalance_day": false
       },
-      "stale_hours": 21.49853183646997,
+      "stale_hours": 26.165941370063358,
       "timestamp": "2026-08-21T09:00:16.925008+09:00",
       "unrealized_profit": 0,
       "realized_profit_ytd": -1246635.0,
@@ -129,7 +129,7 @@
         "signal": "\ud83d\udfe2 Strong Bullish (4/4)",
         "regime": ""
       },
-      "stale_hours": 8.000288524164095,
+      "stale_hours": 12.667698075241512,
       "timestamp": "2026-08-21T22:30:10.603030",
       "unrealized_profit": -79.49,
       "realized_profit_ytd": 1699.49,
@@ -143,7 +143,7 @@
       "total_pl_ytd": 1620.0,
       "profit_rate_ytd_pct": 6.12,
       "unrealized_drift_at_mtm": 2.25,
-      "stale_weekday_hours": 1.5,
+      "stale_weekday_hours": 1.49,
       "is_stale": false,
       "stale_limit_hours": 36.0,
       "profit_rate_basis": "budget"
@@ -192,7 +192,7 @@
         "regime": "EASING",
         "is_holding": true
       },
-      "stale_hours": 7.9904276855124365,
+      "stale_hours": 12.6578372468551,
       "timestamp": "2026-08-21T22:30:45.788306",
       "unrealized_profit": -456.75,
       "realized_profit_ytd": -66.07,
@@ -206,7 +206,7 @@
       "total_pl_ytd": -522.82,
       "profit_rate_ytd_pct": -1.97,
       "unrealized_drift_at_mtm": -179.13,
-      "stale_weekday_hours": 1.49,
+      "stale_weekday_hours": 1.48,
       "is_stale": false,
       "stale_limit_hours": 36.0,
       "profit_rate_basis": "budget"
@@ -240,7 +240,7 @@
         "mode_label": "offensive",
         "rebalance_day": false
       },
-      "stale_hours": 7.983121670616997,
+      "stale_hours": 12.650531252622605,
       "timestamp": "2026-08-21T22:31:12.404169",
       "unrealized_profit": 1003.0,
       "realized_profit_ytd": 171.31,
@@ -628,7 +628,7 @@
           }
         }
       },
-      "stale_hours": 7.972853325737847,
+      "stale_hours": 12.640262926552031,
       "realized_trades": 90,
       "cycles_ytd": 90,
       "mdd_pct": null,
@@ -802,7 +802,7 @@
         "trend_pass_count": 20,
         "vcp_count": 2
       },
-      "stale_hours": 7.968212030066384,
+      "stale_hours": 12.635621621410053,
       "timestamp": "2026-08-21T22:32:06.082443",
       "unrealized_profit": 421.23,
       "realized_profit_ytd": 0,
@@ -1334,7 +1334,7 @@
           "ledger_qty": 1.0
         }
       ],
-      "last_run": "2026-08-21T21:01:19",
+      "last_run": "2026-08-22T07:15:06",
       "extra": {
         "note": "\uac80\uc99d \uac00\ub3d9(testing) \u2014 \uc2e4\uc81c \ub3c8, \uc2e4\uc81c \uccb4\uacb0. \ub2e4\ub9cc QQQ \ucf54\uc5b4 \uc5c6\uc774 \uc2ac\ub9ac\ube0c \ub2e8\ub3c5\uc774\ub77c \ubc31\ud14c\uc2a4\ud2b8\ub85c \uc2b9\uaca9 \uac8c\uc774\ud2b8\ub97c \ud1b5\uacfc\ud55c \uad6c\uc131\uc774 \uc544\ub2c8\ub2e4. \uc9c0\uae08 \ubaa9\uc801\uc740 \uc218\uc775\uc774 \uc544\ub2c8\ub77c \uccb4\uacb0 \uc2ac\ub9ac\ud53c\uc9c0 \uc2e4\uce21\uc774\ub2e4.",
         "status": "\ubcf4\uc720 \uc911 (\ub2f9\uc77c \uccad\uc0b0 \uc608\uc815)",
@@ -1344,7 +1344,7 @@
         "ticker_count": 1,
         "ledger_position_count": 1,
         "unmatched_symbols": [],
-        "ledger_updated": "2026-08-21T21:01:19",
+        "ledger_updated": "2026-08-22T07:15:06",
         "schedule_kst": "\uc9c4\uc785 22:33/23:33 (\uc6d4-\uae08) \u00b7 \uccad\uc0b0 04:50/05:50 (\ud654-\ud1a0)",
         "caveat": "Value is marked from the Toss snapshot, so it is only as fresh as that snapshot. A flat book is NORMAL \u2014 every position is closed the same session."
       },
@@ -1904,7 +1904,7 @@
       ],
       [
         "2026-08-21",
-        885114.57
+        890069.0
       ]
     ],
     "korea_etf": [
@@ -5972,7 +5972,7 @@
       ],
       [
         "2026-08-21",
-        740062.3
+        745016.73
       ]
     ],
     "total": [
@@ -6418,12 +6418,12 @@
       ],
       [
         "2026-08-21",
-        1255350.92
+        1260305.35
       ]
     ]
   },
   "realized_pl": {
-    "_updated": "2026-08-22T05:03:05+09:00",
+    "_updated": "2026-08-22T06:45:05+09:00",
     "_year": 2026,
     "_source_mode": "both",
     "_total_krw": -1658975.43,
@@ -6531,10 +6531,42 @@
       }
     },
     "_errors": [
-      "upbit: bot state says 30 closed trades, Upbit API shows 31 sells in 2026 (42 buys). State file wins \u2014 consider running the bot to reconcile."
+      "upbit: bot state says 30 closed trades, Upbit API shows 31 sells in 2026 (43 buys). State file wins \u2014 consider running the bot to reconcile."
     ]
   },
   "feed": [
+    {
+      "type": "trade_buy",
+      "title": "Market Buy Filled",
+      "body": "MARKET BUY filled: 0.09941264 BTC at ~\u20a9107,228,159 (pre: 0.00000000, post: 0.09941264)",
+      "source": "VB_Strategy",
+      "timestamp": "2026-08-22 06:32:37",
+      "bot": "btc_vb"
+    },
+    {
+      "type": "session",
+      "title": "Session Complete",
+      "body": "Done.",
+      "source": "VB_Strategy",
+      "timestamp": "2026-08-22 06:32:37",
+      "bot": "btc_vb"
+    },
+    {
+      "type": "trade_buy",
+      "title": "Breakout Triggered",
+      "body": "BREAKOUT! \u20a9107,210,000 \u2265 \u20a9107,199,829",
+      "source": "VB_Strategy",
+      "timestamp": "2026-08-22 06:32:31",
+      "bot": "btc_vb"
+    },
+    {
+      "type": "trade_buy",
+      "title": "Breakout Triggered",
+      "body": "Step 7: Breakout triggered! Placing market buy for \u20a910,659,835...",
+      "source": "VB_Strategy",
+      "timestamp": "2026-08-22 06:32:31",
+      "bot": "btc_vb"
+    },
     {
       "type": "signal",
       "title": "LONG Signal Active",
@@ -6742,41 +6774,9 @@
       "source": "VB_Strategy",
       "timestamp": "2026-08-20 00:05:14",
       "bot": "btc_vb"
-    },
-    {
-      "type": "signal",
-      "title": "LONG Signal Active",
-      "body": "Step 3: Close \u2265 MA(5) \u2192 LONG signal active.",
-      "source": "VB_Strategy",
-      "timestamp": "2026-08-19 05:01:20",
-      "bot": "btc_vb"
-    },
-    {
-      "type": "signal",
-      "title": "Target Set",
-      "body": "Step 4: Breakout target = \u20a990,898,000 + 0.4 \u00d7 \u20a91,179,000 = \u20a991,369,600",
-      "source": "VB_Strategy",
-      "timestamp": "2026-08-19 05:01:20",
-      "bot": "btc_vb"
-    },
-    {
-      "type": "trade_sell",
-      "title": "Sell Executed",
-      "body": "SELL 0.03172575 BTC at ~\u20a990,850,000 | PnL: \u20a9-9,106",
-      "source": "VB_Strategy",
-      "timestamp": "2026-08-19 05:00:10",
-      "bot": "btc_vb"
-    },
-    {
-      "type": "session",
-      "title": "Daily Run Started",
-      "body": "BTC VB Strategy \u2014 Daily Run 2026-08-19",
-      "source": "VB_Strategy",
-      "timestamp": "2026-08-19 05:00:04",
-      "bot": "btc_vb"
     }
   ],
-  "mark_to_market_at": "2026-08-22 06:30 KST",
+  "mark_to_market_at": "2026-08-22 11:10 KST",
   "accounts": {
     "toss": {
       "total_krw": 191050579.23,
@@ -6785,31 +6785,31 @@
       "as_of": "2026-08-22T06:30:10+09:00",
       "stale": false,
       "usable": true,
-      "age_hours": 0.0,
+      "age_hours": 4.67,
       "holdings_count": 36,
       "source": "server-cron"
     },
     "kis": {
-      "total_krw": 124938216.8,
-      "cash_krw": 8538970.0,
+      "total_krw": 124939553.8,
+      "cash_krw": 8540307.0,
       "stock_krw": 116399246.8,
-      "as_of": "2026-08-22 06:30 KST",
+      "as_of": "2026-08-22 11:10 KST",
       "stale": false,
       "kr_stock_krw": 14901645.0,
       "us_stock_krw": 101497601.8,
       "krw_cash_krw": 8249630.0,
       "usd_cash_usd": 0.0,
-      "unsettled_us_sell_krw": 289340.0,
+      "unsettled_us_sell_krw": 290677.0,
       "holdings_count": 14
     },
     "upbit": {
-      "total_krw": 10301275.0,
-      "cash_krw": 10301275.0,
-      "position_krw": 0.0,
-      "as_of": "2026-08-21",
+      "total_krw": 10759835.0,
+      "cash_krw": 0.0,
+      "position_krw": 10759835.0,
+      "as_of": "2026-08-22",
       "stale": false,
-      "is_holding": false,
-      "age_days": 1.27
+      "is_holding": true,
+      "age_days": 0.47
     },
     "cma": {
       "total_krw": 214700678.0,
@@ -6820,45 +6820,45 @@
     }
   },
   "allocation": {
-    "as_of": "2026-08-21T08:20:03",
-    "age_hours": 22.17,
+    "as_of": "2026-08-22T08:20:02",
+    "age_hours": 2.84,
     "stale": false,
     "applied": true,
-    "applied_at": "2026-08-21T08:20:03",
+    "applied_at": "2026-08-22T08:20:02",
     "policy_version": "v2-fleet-etf-equal-weight",
-    "capital_krw": 540990749.03,
-    "capital_as_of": "2026-08-21 21:37 KST",
+    "capital_krw": 541450646.03,
+    "capital_as_of": "2026-08-22 06:30 KST",
     "capital_basis": "measured+external",
     "fx": 1393.0,
     "repriced_live": true,
     "ramp_max": 1.35,
     "turnover_band": 0.2,
     "allocator_frame": {
-      "capital_krw": 540409315.0,
-      "manual_krw": 174435582.0,
-      "residual_krw": 365973733.0,
+      "capital_krw": 540990749.0,
+      "manual_krw": 176637568.0,
+      "residual_krw": 364353181.0,
       "fx": 1393.0
     },
     "level0": {
       "manual_krw": 176555564.06,
-      "residual_krw": 364435184.97
+      "residual_krw": 364895081.97
     },
     "level1": {
       "X": 0.8,
       "binding": "cash_floor",
       "brake": 1.0,
-      "kelly_half": 1.1265,
-      "x_vol_cap": 0.9467,
-      "mu_shrunk": 0.0251,
-      "sigma": 0.1056,
+      "kelly_half": 1.0277,
+      "x_vol_cap": 0.9475,
+      "mu_shrunk": 0.0229,
+      "sigma": 0.1055,
       "fleet_dd": 0.0462,
       "n_days": 110
     },
     "level2": {
       "N": 7,
-      "exposure_budget_krw": 432792599.22,
-      "per_bot_krw": 36605290.74,
-      "fleet_pool_krw": 256237035.16,
+      "exposure_budget_krw": 433160516.82,
+      "per_bot_krw": 36657850.39,
+      "fleet_pool_krw": 256604952.76,
       "fleet_recalled": false,
       "roster": [
         "quant40",
@@ -6871,10 +6871,10 @@
       ]
     },
     "totals": {
-      "deployed_krw": 432018277,
+      "deployed_krw": 434220263,
       "fleet_krw": 257582695,
-      "cash_krw": 108391038,
-      "cash_pct": 0.2006
+      "cash_krw": 106770486,
+      "cash_pct": 0.1974
     },
     "bots": [
       {
@@ -6885,15 +6885,16 @@
         "why": "",
         "currency": "USD",
         "current_krw": 36895903.45,
+        "held_krw": 28197677.13,
         "target_krw": 36895903.45,
         "drift_krw": 0.0,
         "ramped": false,
         "held_by_band": true,
-        "uncapped_krw": 36605290.74,
+        "uncapped_krw": 36657850.39,
         "limited_by": "band",
         "ramp_factor": null,
         "runs_to_target": null,
-        "applied_krw": 37147525.0,
+        "applied_krw": 36895903.0,
         "target_is_live": true
       },
       {
@@ -6904,15 +6905,16 @@
         "why": "",
         "currency": "USD",
         "current_krw": 36895903.45,
+        "held_krw": 29250994.08,
         "target_krw": 36895903.45,
         "drift_krw": 0.0,
         "ramped": false,
         "held_by_band": true,
-        "uncapped_krw": 36605290.74,
+        "uncapped_krw": 36657850.39,
         "limited_by": "band",
         "ramp_factor": null,
         "runs_to_target": null,
-        "applied_krw": 37147525.0,
+        "applied_krw": 36895903.0,
         "target_is_live": true
       },
       {
@@ -6923,15 +6925,16 @@
         "why": "",
         "currency": "USD",
         "current_krw": 36895903.45,
+        "held_krw": 6172940.2,
         "target_krw": 36895903.45,
         "drift_krw": 0.0,
         "ramped": false,
         "held_by_band": true,
-        "uncapped_krw": 36605290.74,
+        "uncapped_krw": 36657850.39,
         "limited_by": "band",
         "ramp_factor": null,
         "runs_to_target": null,
-        "applied_krw": 37147525.0,
+        "applied_krw": 36895903.0,
         "target_is_live": true
       },
       {
@@ -6942,15 +6945,16 @@
         "why": "",
         "currency": "USD",
         "current_krw": 36895903.45,
+        "held_krw": 18676327.11,
         "target_krw": 36895903.45,
         "drift_krw": 0.0,
         "ramped": false,
         "held_by_band": true,
-        "uncapped_krw": 36605290.74,
+        "uncapped_krw": 36657850.39,
         "limited_by": "band",
         "ramp_factor": null,
         "runs_to_target": null,
-        "applied_krw": 37147525.0,
+        "applied_krw": 36895903.0,
         "target_is_live": true
       },
       {
@@ -6961,15 +6965,16 @@
         "why": "",
         "currency": "USD",
         "current_krw": 36895903.45,
+        "held_krw": 19199663.28,
         "target_krw": 36895903.45,
         "drift_krw": 0.0,
         "ramped": false,
         "held_by_band": true,
-        "uncapped_krw": 36605290.74,
+        "uncapped_krw": 36657850.39,
         "limited_by": "band",
         "ramp_factor": null,
         "runs_to_target": null,
-        "applied_krw": 37147525.0,
+        "applied_krw": 36895903.0,
         "target_is_live": true
       },
       {
@@ -6980,11 +6985,12 @@
         "why": "",
         "currency": "KRW",
         "current_krw": 36551589.85,
+        "held_krw": 14901645.0,
         "target_krw": 36551589.85,
         "drift_krw": 0.0,
         "ramped": false,
         "held_by_band": true,
-        "uncapped_krw": 36605290.74,
+        "uncapped_krw": 36657850.39,
         "limited_by": "band",
         "ramp_factor": null,
         "runs_to_target": null,
@@ -6999,11 +7005,12 @@
         "why": "",
         "currency": "KRW",
         "current_krw": 36551589.85,
+        "held_krw": 921906.0,
         "target_krw": 36551589.85,
         "drift_krw": 0.0,
         "ramped": false,
         "held_by_band": true,
-        "uncapped_krw": 36605290.74,
+        "uncapped_krw": 36657850.39,
         "limited_by": "band",
         "ramp_factor": null,
         "runs_to_target": null,
@@ -7018,6 +7025,7 @@
         "why": "\uacc4\uc88c \uc81c\uc678(Upbit)",
         "currency": "KRW",
         "current_krw": 10000000.0,
+        "held_krw": 10759834.76,
         "target_krw": 0.0,
         "drift_krw": -10000000.0,
         "ramped": false,
@@ -7036,6 +7044,7 @@
         "why": "paper",
         "currency": "KRW",
         "current_krw": 0.0,
+        "held_krw": null,
         "target_krw": 0.0,
         "drift_krw": 0.0,
         "ramped": false,
@@ -7054,6 +7063,7 @@
         "why": "halted(paper)",
         "currency": "KRW",
         "current_krw": 0.0,
+        "held_krw": 0.0,
         "target_krw": 0.0,
         "drift_krw": 0.0,
         "ramped": false,
@@ -7072,6 +7082,7 @@
         "why": "testing",
         "currency": "USD",
         "current_krw": 2786000.0,
+        "held_krw": 98972.65,
         "target_krw": 0.0,
         "drift_krw": -2786000.0,
         "ramped": false,
@@ -7085,23 +7096,23 @@
     ]
   },
   "totals": {
-    "investments_krw": 540990749.03,
-    "bots_krw": 117420125.45,
+    "investments_krw": 541450646.03,
+    "bots_krw": 128179960.45,
     "manual_krw": 176555564.06,
-    "cash_krw": 247015059.52,
+    "cash_krw": 236715121.52,
     "split_pct": {
-      "bots": 21.7,
-      "manual": 32.64,
-      "cash": 45.66
+      "bots": 23.67,
+      "manual": 32.61,
+      "cash": 43.72
     },
     "reconciliation_gap_krw": 0.0,
     "reconciliation_gap_pct": 0.0,
     "reconciliation_warning": false,
-    "bots_cards_krw": 127721400.27,
+    "bots_cards_krw": 128179960.21,
     "unreported_bot_positions_krw": 0.0,
     "bots_breakdown": {
       "kis_krw": 116399246.8,
-      "upbit_krw": 0.0,
+      "upbit_krw": 10759835.0,
       "toss_krw": 1020878.65
     },
     "manual_breakdown": {
@@ -7109,9 +7120,9 @@
       "toss_krw": 176555564.06
     },
     "cash_breakdown": {
-      "kis_krw": 8538970.0,
+      "kis_krw": 8540307.0,
       "toss_krw": 13474136.52,
-      "upbit_idle_krw": 10301275.0
+      "upbit_idle_krw": 0.0
     },
     "fx_rate": 1393.0
   },

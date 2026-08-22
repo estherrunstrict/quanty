@@ -1443,6 +1443,7 @@ function buildAllocation(a) {
       '"></span>' + b.name + '</td>' +
       '<td class="why">' + (b.account || '') + '</td>' +
       '<td>' + won(b.current_krw) + '</td>' +
+      '<td class="dim">' + (b.held_krw == null ? '—' : won(b.held_krw)) + '</td>' +
       '<td class="dim">' + won(b.uncapped_krw) + '</td>' +
       '<td>' + won(b.target_krw) + '</td>' +
       '<td>' + limitCell(b) + '</td>' +
@@ -1452,6 +1453,7 @@ function buildAllocation(a) {
       botColor(b.id) + '"></span>' + b.name + '</td>' +
       '<td class="why">' + (b.account || '') + '</td>' +
       '<td>' + won(b.current_krw) + '</td>' +
+      '<td class="dim">' + (b.held_krw == null ? '—' : won(b.held_krw)) + '</td>' +
       '<td class="dim">—</td><td>—</td>' +
       '<td colspan="2" class="why">' + (b.why || 'excluded') + '</td></tr>'
     ).join('');
@@ -1472,13 +1474,16 @@ function buildAllocation(a) {
         ' rather than at once. ';
     }
     note += 'A bot already within 20% of target is held where it is, ' +
-            'so small drifts do not churn the book. These are projections: what ' +
-            'each bot actually holds is the Current column.';
+            'so small drifts do not churn the book. <b>Budget</b> is the ceiling ' +
+            'the allocator has applied — a bot picks it up on its next run, so ' +
+            'its own card can still show the previous one until then. ' +
+            '<b>Held</b> is what it is actually holding right now, and it sits ' +
+            'below Budget whenever the bot is not fully deployed.';
 
     const tbl = h('div', 'alloc-bots');
     tbl.innerHTML =
       '<table class="alloc-tbl"><thead><tr>' +
-      '<th>Bot</th><th>Account</th><th>Current</th><th>1/N share</th>' +
+      '<th>Bot</th><th>Account</th><th>Budget</th><th>Held</th><th>1/N share</th>' +
       '<th>Target</th><th>Limited by</th><th>Drift</th>' +
       '</tr></thead><tbody>' + rows + '</tbody></table>' +
       '<div class="alloc-note">' + note + '</div>' +
