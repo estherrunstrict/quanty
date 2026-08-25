@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-08-25T06:30:18.348373+09:00",
+  "generated_at": "2026-08-25T16:15:46.917866+09:00",
   "stats": {
-    "total": 261,
-    "queued": 179,
+    "total": 265,
+    "queued": 183,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-08-25T06:30:18.348173+09:00",
+    "last_gc_at": "2026-08-25T16:15:46.917733+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -7586,6 +7586,116 @@
       "discovered": "2026-08-21",
       "matched_keywords": [
         "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.23416",
+      "source": "arxiv",
+      "title": "The Axiomatic Trader: Latent Regularity, Information Budgets, and the Canonical Form of a Quantitative Investment System",
+      "authors": [
+        "Jiayu Li"
+      ],
+      "abstract": "Systematic trading rests on one article of faith: that regularities found in the past persist. We state it as a time-invariant mechanism driven by an unobserved latent state, and show that it leaves a researcher five constants to declare --- the recurrence bound $Lambda$ at a block length $b$, the invariance defect $epsilon_0$ of the representation it is declared of, the coherence times $ell_i$ of the state's coordinates, the signal ceiling $rho$ and the fraction $kappa$ of it contingent on the regime --- after which the architecture of a correct quantitative investment system is nearly forced.",
+      "categories": [
+        "cs.LG",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2608.23416v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.23416v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-24",
+      "discovered": "2026-08-25",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2607.05320",
+      "source": "arxiv",
+      "title": "Causal Separation in Portfolio Choice: Screening-Off Information and Conditional Risk",
+      "authors": [
+        "Alejandro Rodriguez Dominguez"
+      ],
+      "abstract": "Conditional portfolio choice depends on the information used to define conditional moments, yet that information is typically taken as given. We introduce causal separation for portfolio choice: a portfolio-information principle in which horizon-closed conditioning screens asset returns into mutually conditionally independent components, with a common-cause structural model providing its causal interpretation. Exact separation yields a decision-time decomposition of risk into diagonal residual risk and uncertainty in horizon-closed conditional means. Projecting systematic risk onto finite-dimensional driver innovations produces a low-rank represented component, becoming exactly diagonal-plus-low-rank under affine response. The selected information also induces state-sensitivity constraints in a classical equality-constrained Markowitz problem. We derive exact finite covariance-perturbation identities and non-asymptotic bounds linking representation error to portfolio weights and the efficient frontier. Controlled experiments recover the theoretical decomposition, perturbation identities, and intervention behavior. Empirical applications to U.S. equities show substantial reductions in residual cross-sectional covariance and competitive out-of-sample structured covariance estimates in shorter training windows. Causal separation therefore makes the conditioning representation an explicit, testable component of portfolio construction.",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2607.05320v2",
+      "pdf_url": "https://arxiv.org/pdf/2607.05320v2",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-06",
+      "discovered": "2026-08-25",
+      "matched_keywords": [
+        "cross-sectional"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.23053",
+      "source": "arxiv",
+      "title": "tse_tick: A Python Library for Parsing and Querying Nikkei NEEDS Tick Data from the Tokyo Stock Exchange",
+      "authors": [
+        "Kazumi Li",
+        "Masataka Hayashi",
+        "Teruo Nakatsuma",
+        "Peter Romero"
+      ],
+      "abstract": "Tick-level trade-and-quote data for the Tokyo Stock Exchange is distributed through the Nikkei NEEDS service as thousands of zipped CSV archives spanning four data types with era-dependent schemas and Japanese-language layouts. We present tse_tick, an open-source Python library that converts these raw archives into clean, typed Polars DataFrames and a Hive-partitioned Parquet store queryable through DuckDB. The library offers two access paths sharing one parse-and-clean core: a one-shot reader that returns a ticker- and time-filtered DataFrame directly from raw ZIP files, and a two-stage ingest-then-query pipeline with resume-safe, memory-aware parallel ingestion, part-pruning, and a materialized intraday time key for row-group pruning. The engineering, more than the parsing, is what the library contributes: ingestion runs in per-date atomic units whose completion is recorded by coverage markers rather than inferred from file existence, writes stream in bounded morsels so that peak memory is independent of trading-day size (24.5 GB to 2.4 GB on the worst measured day), a RAM-aware process pool sizes itself to available memory, and part-pruning opens only the archive parts a ticker can occupy. Full English and Japanese column definitions ship for all four types, and a translation layer maps yfinance, Polygon, and ccxt names onto their tse_tick equivalents. In benchmarks on a commodity 16-thread workstation, parsing a representative 4.8-million-row archive part, one of a trading day's nine parts, is 59.8x faster than the original pandas prototype (34.3x against an engine-matched pandas baseline), and a single-ticker time-window query from the store completes roughly 410x faster than a pandas scan of the equivalent CSV. tse_tick is available on PyPI (pip install tse-tick) under the MIT license.",
+      "categories": [
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2608.23053v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.23053v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-24",
+      "discovered": "2026-08-25",
+      "matched_keywords": [
+        "commodity"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.22768",
+      "source": "arxiv",
+      "title": "The Loop-Gain Matrix: Coupled Rebalancing Feedback and the Blind Spots of Scalar Stability Monitoring",
+      "authors": [
+        "Jihwan Woo"
+      ],
+      "abstract": "The stability of markets hosting leveraged exchange-traded products is governed not by any single product's loop gain but by the spectral radius of a loop-gain matrix, and scalar per-product monitoring underestimates system feedback by construction. Recent work measures the self-reinforcement of a leveraged fund's daily close rebalancing through a scalar loop gain and treats cross-asset spillovers as bias. We model complexes on correlated underlyings as a coupled feedback system with matrix gain L and show that scalar monitoring has two blind spots: (i) cycle amplification, since rho(L) >= max_i l_ii for nonnegative coupling, strict under two-way coupling; and (ii) transmitted displacement, which arises already under one-way coupling and is invisible to the receiver's own gain. We give a reduced-form estimator of L requiring only prices and public fund assets -- no signed order flow -- via cross-asset overnight reversals, reporting its measurement-convention sensitivity explicitly. In simulation the spectral radius is recovered with RMSE 0.005 at T=250, a lead-lag confounder yields a 2% false-alarm rate, and in a calibrated blind-spot configuration the scalar monitor reports \"safe\" and the matrix monitor \"unsafe\" on 100% of paths. In the 2026 Korean single-stock LETF episode we detect transmission from the SK Hynix complex into Samsung Electronics' closing price (DiD z=-2.82; exact randomization p=0.0055 against 182 control pairs), scaling with the sender's rebalancing capital; conservatively, about 41% of Samsung's closing displacement variance is imported -- invisible to its own \"moderate\" gain of 0.24. The same estimator returns nulls for the U.S. MSTR-Bitcoin-Coinbase complex, whose capital is comparable but whose closing venue is far deeper. Monitoring should be organized around the (complex x venue) matrix, not around products.",
+      "categories": [
+        "physics.soc-ph",
+        "eess.SP",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2608.22768v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.22768v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-24",
+      "discovered": "2026-08-25",
+      "matched_keywords": [
+        "ETF"
       ],
       "status": "queued",
       "ingested_into": null,
