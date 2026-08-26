@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-08-26T06:30:19.301267+09:00",
+  "generated_at": "2026-08-26T16:15:48.228525+09:00",
   "stats": {
-    "total": 265,
-    "queued": 183,
+    "total": 270,
+    "queued": 188,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-08-26T06:30:19.301161+09:00",
+    "last_gc_at": "2026-08-26T16:15:48.228390+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -7696,6 +7696,151 @@
       "discovered": "2026-08-25",
       "matched_keywords": [
         "ETF"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.24449",
+      "source": "arxiv",
+      "title": "Generalizing Markowitz Portfolio Optimization by a Quadratic Risk Measure",
+      "authors": [
+        "Ignas Gasparavičius",
+        "Andrius Grigutis"
+      ],
+      "abstract": "We show that the key optimization results of the classical Markowitz portfolio selection theory, originally formulated for variance as the risk measure, remain available in explicit closed form under a broader class of strictly convex quadratic risk measures. The proposed framework replaces the covariance matrix with an arbitrary symmetric positive definite matrix and allows additional linear and constant terms, thereby containing various models arising in transaction cost optimization, benchmark relative optimization, covariance regularization, and factor models. Closed-form formulas are obtained for the efficient frontier, the global minimum risk portfolio, the maximum Sharpe ratio portfolio, the Capital Market Curve, the tangency portfolio, and the maximum utility portfolio. In contrast to the classical Markowitz model, the tangency portfolio does not coincide with the maximum Sharpe ratio portfolio, revealing a new geometric phenomenon. A numerical example confirms the derived formulas.",
+      "categories": [
+        "q-fin.PM",
+        "math.OC"
+      ],
+      "url": "https://arxiv.org/abs/2608.24449v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.24449v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-25",
+      "discovered": "2026-08-26",
+      "matched_keywords": [
+        "factor",
+        "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.23576",
+      "source": "arxiv",
+      "title": "Minimum-Distortion Wealth Taxation, I: Information-Theoretic versus Transport-Geometric Optimality on the Proportional Class",
+      "authors": [
+        "Anders G Frøseth"
+      ],
+      "abstract": "We characterise minimum-distortion wealth taxation under two contrasting normative criteria within a Fokker-Planck framework on log-wealth: the JKO free-energy gap, an information-theoretic measure aligned with the Mirrleesian decision-distortion tradition, and the squared 2-Wasserstein distance from the no-tax distribution at horizon $T$, a transport-geometric measure aligned with the Saez-Zucman distributional-compression tradition. Restricting to the neutrality-preserving (C1)-(C3) schedule class of a companion paper (Froseth 2026), both optima admit closed forms in the two-dimensional design plane parametrised by the corporate-dividend retention $k = (1-τ_c)(1-τ_d)$ and the proportional wealth-tax rate $τ_w$. The JKO optimum partitions the regime axis into three phases as a function of the dimensionless ratio $ρ= Σ_0 m_0/σ^2$, with $m_0 = μ- σ^2/2$ the geometric mean log-return: a pure wealth-tax phase at low $ρ$, a mixed-instrument phase at intermediate $ρ$, and a pure flow-tax phase at high $ρ$. The $W_2$ optimum, by contrast, is degenerate in this calibration: it pins to the pure flow-tax corner across the whole regime axis. The criterion contrast admits an economically meaningful reading via a bluntness index $B(m_0) = b/(a m_0)$ that measures the wealth-tax channel's mean-displacement-per-revenue overshoot relative to the flow-tax channel; JKO weights $B$ linearly, $W_2$ weights it quadratically, and the two normative traditions correspond to this difference in weighting. Norwegian-flavoured calibrations sit inside the JKO mixed-instrument phase under stock-heavy portfolio volatility but move into the pure flow-tax phase under the realised effective volatility of typical real-estate-heavy households.",
+      "categories": [
+        "physics.soc-ph",
+        "econ.GN",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2608.23576v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.23576v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-07-08",
+      "discovered": "2026-08-26",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.24786",
+      "source": "arxiv",
+      "title": "Harvesting the Volatility Risk Premium: A Learning-to-Rank Approach",
+      "authors": [
+        "Maciej Wysocki"
+      ],
+      "abstract": "This paper develops the first end-to-end application of cross-sectional learning-to-rank to the S&P 500 weekly options (SPXW) zero-day-to-expiration surface, integrated with margin-aware position sizing, an abstention rule driven by model uncertainty, and a strict out-of-time integrity check. A LightGBM LambdaRank ranker scores a daily nine-strategy cross-section composed of eight delta-targeted short-put positions and a \\textit{SKIP} candidate, trained against a path-aware Sortino-on-bars label computed at one-minute resolution. The framework is evaluated under index-option margin requirements, a tiered fee schedule, and bid-to-mid execution assumptions across a four-window walk-forward over 2021-2024 and a strictly held-out 2025 out-of-time slice. Seven sizing methods produce out-of-time annualized Sharpe ratios between 4.31 and 5.76, with the headline method reaching a Probabilistic Sharpe Ratio of 0.964 and a sample-period maximum drawdown of -2.28%, on a single hold-out year against a walk-forward range of 1.90 to 3.11. Out of time, every method exceeds three passive benchmarks (CBOE PUT, CBOE WPUT, SPX buy-and-hold) by at least 3.84 in Sharpe ratio and five internal selection baselines by at least 3.69. A two-by-two ablation of the confidence gate against the tail-risk features places 5.05 of the 5.59 out-of-time Sharpe gap over the CBOE PUT with the ranker and the selection layer, the two risk controls adding 0.54 between them. On walk-forward, where the gate binds, neither control comes close to the headline alone and their interaction supplies most of the result. A fifteen-group feature ablation shows that removing the multiplicative regime interactions collapses walk-forward statistical confidence.",
+      "categories": [
+        "q-fin.CP",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2608.24786v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.24786v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-25",
+      "discovered": "2026-08-26",
+      "matched_keywords": [
+        "regime",
+        "cross-sectional",
+        "walk-forward",
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.24703",
+      "source": "arxiv",
+      "title": "Lead-Lag Relationships in Financial Markets: A Comparison of Multiple Clustering Algorithms",
+      "authors": [
+        "Ruichen Deng",
+        "Yichi Zhang"
+      ],
+      "abstract": "Lead-lag relationships are widely used in financial time series, and many clustering algorithms based on them have been developed. The traditional DTW-KMedoids algorithm performs well both on the synthetic dataset and the real financial dataset. However, there are still several limitations to these algorithms: low efficiency caused by high time complexity, poor mathematical properties from DTW distance, the clustering effect is sensitive to the number of clusters. To solve the problems above and improve the performance, this paper introduces three clustering algorithms: MiniRocket-KMeans, KShape, Ensemble algorithm (a combination of KShape and DTW-KMedoids) and compares their performance on synthetic and real stock datasets with DTW-KMedoids algorithm under the same trade strategy. In addition, this paper also finds the best number of clusters by maximizing the silhouette coefficient in each clustering algorithm to improve the stability of the experiment results. Our main conclusions are as follows: MiniRocket-KMeans performs best under the lead strategy, achieving a Sharpe ratio of 0.866 with a maximum drawdown controlled at -63.9\\%; the ensemble algorithm exhibits excellent stability; the robustness is significantly improved after finding the best number of clusters; the p-values of the hypothesis test on the Sharpe ratio of all strategies are 0.0, verifying the statistical validity of the lead-lag trading strategy. Finally, future improvement directions such as customized lead-lag matrices and optimized ensemble voting mechanisms are proposed.",
+      "categories": [
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2608.24703v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.24703v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-25",
+      "discovered": "2026-08-26",
+      "matched_keywords": [
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.23808",
+      "source": "arxiv",
+      "title": "Equity Strategy Backtesting: Luck or Edge? The MinervaScore as a Statistical Robustness Grade",
+      "authors": [
+        "Maria Laura Santoni",
+        "Vincent Jouanne",
+        "Matthew L. Scullin"
+      ],
+      "abstract": "Backtests of trading strategies are often selected after many parameter trials. A strong historical result can therefore reflect search luck rather than a persistent signal. Standard summaries such as return, Sharpe ratio, and drawdown do not record how many candidates were tried, whether the selected rule survives out-of-sample validation, or whether the available history is long enough to support the result. This paper describes the MinervaScore, a post-selection robustness grade for trading strategies. The score combines four established validation quantities: Deflated Sharpe Ratio, Probability of Backtest Overfitting, Superior Predictive Ability, and Minimum Track Record Length, with a regime-stability diagnostic. These components are converted into signed margins from their admissibility thresholds, aggregated into a raw score, and then mapped to a 0-100 display. The display is tied to a binary Robustness Seal: scores of 80 or higher are shown only when all five gates pass. The calibration uses 359,062 production backtest records. The score is intended to rank statistical support, not to estimate the probability of future profit. In synthetic markets with known ground truth, the MinervaScore separates true signal from lucky backtest outcomes, with an AUROC of 0.989 at the headline difficulty. Its improvement over the GT-Score proxy and the gates-passed baseline is modest, and it remains close to the corrected DSR-alone baseline. In a pre-registered test on unseen real-market data, the score showed no significant forward relationship in a population with limited surviving edge (Spearman rho_s = 0.013, one-sided permutation p = 0.40). We therefore present the MinervaScore as an auditable validation and reporting layer, rather than as evidence of demonstrated real-market predictability.",
+      "categories": [
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2608.23808v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.23808v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-24",
+      "discovered": "2026-08-26",
+      "matched_keywords": [
+        "regime",
+        "deflated sharpe",
+        "drawdown",
+        "overfitting"
       ],
       "status": "queued",
       "ingested_into": null,

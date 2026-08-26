@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-26T06:30:15.286970+09:00",
+  "generated_at": "2026-08-26T16:15:42.717545+09:00",
   "portfolio_constraints": {
     "max_single_bot_pct": 40,
     "max_leverage": 1.5,
@@ -72,19 +72,19 @@
       "level": "error",
       "bot": null,
       "title": "Stale decision memo — Add NAV-deviation monitor to modified-dual-momentum bond defensive leg",
-      "body": "Memo `2026-05-23-modified-dual-momentum-etf-nav-monitor` has been at `status: proposed` for 94d (SLA: warn at 14d, error at 30d). Either flip to `approved`/`rejected`, or amend the memo with the reason it's still open."
+      "body": "Memo `2026-05-23-modified-dual-momentum-etf-nav-monitor` has been at `status: proposed` for 95d (SLA: warn at 14d, error at 30d). Either flip to `approved`/`rejected`, or amend the memo with the reason it's still open."
     },
     {
       "level": "error",
       "bot": null,
       "title": "Stale decision memo — Author missing backtests — 4 live bots lack quantified Sharpe/MDD",
-      "body": "Memo `2026-05-25-author-missing-backtests` has been at `status: proposed` for 92d (SLA: warn at 14d, error at 30d). Either flip to `approved`/`rejected`, or amend the memo with the reason it's still open."
+      "body": "Memo `2026-05-25-author-missing-backtests` has been at `status: proposed` for 93d (SLA: warn at 14d, error at 30d). Either flip to `approved`/`rejected`, or amend the memo with the reason it's still open."
     },
     {
       "level": "error",
       "bot": null,
       "title": "Stale decision memo — Deploy-or-demote — paper-trade candidates not actually running",
-      "body": "Memo `2026-05-25-paper-trade-candidates-deploy-or-demote` has been at `status: proposed` for 92d (SLA: warn at 14d, error at 30d). Either flip to `approved`/`rejected`, or amend the memo with the reason it's still open."
+      "body": "Memo `2026-05-25-paper-trade-candidates-deploy-or-demote` has been at `status: proposed` for 93d (SLA: warn at 14d, error at 30d). Either flip to `approved`/`rejected`, or amend the memo with the reason it's still open."
     },
     {
       "level": "warn",
@@ -134,7 +134,7 @@
       "dashboard_id": "btc_vb",
       "wiki_path": "quanty-wiki/bots/btc-vb.md",
       "last_update": "2026-08-25",
-      "days_since_update": 1.3,
+      "days_since_update": 1.7,
       "period_pl_krw": 680968.51,
       "mdd_pl_krw": 254134.38,
       "best_day_krw": 903679.24,
@@ -161,7 +161,7 @@
       "dashboard_id": "claude_bot",
       "wiki_path": "quanty-wiki/bots/claude-trading-bot.md",
       "last_update": "2026-08-25T22:32:24.019361",
-      "days_since_update": 0.3,
+      "days_since_update": 0.7,
       "period_pl_krw": 1161021.6,
       "mdd_pl_krw": 1959682.7999999998,
       "best_day_krw": 1112445.6,
@@ -173,7 +173,7 @@
       "backtest_window": "11.6y (2015-01..2026-08-21) via backtest_claude_trading_bot.py, first authored 2026-08-22 (39 trades). Raw log: docs/backtest_logs/2026-08-22/claude_bot.txt. Mechanical mandate only (regime held NEUTRAL — the live breadth/top-score engine has no reconstructable history); watchlist={EQIX} back-applied to 2015 is hindsight. The mandate halves EQIX B&H MDD (20.9 vs 41.8) but pays 7.5%p CAGR (9.4 vs 16.9) and loses to SPY B&H (13.8); TP +25% is what caps the upside (6 of 19 sells). SPY-MA200 regime proxy run is worse (6.4/29.3).",
       "realized_sharpe_annualized": 0.6,
       "realized_sharpe_ci_low_95": 0.39,
-      "realized_mdd_pct": 6.96,
+      "realized_mdd_pct": 6.95,
       "sharpe_decay": 1.03,
       "mdd_excess": 0.33
     },
@@ -214,7 +214,7 @@
       "capital_pct_source": "manual",
       "dashboard_id": "hybrid_vb",
       "wiki_path": "quanty-wiki/bots/hybrid-vb.md",
-      "last_update": "2026-08-25T09:31:49.034170-04:00",
+      "last_update": "2026-08-26T09:01:13.231209+09:00",
       "days_since_update": 0.3,
       "period_pl_krw": -2657505.2,
       "mdd_pl_krw": 7486331.51,
@@ -237,12 +237,12 @@
       "verdict": "keep",
       "schedule": "09:30 ET weekdays (+30s delay)",
       "paper_source": "[[jd-wealth-research-strategy]]",
-      "capital_allocated_pct": 13.9,
+      "capital_allocated_pct": 14.0,
       "capital_pct_source": "computed",
       "dashboard_id": "jd_strategy",
       "wiki_path": "quanty-wiki/bots/jd-strategy.md",
       "last_update": "2026-08-25T22:31:09.610370",
-      "days_since_update": 0.3,
+      "days_since_update": 0.7,
       "period_pl_krw": -199905.44,
       "mdd_pl_krw": 621581.72,
       "best_day_krw": 508165.13,
@@ -268,8 +268,8 @@
       "capital_pct_source": "computed",
       "dashboard_id": "korea_etf",
       "wiki_path": "quanty-wiki/bots/korea-etf-momentum.md",
-      "last_update": "2026-08-25T09:00:30.545119+09:00",
-      "days_since_update": 0.9,
+      "last_update": "2026-08-26T09:00:29.119754+09:00",
+      "days_since_update": 0.3,
       "period_pl_krw": -4535370.0,
       "mdd_pl_krw": 6429870.0,
       "best_day_krw": 2304975.0,
@@ -323,7 +323,7 @@
       "dashboard_id": "dual_momentum",
       "wiki_path": "quanty-wiki/bots/modified-dual-momentum.md",
       "last_update": "2026-08-25T22:31:36.917836",
-      "days_since_update": 0.3,
+      "days_since_update": 0.7,
       "period_pl_krw": -208173.0,
       "mdd_pl_krw": 1936802.4,
       "best_day_krw": 428351.99999999994,
@@ -335,7 +335,7 @@
       "backtest_window": "6.5y (2020..2026-08) via backtest_modified_dual_momentum.py, rerun 2026-08-22 (Sortino 1.34, Calmar 0.79; raw log docs/backtest_logs/2026-08-22/dual_momentum.txt). Note: 강환국 original-source 53-year numbers were CAGR 18.3/MDD 16.3/Sharpe-not-reported — the recent OOS window underperforms the headline claim, notably losing to plain SPY buy-and-hold (CAGR 17.3, Sharpe 1.04) on CAGR — it wins only on MDD (-16.7 vs -23.9) and Calmar (0.79 vs 0.72).",
       "realized_sharpe_annualized": -0.13,
       "realized_sharpe_ci_low_95": -0.32,
-      "realized_mdd_pct": 6.65,
+      "realized_mdd_pct": 6.63,
       "sharpe_decay": -0.14,
       "mdd_excess": 0.4
     },
@@ -426,12 +426,12 @@
       "verdict": "watch",
       "schedule": "09:30 ET weekdays",
       "paper_source": "home-grown",
-      "capital_allocated_pct": 14.4,
+      "capital_allocated_pct": 14.5,
       "capital_pct_source": "computed",
       "dashboard_id": "quant40",
       "wiki_path": "quanty-wiki/bots/usa-quant40.md",
       "last_update": "2026-08-25T22:30:27.707399",
-      "days_since_update": 0.3,
+      "days_since_update": 0.7,
       "period_pl_krw": 1597177.65,
       "mdd_pl_krw": 3776660.2699999996,
       "best_day_krw": 2030932.2,
@@ -443,7 +443,7 @@
       "backtest_window": "5.6y (2021-01..2026-08) via scripts/backtest_strategy.py, first persisted run 2026-08-22 (394 trades, $25k->$42.1k). Raw log: docs/backtest_logs/2026-08-22/quant40.txt. Realized Sharpe 7.35-over-22-days now has an anchor: backtest Sharpe is 0.87, so the live figure is luck until proven otherwise.",
       "realized_sharpe_annualized": 0.56,
       "realized_sharpe_ci_low_95": 0.35,
-      "realized_mdd_pct": 19.84,
+      "realized_mdd_pct": 19.81,
       "sharpe_decay": 0.64,
       "mdd_excess": 0.97
     },
@@ -603,7 +603,7 @@
         "sharpe_annualized": 0.56,
         "sharpe_ci_low_95": 0.35,
         "sharpe_ci_high_95": 0.76,
-        "weight": 0.144
+        "weight": 0.145
       },
       "jd-strategy": {
         "daily_pnl_krw_mean": -1885.9,
@@ -611,7 +611,7 @@
         "sharpe_annualized": -0.31,
         "sharpe_ci_low_95": -0.5,
         "sharpe_ci_high_95": -0.11,
-        "weight": 0.139
+        "weight": 0.14
       },
       "modified-dual-momentum": {
         "daily_pnl_krw_mean": -1963.9,
@@ -721,11 +721,11 @@
           },
           "usa-quant40": {
             "sharpe": 0.56,
-            "weight": 0.144
+            "weight": 0.145
           },
           "jd-strategy": {
             "sharpe": -0.31,
-            "weight": 0.139
+            "weight": 0.14
           },
           "modified-dual-momentum": {
             "sharpe": -0.13,
