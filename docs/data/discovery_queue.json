@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-08-27T06:30:20.116103+09:00",
+  "generated_at": "2026-08-27T16:15:45.006506+09:00",
   "stats": {
-    "total": 270,
-    "queued": 188,
+    "total": 271,
+    "queued": 189,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-08-27T06:30:20.115999+09:00",
+    "last_gc_at": "2026-08-27T16:15:45.006392+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -7841,6 +7841,33 @@
         "deflated sharpe",
         "drawdown",
         "overfitting"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.25844",
+      "source": "arxiv",
+      "title": "Output-Only Identification and Spectral Monitoring of Coupled Feedback Networks with Known Time-Varying Actuation",
+      "authors": [
+        "Jihwan Woo"
+      ],
+      "abstract": "Coupled feedback networks are often monitored channel by channel even though cross-channel paths alter both stability margins and transmitted disturbances. We study identification of a structured feedback matrix L_t = Phi diag(gamma_t) in an output-only setting: no commanded, probing, or reference input exists -- only temporally separated outputs and the scheduling gains gamma_t are observed, while the coupling response Phi and the clearing-window inputs are not. Identification rests jointly on the persistent excitation of the observed pre-window output and on two structural features separating coupling from confounds: the known time variation of the gains, which modulates the closed-loop response in a predictable pattern, and a partial-reversal moment by which a known fraction of transient displacement is corrected in a subsequent window. We give a hierarchy of results: exact local identification of the coupling under a Jacobian rank condition on the gain regimes; a first-order interaction estimator whose identification strength is the minimum eigenvalue of the residualized interaction information matrix (provably unidentified under constant gains); and a characterization of the estimand as a resolvent sensitivity -- the right object for screening transmitted disturbances and a first-stage input to spectral-margin recovery -- with sqrt(T) asymptotics for the first-order estimator, a cross-identification theorem mapping each varying gain to exactly identified resolvent rows and columns, and bootstrap validity under consistent selection; the implemented heuristic's empirical coverage (90% at nominal 95%) quantifies the remaining gap. Simulations verify sharpness of the rank condition and quantify benchmark failures under confounding. A case study on leveraged-fund rebalancing feedback, where daily fund disclosures play the role of the known gains, illustrates the method on real data.",
+      "categories": [
+        "eess.SP",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2608.25844v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.25844v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-26",
+      "discovered": "2026-08-27",
+      "matched_keywords": [
+        "regime"
       ],
       "status": "queued",
       "ingested_into": null,
