@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-08-28T06:30:20.987878+09:00",
+  "generated_at": "2026-08-28T16:15:47.427508+09:00",
   "stats": {
-    "total": 271,
-    "queued": 189,
+    "total": 272,
+    "queued": 190,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-08-28T06:30:20.987763+09:00",
+    "last_gc_at": "2026-08-28T16:15:47.427407+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -7866,6 +7866,34 @@
       "year": 2026,
       "published": "2026-08-26",
       "discovered": "2026-08-27",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.27076",
+      "source": "arxiv",
+      "title": "Tabular Deep Learning for Algorithmic Trading: Cross-Regime Bayesian Optimisation for Equity Signal Generation",
+      "authors": [
+        "Joshua Le Grice"
+      ],
+      "abstract": "Algorithmic trading now represents a market exceeding $20 billion, where even marginal gains in signal robustness can translate into economically significant returns. Existing evaluations of equity prediction models do not explicitly target regime robustness during hyperparameter selection. Five model classes are trained on daily observations from approximately 300 large-cap US equities over eleven years, with Bayesian optimisation configured to target trading performance across three statistically different market regimes. Regime-robust hyperparameter selection is associated with out-of-sample generalisation, as signal precision remains above the random baseline across all four quarters of the test period, and portfolio performance slowly degrades under simulated input noise before collapsing beyond a defined threshold. No individual tabular deep learning architecture outperforms gradient-boosted trees, but combining XGBoost and TabNet using rank aggregation produces a Hybrid ensemble with an annualised return of 51.26%, a Sharpe ratio of 2.44, and a statistically significant CAPM alpha of 0.423 (p = 0.011). A near-zero beta indicates this outperformance is driven by stock selection, not market exposure. Alternative data plays a secondary role once technical and fundamental features are accounted for, as well as contributing more strongly on the short side than the long, and varies by model class. An interactive application makes these results explorable in real time, with live data integration the remaining step toward practical deployment.",
+      "categories": [
+        "cs.LG",
+        "q-fin.CP",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2608.27076v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.27076v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-27",
+      "discovered": "2026-08-28",
       "matched_keywords": [
         "regime"
       ],
