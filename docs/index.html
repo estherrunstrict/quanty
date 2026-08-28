@@ -1943,7 +1943,11 @@ function render(data) {
     // Both numbers are right; only the gap between them was ever missing.
     const settleNote = (a) => {
       const st = (a || {}).settlement;
-      if (!st || !st.usable || !st.net_krw) return '';
+      if (!st || !st.usable) return '';
+      // KIS publishes a ready-made line when its own arithmetic has drifted from
+      // the broker's tot_asst_amt. Nothing to derive there — say it and stop.
+      if (st.message) return `<div class="a-settle">${st.message}</div>`;
+      if (!st.net_krw) return '';
       const net = Math.round(st.net_krw);
       const when = st.settles_on
         ? new Date(st.settles_on + 'T00:00:00+09:00').toLocaleDateString('en-US',
