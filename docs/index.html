@@ -316,6 +316,15 @@ a { color: var(--accent); text-decoration: none; }
 }
 
 .hero-acct .a-meta { font-size: 0.62rem; color: var(--tx3); margin-top: 0.2rem; }
+/* The broker app and this tile can legitimately disagree while a trade is still
+   settling. This line says so on the tile, rather than leaving the reader to
+   discover the gap in their app and assume the page is broken. */
+.hero-acct .a-settle {
+  font-size: 0.62rem; line-height: 1.35; margin-top: 0.35rem;
+  padding-top: 0.35rem; border-top: 1px dashed var(--bd);
+  color: var(--tx3);
+}
+.hero-acct .a-settle b { color: var(--tx2); font-weight: 600; }
 
 .badge-stale {
   font-size: 0.5rem;
@@ -1926,6 +1935,27 @@ function render(data) {
     const hero = h('section', 'hero fade-in');
     const invUSD = exchangeRate > 0 ? T.investments_krw / exchangeRate : 0;
 
+    // A broker app adds 평가금액 to 예수금, and 예수금 only moves on the
+    // settlement date. This tile adds 평가금액 to 주문가능금액, which the broker
+    // nets the instant an order fills. So for the two business days after a
+    // trade the two totals differ by exactly the unsettled amount — the app
+    // still counting money already spent on shares it is also already counting.
+    // Both numbers are right; only the gap between them was ever missing.
+    const settleNote = (a) => {
+      const st = (a || {}).settlement;
+      if (!st || !st.usable || !st.net_krw) return '';
+      const net = Math.round(st.net_krw);
+      const when = st.settles_on
+        ? new Date(st.settles_on + 'T00:00:00+09:00').toLocaleDateString('en-US',
+            { month: 'short', day: 'numeric' })
+        : 'settlement';
+      const verb = net > 0
+        ? 'still counts the cash for ' + st.entry_count + ' unsettled buy' + (st.entry_count === 1 ? '' : 's')
+        : 'has not received ' + st.entry_count + ' unsettled sale' + (st.entry_count === 1 ? '' : 's');
+      return `<div class="a-settle">App shows <b>₩${Math.round(st.app_total_krw).toLocaleString()}</b>` +
+             ` — it ${verb}. Clears ${when}.</div>`;
+    };
+
     const tile = (key, label) => {
       const a = ACCT[key] || {};
       const val = a.total_krw || 0;
@@ -1944,6 +1974,7 @@ function render(data) {
         <div class="a-name">${label}${stale ? '<span class="badge-stale">Stale</span>' : ''}</div>
         <div class="a-val">₩${Math.round(val).toLocaleString()}</div>
         <div class="a-meta">${meta}</div>
+        ${settleNote(a)}
       </div>`;
     };
 
