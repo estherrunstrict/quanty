@@ -25,6 +25,10 @@ from dashboard_equity import et_today, pin_equity_endpoints
 # server talks to Toss (the Open API IP allowlist covers the Mac only), so this
 # file is the account's only representation and it can legitimately go stale.
 TOSS_SNAPSHOT_FILE = os.path.join(TRADING_DIR, "strategy_results", "toss_snapshot.json")
+# `cash_krw` for Toss is 주문가능금액 (buying power), which is already net of
+# every filled order — NOT 예수금, which the Toss app adds to 평가금액 and which
+# only moves on the settlement date. See reprice_settlement.
+TOSS_CASH_BASIS = "buying_power (\uc8fc\ubb38\uac00\ub2a5\uae08\uc561)"
 # What matters is the snapshot's age AT BUILD TIME, not how old it gets sitting
 # on disk between cycles. The Mac job runs 06:00 and 15:50 and the publish runs
 # 06:30 and 16:15, so the generator should never see a snapshot older than ~30
@@ -474,6 +478,105 @@ def _days_since(stamp, now):
     return round((now.replace(tzinfo=None) - when).total_seconds() / 86400.0, 2)
 
 
+def _entry_settled(entry, today):
+    """True when this fill's cash has already moved. Unparseable dates are NOT
+    treated as settled — dropping a fill we cannot date would understate the gap
+    silently, and a stale line is easier to notice than a missing one."""
+    try:
+        return datetime.strptime(str(entry.get("settles_on")), "%Y-%m-%d").date() <= today
+    except (TypeError, ValueError):
+        return False
+
+
+def reprice_settlement(raw, fx_rate, cash_krw, total_krw, now=None):
+    """The snapshot's 예수금 bridge, re-priced and re-aged for this build. PURE.
+
+    Why this exists at all: `accounts.toss.cash_krw` is 주문가능금액, which Toss
+    nets the moment an order fills, so holdings + cash counts every won exactly
+    once. The Toss app's 총 자산 adds 평가금액 to 예수금 instead, and 예수금 only
+    moves on the settlement date — two business days later. For those two days
+    the app shows the shares AND the money that bought them, and the totals
+    disagree by exactly the unsettled amount. That gap is not an error in either
+    number, but with nothing published about it, it read as one.
+
+    `net_krw` is the whole answer: this dashboard's total plus net_krw is what
+    the app shows. Positive = the app is still counting money already spent.
+
+    Everything is recomputed from the snapshot's own `entries` against THIS
+    build's clock, not copied from its totals. A snapshot the Mac wrote on
+    Friday is still on disk on Tuesday, and its Friday fills have settled since;
+    trusting its aggregate would keep a cleared gap on the page for days.
+
+    Returns a usable=False dict rather than raising or returning None, for the
+    same reason load_toss_account never raises: a missing bridge must degrade to
+    "no reconciliation line", never to a missing key or a failed publish.
+    """
+    if not isinstance(raw, dict):
+        return {"usable": False, "note": "snapshot predates the settlement bridge"}
+    if not raw.get("usable"):
+        return {"usable": False, "note": raw.get("note") or "settlement unavailable"}
+
+    rate = float(fx_rate or 0)
+    today = (now or datetime.now(KST)).astimezone(KST).date()
+    entries = [e for e in (raw.get("entries") or []) if isinstance(e, dict)]
+    live = [e for e in entries if not _entry_settled(e, today)]
+    settled_since = len(entries) - len(live)
+
+    buy = {"KRW": 0.0, "USD": 0.0}
+    sell = {"KRW": 0.0, "USD": 0.0}
+    for e in live:
+        currency = str(e.get("currency") or "KRW").upper()
+        if currency not in buy:
+            continue
+        bucket = buy if str(e.get("side") or "").upper() == "BUY" else sell
+        bucket[currency] += abs(float(e.get("cash_delta_native") or 0))
+
+    if buy["USD"] or sell["USD"]:
+        if rate <= 0:
+            return {"usable": False,
+                    "note": "settlement unavailable: USD fills in flight but no FX rate"}
+
+    def to_krw(bucket):
+        return bucket["KRW"] + bucket["USD"] * rate
+
+    native = raw.get("native") or {}
+    unsettled_buy = to_krw(buy)
+    unsettled_sell = to_krw(sell)
+    net = unsettled_buy - unsettled_sell
+    reserved = (float(native.get("open_buy_reserved_krw") or 0)
+                + float(native.get("open_buy_reserved_usd") or 0) * max(rate, 0))
+
+    out = {
+        "usable": True,
+        "basis": raw.get("basis"),
+        "settle_bdays": raw.get("settle_bdays"),
+        "by_currency": {
+            "KRW": {"buy": round(buy["KRW"], 2), "sell": round(sell["KRW"], 2),
+                    "net_krw": round(buy["KRW"] - sell["KRW"], 2),
+                    "rule": ((raw.get("by_currency") or {}).get("KRW") or {}).get("rule")},
+            "USD": {"buy_usd": round(buy["USD"], 6), "sell_usd": round(sell["USD"], 6),
+                    "net_krw": round((buy["USD"] - sell["USD"]) * rate, 2),
+                    "fx_rate": rate or None,
+                    "rule": ((raw.get("by_currency") or {}).get("USD") or {}).get("rule")},
+        },
+        "unsettled_buy_krw": round(unsettled_buy, 2),
+        "unsettled_sell_krw": round(unsettled_sell, 2),
+        "net_krw": round(net, 2),
+        "open_buy_reserved_krw": round(reserved, 2),
+        "deposit_krw": round(float(cash_krw or 0) + net, 2),
+        "app_total_krw": round(float(total_krw or 0) + net, 2),
+        # The earliest date on which the app and this page must agree again.
+        "settles_on": min((str(e.get("settles_on")) for e in live
+                           if e.get("settles_on")), default=None),
+        "entry_count": len(live),
+        "entries": live,
+    }
+    if settled_since:
+        out["note"] = ("{} fill(s) in this snapshot have settled since it was "
+                       "written and are excluded".format(settled_since))
+    return out
+
+
 def load_toss_account(path=None, now=None, max_age_hours=TOSS_MAX_AGE_HOURS, fx_rate=None):
     """Read the Mac-side Toss snapshot into the `accounts.toss` contract.
 
@@ -498,7 +601,9 @@ def load_toss_account(path=None, now=None, max_age_hours=TOSS_MAX_AGE_HOURS, fx_
         # branch below. Callers gate the holdings rows on `usable`, not `stale`.
         return {"total_krw": 0.0, "cash_krw": 0.0, "holdings_krw": 0.0,
                 "as_of": None, "stale": True, "usable": False, "note": note,
-                "last_seen_at": last_seen}
+                "last_seen_at": last_seen,
+                "cash_basis": TOSS_CASH_BASIS,
+                "settlement": {"usable": False, "note": note}}
 
     path = path or TOSS_SNAPSHOT_FILE
     if not os.path.exists(path):
@@ -553,6 +658,11 @@ def load_toss_account(path=None, now=None, max_age_hours=TOSS_MAX_AGE_HOURS, fx_
         "usable": True,
         "age_hours": round(age_h, 2),
         "holdings_count": len(snap.get("holdings") or []),
+        # Say in the data what this cash actually is. The whole Toss-app
+        # mismatch came from reading it as 예수금; `settlement` bridges the two.
+        "cash_basis": TOSS_CASH_BASIS,
+        "settlement": reprice_settlement(snap.get("settlement"), fx_rate,
+                                         cash_krw, total_krw, now=now),
         "source": snap.get("source") or "unknown",
     }
     if aged:
@@ -681,6 +791,127 @@ def get_account_totals_resilient(retries=4, delay=2.0, fetch=None, sleep=None):
     return totals
 
 
+def _bot_open_position_tickers(api_data, exclude_id=None):
+    """Every ticker any OTHER card's own position ledger names.
+
+    `open_positions` is the bot's private record of what it entered, written
+    from its own state rather than from the KIS balance page — so it is still
+    there on the day `holdings` comes back empty. That makes it the right thing
+    to consult before handing one bot's ticker to another.
+
+    Shapes differ per bot (leg-keyed for hybrid_vb, flat elsewhere), so this
+    walks the tree and takes any key whose value looks like a position record.
+    """
+    found = set()
+
+    def walk(node, depth=0):
+        if not isinstance(node, dict) or depth > 3:
+            return
+        for key, val in node.items():
+            if not isinstance(val, dict):
+                continue
+            if any(f in val for f in ("shares", "quantity", "qty", "entry_price")):
+                found.add(key)
+            else:
+                walk(val, depth + 1)
+
+    for s in api_data.get("strategies", []) or []:
+        if not isinstance(s, dict) or s.get("id") in (exclude_id, "manual"):
+            continue
+        walk(s.get("open_positions"))
+    return found
+
+
+def recover_hybrid_vb_kr_holdings(api_data, totals):
+    """Restore Hybrid VB's KR leg from the account when its card reports none.
+
+    Same failure as korea_etf above, wider blast radius. The KR leg writes
+    `holdings: []` when its balance page comes back empty; on 2026-08-19 that
+    handed 069500 / 305720 / 364690 (W4.37M) to the hands-on sleeve as Jae's own
+    hand-picked stock, because no card claimed them.
+
+    `collect_bot_claims` already falls back to `open_positions`, and that is why
+    132030 and 144600 did NOT leak that day — but that ledger only covers
+    positions the VB rule itself ENTERED. The other three are held outside it,
+    which is precisely why those three, and only those three, went missing. So
+    the anchor here is the bot's KR UNIVERSE: `kr.regime` is computed from
+    market data rather than from the balance call, so it is written in full even
+    on a dropout, and `open_positions` is folded in for anything it misses.
+
+    Guards, in order of how much damage each prevents:
+      - fires only when the KR leg reports nothing (a live report is never
+        overridden — under-reporting is reconcile_underreported's job)
+      - only tickers in this bot's own universe
+      - never a ticker another card publishes, or names in its own ledger
+
+    mark_to_market_strategies runs afterwards and re-prices what is restored.
+    """
+    if not totals:
+        return []
+    hybrid = next((s for s in api_data.get("strategies", []) or []
+                   if isinstance(s, dict) and s.get("id") == "hybrid_vb"), None)
+    if not hybrid:
+        return []
+    kr = hybrid.get("kr") or {}
+    if any(float(h.get("quantity") or 0) > 0 for h in (kr.get("holdings") or [])):
+        return []
+
+    universe = set(kr.get("regime") or {})
+    legs = hybrid.get("open_positions")
+    if isinstance(legs, dict) and isinstance(legs.get("kr"), dict):
+        universe |= set(legs["kr"])
+    if not universe:
+        # No universe means no defensible claim. Leaving the money in the gap is
+        # better than guessing which account rows belong to this bot.
+        return []
+
+    claimed = set()
+    for s in api_data.get("strategies", []) or []:
+        if not isinstance(s, dict) or s.get("id") in ("hybrid_vb", "manual"):
+            continue
+        for leg in (s, s.get("kr") or {}, s.get("us") or {}):
+            for h in (leg.get("holdings") or []):
+                if float(h.get("quantity") or 0) > 0 and h.get("ticker"):
+                    claimed.add(h["ticker"])
+    claimed |= _bot_open_position_tickers(api_data, exclude_id="hybrid_vb")
+
+    rows, recovered = [], []
+    for h in (totals.get("kr") or {}).get("holdings", []) or []:
+        tkr = h.get("ticker")
+        qty = float(h.get("quantity") or 0)
+        if not tkr or qty <= 0 or tkr not in universe or tkr in claimed:
+            continue
+        val = float(h.get("value") or 0)
+        profit = float(h.get("profit") or 0)
+        rows.append({
+            "ticker": tkr,
+            "quantity": qty,
+            "value": round(val, 2),
+            "avg_price": round((val - profit) / qty, 4),
+            "current_price": round(val / qty, 2),
+            "profit": round(profit, 2),
+            "profit_rate": h.get("profit_rate", 0),
+            "currency": "KRW",
+            "recovered_from_account": True,
+        })
+        recovered.append((tkr, qty))
+
+    if not rows:
+        return []
+    kr["holdings"] = rows
+    kr["value"] = round(sum(r["value"] for r in rows), 2)
+    kr["profit"] = round(sum(r["profit"] for r in rows), 2)
+    kr["unrealized_profit"] = kr["profit"]
+    kr["cost_basis"] = round(kr["value"] - kr["profit"], 2)
+    real = kr.get("realized_profit_ytd") or 0
+    kr["total_pl_ytd"] = round(real + kr["profit"], 2)
+    budget = hybrid.get("budget_kr") or 0
+    if budget > 0:
+        kr["profit_rate_ytd_pct"] = round(kr["total_pl_ytd"] / budget * 100, 2)
+    hybrid["kr"] = kr
+    return recovered
+
+
 def recover_missing_bot_holdings(api_data, totals):
     """Restore a bot's position from the authoritative account balance when its
     own result file reported zero holdings.
@@ -715,6 +946,12 @@ def recover_missing_bot_holdings(api_data, totals):
             for h in (leg.get("holdings") or []):
                 if (h.get("quantity") or 0) > 0:
                     claimed.add(h.get("ticker"))
+    # ...and never a ticker another bot's OWN ledger names. `holdings` is what a
+    # card managed to report; `open_positions` is what the bot knows it entered,
+    # and it survives the very dropout this function exists for. Without this,
+    # two bots dropping on the same day let KEM take 132030 — which Hybrid VB
+    # actually holds 406 shares of (W10.5M), entry logged in its own ledger.
+    claimed |= _bot_open_position_tickers(api_data, exclude_id="korea_etf")
 
     recovered = 0
     for s in api_data.get("strategies", []) or []:
@@ -1979,6 +2216,53 @@ def build_usvb_card(path=None, now=None):
     }
 
 
+# KR cash is 가수도정산금액 (D+2), which already carries today's KR settlements —
+# the same basis the KIS app's tot_evlu_amt uses, so the KR leg agrees with the
+# app by construction. The US leg is where settlement had to be reasoned about.
+KIS_CASH_BASIS = "prvs_rcdl_excc_amt (\uac00\uc218\ub3c4\uc815\uc0b0\uae08\uc561, D+2) + USD \uc8fc\ubb38\uac00\ub2a5\uae08\uc561"
+
+
+def build_kis_settlement(kr_stock_krw, us_broker_total_krw, assembled_total_krw,
+                         sell_gross_krw, buy_krw, net_applied_krw):
+    """The US settlement legs, and a check against KIS's own total. PURE.
+
+    `unsettled_us_sell_krw` used to be added to the total gross. KIS lets
+    unsettled sale proceeds be re-invested, so once a bot sold and re-bought in
+    the same cycle the new shares sat in stock_value while the sale that paid
+    for them was still being added as cash — the same money twice. On
+    2026-08-28 that published ₩141,402,044 at 06:30 against ₩121,477,083 at
+    16:15 with no real position change.
+
+    Netting `ustl_buy_amt_smtl` against `ustl_sll_amt_smtl` cancels exactly the
+    re-invested part. Publishing both legs keeps the adjustment auditable rather
+    than silent, and `gap_vs_broker_krw` compares the assembled figure with
+    tot_asst_amt — KIS's own answer, which the app shows. A gap that starts
+    growing means this arithmetic has drifted from the broker's.
+    """
+    broker_total = float(kr_stock_krw or 0) + float(us_broker_total_krw or 0)
+    if not us_broker_total_krw:
+        return {"usable": False,
+                "note": "tot_asst_amt unavailable — no broker cross-check this build"}
+    gap = float(assembled_total_krw or 0) - broker_total
+    out = {
+        "usable": True,
+        "basis": ("US unsettled sells netted against unsettled buys "
+                  "(ustl_sll_amt_smtl - ustl_buy_amt_smtl, clamped at 0); "
+                  "KR cash is already D+2"),
+        "unsettled_us_sell_gross_krw": round(float(sell_gross_krw or 0), 2),
+        "unsettled_us_buy_krw": round(float(buy_krw or 0), 2),
+        "net_applied_krw": round(float(net_applied_krw or 0), 2),
+        "double_count_avoided_krw": round(float(sell_gross_krw or 0)
+                                          - float(net_applied_krw or 0), 2),
+        "broker_total_krw": round(broker_total, 2),
+        "gap_vs_broker_krw": round(gap, 2),
+    }
+    if abs(gap) > max(100000.0, broker_total * 0.005):
+        out["message"] = ("KIS app shows \u20a9{:,.0f} — this tile differs by {:+,.0f}"
+                          .format(broker_total, gap))
+    return out
+
+
 def build_accounts(totals, portfolio, toss, strategies, now):
     """`accounts` block: KIS / Upbit / Toss, each honestly flagged. PURE.
 
@@ -1995,6 +2279,9 @@ def build_accounts(totals, portfolio, toss, strategies, now):
         krw_cash = float(totals.get("krw_cash") or 0)
         usd_cash = float(totals.get("usd_cash") or 0)
         unsettled = float(totals.get("unsettled_us_sell_krw") or 0)
+        unsettled_gross = float(totals.get("unsettled_us_sell_gross_krw") or unsettled)
+        unsettled_buy = float(totals.get("unsettled_us_buy_krw") or 0)
+        us_broker_total = float(totals.get("us_broker_total_krw") or 0)
         kr_stock = float(kr.get("stock_value") or 0)
         us_stock_krw = float(us.get("stock_value") or 0) * fx
         # Settlement-in-flight (KR pending inside prvs_rcdl_excc_amt, US T+3 via
@@ -2014,6 +2301,12 @@ def build_accounts(totals, portfolio, toss, strategies, now):
             "unsettled_us_sell_krw": round(unsettled, 2),
             "holdings_count": len(kr.get("holdings") or []) + len(us.get("holdings") or []),
         }
+        # Same contract as the Toss tile: say what the cash is, and publish the
+        # settlement arithmetic instead of applying it invisibly.
+        kis["cash_basis"] = KIS_CASH_BASIS
+        kis["settlement"] = build_kis_settlement(
+            kr_stock, us_broker_total, kis["total_krw"],
+            unsettled_gross, unsettled_buy, unsettled)
     else:
         kis = {"total_krw": 0.0, "cash_krw": 0.0, "stock_krw": 0.0, "as_of": None,
                "stale": True, "note": "KIS account query failed at publish time"}
@@ -2390,6 +2683,14 @@ def main(dry_run=False):
         rec = recover_missing_bot_holdings(api_data, totals)
         if rec:
             print("  Recovered {} bot position(s) from account balance".format(rec))
+
+    # Hybrid VB's KR leg drops the same way, but across a whole basket rather
+    # than one target ticker — and what it drops lands in the hands-on sleeve.
+    if totals:
+        hyb = recover_hybrid_vb_kr_holdings(api_data, totals)
+        for tkr, qty in hyb:
+            print("  Recovered hybrid_vb.kr {} x{:g} from account balance "
+                  "(card reported no KR holdings)".format(tkr, qty))
 
     # Same idea one step further: a bot that reported SOME of a position (result
     # file written a second after the fill) gets topped up to the account
