@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-08-29T19:17:50.229126+09:00",
+  "generated_at": "2026-08-31T16:15:47.606178+09:00",
   "stats": {
-    "total": 272,
-    "queued": 190,
+    "total": 273,
+    "queued": 191,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-08-29T19:17:50.229025+09:00",
+    "last_gc_at": "2026-08-31T16:15:47.606070+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -7896,6 +7896,35 @@
       "discovered": "2026-08-28",
       "matched_keywords": [
         "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2608.27734",
+      "source": "arxiv",
+      "title": "What survives honest evaluation? Leakage-safe, search-aware assessment of LLM-driven trading strategy discovery",
+      "authors": [
+        "Eray Gençay"
+      ],
+      "abstract": "Large language models (LLMs) are increasingly used to discover trading strategies, and much of the resulting literature shares a methodological weakness: many candidate strategies are generated, the best is reported, and neither look-ahead bias nor the intensity of the search behind the reported result is corrected for. We present a strategy-discovery system that makes both corrections structural rather than procedural. First, the agent can only act through registry-validated tools whose feature space excludes look-ahead by construction; we show that this guardrail is not redundant with statistical correction: a deliberately leaky oracle posting a Sharpe ratio of 35 survives Deflated Sharpe and probability-of-backtest-overfitting testing completely. Second, the system records every strategy evaluation its search performs and deflates all reported performance by that trial count, tracing how the best in-sample Sharpe ratio climbs with each trial while the deflation threshold, driven by the agent's own search, climbs faster. Across a 453-stock point-in-time US equity universe and a 39-ETF multi-asset universe with realistic transaction, impact, and borrow costs, honest evaluation certifies passive benchmarks (out-of-sample confidence intervals excluding zero), rejects every LLM-discovered strategy (across two frontier models, search budgets up to one hundred candidates, and five repeated runs), catching selection luck, predicted rank degradation, and out-of-sample collapse through complementary instruments, and evaluates a human trader's production rule system under identical instruments. The framework formalizes why pre-registered hypotheses earn lower evidential bars than brute search, and quantifies the sample sizes that credible certification of moderate edges actually requires.",
+      "categories": [
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2608.27734v1",
+      "pdf_url": "https://arxiv.org/pdf/2608.27734v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-27",
+      "discovered": "2026-08-31",
+      "matched_keywords": [
+        "ETF",
+        "deflated sharpe",
+        "look-ahead bias",
+        "overfitting"
       ],
       "status": "queued",
       "ingested_into": null,
