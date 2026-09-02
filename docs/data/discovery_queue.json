@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-09-02T06:30:48.588755+09:00",
+  "generated_at": "2026-09-02T16:15:53.526145+09:00",
   "stats": {
-    "total": 276,
-    "queued": 194,
+    "total": 278,
+    "queued": 196,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-09-02T06:30:48.588637+09:00",
+    "last_gc_at": "2026-09-02T16:15:53.526011+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -8010,6 +8010,63 @@
       "matched_keywords": [
         "regime",
         "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.01183",
+      "source": "arxiv",
+      "title": "Harvesting the Variance Risk Premium in Nuclear and Energy Equities: A Short-Put Portfolio Derisking Strategy",
+      "authors": [
+        "Jilang Miao",
+        "Nonna Sorokina"
+      ],
+      "abstract": "We study whether nuclear and energy-adjacent equity options exhibit a harvestable variance risk premium. Using CRSP and OptionMetrics data for 2000-2024, we construct a systematic cash-secured short-put strategy on a curated universe of nuclear-related firms. The strategy compares at-the-money put implied volatility with GARCH-based realized volatility forecasts, then evaluates unconditional and IV/RV-filtered put-writing portfolios. The results show positive average option premia, high win rates, and substantially lower volatility than an equal-weight stock benchmark, though performance is measured before transaction costs and with a fixed universe.",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2609.01183v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.01183v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-01",
+      "discovered": "2026-09-02",
+      "matched_keywords": [
+        "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.00731",
+      "source": "arxiv",
+      "title": "Agentic Empirical Asset Pricing: Methodological Foundations",
+      "authors": [
+        "Yingjian Pan",
+        "Xiaowei Ding",
+        "Kay Giesecke"
+      ],
+      "abstract": "Recent advances in LLM agents enable a new paradigm for asset pricing, which we call Agentic Empirical Asset Pricing (AEAP): systems that autonomously conduct the scientific discovery process itself. We define AEAP and identify its core building blocks. Existing evaluation practices backtest only the outputs (factors or trades), not the autonomous discovery system that produced them. We focus on factor discovery, contributing a reference architecture, a rigorous evaluation standard for discovered factors, and a method for out-of-sample backtesting the discovery system. As a concrete instance of that architecture, we evaluate SEADS against five re-implemented baselines on two US equity panels using this standard: no single metric ranks the systems consistently, motivating evaluation on multiple axes at once. A separate rolling re-execution then asks the complementary question of whether the discovery process itself, not one static output, is reliable. We also report negative findings and limitations that surface further evaluation pitfalls for future AEAP systems.",
+      "categories": [
+        "cs.AI",
+        "cs.LG",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2609.00731v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.00731v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-01",
+      "discovered": "2026-09-02",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
