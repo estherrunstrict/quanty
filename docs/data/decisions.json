@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T06:30:12.771371+09:00",
+  "generated_at": "2026-09-03T16:15:38.211455+09:00",
   "portfolio_constraints": {
     "max_single_bot_pct": 40,
     "max_leverage": 1.5,
@@ -72,19 +72,19 @@
       "level": "error",
       "bot": null,
       "title": "Stale decision memo — Add NAV-deviation monitor to modified-dual-momentum bond defensive leg",
-      "body": "Memo `2026-05-23-modified-dual-momentum-etf-nav-monitor` has been at `status: proposed` for 102d (SLA: warn at 14d, error at 30d). Either flip to `approved`/`rejected`, or amend the memo with the reason it's still open."
+      "body": "Memo `2026-05-23-modified-dual-momentum-etf-nav-monitor` has been at `status: proposed` for 103d (SLA: warn at 14d, error at 30d). Either flip to `approved`/`rejected`, or amend the memo with the reason it's still open."
     },
     {
       "level": "error",
       "bot": null,
       "title": "Stale decision memo — Author missing backtests — 4 live bots lack quantified Sharpe/MDD",
-      "body": "Memo `2026-05-25-author-missing-backtests` has been at `status: proposed` for 100d (SLA: warn at 14d, error at 30d). Either flip to `approved`/`rejected`, or amend the memo with the reason it's still open."
+      "body": "Memo `2026-05-25-author-missing-backtests` has been at `status: proposed` for 101d (SLA: warn at 14d, error at 30d). Either flip to `approved`/`rejected`, or amend the memo with the reason it's still open."
     },
     {
       "level": "error",
       "bot": null,
       "title": "Stale decision memo — Deploy-or-demote — paper-trade candidates not actually running",
-      "body": "Memo `2026-05-25-paper-trade-candidates-deploy-or-demote` has been at `status: proposed` for 100d (SLA: warn at 14d, error at 30d). Either flip to `approved`/`rejected`, or amend the memo with the reason it's still open."
+      "body": "Memo `2026-05-25-paper-trade-candidates-deploy-or-demote` has been at `status: proposed` for 101d (SLA: warn at 14d, error at 30d). Either flip to `approved`/`rejected`, or amend the memo with the reason it's still open."
     },
     {
       "level": "warn",
@@ -134,7 +134,7 @@
       "dashboard_id": "btc_vb",
       "wiki_path": "quanty-wiki/bots/btc-vb.md",
       "last_update": "2026-09-03",
-      "days_since_update": 0.3,
+      "days_since_update": 0.7,
       "period_pl_krw": 132249.00999999998,
       "mdd_pl_krw": 548719.5,
       "best_day_krw": 903679.24,
@@ -156,12 +156,12 @@
       "verdict": "watch",
       "schedule": "09:30 ET weekdays (+120s delay)",
       "paper_source": "home-grown",
-      "capital_allocated_pct": 20.8,
+      "capital_allocated_pct": 20.7,
       "capital_pct_source": "computed",
       "dashboard_id": "claude_bot",
       "wiki_path": "quanty-wiki/bots/claude-trading-bot.md",
       "last_update": "2026-09-02T22:32:14.315345",
-      "days_since_update": 0.3,
+      "days_since_update": 0.7,
       "period_pl_krw": 781093.8,
       "mdd_pl_krw": 1959682.7999999998,
       "best_day_krw": 1112445.6,
@@ -173,7 +173,7 @@
       "backtest_window": "11.6y (2015-01..2026-08-21) via backtest_claude_trading_bot.py, first authored 2026-08-22 (39 trades). Raw log: docs/backtest_logs/2026-08-22/claude_bot.txt. Mechanical mandate only (regime held NEUTRAL — the live breadth/top-score engine has no reconstructable history); watchlist={EQIX} back-applied to 2015 is hindsight. The mandate halves EQIX B&H MDD (20.9 vs 41.8) but pays 7.5%p CAGR (9.4 vs 16.9) and loses to SPY B&H (13.8); TP +25% is what caps the upside (6 of 19 sells). SPY-MA200 regime proxy run is worse (6.4/29.3).",
       "realized_sharpe_annualized": 0.4,
       "realized_sharpe_ci_low_95": 0.2,
-      "realized_mdd_pct": 7.38,
+      "realized_mdd_pct": 7.39,
       "sharpe_decay": 0.69,
       "mdd_excess": 0.35
     },
@@ -214,7 +214,7 @@
       "capital_pct_source": "manual",
       "dashboard_id": "hybrid_vb",
       "wiki_path": "quanty-wiki/bots/hybrid-vb.md",
-      "last_update": "2026-09-02T09:31:42.025923-04:00",
+      "last_update": "2026-09-03T09:01:14.308204+09:00",
       "days_since_update": 0.3,
       "period_pl_krw": -2907433.2,
       "mdd_pl_krw": 7486331.51,
@@ -242,7 +242,7 @@
       "dashboard_id": "jd_strategy",
       "wiki_path": "quanty-wiki/bots/jd-strategy.md",
       "last_update": "2026-09-02T22:31:00.506246",
-      "days_since_update": 0.3,
+      "days_since_update": 0.7,
       "period_pl_krw": -164339.34000000003,
       "mdd_pl_krw": 621581.72,
       "best_day_krw": 508165.13,
@@ -268,8 +268,8 @@
       "capital_pct_source": "computed",
       "dashboard_id": "korea_etf",
       "wiki_path": "quanty-wiki/bots/korea-etf-momentum.md",
-      "last_update": "2026-09-02T09:00:32.704915+09:00",
-      "days_since_update": 0.9,
+      "last_update": "2026-09-03T09:00:30.409317+09:00",
+      "days_since_update": 0.3,
       "period_pl_krw": -4535370.0,
       "mdd_pl_krw": 6429870.0,
       "best_day_krw": 2304975.0,
@@ -318,12 +318,12 @@
       "verdict": "keep",
       "schedule": "monthly, first trading day",
       "paper_source": "[[kang-hwankook-modified-dual-momentum]]",
-      "capital_allocated_pct": 22.3,
+      "capital_allocated_pct": 22.2,
       "capital_pct_source": "computed",
       "dashboard_id": "dual_momentum",
       "wiki_path": "quanty-wiki/bots/modified-dual-momentum.md",
       "last_update": "2026-09-02T22:31:24.605941",
-      "days_since_update": 0.3,
+      "days_since_update": 0.7,
       "period_pl_krw": -114471.0,
       "mdd_pl_krw": 1936802.4,
       "best_day_krw": 428351.99999999994,
@@ -431,7 +431,7 @@
       "dashboard_id": "quant40",
       "wiki_path": "quanty-wiki/bots/usa-quant40.md",
       "last_update": "2026-09-02T22:30:26.912167",
-      "days_since_update": 0.3,
+      "days_since_update": 0.7,
       "period_pl_krw": 1830882.8600000003,
       "mdd_pl_krw": 3776660.2699999996,
       "best_day_krw": 2030932.2,
@@ -578,7 +578,7 @@
       "sharpe_ci_high_95": -0.43,
       "var_95_1d_krw": -2255347,
       "diversification_ratio": 0.11,
-      "effective_n_bets": 3.15
+      "effective_n_bets": 3.16
     },
     "per_bot": {
       "btc-vb": {
@@ -619,7 +619,7 @@
         "sharpe_annualized": -0.07,
         "sharpe_ci_low_95": -0.26,
         "sharpe_ci_high_95": 0.12,
-        "weight": 0.223
+        "weight": 0.222
       },
       "hybrid-vb": {
         "daily_pnl_krw_mean": -27172.27,
@@ -635,7 +635,7 @@
         "sharpe_annualized": 0.4,
         "sharpe_ci_low_95": 0.2,
         "sharpe_ci_high_95": 0.59,
-        "weight": 0.208
+        "weight": 0.207
       }
     },
     "correlation_matrix": {
@@ -729,7 +729,7 @@
           },
           "modified-dual-momentum": {
             "sharpe": -0.07,
-            "weight": 0.223
+            "weight": 0.222
           },
           "hybrid-vb": {
             "sharpe": -0.63,
@@ -737,7 +737,7 @@
           },
           "claude-trading-bot": {
             "sharpe": 0.4,
-            "weight": 0.208
+            "weight": 0.207
           }
         }
       }

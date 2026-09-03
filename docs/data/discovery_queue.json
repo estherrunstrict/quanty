@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-09-03T06:30:18.607238+09:00",
+  "generated_at": "2026-09-03T16:15:43.906580+09:00",
   "stats": {
-    "total": 278,
-    "queued": 196,
+    "total": 280,
+    "queued": 198,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-09-03T06:30:18.607136+09:00",
+    "last_gc_at": "2026-09-03T16:15:43.906453+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -8067,6 +8067,62 @@
       "discovered": "2026-09-02",
       "matched_keywords": [
         "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.02677",
+      "source": "arxiv",
+      "title": "Eliciting ESG Preferences for Reinforcement Learning-Based Portfolio Optimization",
+      "authors": [
+        "Giovanni Dispoto",
+        "Marcello Restelli",
+        "Carmine Ventre"
+      ],
+      "abstract": "Modern portfolio management increasingly demands a balance between traditional risk-adjusted returns and strict Environmental, Social, and Governance (ESG) mandates. Current Reinforcement Learning (RL) approaches typically optimize for a single ESG provider, neglecting the significant divergence in rating methodologies across the industry and the unintuitive nature of manually weighting conflicting objectives. This paper addresses these limitations by formulating ESG-aware portfolio optimization as a Multi-Objective Reinforcement Learning (MORL) problem that simultaneously incorporates ratings from three distinct ESG agencies. To bridge the gap between high-dimensional algorithmic trade-offs and human decision-making, we integrate a Preference Elicitation framework using Gaussian Processes. This system enables practitioners to infer their latent utility functions through intuitive pairwise comparisons of candidate portfolios based on their Sharpe ratios and aggregate ESG scores. We systematically evaluate our framework by employing Large Language Model (LLM) personas to simulate Portfolio Managers operating under varied regional contexts. Empirical results using historical market data reveal that regional backgrounds fundamentally shift the derived preference weights. For instance, European-based personas tend to prioritize ESG alignment over financial returns, while Texas-based personas favor risk-adjusted performance. This work offers a highly adaptable framework that successfully aligns multi-objective algorithmic trading with diverse, real-world human sustainability preferences.",
+      "categories": [
+        "q-fin.PM",
+        "cs.CE",
+        "cs.LG"
+      ],
+      "url": "https://arxiv.org/abs/2609.02677v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.02677v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-02",
+      "discovered": "2026-09-03",
+      "matched_keywords": [
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.02535",
+      "source": "arxiv",
+      "title": "Uniform Inference and Certified Capacity at a Reflexive Stability Boundary",
+      "authors": [
+        "Alejandro Rodriguez Dominguez"
+      ],
+      "abstract": "This paper develops uniform inference and certified capacity decisions for an estimated financial stability boundary. Conditional risk, temporary cross-impact, and effective risk-bearing capacity are jointly estimated from dependent observations. Conventional pointwise inference is reliable at a separated simple spectral root but can fail near semisimple or defective collisions. Projecting a valid joint confidence region for the underlying inputs avoids this local approximation and yields a three-way regime decision with abstention and a one-sided capacity bound. A verified two-dimensional implementation keeps numerical error from creating a resolved sign. Structural simulations recover the predicted tradeoff between coverage and resolution, while observed-risk stresses distinguish statistical abstention from an insufficient computational budget. The financial conclusions remain conditional on the identification of cross-impact, the normalization of capacity, and stability of the inputs over the action horizon.",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2609.02535v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.02535v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-02",
+      "discovered": "2026-09-03",
+      "matched_keywords": [
+        "regime"
       ],
       "status": "queued",
       "ingested_into": null,
