@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-09-04T06:30:19.954876+09:00",
+  "generated_at": "2026-09-04T16:15:42.331745+09:00",
   "stats": {
-    "total": 280,
-    "queued": 198,
+    "total": 283,
+    "queued": 201,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-09-04T06:30:19.954768+09:00",
+    "last_gc_at": "2026-09-04T16:15:42.331622+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -8121,6 +8121,90 @@
       "year": 2026,
       "published": "2026-09-02",
       "discovered": "2026-09-03",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.03741",
+      "source": "arxiv",
+      "title": "Bayesian Confidence Recalibration and Research-Equilibrium Criticality: Temporal Support in Robust Portfolios",
+      "authors": [
+        "Han Yanç"
+      ],
+      "abstract": "Robust portfolio rules that reconstruct confidence sets after learning need not preserve the evaluator obtained by prior-by-prior Bayesian transport. In the Gaussian model, this discrepancy is summarized by natural-coordinate displacement: inherited transport preserves it whereas fresh reconstruction can replace it. We price evaluator replacement and trace the resulting optimized curvature through endogenous research. Optimized robust value represents protocol regret as a functional Bregman divergence, while a within-vintage rectangular Gaussian benchmark with constant absolute risk aversion (CARA) yields a stopped recalibration tax. In a versioned model-release economy, validated history propagates through a strictly causal network and a same-cycle share of current optimized marginal value feeds back into research supply. The capacity-constrained equilibrium reduces to a scalar equation with protocol-indexed gain \\(\\mathfrak g_I^P=λβ_{R,I}(W_R^P)''\\). Purely causal validation cannot create a same-cycle unit mode; provenance changes criticality through optimized curvature. For a scalar primitive supplier-score shock \\(z\\) in direction \\(h_I\\) and financial outcome \\(\\mathcal O\\), sensitivity factors as \\(ω_{\\mathcal O,h,I}/(1-\\mathfrak g_I^P)\\). Conditional on a smooth equilibrium state and active cell, completion-time information sharply bounds this multiplier when all compatible timing laws are subcritical; no finite uniform bound exists when the timing set reaches the pole.",
+      "categories": [
+        "q-fin.MF",
+        "math.OC",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2609.03741v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.03741v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-03",
+      "discovered": "2026-09-04",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.03552",
+      "source": "arxiv",
+      "title": "An Entropic Factor Model for Robust Portfolio Replication",
+      "authors": [
+        "Argimiro Arratia",
+        "Henryk Gzyl"
+      ],
+      "abstract": "Portfolio replication, or the construction of a tradable basket of assets to match the risk-return profile of a target benchmark, is fundamentally an ill-posed inverse problem. When restricted to a subset of available assets, classical variance-minimizing models often yield unstable, over-leveraged portfolios highly vulnerable to market shocks. We propose a unified, two-stage methodology rooted in information theory to achieve robust portfolio replication. First, we model the constituent asset returns against target factors, estimating parameters within data-driven empirical bounds via an entropy minimization principle. Second, using the same entropic approach, we determine the optimal weight replication. In both cases we use an entropy function of the Fermi-Dirac type defined directly on sets of constraints of the inverse problem. We validate this Entropic Factor Model (EFM) against standard Ordinary Least Squares (OLS) across five numerical experiments, including standard equity tracking, multi-asset synthesis, and severe stress-test scenarios. Empirical results demonstrate that the EFM consistently outperforms OLS in terms of annualized turnover and net-of-fees returns. Crucially, during the COVID-19 market crash and under severe idiosyncratic data corruption, the entropic framework acts as a probabilistic ``circuit breaker\", defensively reducing capital allocation to compromised assets and providing a highly robust, risk-averse solution for generalized portfolio replication.",
+      "categories": [
+        "q-fin.PM",
+        "math.OC",
+        "q-fin.CP"
+      ],
+      "url": "https://arxiv.org/abs/2609.03552v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.03552v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-03",
+      "discovered": "2026-09-04",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.03106",
+      "source": "arxiv",
+      "title": "Scaling Laws, Tabular Data and Actuarial Ratemaking Models",
+      "authors": [
+        "Ronald Richman"
+      ],
+      "abstract": "Scaling laws in modern deep learning describe how held-out loss improves as model capacity, training data, and compute increase, often following power-law trends. We investigate whether analogous scaling regularities arise in actuarial ratemaking, where data are tabular, heterogeneous, and noisy, and where classical models such as GLMs remain strong baselines. Using a real-world motor insurance portfolio, we train models from different families across increasing fractions of the training data and multiple random seeds, evaluating out-of-sample Poisson deviance, a likelihood-based loss for Poisson count predictions in which lower values indicate better held-out fit. We find that all model families improve with additional data, but scaling exponents differ substantially: TabM exhibits markedly stronger data scaling than purely supervised tabular Transformers and standard MLP baselines. Transformer variants show weak parameter scaling unless augmented with additional inductive biases (TabM-style adaptation or self-supervision). These results provide quantitative guidance on model selection by data regime and suggest that effective scaling on actuarial tabular tasks depends on architecture and loss function objective design, with simple increases in Transformer size providing limited gains.",
+      "categories": [
+        "cs.LG",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2609.03106v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.03106v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-02",
+      "discovered": "2026-09-04",
       "matched_keywords": [
         "regime"
       ],
