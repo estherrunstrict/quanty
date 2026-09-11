@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-09-11T06:30:19.798583+09:00",
+  "generated_at": "2026-09-11T16:15:38.824722+09:00",
   "stats": {
-    "total": 295,
-    "queued": 213,
+    "total": 298,
+    "queued": 216,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-09-11T06:30:19.798438+09:00",
+    "last_gc_at": "2026-09-11T16:15:38.824565+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -8553,6 +8553,90 @@
       "discovered": "2026-09-10",
       "matched_keywords": [
         "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.11905",
+      "source": "arxiv",
+      "title": "Entropic Value-at-Risk parity for tempered stable returns",
+      "authors": [
+        "Jaehyung Choi"
+      ],
+      "abstract": "We develop Entropic Value-at-Risk (EVaR) parity for tempered stable returns. EVaR-based inverse risk parity (IRP) and equal risk contribution (ERC) portfolios are constructed using multivariate normal tempered stable models and independent component analysis with tempered stable components. We derive the corresponding asset-level EVaR and EVaR-deviation contributions and use the latter to separate the fitted location term from EVaR risk contributions. Under Gaussian returns, EVaR-deviation IRP and ERC recover conventional volatility IRP and ERC weights. We evaluate the resulting portfolios in three investment universes. Empirically, EVaR-based ERC portfolios achieve positive Sharpe differences relative to equal weight across the universes.",
+      "categories": [
+        "q-fin.PM",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2609.11905v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.11905v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-10",
+      "discovered": "2026-09-11",
+      "matched_keywords": [
+        "risk parity"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.11614",
+      "source": "arxiv",
+      "title": "Deep Learning of Robust Market Making under Regime-Switching Order Flow",
+      "authors": [
+        "Felipe Moret",
+        "Fabrizio Lillo"
+      ],
+      "abstract": "Classical market-making strategies based on stochastic control, such as the Avellaneda-Stoikov and the Guéant-Lehalle-Fernandez-Tapia (GLFT) extension, provide closed-form quoting rules, but rest on assumptions that break down at realistic microstructure timescales. One of them is that order flow is stationary, while empirical evidence points to the existence of regimes, possibly associated with algorithmic execution of metaorders. In this case, existing methods provide negative PnL. In this paper, we develop a deep reinforcement-learning market maker (RLMM) - a Rainbow-style distributional DQN (C51) which is calibrated and tested in a zero-intelligence limit order book. We find that, in the stationary setting, RLMM outperforms GLFT across the entire observed risk-return frontier. The RLMM is more robust to flow asymmetry than GLFT, but, like any stationarily trained strategy, it still suffers large drawdowns from inventory saturation under persistent directional imbalance. Augmenting the state of RLMM with two auxiliary signals - a Bayesian online change-point filter over the directional flow bias and a queue-adjusted quote-exposure imbalance -restores profitability. A final scenario-bandit step that reweights low-return regime scenarios further improves performance under random-persistence and correlated-direction stress.",
+      "categories": [
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2609.11614v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.11614v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-10",
+      "discovered": "2026-09-11",
+      "matched_keywords": [
+        "regime",
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.10865",
+      "source": "arxiv",
+      "title": "The Elliptically Optimal Confidence Interval: A Bivariate Extension of Wilson's Score Method",
+      "authors": [
+        "Nawaf Mohammed"
+      ],
+      "abstract": "Constructing a confidence interval for the difference between two independent binomial proportions involves a nuisance direction that is not identified by the estimand. The one-sample Wilson score interval inverts a scalar score test, but has no direct bivariate analogue isolating the difference: inverting the joint normal approximation yields an elliptical region in the unit square, whereas the estimand \\(p_1-p_2\\) is one-dimensional. We define the Elliptically Optimal (EO) confidence interval as the range of \\(p_1-p_2\\) over this region and solve the resulting optimization problem in closed form, obtaining explicit bounds in six mutually exclusive and exhaustive cases. The solution admits a compact characterization: the EO interval is the score interval obtained by maximizing over the nuisance variance rather than estimating it. It is therefore the shortest interval obtained by projecting the elliptical region, and inherits its coverage guarantee. We derive the exact coverage excess, \\(2[Φ(z\\mathcal{R})-Φ(z)]\\), where \\(\\mathcal{R}\\) is the ratio of the least-favourable to the true standard deviation. The excess vanishes on an explicit line through the parameter space, is bounded by \\(α\\), and is invariant under proportional scaling of the sample sizes. Exact enumeration of the binomial coverage shows that the Wald interval, whose variance estimator is downward biased by a factor \\(1-1/n\\) under balanced allocation, falls below nominal coverage almost everywhere. The EO interval never under-covers under the normal approximation and always yields admissible, non-degenerate bounds. Its price is over-coverage when both proportions are extreme, which we quantify exactly.",
+      "categories": [
+        "math.ST",
+        "q-fin.ST",
+        "stat.CO",
+        "stat.ME"
+      ],
+      "url": "https://arxiv.org/abs/2609.10865v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.10865v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-09",
+      "discovered": "2026-09-11",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
