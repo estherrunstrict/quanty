@@ -67,6 +67,17 @@ code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; 
   cursor: pointer;
 }
 .refresh:hover { background: var(--panel-2); }
+.hdr-btns { display: flex; gap: 8px; }
+/* View mode — shared with index.html (same localStorage key). The page opens
+   in RELATIVE view: Total Capital is 100% and every ₩ figure is its share. */
+.refresh.on { border-color: var(--blue); color: var(--blue); }
+.view-note {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: -12px 0 20px;
+}
+.view-note b { color: var(--text); font-weight: 500; }
 
 /* ------ Hero ------ */
 .hero {
@@ -327,13 +338,17 @@ code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; 
       <h1>Quanty · Decision Center</h1>
       <span class="sub" id="hdr-sub">Loading…</span>
     </div>
-    <button class="refresh" onclick="load()">Refresh</button>
+    <div class="hdr-btns">
+      <button class="refresh" id="view-btn" onclick="setView(!VIEW.amounts)">₩ Show amounts</button>
+      <button class="refresh" onclick="load()">Refresh</button>
+    </div>
   </div>
+  <div class="view-note" id="view-note"></div>
 
   <!-- Hero portfolio numbers from dashboard_data.json -->
   <div class="hero">
     <div class="card">
-      <div class="lbl">Total Capital (KRW)</div>
+      <div class="lbl" id="hero-total-lbl">Total Capital (KRW)</div>
       <div class="val mono" id="hero-total">—</div>
       <div class="delta" id="hero-pl">—</div>
     </div>
@@ -456,8 +471,62 @@ const WIKI_BASE = "https://github.com/estherrunstrict/quanty/tree/main";
 // Adjust `WIKI_LINK_PREFIX` once the wiki is committed to a public repo.
 const WIKI_LINK_PREFIX = null; // null → render slugs as plain text
 
-const fmtKRW = (n) => {
+// ── View mode ─────────────────────────────────────────────────────────────
+// Same key and same semantics as index.html: the site opens in RELATIVE view,
+// where Total Capital is 100% and every ₩ figure is its share of it. The
+// header button switches to amounts; the choice is remembered per browser,
+// never carried in the URL, so a shared link always opens relative.
+const VIEW_KEY = 'oracle.view';
+const VIEW = { amounts: false };
+try { const v = localStorage.getItem(VIEW_KEY); if (v) VIEW.amounts = v === 'amounts'; } catch (e) {}
+let CAP = 0;      // the 100%, set by render() from dashboard_data.json
+let LAST = null;  // last (dash, dec, disc) so the toggle re-renders without a refetch
+function setView(amounts) {
+  VIEW.amounts = !!amounts;
+  try { localStorage.setItem(VIEW_KEY, VIEW.amounts ? 'amounts' : 'relative'); } catch (e) {}
+  syncViewChrome();
+  if (LAST) render(...LAST);
+}
+function syncViewChrome() {
+  const vb = document.getElementById('view-btn');
+  vb.textContent = VIEW.amounts ? '% Relative view' : '₩ Show amounts';
+  vb.title = VIEW.amounts ? 'Hide the balances — show every figure as a share of total capital'
+                          : 'Show the actual balances';
+  vb.classList.toggle('on', VIEW.amounts);
+  document.getElementById('view-note').innerHTML = VIEW.amounts
+    ? '<b>Amounts view</b> — actual ₩ figures. <b>% Relative view</b> hides them again. ' +
+      '금액 보기 — 실제 금액을 표시 중입니다. <b>% Relative view</b>를 누르면 다시 비율로 돌아갑니다.'
+    : '<b>Relative view</b> — Total Capital is <b>100%</b>; P&amp;L, drawdown, VaR and every other ₩ figure ' +
+      'on this page is its share of that total. <b>₩ Show amounts</b> reveals the balances. ' +
+      '비율 보기 — 총자본을 100%로 놓고 손익·낙폭·VaR 등 모든 금액을 그 비율로 표시합니다. ' +
+      '<b>₩ Show amounts</b>를 누르면 실제 금액이 보입니다.';
+}
+// x.xx% of Total Capital; signed for P/L. Under half a basis point reads
+// "<0.01%" rather than a misleading "0.00%". No basis → masked, never ₩.
+function fmtPct(vKrw, signed) {
+  if (!(CAP > 0)) return '•••';
+  const p = vKrw / CAP * 100;
+  const sign = p < 0 ? '−' : (signed ? '+' : '');
+  const a = Math.abs(p);
+  if (a > 0 && a < 0.005) return sign + '<0.01%';
+  return sign + a.toFixed(2) + '%';
+}
+// Free text (memo titles, alert bodies, criteria) can carry amounts the
+// structured fields never show; relative view blanks them. Dates and order
+// numbers carry no commas or currency marks, so they stay readable.
+function maskMoney(s) {
+  if (VIEW.amounts || !s) return s || '';
+  return String(s)
+    .replace(/₩\s?-?[\d,]+(?:\.\d+)?/g, '₩•••')
+    .replace(/\$\s?-?[\d,]+(?:\.\d+)?/g, '$•••')
+    .replace(/[+\-−]?\d{1,3}(?:,\d{3})+(?:\.\d+)?\s?(?:원|KRW|USD)?/g, '•••');
+}
+
+// Whole won — or, in relative view, the share of Total Capital (signed when
+// the figure is a P/L rather than a level).
+const fmtKRW = (n, signed) => {
   if (n === null || n === undefined) return "—";
+  if (!VIEW.amounts) return fmtPct(n, !!signed);
   const sign = n < 0 ? "-" : "";
   return sign + "₩" + Math.abs(Math.round(n)).toLocaleString();
 };
@@ -495,6 +564,7 @@ async function load() {
       document.getElementById("hdr-sub").textContent = "ERROR: decisions.json not found. Run wiki/tools/generate_decisions_json.py.";
       return;
     }
+    LAST = [dash, dec, disc];
     render(dash, dec, disc);
   } catch (e) {
     document.getElementById("hdr-sub").textContent = `ERROR: ${e}`;
@@ -514,14 +584,24 @@ function render(dash, dec, disc) {
   // publishes it; portfolio.total_value_krw only ever knew KIS + Upbit, which
   // understates the account Jae is actually deciding about by the Toss sleeve.
   const wholeTotal = dash?.totals?.investments_krw;
+  const capital = wholeTotal > 0 ? wholeTotal : (port.total_value_krw || 0);
+  CAP = capital;
+  syncViewChrome();
+  document.getElementById("hero-total-lbl").textContent =
+    VIEW.amounts ? "Total Capital (KRW)" : "Total Capital (= 100%)";
   document.getElementById("hero-total").textContent =
-    fmtKRW(wholeTotal > 0 ? wholeTotal : port.total_value_krw);
+    VIEW.amounts ? fmtKRW(capital) : (capital > 0 ? "100%" : "•••");
   const pl = port.total_profit_krw;
   const plEl = document.getElementById("hero-pl");
   if (pl !== null && pl !== undefined) {
+    // The bracketed % is P/L over the bots' original deposit — a different
+    // denominator from the relative view's share of capital, so say which.
+    const depPct = port.total_profit_pct !== undefined
+      ? `${port.total_profit_pct >= 0 ? "+" : ""}${port.total_profit_pct.toFixed(2)}%` : "";
     plEl.innerHTML =
-      `<span class="${cls(pl)}">${fmtKRW(pl)}</span>` +
-      (port.total_profit_pct !== undefined ? ` (${port.total_profit_pct >= 0 ? "+" : ""}${port.total_profit_pct.toFixed(2)}%)` : "");
+      `<span class="${cls(pl)}">${fmtKRW(pl, true)}</span>` +
+      (VIEW.amounts ? (depPct ? ` (${depPct})` : "")
+                    : ` of capital` + (depPct ? ` (${depPct} of deposits)` : ""));
   } else {
     plEl.textContent = "—";
   }
@@ -550,7 +630,7 @@ function render(dash, dec, disc) {
       .map((m) => `
         <div class="memo">
           <div class="lhs">
-            <div class="title">${m.title}</div>
+            <div class="title">${maskMoney(m.title)}</div>
             <div class="meta">
               <span class="badge ${m.decision_type}">${m.decision_type}</span>
               target: ${botLink(m.target, m.target)}
@@ -580,8 +660,8 @@ function render(dash, dec, disc) {
         <div class="alert ${a.level}">
           <div class="icon"></div>
           <div>
-            <div class="title">${a.title}</div>
-            <div class="body">${a.body}</div>
+            <div class="title">${maskMoney(a.title)}</div>
+            <div class="body">${maskMoney(a.body)}</div>
           </div>
         </div>`)
       .join("");
@@ -618,9 +698,9 @@ function render(dash, dec, disc) {
         <td><span class="badge ${b.status}">${b.status}</span></td>
         <td>${b.verdict ? `<span class="badge ${b.verdict}">${b.verdict}</span>` : "—"}</td>
         <td class="num ${capCls(b.capital_allocated_pct)}" title="${b.capital_pct_source === 'computed' ? 'Computed from dashboard_data.json' : 'From bot frontmatter (manual)'}">${fmtCap(b.capital_allocated_pct)}</td>
-        <td class="num ${cls(b.period_pl_krw)}">${fmtKRW(b.period_pl_krw)}</td>
-        <td class="num ${cls(b.mdd_pl_krw ? -b.mdd_pl_krw : 0)}">${b.mdd_pl_krw ? "-" + fmtKRW(b.mdd_pl_krw).replace("-", "") : "—"}</td>
-        <td class="num ${cls(b.worst_day_krw)}">${fmtKRW(b.worst_day_krw)}</td>
+        <td class="num ${cls(b.period_pl_krw)}">${fmtKRW(b.period_pl_krw, true)}</td>
+        <td class="num ${cls(b.mdd_pl_krw ? -b.mdd_pl_krw : 0)}">${b.mdd_pl_krw ? "-" + fmtKRW(Math.abs(b.mdd_pl_krw)) : "—"}</td>
+        <td class="num ${cls(b.worst_day_krw)}">${fmtKRW(b.worst_day_krw, true)}</td>
         <td class="num dim" title="${b.backtest_window || ''}">${fmtPct(b.backtest_mdd)}</td>
         <td class="num dim">${fmtSharpe(b.backtest_sharpe)}</td>
         <td class="num ${cls(b.realized_sharpe_annualized)}" title="${b.realized_sharpe_ci_low_95 !== null && b.realized_sharpe_ci_low_95 !== undefined ? '95% CI lower bound: ' + b.realized_sharpe_ci_low_95.toFixed(2) + ' (Lo 2002, n=' + (b.days_observed ?? '?') + ')' : 'No realized Sharpe — need ≥3 daily observations'}">${fmtSharpe(b.realized_sharpe_annualized)}</td>
@@ -647,8 +727,8 @@ function render(dash, dec, disc) {
           : `<span class="dim">no start date</span>`;
         return `
         <div class="queue">
-          <div class="title">${c.title} <span class="badge live">${c.status}</span> ${stalledBadge}</div>
-          <div class="meta">paper: ${c.paper_source} · ${sinceBit} · ${c.promotion_criteria || "(no criteria set)"}</div>
+          <div class="title">${maskMoney(c.title)} <span class="badge live">${c.status}</span> ${stalledBadge}</div>
+          <div class="meta">paper: ${c.paper_source} · ${sinceBit} · ${maskMoney(c.promotion_criteria || "(no criteria set)")}</div>
         </div>`;
       }).join("");
 
@@ -681,7 +761,8 @@ function render(dash, dec, disc) {
     const lc = pm.low_confidence ? `<span class="badge watch" style="margin-left:8px" title="Less than 60 daily observations — Sharpe and VaR estimates are wide.">low confidence (n=${pm.days_observed})</span>` : `<span class="badge keep" style="margin-left:8px">n=${pm.days_observed}</span>`;
     pmWindow.innerHTML = `${pm.window_start} → ${pm.window_end} ${lc}`;
     const f2 = (x) => (x === null || x === undefined) ? "—" : (Number(x).toFixed(2));
-    const fkrw = (x) => (x === null || x === undefined) ? "—" : ((x < 0 ? "-" : "") + "₩" + Math.abs(Math.round(x)).toLocaleString());
+    // Signed for the mean and VaR (they are P/L-like); a std is a magnitude.
+    const fkrw = (x, signed = true) => fmtKRW(x, signed);
     const sharpeCls = (x) => (x === null || x === undefined) ? "" : (x > 0 ? "pos" : "neg");
     // Per-regime sub-section. When regime_source == "not_available", show an
     // explanatory note pointing at the unsegmented "?" bucket.
@@ -716,7 +797,7 @@ function render(dash, dec, disc) {
 
     pmCard.innerHTML = `
       <div class="row"><span class="l">Portfolio Sharpe (annualized)</span><span class="v ${sharpeCls(pmp.sharpe_annualized)}">${f2(pmp.sharpe_annualized)} <span class="dim">[95% CI: ${f2(pmp.sharpe_ci_low_95)} … ${f2(pmp.sharpe_ci_high_95)}]</span></span></div>
-      <div class="row"><span class="l">Daily P&L (mean / std)</span><span class="v">${fkrw(pmp.daily_pnl_krw_mean)} / ${fkrw(pmp.daily_pnl_krw_std)}</span></div>
+      <div class="row"><span class="l">Daily P&L (mean / std)</span><span class="v">${fkrw(pmp.daily_pnl_krw_mean)} / ${fkrw(pmp.daily_pnl_krw_std, false)}</span></div>
       <div class="row"><span class="l">VaR (95%, 1 day)</span><span class="v neg">${fkrw(pmp.var_95_1d_krw)}</span></div>
       <div class="row"><span class="l">Diversification ratio</span><span class="v" title="(Σ |wᵢ| · σᵢ) / σ_portfolio. > 1 = diversifying; ~1 = bots are fungible. Currently low because cash/upbit/unsettled hold majority of portfolio and some bot values report as 0 in dashboard_data.">${f2(pmp.diversification_ratio)}</span></div>
       <div class="row"><span class="l">Effective number of bets</span><span class="v">${f2(pmp.effective_n_bets)}</span></div>
@@ -813,12 +894,12 @@ function render(dash, dec, disc) {
       const hz = (bt.horizons || []).map((h) => `${h.horizon} ${h.verdict}`).join(" · ") || "—";
       const pp = c.paper || {};
       const paperBit = pp.days_observed
-        ? `${pp.days_observed}/60 days · PV ${pp.pv_last != null ? "₩" + Math.round(pp.pv_last).toLocaleString() : "—"} · Sharpe ${pp.sharpe != null ? pp.sharpe.toFixed(2) : "n/a"}`
+        ? `${pp.days_observed}/60 days · PV ${fmtKRW(pp.pv_last)} · Sharpe ${pp.sharpe != null ? pp.sharpe.toFixed(2) : "n/a"}`
         : "—";
       return `<div class="pl-row" onclick="this.classList.toggle('open')">
         <div class="pl-head">
           <span class="pl-track">${track(c.stage)}</span>
-          <span>${c.title || c.slug}</span>
+          <span>${maskMoney(c.title || c.slug)}</span>
           <span class="muted small">${c.status || ""}</span>
           <span class="pl-badge">${worst(bt.horizons)}</span>
         </div>
@@ -835,6 +916,7 @@ function render(dash, dec, disc) {
       rejects.length ? "recent rejects: " + rejects.join(", ") : "";
   }
 
+syncViewChrome();
 load();
 
 async function actOnDecision(id, action, rowEl) {
