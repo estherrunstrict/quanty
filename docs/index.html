@@ -193,6 +193,47 @@ a { color: var(--accent); text-decoration: none; }
 
 .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
 
+/* ── View mode ──
+   The page opens in RELATIVE view: Total Capital is 100% and every money
+   figure is its share of that, so the page can be shown to someone without
+   showing the balances. The header button flips to amounts; the choice is
+   remembered per browser, never carried in the URL. */
+.view-btn.on { border-color: var(--accent); color: var(--accent); }
+.view-note {
+  font-size: 0.68rem;
+  color: var(--tx3);
+  line-height: 1.6;
+  margin: -1.2rem 0 1.6rem;
+}
+.view-note b { color: var(--tx2); font-weight: 400; }
+
+/* ── Bot explainer ──
+   One plain paragraph per card for a reader who did not build these bots:
+   an English line naming the mechanism, then the Korean explanation. */
+.strat-desc {
+  font-size: 0.72rem;
+  color: var(--tx2);
+  line-height: 1.65;
+  margin: -0.2rem 0 0.9rem;
+  word-break: keep-all;
+}
+.strat-desc .strat-tag {
+  display: block;
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--tx3);
+  margin-bottom: 0.25rem;
+}
+.strats-intro {
+  font-size: 0.7rem;
+  color: var(--tx3);
+  line-height: 1.7;
+  margin-bottom: 1rem;
+  word-break: keep-all;
+}
+.strats-intro b { color: var(--tx2); font-weight: 400; }
+
 /* ── Metric Strip ── */
  /* Hairlines are drawn by each CELL's box-shadow bleeding into the 1px gap,
     not by letting a --border container show through it. With the old
@@ -859,6 +900,7 @@ a { color: var(--accent); text-decoration: none; }
      and half of "Decision Center" past the right edge, and made every panel
      on the page scroll sideways with them. */
   .hdr-right { width: 100%; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 0.9rem; }
+  .view-note { margin: -0.6rem 0 1rem; }
 
   .strip { grid-template-columns: repeat(2, 1fr); }
   .cell .val { font-size: 1.15rem; }
@@ -1069,12 +1111,52 @@ const h = (tag, cls, html) => {
 
 function sym(currency) { return currency === 'KRW' ? '₩' : '$'; }
 
+// ── View mode ─────────────────────────────────────────────────────────────
+// The page opens in RELATIVE view: Total Capital is 100% and every money
+// figure on the page — account tiles, budgets, market values, P/L, holdings,
+// the chart axis — is that figure's share of it. The header button switches
+// to amounts. The choice is remembered per browser (localStorage), never in
+// the URL, so a shared link always opens relative.
+//
+// Every money string on the page goes through fmtVal / fmtPnl / won below,
+// which is what lets one flag flip the whole page: a caller that builds its
+// own '₩' + number is a leak in relative view, so there are none left.
+const VIEW_KEY = 'oracle.view';
+const VIEW = { amounts: false };
+try { const v = localStorage.getItem(VIEW_KEY); if (v) VIEW.amounts = v === 'amounts'; } catch (e) {}
+let LAST_DATA = null;
+function setView(amounts) {
+  VIEW.amounts = !!amounts;
+  try { localStorage.setItem(VIEW_KEY, VIEW.amounts ? 'amounts' : 'relative'); } catch (e) {}
+  if (LAST_DATA) render(LAST_DATA);
+}
+// The 100%, and the FX that folds USD into it. render() sets both from the
+// data before it formats anything. CAP = 0 means "no basis": relative view
+// then masks the figure rather than dividing by zero or falling back to ₩.
+let CAP = 0;
+let FX = 1380;
+
+function toKrw(v, currency) { return currency === 'USD' ? (v || 0) * FX : (v || 0); }
+
+// x.xx% of Total Capital; signed for P/L. Under half a basis point reads
+// "<0.01%" — a "0.00%" there would claim a position is empty.
+function fmtPct(vKrw, signed) {
+  if (!(CAP > 0)) return '•••';
+  const p = vKrw / CAP * 100;
+  const sign = p < 0 ? '−' : (signed ? '+' : '');
+  const a = Math.abs(p);
+  if (a > 0 && a < 0.005) return sign + '<0.01%';
+  return sign + a.toFixed(2) + '%';
+}
+
 function fmtVal(v, currency) {
+  if (!VIEW.amounts) return fmtPct(toKrw(v, currency), false);
   if (currency === 'KRW') return '₩' + Math.round(v).toLocaleString();
   return '$' + v.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
 }
 
 function fmtPnl(v, currency) {
+  if (!VIEW.amounts) return fmtPct(toKrw(v, currency), true);
   const s = currency === 'KRW'
     ? '₩' + (v >= 0 ? '+' : '') + Math.round(v).toLocaleString()
     : '$' + (v >= 0 ? '+' : '') + v.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
@@ -1083,10 +1165,111 @@ function fmtPnl(v, currency) {
 
 function pnlClass(v) { return v >= 0 ? 'up' : 'dn'; }
 
-// Whole-won, no decimals. Was defined identically inside allocatorFrameNote()
-// and buildAllocation(); fundingBlock() needed a third copy, which is the
-// point at which a duplicated one-liner becomes a rule with three homes.
-function won(v) { return '₩' + Math.round(v || 0).toLocaleString(); }
+// Whole-won, no decimals — or, in relative view, the share of Total Capital.
+// Was defined identically inside allocatorFrameNote() and buildAllocation();
+// fundingBlock() needed a third copy, which is the point at which a
+// duplicated one-liner becomes a rule with three homes.
+function won(v) {
+  if (!VIEW.amounts) return fmtPct(v || 0, false);
+  return '₩' + Math.round(v || 0).toLocaleString();
+}
+
+// Free text from the bots' logs can carry amounts the structured fields never
+// show. Relative view blanks every currency figure in it. Prices (a BTC
+// target, a share price) get masked too — over-masking is the safe direction.
+function maskMoney(s) {
+  if (VIEW.amounts || !s) return s || '';
+  return String(s)
+    .replace(/₩\s?-?[\d,]+(?:\.\d+)?/g, '₩•••')
+    .replace(/\$\s?-?[\d,]+(?:\.\d+)?/g, '$•••')
+    // Comma-grouped figures with no symbol at all ("differs by +8,931,742")
+    // are still amounts. Dates and order numbers carry no commas, so they stay.
+    .replace(/[+\-−]?\d{1,3}(?:,\d{3})+(?:\.\d+)?\s?(?:원|KRW|USD)?/g, '•••');
+}
+
+// Holding rows in relative view: the position's share of capital instead of
+// "qty × price" (the quantity IS the amount, one multiplication away), and
+// the return % alone instead of the P/L amount.
+function holdDet(code, qty, price, cur) {
+  if (!VIEW.amounts) return code + fmtVal((qty || 0) * (price || 0), cur) + ' of capital';
+  return code + (qty || 0) + ' × ' + sym(cur) + (price || 0).toLocaleString(undefined,
+    cur === 'KRW' ? {maximumFractionDigits: 0} : {minimumFractionDigits: 2, maximumFractionDigits: 2});
+}
+function holdPl(pnl, rate, cur) {
+  const r = (typeof rate === 'number') ? (rate >= 0 ? '+' : '') + rate.toFixed(1) + '%' : '';
+  if (!VIEW.amounts) return r || '—';
+  return fmtPnl(pnl || 0, cur) + (r ? ' (' + r + ')' : '');
+}
+
+// ── What each bot IS, for a reader who did not build it ──────────────────
+// One English line naming the mechanism, then a plain Korean paragraph.
+// Keyed by the same id as the colours and the chart, so a bot this table
+// does not know gets no paragraph rather than someone else's.
+const BOT_INFO = {
+  btc_vb: {
+    tag: 'Crypto · daily volatility breakout on BTC/KRW (Upbit)',
+    desc: '업비트에서 비트코인 하나만 거래합니다. 매일 아침 9시, 전날 가격 변동폭을 기준으로 ' +
+      '"여기를 넘으면 산다"는 돌파 가격을 정해 두고, 그 가격에 닿으면 사서 다음 날 아침 9시에 팝니다. ' +
+      '전날 종가가 5일 평균 아래면 그날은 쉬고, 계좌 자산이 40일 평균 아래로 내려가면 투입 비중을 30%로 줄입니다.'
+  },
+  korea_etf: {
+    tag: 'Korea ETFs · monthly momentum rotation',
+    desc: '매달 첫 거래일에 최근 1·3·6·12개월 수익률을 합쳐 가장 강한 국내 ETF 하나로 갈아탑니다. ' +
+      '후보가 모두 하락 추세면 아무것도 사지 않고 현금으로 쉽니다. 한 달에 한 번만 움직이는 느린 전략입니다.'
+  },
+  quant40: {
+    tag: 'US equities · multi-factor screen, equal-weight top picks',
+    desc: '《퀀트가 대신 한다 40》 방식의 미국 주식 전략입니다. 수백 개 종목을 가치·품질·모멘텀 지표로 ' +
+      '점수 매겨 상위 종목을 같은 비중으로 담고, 정해진 주기마다 점수를 다시 매겨 교체합니다. ' +
+      '종목을 사람이 아니라 숫자가 고릅니다.'
+  },
+  jd_strategy: {
+    tag: 'US mega-cap · hold the #1 stock, build cash on crash days',
+    desc: '시가총액 세계 1위 기업(엔비디아·애플·마이크로소프트 등, 순위가 바뀌면 따라 바꿈)을 사서 ' +
+      '들고 있는 전략입니다. 나스닥이 하루 3% 넘게 빠지는 날이 잦아지면 경계→공황 단계로 올려 현금 비중을 ' +
+      '늘리고, 급락 구간에서는 그 현금으로 나눠서 되삽니다.'
+  },
+  dual_momentum: {
+    tag: 'US / intl equity + bonds · modified dual momentum, monthly',
+    desc: '강환국 식 변형 듀얼 모멘텀입니다. 매달 첫 거래일에 미국(SPY)과 선진국(EFA) 주식 중 최근 ' +
+      '12개월 수익률이 높은 쪽을 삽니다. 미국 주식의 12개월 수익률이 마이너스면 주식을 팔고 채권 ETF ' +
+      '8종 중 최근 6개월 성과 상위 3개로 피신하며, 그것도 마이너스면 그 몫은 현금으로 둡니다.'
+  },
+  hybrid_vb: {
+    tag: 'Commodity ETFs, KR + US · volatility breakout with vol-managed sizing',
+    desc: '금·은·원유·우라늄 같은 원자재 ETF를 한국 시장(7종)과 미국 시장(10종)에서 따로 거래합니다. ' +
+      '가격이 전날 종가에서 변동폭 이상 튀어오르면 사고, 최근 변동성이 크면 적게·작으면 많이 담습니다. ' +
+      '추적 손절선에 닿거나 열흘이 지나면 팝니다. 카드의 KR/US 두 줄이 그 두 시장입니다.'
+  },
+  claude_bot: {
+    tag: 'US equities · AI market-regime read + curated watchlist',
+    desc: 'AI(Claude)가 매일 시장 전체의 강세·약세(레짐)와 폭·추세를 점수로 매기고, 미리 정해 둔 관심종목을 ' +
+      '그 판단에 따라 사고팝니다. 시장이 강세이고 주가가 200일 평균선 위에 있을 때만 사며, 약세 전환·' +
+      '200일선 이탈·−10% 손절·+25% 익절 중 하나에 걸리면 팝니다. Regime·Breadth 등 카드의 점수가 그 판단입니다.'
+  },
+  nmf2: {
+    tag: 'Toss · KR small-cap value basket (GP/A + PBR) with seasonality',
+    desc: '토스 계좌로 국내 소형주 약 30개를 바구니처럼 삽니다. 수익성(GP/A)과 저평가(PBR) 점수를 합쳐 ' +
+      '상위 종목을 고르고 매달 첫 거래일에 바구니를 갱신합니다. 통계적으로 주식이 약한 5~10월은 현금으로 ' +
+      '쉬고 11~4월에만 투자하는 계절성 규칙을 겹쳐 쓰되, 운용자 판단으로 예외를 둘 수 있습니다.'
+  },
+  usvb: {
+    tag: 'Toss · overnight (US session) same-day breakout on TQQQ / SQQQ',
+    desc: '한국 시간 밤 미국 장이 열리면 나스닥 3배 ETF(상승 TQQQ / 하락 SQQQ)가 정해진 폭 이상 움직일 때 ' +
+      '그 방향으로 들어가고, 장 마감 전에 반드시 정리해 다음 날로 넘기지 않습니다. 소액 슬리브로 실제 ' +
+      '주문과 체결을 검증하는 단계입니다.'
+  },
+  manual: {
+    tag: 'Not a bot · positions traded by hand',
+    desc: '봇이 아니라 사람이 직접 고르고 매매하는 종목들입니다. 계좌 보유분에서 봇이 관리하는 수량을 뺀 ' +
+      '나머지가 여기에 잡히며, 매수 원가가 없는 종목은 손익 없이 평가액(비중)만 보여줍니다.'
+  },
+};
+function botDesc(s) {
+  const i = BOT_INFO[s.id];
+  if (!i) return '';
+  return '<div class="strat-desc"><span class="strat-tag">' + i.tag + '</span>' + i.desc + '</div>';
+}
 
 // Realized YTD cell — only rendered when the bot has closed at least one trade YTD.
 // Intentionally silent on zero-trade bots so cards don't fill with meaningless zeros.
@@ -1128,8 +1311,11 @@ function coreMetrics(d) {
   let o = '';
 
   if (on('invested')) {
+    // "(85%)" is invested ÷ budget in both views. In relative view the value
+    // beside it is also a percentage — of capital — so the sub says which.
     const pct = (!nil(d.invested) && d.budget > 0)
-      ? mSub('(' + Math.round(d.invested / d.budget * 100) + '%)') : '';
+      ? mSub('(' + Math.round(d.invested / d.budget * 100) + '%' +
+             (VIEW.amounts ? '' : ' of budget') + ')') : '';
     o += mCell(p + 'Invested', nil(d.invested) ? MDASH : fmtVal(d.invested, cur) + pct);
   }
   if (on('budget')) {
@@ -1392,7 +1578,10 @@ function buildComparisonChart(equitySeries, aggregateSeries, strategies) {
   const overlay = `<rect class="cmp-overlay" x="0" y="0" width="${VB}" height="${VB}" fill="transparent" pointer-events="all"/>`;
 
   // KRW formatter: ₩+50K / ₩+1.2M / ₩-3K — compact, signed, never floats.
+  // In relative view the same value is its signed share of Total Capital;
+  // the series themselves stay in KRW, only the labels change.
   const fmtKrw = (v) => {
+    if (!VIEW.amounts) return fmtPct(v, true);
     const sign = v >= 0 ? '+' : '−';
     const a = Math.abs(v);
     if (a >= 1e6) return '₩' + sign + (a / 1e6).toFixed(1) + 'M';
@@ -1446,7 +1635,7 @@ function buildComparisonChart(equitySeries, aggregateSeries, strategies) {
   section.innerHTML = `
     <div class="cmp-hdr">
       <h2 class="cmp-title">Strategy Comparison · 2026 YTD</h2>
-      <div class="cmp-sub">Total P/L per bot (realized + unrealized accrued) + portfolio sum, in KRW</div>
+      <div class="cmp-sub">Total P/L per bot (realized + unrealized accrued) + portfolio sum, ${VIEW.amounts ? 'in KRW' : 'as % of total capital'}</div>
     </div>
     <div class="cmp-chart">
       <div class="cmp-y-axis">${yAxisHTML}</div>
@@ -1885,11 +2074,24 @@ function render(data) {
     <div class="hdr-right">
       <span class="hdr-meta"><span class="live-dot"></span>${data.strategies.filter(s => s.id !== 'manual').length} strategies</span>
       <span class="hdr-meta">${data.meta.kst}</span>
+      <button class="refresh-btn view-btn${VIEW.amounts ? ' on' : ''}" onclick="setView(${VIEW.amounts ? 'false' : 'true'})" title="${VIEW.amounts ? 'Hide the balances — show every figure as a share of total capital' : 'Show the actual balances'}">${VIEW.amounts ? '% Relative view' : '₩ Show amounts'}</button>
       <a class="refresh-btn" href="decision.html" style="text-decoration:none">→ Decision Center</a>
       <button class="refresh-btn" onclick="load()">Refresh</button>
     </div>
   `;
   app.appendChild(hdr);
+
+  // One line that says how to read every number below. In relative view it
+  // is the key to the whole page; in amounts view it says how to get back.
+  const viewNote = h('div', 'view-note');
+  viewNote.innerHTML = VIEW.amounts
+    ? '<b>Amounts view</b> — actual balances in ₩ and $. <b>% Relative view</b> in the header hides them again. ' +
+      '금액 보기 — 실제 잔고를 표시 중입니다. 헤더의 <b>% Relative view</b>를 누르면 다시 비율로 돌아갑니다.'
+    : '<b>Relative view</b> — Total Capital is <b>100%</b> and every money figure on this page is its share of that total; ' +
+      'P/L is signed and measured the same way. <b>₩ Show amounts</b> in the header reveals the balances. ' +
+      '비율 보기 — 총자본을 100%로 놓고 모든 금액을 그 비율로 표시합니다. 손익도 총자본 대비 ±%입니다. ' +
+      '헤더의 <b>₩ Show amounts</b>를 누르면 실제 금액이 보입니다.';
+  app.appendChild(viewNote);
 
   // ── Account-level data (from generate_dashboard_data.py → KIS API query)
   const portfolio = data.portfolio || {};
@@ -1898,6 +2100,12 @@ function render(data) {
   const cashUSD = portfolio.cash_usd || 0;
   const upbitKRW = portfolio.upbit_krw || 0;
   const exchangeRate = portfolio.exchange_rate || 1380;
+
+  // The 100% of relative view and the FX that folds USD into it. Total
+  // Capital (KIS + CMA + Upbit + Toss) when the generator supplies it, else
+  // the older bot-only total — never zero while any total exists.
+  FX = exchangeRate;
+  CAP = (data.totals && data.totals.investments_krw > 0) ? data.totals.investments_krw : totalAsset;
 
   // ── Sum realized + unrealized from all bots (per-currency)
   let unrealKRW = 0, unrealUSD = 0;
@@ -1946,7 +2154,7 @@ function render(data) {
       if (!st || !st.usable) return '';
       // KIS publishes a ready-made line when its own arithmetic has drifted from
       // the broker's tot_asst_amt. Nothing to derive there — say it and stop.
-      if (st.message) return `<div class="a-settle">${st.message}</div>`;
+      if (st.message) return `<div class="a-settle">${maskMoney(st.message)}</div>`;
       if (!st.net_krw) return '';
       const net = Math.round(st.net_krw);
       const when = st.settles_on
@@ -1956,7 +2164,7 @@ function render(data) {
       const verb = net > 0
         ? 'still counts the cash for ' + st.entry_count + ' unsettled buy' + (st.entry_count === 1 ? '' : 's')
         : 'has not received ' + st.entry_count + ' unsettled sale' + (st.entry_count === 1 ? '' : 's');
-      return `<div class="a-settle">App shows <b>₩${Math.round(st.app_total_krw).toLocaleString()}</b>` +
+      return `<div class="a-settle">App shows <b>${won(st.app_total_krw)}</b>` +
              ` — it ${verb}. Clears ${when}.</div>`;
     };
 
@@ -1976,7 +2184,7 @@ function render(data) {
       }
       return `<div class="hero-acct${stale ? ' stale' : ''}">
         <div class="a-name">${label}${stale ? '<span class="badge-stale">Stale</span>' : ''}</div>
-        <div class="a-val">₩${Math.round(val).toLocaleString()}</div>
+        <div class="a-val">${won(val)}</div>
         <div class="a-meta">${meta}</div>
         ${settleNote(a)}
       </div>`;
@@ -1987,18 +2195,20 @@ function render(data) {
       ? `<div class="split-seg" style="width:${pct}%;background:${color}"></div>` : '';
     const leg = (color, label, pct, krw) =>
       `<span class="sl"><span class="split-sw" style="background:${color}"></span>` +
-      `${label} <b>${(pct || 0).toFixed(1)}%</b> <span style="color:var(--tx3)">₩${Math.round(krw || 0).toLocaleString()}</span></span>`;
+      `${label} <b>${(pct || 0).toFixed(1)}%</b>` +
+      // The KRW beside the share would just restate the share in relative view.
+      (VIEW.amounts ? ` <span style="color:var(--tx3)">${won(krw)}</span>` : '') + `</span>`;
 
     const warn = T.reconciliation_warning
-      ? `<div class="recon-warn">⚠ ₩${Math.round(Math.abs(T.reconciliation_gap_krw || 0)).toLocaleString()} of the account totals is unaccounted for (${(T.reconciliation_gap_pct || 0).toFixed(2)}%) — treat the split as approximate.</div>`
+      ? `<div class="recon-warn">⚠ ${won(Math.abs(T.reconciliation_gap_krw || 0))} of the account totals is unaccounted for (${(T.reconciliation_gap_pct || 0).toFixed(2)}%) — treat the split as approximate.</div>`
       : '';
 
     hero.innerHTML = `
       <div class="hero-top">
         <div class="hero-lbl">Total Capital</div>
-        <div class="hero-val">₩${Math.round(T.investments_krw).toLocaleString()}</div>
-        <div class="hero-sub">≈ $${Math.round(invUSD).toLocaleString()} · KIS + CMA + Upbit + Toss</div>
-        <div class="hero-pnl ${pnlClass(totalPnlCombined)}">Bot P/L YTD ${fmtPnl(totalPnlCombined, 'KRW')} (${totalPnlPct >= 0 ? '+' : ''}${totalPnlPct.toFixed(2)}% of deposits)</div>
+        <div class="hero-val">${VIEW.amounts ? '₩' + Math.round(T.investments_krw).toLocaleString() : '100%'}</div>
+        <div class="hero-sub">${VIEW.amounts ? '≈ $' + Math.round(invUSD).toLocaleString() + ' · ' : 'the whole, across '}KIS + CMA + Upbit + Toss</div>
+        <div class="hero-pnl ${pnlClass(totalPnlCombined)}">Bot P/L YTD ${fmtPnl(totalPnlCombined, 'KRW')}${VIEW.amounts ? '' : ' of capital'} (${totalPnlPct >= 0 ? '+' : ''}${totalPnlPct.toFixed(2)}% of deposits)</div>
       </div>
       <div class="hero-accts">
         ${tile('kis', 'KIS')}${tile('cma', 'CMA')}${tile('upbit', 'Upbit')}${tile('toss', 'Toss')}
@@ -2037,7 +2247,9 @@ function render(data) {
   // total is made of and appear nowhere else, and KIS Cash is the only view of
   // uninvested broker cash on the page.
   const stripData = totalAsset > 0 ? [
-    { lbl: 'KIS Cash', val: '₩' + Math.round(cashKRW).toLocaleString(), sub: '$' + cashUSD.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' USD' },
+    { lbl: 'KIS Cash', val: won(cashKRW),
+      sub: VIEW.amounts ? '$' + cashUSD.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' USD'
+                        : '+ ' + fmtVal(cashUSD, 'USD') + ' in USD' },
     { lbl: 'Realized YTD', val: fmtPnl(realCombined, 'KRW'), cls: pnlClass(realCombined), sub: 'KRW ' + fmtPnl(realKRW, 'KRW') + ' + USD ' + fmtPnl(realUSD, 'USD') },
     { lbl: 'Unrealized', val: fmtPnl(unrealCombined, 'KRW'), cls: pnlClass(unrealCombined), sub: 'KRW ' + fmtPnl(unrealKRW, 'KRW') + ' + USD ' + fmtPnl(unrealUSD, 'USD') },
   ] : [
@@ -2088,6 +2300,20 @@ function render(data) {
   // ── Strategies
   const stratsWrap = h('div', 'mob-section active', '');
   stratsWrap.dataset.section = 'strats';
+
+  // Key to the cards, for a reader meeting the metric labels for the first
+  // time. Outside the .strats grid so it is a paragraph, not a card.
+  const intro = h('div', 'strats-intro');
+  intro.innerHTML =
+    '카드 하나가 자동매매 봇 하나입니다. 각 봇은 정해진 규칙대로 스스로 사고팔며, 서로 다른 시장과 계좌에서 ' +
+    '독립적으로 움직입니다. <b>Invested</b> 투입한 원금 · <b>Budget Cap</b> 이 봇에 허용된 최대 금액 · ' +
+    '<b>Market Value</b> 지금 평가액 · <b>Unrealized</b> 아직 팔지 않은 포지션의 평가손익 · ' +
+    '<b>Realized YTD</b> 올해 확정한 손익(거래 수) · <b>Total P/L</b> 둘을 합친 올해 손익 · ' +
+    '<b>Profit %</b> 한도 대비 수익률 · <b>Win Rate</b> 이긴 거래의 비율(사이클 수) · ' +
+    '<b>BT</b> 백테스트(과거 데이터로 시험한) 수치 · <b>MDD</b> 최대 낙폭.' +
+    (VIEW.amounts ? '' : ' 금액 자리는 모두 총자본 대비 비율(%)입니다.');
+  stratsWrap.appendChild(intro);
+
   const strats = h('section', 'strats fade-in d2');
 
   data.strategies.forEach(s => {
@@ -2394,7 +2620,6 @@ function render(data) {
       const rows = (showAll ? holdings : holdings.slice(0, 5)).map(hld => {
         const cur = hld.currency || s.currency || 'USD';
         const pnl = hld.profit || 0;
-        const pRate = (typeof hld.profit_rate === 'number') ? ` (${hld.profit_rate >= 0 ? '+' : ''}${hld.profit_rate.toFixed(1)}%)` : '';
         // 코드가 아니라 회사명. 069500 을 보고 무슨 종목인지 아는 사람은 없다.
         // 코드는 버리지 않고 상세줄로 옮긴다 — 주문을 넣을 때는 코드가 필요하다.
         // NMF2·수동 슬리브가 쓰던 방식 그대로다.
@@ -2402,8 +2627,8 @@ function render(data) {
         const code = (hld.name && hld.name !== hld.ticker) ? `${hld.ticker} · ` : '';
         return `<div class="hold-row">
           <span class="${hld.name ? 'hold-nm' : 'hold-tk'}">${label}</span>
-          <span class="hold-det">${code}${hld.quantity || 0} × ${sym(cur)}${(hld.current_price || hld.avg_price || 0).toLocaleString(undefined, cur === 'KRW' ? {maximumFractionDigits:0} : {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
-          <span class="hold-pl ${pnlClass(pnl)}">${fmtPnl(pnl, cur)}${pRate}</span>
+          <span class="hold-det">${holdDet(code, hld.quantity, hld.current_price || hld.avg_price, cur)}</span>
+          <span class="hold-pl ${pnlClass(pnl)}">${holdPl(pnl, hld.profit_rate, cur)}</span>
         </div>`;
       }).join('');
       holdingsHTML = `<div class="holds${showAll && holdings.length > 6 ? ' scroll' : ''}">${rows}</div>`;
@@ -2420,7 +2645,9 @@ function render(data) {
           const pCode = (pos.name && pos.name !== ticker) ? `${ticker} · ` : '';
           posRows += `<div class="hold-row">
             <span class="${pos.name ? 'hold-nm' : 'hold-tk'}">${pName}</span>
-            <span class="hold-det">${pCode}${pos.shares}sh @ ${sym(cur)}${Math.round(pos.entry_price).toLocaleString()} · stop ${sym(cur)}${Math.round(pos.stop_price).toLocaleString()}</span>
+            <span class="hold-det">${VIEW.amounts
+              ? pCode + pos.shares + 'sh @ ' + sym(cur) + Math.round(pos.entry_price).toLocaleString()
+              : pCode + fmtVal((pos.shares || 0) * (pos.entry_price || 0), cur) + ' of capital'} · stop ${sym(cur)}${Math.round(pos.stop_price).toLocaleString()}</span>
             <span class="hold-pl" style="color:var(--tx3)">${market.toUpperCase()}</span>
           </div>`;
         }
@@ -2442,8 +2669,10 @@ function render(data) {
         const qty = (hld.qty || 0).toLocaleString(undefined, { maximumFractionDigits: 2 });
         return `<div class="hold-row">
           <span class="${hld.name ? 'hold-nm' : 'hold-tk'}">${label}</span>
-          <span class="hold-det">${code}${qty} × ${sym(hld.currency || 'KRW')}${(hld.current_price || 0).toLocaleString(undefined, hld.currency === 'USD' ? {minimumFractionDigits:2, maximumFractionDigits:2} : {maximumFractionDigits:0})}</span>
-          <span class="hold-pl ${typeof hld.profit_rate === 'number' ? pnlClass(hld.pl_krw || 0) : ''}" ${typeof hld.profit_rate === 'number' ? '' : 'style="color:var(--tx2)"'}>${typeof hld.profit_rate === 'number' ? fmtPnl(hld.pl_krw || 0, 'KRW') + ' (' + (hld.profit_rate >= 0 ? '+' : '') + hld.profit_rate.toFixed(1) + '%)' : '₩' + Math.round(hld.value_krw || 0).toLocaleString()}</span>
+          <span class="hold-det">${VIEW.amounts
+            ? code + qty + ' × ' + sym(hld.currency || 'KRW') + (hld.current_price || 0).toLocaleString(undefined, hld.currency === 'USD' ? {minimumFractionDigits:2, maximumFractionDigits:2} : {maximumFractionDigits:0})
+            : code + fmtVal(hld.value_krw || 0, 'KRW') + ' of capital'}</span>
+          <span class="hold-pl ${typeof hld.profit_rate === 'number' ? pnlClass(hld.pl_krw || 0) : ''}" ${typeof hld.profit_rate === 'number' ? '' : 'style="color:var(--tx2)"'}>${typeof hld.profit_rate === 'number' ? holdPl(hld.pl_krw || 0, hld.profit_rate, 'KRW') : (VIEW.amounts ? won(hld.value_krw || 0) : '')}</span>
         </div>`;
       }).join('');
       holdingsHTML = rows ? `<div class="holds${mHoldings.length > 6 ? ' scroll' : ''}">${rows}</div>` : '';
@@ -2475,6 +2704,7 @@ function render(data) {
         <span class="strat-name"><span class="bot-dot" style="background:${botColor(s.id)}"></span>${s.name}</span>
         <span class="tag ${modeTag}">${modeLabel}</span>
       </div>
+      ${botDesc(s)}
       <div class="strat-grid">${metricsHTML}</div>
       ${chartHTML}
       ${holdingsHTML}
@@ -2520,8 +2750,8 @@ function render(data) {
           <span class="msg-tag">${tag}</span>
           <span class="msg-ts">${shortTime(ev.timestamp)}</span>
         </div>
-        <div class="msg-title">${ev.title}</div>
-        <div class="msg-body">${ev.body || ''}</div>
+        <div class="msg-title">${maskMoney(ev.title)}</div>
+        <div class="msg-body">${maskMoney(ev.body)}</div>
         <div class="msg-src">${ev.bot ? `<span class="bot-dot" style="background:${botColor(ev.bot)};width:5px;height:5px;margin-right:0.35rem"></span>` : ''}${ev.source || ''} · ${relTime(ev.timestamp)}</div>
       `;
       msgs.appendChild(m);
@@ -2565,6 +2795,7 @@ async function load() {
       const eqData = await histRes.json();
       if (!data.equity_series) data.equity_series = eqData;
     }
+    LAST_DATA = data;
     render(data);
   } catch (e) {
     const app = document.querySelector('#app');
