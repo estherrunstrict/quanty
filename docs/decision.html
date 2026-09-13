@@ -133,21 +133,35 @@ code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; 
 }
 
 /* ------ Memo cards ------ */
+/* Title and meta on top, then the wiki path + Approve/Reject on one row.
+   This used to be a single row with the right side pinned at its full width
+   (flex-shrink: 0): the wiki path is ~60 unbreakable monospace characters,
+   which in a half-width column left the title a few pixels — so every memo
+   title rendered one word per line. */
 .memo {
   padding: 12px 14px;
   border-bottom: 1px solid var(--line);
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
 }
 .memo:last-child { border-bottom: 0; }
 .memo .lhs { min-width: 0; }
 .memo .title { font-weight: 500; margin-bottom: 2px; }
 .memo .meta { font-size: 12px; color: var(--muted); }
 .memo .meta .badge { margin-right: 6px; }
-.memo .rhs { flex-shrink: 0; }
+.memo .rhs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  min-width: 0;
+}
+.memo .rhs .mono { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; min-width: 0; }
 .memo .rhs a { font-size: 12px; color: var(--blue); white-space: nowrap; }
+.memo .rhs .actions { margin-left: auto; }
 .memo .empty {
   padding: 16px;
   color: var(--dim);
