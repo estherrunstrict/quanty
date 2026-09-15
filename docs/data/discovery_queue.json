@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-09-15T16:16:40.613268+09:00",
+  "generated_at": "2026-09-16T06:30:33.776509+09:00",
   "stats": {
-    "total": 298,
-    "queued": 216,
+    "total": 308,
+    "queued": 226,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-09-15T16:16:40.613156+09:00",
+    "last_gc_at": "2026-09-16T06:30:33.776406+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -8637,6 +8637,301 @@
       "discovered": "2026-09-11",
       "matched_keywords": [
         "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.13402",
+      "source": "arxiv",
+      "title": "Diffusion models for dynamic volatility surface generation and data-driven hedging",
+      "authors": [
+        "Yinbin Han",
+        "Jack Yuxiang Zhang",
+        "Manuel Torres",
+        "Fernando Acero",
+        "Renyuan Xu"
+      ],
+      "abstract": "We develop a diffusion-model framework for dynamic implied-volatility surface generation and evaluate its economic usefulness through data-driven hedging. The framework consists of two models. AD-Seq-Vol jointly learns the conditional evolution of the underlying asset return and the high-dimensional implied-volatility surface, generating adapted multi-period scenarios by sequentially updating the realized market history. AD-Seq-Vol-FT further incorporates option-market structure through post-training penalties for violations of static no-arbitrage conditions. Using daily SPX option data from 2000 to 2023, we show that the proposed models generate coherent surface trajectories while capturing both cross-sectional and temporal dependence. AD-Seq-Vol produces fewer and less severe static-arbitrage violations than the training data and the GAN-based benchmark, while AD-Seq-Vol-FT reduces these violations to nearly zero. We then integrate the generated conditional scenarios into an optimization-based hedging framework. Compared to a range of classical and data-driven benchmarks, the diffusion-based hedges maintain tracking errors near zero, substantially reduce tail risk, and exhibit particularly stable performance during the COVID-19 market disruption. These results establish Adaptive Sequential Diffusion Models as a promising class of market-consistent and economically useful financial scenario generators. Our code is available at: https://github.com/yinbinhan/volatility-surface-simulation.",
+      "categories": [
+        "q-fin.CP",
+        "q-fin.PM",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2609.13402v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.13402v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-11",
+      "discovered": "2026-09-16",
+      "matched_keywords": [
+        "cross-sectional"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.12477",
+      "source": "arxiv",
+      "title": "Large Signal Libraries: Equal-Weight Limits and the Divergent Spectra of Signals and PnL",
+      "authors": [
+        "Marc da Costa Nunes"
+      ],
+      "abstract": "An ensemble of roughly 3,000 signals over 20 assets was reported to have approximately 90% correlation with the leading component of the asset-space return structure. Does having about 158 signals per available linear dimension explain that alignment? The population answer depends on the research process's design distribution and its relation to returns: crowding alone imposes neither a nonzero mean nor agreement with a principal component. The population theory developed here distinguishes four objects: the equal-weight signal, signal principal components, equal-weight profit and loss (PnL), and PnL principal components. The return operator in the motivating observation is a separate object. Independent libraries converge to their design mean; exchangeable libraries can retain a random conditional mean. Cross-sectional signals over $d$ assets, once demeaned and normalized, lie on the unit sphere $S^{q-1}$ of a $q$-dimensional space, $q=d-1$. Under axial symmetry, their nonzero mean is signal-cloud PC1 exactly when its longitudinal second moment exceeds $1/q$, the isotropic energy share. Residual-and-gap bounds quantify approximate alignment. Combining design weights into signals contracts the tangent of their angle to PC1 to at most $\\sqrt{λ_2/λ_1}$ times its value, where $λ_1>λ_2$ are the leading signal-kernel eigenvalues; the factor is sharp. A target-aligned frame separates transverse signal geometry, which PnL discards, from dispersion weighting and temporal centering, which also change the spectrum. A reproducible synthetic example illustrates the geometric threshold, and a proposed empirical program separates library growth from limited-history estimation. No market-data empirical results are presented.",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2609.12477v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.12477v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-11",
+      "discovered": "2026-09-16",
+      "matched_keywords": [
+        "factor",
+        "cross-sectional"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.12227",
+      "source": "arxiv",
+      "title": "Seasonal Trading in Commodity Futures: Evidence from Regression and Singular Spectrum Signals",
+      "authors": [
+        "Ralph Kosch",
+        "Robin Forsberg"
+      ],
+      "abstract": "Commodity futures are shaped by harvest cycles, weather shocks, storage conditions, and seasonal demand, but it remains unclear whether recurring patterns yield robust out-of-sample trading profits. Existing research documents return seasonality in commodity futures as well as more complex seasonal structure, while leaving less evidence on how alternative seasonal models compare under common implementation constraints. This article compares dummy-variable regression (DVR), Singular Spectrum Analysis (SSA), and robust low-rank SSA (RLSSA) within a unified trading framework, including a volatility-normalised specification. Using monthly delivery-avoidance returns for 15 liquid commodity futures, the models are estimated on rolling ten-year windows and evaluated from 2016 to 2024 with transaction costs, an equal-weight long benchmark, and Maximum Entropy Bootstrap (MEB) assessment. Across 500 MEB paths, the benchmark has the strongest average full-period profile, with a cumulative return of 16.81%, a Sharpe ratio of 0.191, and a maximum drawdown of -0.414. Classical SSA has the strongest average model outcomes, but negative median cumulative returns and deep drawdowns indicate substantial path sensitivity. Volatility normalisation reduces the average DVR short loss but generally weakens SSA-based portfolios. None of the 18 approximate paired MEB Sharpe tests rejects after within-family Holm adjustment. Because MEB preserves each contract's temporal rank ordering, the assessment is conditional on observed timing rather than a timing-randomised seasonal null. The evidence does not establish robust benchmark outperformance and shows that model performance varies materially across market subperiods.",
+      "categories": [
+        "q-fin.PM",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2609.12227v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.12227v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-10",
+      "discovered": "2026-09-16",
+      "matched_keywords": [
+        "commodity",
+        "drawdown",
+        "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.14859",
+      "source": "arxiv",
+      "title": "Gate Design and Stage-Dependent Incentives in Retail Proprietary-Trading Evaluations: Why Passing Is Not Standalone Evidence of Skill, and Why the Product Fails to Pay Under Measured Trading Constraints",
+      "authors": [
+        "Nicholas Hall"
+      ],
+      "abstract": "Retail proprietary-trading firms sell a two-stage product: a paid evaluation that must reach a profit target before breaching a trailing drawdown, then a funded account that must survive a minimum window and a consistency rule before a payout. We show the geometry of this contract creates incentives that differ by stage and make passing a poor standalone signal of skill. Under end-of-day trailing the evaluation rewards a fast, lumpy cadence while the funded account punishes it, by a factor of nine in the joint gate. The evaluation is defeatable at zero skill: position sizing alone yields a pass probability near 0.40, against a measured cohort rate of 0.168. Pass probability rises with skill, but a real edge and aggressive sizing move it by nearly the same amount, so a pass rate confounds the two. Under a simplified contract model the seller's margin is bounded by the gap between perceived and actual gate probabilities, the probability analogue of shrouding a price component; the observed design, a permeable marketed evaluation and a hard payout gate, is consistent with that. Across the sector, pass rates are published far more often than payout rates. The same geometry produces negative expected value: within the measured strategy universe, no configuration at observed drifts clears break-even on any account sourced. Break-even lies between a 40.5% and 41.5% win rate at 1:1.5 net of costs, against a driftless 40.0%. The delta-neutral construction firms prohibit is approximately expected-value neutral at the observed payout ceiling. Every account-level result is reported against a zero-edge control.",
+      "categories": [
+        "q-fin.TR",
+        "q-fin.GN"
+      ],
+      "url": "https://arxiv.org/abs/2609.14859v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.14859v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-14",
+      "discovered": "2026-09-16",
+      "matched_keywords": [
+        "factor",
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.14267",
+      "source": "arxiv",
+      "title": "Public Opinion as an Option: Leveraging Prediction Markets to Hedge Exposure to Spot Crypto Volatility",
+      "authors": [
+        "Prashanth Bhaskara",
+        "Aadit Jerfy"
+      ],
+      "abstract": "This paper proposes an investment strategy through resource allocation into Kalshi Crypto Event Contracts in order to effectively hedge exposure to spot asset volatility. Using Bitcoin as a proof of concept, we treat corresponding Kalshi markets on the asset's future price as option contracts, and through construction of different portfolio allocations present a framework for which event contracts can be effectively utilized by retail investors in order to control risk framework without reducing underlying exposure to spot volatility. We showcase this information through analysis of three separate Kalshi event contracts, all relating to a different underlying market regime (i.e bullish, bearish, flat), and provide a comprehensive risk profile for each regime. Results show that a dynamic Kalshi/Bitcoin hedging strategy outperforms more simplistic portfolios across all regimes, supporting our initial hypothesis. We discuss further considerations which can erode profits in the future (i.e. fees), and provide direction for future research.",
+      "categories": [
+        "cs.CE",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2609.14267v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.14267v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-13",
+      "discovered": "2026-09-16",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.13825",
+      "source": "arxiv",
+      "title": "ViperQ: Order Flow Pattern Recognition via Auction Market Theory for Reinforcement Learning Trading",
+      "authors": [
+        "Asser Moustafa",
+        "Rares-Mihail Neagu",
+        "Jugal Kalita"
+      ],
+      "abstract": "Reinforcement learning trading systems published in the academic literature overwhelmingly rely on price-aggregate state representations (OHLCV bars) or limit-order-book depth features, leaving microstructure pattern theories from the practitioner literature, namely Auction Market Theory and Market Profile, without a peer-reviewed computational instantiation. We present ViperQ, a reinforcement learning system whose state representation is built explicitly from Auction Market Theory primitives: Volume Point of Control, Value Area position, Low Volume Node flags, Cumulative Volume Delta divergence, and tape-velocity signatures, assembled into a 20-dimensional Z-normalised vector. Two Proximal Policy Optimisation agents are trained with a prospect theory-grounded asymmetric reward function that penalises losing holds at a magnitude consistent with Kahneman and Tversky's loss-aversion coefficient. Evaluated on a held-out twelve-month partition of institutional tick data the agents have never seen, ViperQ achieves +163.6% ROI on TSLA (-27.5% max drawdown, 27,019 trades) and +116.5% ROI on NVDA (-47.8% max drawdown, 12,892 trades) under zero leverage. The results establish Auction Market Theory features as a tractable structured input modality for sequential decision-making on financial time series and motivate further work on microstructure-aware policy learning.",
+      "categories": [
+        "cs.AI",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2609.13825v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.13825v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-12",
+      "discovered": "2026-09-16",
+      "matched_keywords": [
+        "reinforcement learning",
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.13715",
+      "source": "arxiv",
+      "title": "Event-Time Order-Flow Memory, Operational-Time Impact, and Subordinated Market Observables",
+      "authors": [
+        "Christopher Angstmann",
+        "Tim Gebbie"
+      ],
+      "abstract": "We consider two canonical market-microstructure regularities: the long-memory of trade signs and the square-root law of meta-order impact. The point is not to propose new empirical laws, but to separate the clocks on which existing laws are defined. The sign-memory law is an event-time statement about the ordering and fragmentation of hidden orders. The square-root impact law is an operational-time statement about front motion in a locally linear latent order book. Starting from a discrete-time random-walk bid/ask reaction--diffusion order book with a separate event clock, we identify an event-time imbalance reduction, derive the operational-time front and impact equations in the locally linear regime, and then subordinate both sign and impact observables to calendar time. Fractional or tempered clock effects enter through this event-to-calendar projection, not through a different operational-time impact mechanism. This gives a compact clock-aware framework in which event-time sign persistence, operational-time square-root impact, and anomalous calendar-time effects appear as distinct but compatible consequences of a common order-book representation.",
+      "categories": [
+        "q-fin.TR",
+        "cond-mat.stat-mech",
+        "math-ph",
+        "q-fin.MF"
+      ],
+      "url": "https://arxiv.org/abs/2609.13715v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.13715v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-12",
+      "discovered": "2026-09-16",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.14733",
+      "source": "arxiv",
+      "title": "WaVeFuse: Regime-Adaptive Equity Index Forecasting via Channel-Wise Wavelet Denoising and Vertical Attention Fusion",
+      "authors": [
+        "Aashish Bohra",
+        "Vivek Vijay"
+      ],
+      "abstract": "Hybrid Deep Learning for equity index forecasting is limited by three problems: propagation of OHLCV noise into derived technical indicators (TIs), channel-indiscriminate multi-scale decomposition that conflates heterogeneous frequency signatures, and static multi-branch fusion that cannot adapt to market regime shifts. WaVeFuse addresses these limitations through a unified dual-branch architecture. Symlet-4 wavelet denoising (level 2, MAD soft threshold) suppresses microstructure noise in OHLCV. Seven low-lag TIs computed from denoised prices are encoded by a causal channel-wise continuous wavelet transform (Morlet, 32 scales) into a per-timestep scale-space matrix. A CNN-BiLSTM branch captures temporal dynamics, while a dual-layer Transformer (heads=4, dk in {16, 32}) models inter-scale spectral dependencies, and their representations are integrated by a 2-token softmax gate Vertical Attention Fusion (VAF) that dynamically reweights branches as market regimes shift. Evaluated under walk-forward validation (WFV) on KOSPI, DAX, NYSE Composite, and Russell 2000 (2010-2023), WaVeFuse achieves R2 = 0.81-0.96 and directional accuracy 70.5-78.3%. It outperforms seven state-of-the-art models by 8.9-20.2% MAE across twelve dataset-period configurations. Diebold-Mariano statistics (4.62-10.38, p<0.001) confirm superiority over a well-tuned XGBoost benchmark across four indices. Ablation verifies component-wise contributions. Under realistic backtesting with 10 basis point transaction costs, WaVeFuse's directional strategy achieves a mean Sharpe ratio of 3.69 across four markets and limits maximum drawdown to 7.5% during the COVID-19 crash. With 152k parameters (0.68MB) and sub-1.3ms GPU inference, WaVeFuse delivers a computationally efficient, regime-robust framework suitable for research and decision-support deployment.",
+      "categories": [
+        "cs.LG",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2609.14733v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.14733v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-13",
+      "discovered": "2026-09-16",
+      "matched_keywords": [
+        "regime",
+        "walk-forward",
+        "drawdown",
+        "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.12793",
+      "source": "arxiv",
+      "title": "VertiFuseX: Generalizable Financial Forecasting via Multi-Stream Temporal Fusion",
+      "authors": [
+        "Aashish Bohra",
+        "Vivek Vijay"
+      ],
+      "abstract": "Stock price prediction remains challenging due to the non-stationary and noisy nature of financial time series. Existing deep learning models often rely on rigid decision-level fusion, ad hoc hyperparameter tuning, and compressed final-layer outputs, causing information loss, overfitting, and limited cross-market generalization. We propose VertiFuseX, a hybrid LSTM architecture using penultimate-layer vertical fusion of multi-scale temporal representations. VertiFuseX stacks and reweights penultimate features from LSTM, Bi-LSTM, and St-LSTM branches, integrates a parallel DNN stream, and jointly optimizes all components via backpropagation under a fixed hyperparameter configuration. This preserves richer intermediate temporal information across scales. Evaluated on 15 years (2010-2024) of closing prices from 10 global equity indices using strict chronological out-of-sample testing with the final 365 trading days held out, VertiFuseX achieves 30-54% MAPE reductions and over 40% improvements in MAE and RMSE versus LSTM-based baselines, and outperforms seven state-of-the-art models across 33 metric-dataset comparisons. Ablation studies confirm penultimate-layer fusion drives these gains over final-layer fusion and decision-level ensembling. Gradient-based saliency analysis shows consistent emphasis on mid-range dependencies at lags 9-15 days. Economic validation via algorithmic trading simulation under extreme market regimes shows reduced maximum drawdowns and superior risk-adjusted returns. With 675k parameters, a 2.6 MB memory footprint, and 1.5 ms/sample inference latency, VertiFuseX offers a lightweight, interpretable, deployment-ready framework for robust financial forecasting.",
+      "categories": [
+        "cs.LG",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2609.12793v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.12793v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-11",
+      "discovered": "2026-09-16",
+      "matched_keywords": [
+        "regime",
+        "drawdown",
+        "overfitting"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.14205",
+      "source": "arxiv",
+      "title": "CAST: A Cross-Asset State-Space Trading System for Drawdown Control in Stock Markets",
+      "authors": [
+        "Yu Peng",
+        "Matloob Khushi",
+        "Josiah Poon"
+      ],
+      "abstract": "Managing drawdown, the peak-to-trough decline in an investment portfolio's value, is a precondition for long-term survival in practical investment management. However, mainstream stock forecasting methods predominantly optimize returns or Sharpe ratios under the independent and identically distributed (i.i.d.) assumption. Real markets do not follow this assumption, triggering catastrophic drawdowns. We propose a cross-asset state-space trading system (CAST), consisting of two components: The predictor, Cross-Asset Collaborative Kalman Filter (CoKF), estimates each asset's latent state online, coupling all assets through their correlations and adaptively fusing multiple integrated-random-walk orders. The controller, Model Predictive Control (MPC), converts the predictor's forecast into trades, using forecast uncertainty as an explicit risk penalty that controls drawdown. We evaluate CAST on four real-world stock markets over a 15-year test window and show that it consistently occupies the return-drawdown Pareto frontier, achieving strong risk-adjusted performance while maintaining substantially lower maximum drawdown than competitive baselines. A stress test across crisis periods further demonstrates robust behavior under market shocks and distribution shift. Because the predictor and controller interact only through the predicted price path, both are plug-and-play, making CAST a modular, interpretable trading system. The code is available at https://github.com/FanBroWell/CAST",
+      "categories": [
+        "cs.CE",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2609.14205v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.14205v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-13",
+      "discovered": "2026-09-16",
+      "matched_keywords": [
+        "drawdown"
       ],
       "status": "queued",
       "ingested_into": null,
