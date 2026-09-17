@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-09-17T06:30:16.204852+09:00",
+  "generated_at": "2026-09-17T16:15:34.618382+09:00",
   "stats": {
-    "total": 308,
-    "queued": 226,
+    "total": 310,
+    "queued": 228,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-09-17T06:30:16.204709+09:00",
+    "last_gc_at": "2026-09-17T16:15:34.618268+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -8932,6 +8932,67 @@
       "discovered": "2026-09-16",
       "matched_keywords": [
         "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.17609",
+      "source": "arxiv",
+      "title": "Separated Signal Libraries: Packing, Saturation, and Joint Spectral Limits",
+      "authors": [
+        "Marc da Costa Nunes"
+      ],
+      "abstract": "We study libraries of cross-sectional signals: at each date, a forecast vector over $d$ assets intended to predict the next period's cross-sectional return. Demeaned and unit-normalized, a signal is a point on a sphere and its $T$-date history a point on a product of $T$ spheres. A pairwise correlation cap on histories is a minimum angular separation on that product, so growing a library under such a cap is a packing problem. If a large library is not too pairwise correlated and is equally weighted, does the equally weighted sum (EWS) tend to a known principal-component quantity as it grows? We answer this under explicit assumptions on how the library is filled. Separation alone guarantees nothing: it fixes no limiting distribution; a saturated library covers the sphere yet can carry a biased count; and near-maximum packing on a fixed domain forces uniform volume, which on the unrestricted sphere gives zero mean and no distinguished principal component (PC1). Alignment depends on the admission rule and candidate distribution. Under the uniform product-volume benchmark, screening on positive average information coefficient (IC) yields a nonzero, target-aligned mean but an isotropic second moment, whereas a positive IC margin $β$ makat every finite $T$, with athree-level spectrum whose leading eigenvalue tends to $β^2$ while residual levels decay as $1/T$; margins of order $T^{-1/2}$ keep a positive admission rate but a vanishing eigengA finite residual-spectrum criteS-PC1 alignment.Gilbert-Varshamov codes show separation permits both outcomes: exponentially large positive-IC libraries exist whose EWS is PC1, and others whose EWS is orthogonal to PC1. $\\log J=o(T)$ suffices for uniform estimation among $J$ candidates from $T$ iid dates. Derived results are proved and checked numerically; no market data are used.",
+      "categories": [
+        "q-fin.PM",
+        "cs.IT"
+      ],
+      "url": "https://arxiv.org/abs/2609.17609v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.17609v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-14",
+      "discovered": "2026-09-17",
+      "matched_keywords": [
+        "cross-sectional"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.17788",
+      "source": "arxiv",
+      "title": "SAiFE-gym: Model-based Environments for Automated Market Making with Concentrated Liquidity",
+      "authors": [
+        "Georgios Chionas",
+        "Charalampos Kleitsikas",
+        "Stefanos Leonardos",
+        "Leandro Sánchez-Betancourt",
+        "Carmine Ventre"
+      ],
+      "abstract": "We present SAiFE_gym, a Python module that provides a collection of simulation environments for studying trading problems in Constant Product Markets (CPMs) with Concentrated Liquidity (CL). These markets give Liquidity Providers (LPs) granular control over how their capital is allocated and enable them to adjust their range of liquidity provision dynamically based on market conditions, which in turn, dictates how they earn fees. We decompose the microstructure of CPMs with CL in interactive components that allow researchers and practitioners to capture various economic settings. We employ a vectorized approach to optimize our environments, making them scalable for high dimensional Reinforcement Learning (RL) workflows that best describe sequential decision problems. We demonstrate the benefits of our environments by evaluating the performance of RL agents in CPMs with CL under uncertainty in market parameters.",
+      "categories": [
+        "q-fin.TR",
+        "cs.AI",
+        "cs.LG",
+        "q-fin.CP",
+        "q-fin.MF"
+      ],
+      "url": "https://arxiv.org/abs/2609.17788v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.17788v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-15",
+      "discovered": "2026-09-17",
+      "matched_keywords": [
+        "reinforcement learning"
       ],
       "status": "queued",
       "ingested_into": null,
