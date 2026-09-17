@@ -1348,8 +1348,8 @@ function coreMetrics(d) {
     // budget; a bot with no budget (btc_vb runs uncapped on the Upbit balance)
     // divides by capital deployed. Different denominators, not comparable.
     const basisTag = (!nil(d.profitPct) && d.basis === 'deployed')
-      ? mSub('(on deployed)') : '';
-    o += mCell(p + 'Profit %', nil(d.profitPct) ? MDASH :
+      ? mSub('(on deployed)') : d.basis === 'budget' ? mSub('(current budget)') : '';
+    o += mCell(p + (d.basis === 'budget' ? 'P/L / Budget' : 'Profit %'), nil(d.profitPct) ? MDASH :
       (d.profitPct >= 0 ? '+' : '') + d.profitPct.toFixed(2) + '%' + basisTag,
       nil(d.profitPct) ? '' : pnlClass(d.profitPct));
   }
