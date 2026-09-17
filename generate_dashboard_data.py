@@ -1338,7 +1338,7 @@ def load_nmf2_ledger(path=None):
 
     Degrading to {} is deliberate: a publish must not fail — and must not shift
     money between sleeves — because the bot rotated its state file mid-read. An
-    empty ledger yields no nmf2 card, and every Toss share falls back to the
+    missing ledger yields no nmf2 card, and every Toss share falls back to the
     hands-on sleeve exactly as it did before this bot had a card.
     """
     try:
@@ -1371,9 +1371,9 @@ def build_nmf2_card(ledger, toss_holdings, fx_rate=None):
     already whole inside `totals.cash_krw`, and counting it here would book it
     twice.
     """
-    positions = (ledger or {}).get("positions") or {}
-    if not positions:
+    if not ledger or not isinstance(ledger.get("positions"), dict):
         return None
+    positions = ledger["positions"]
     fx = float(fx_rate or 0)
     by_symbol = {}
     for h in toss_holdings or []:
@@ -1424,6 +1424,10 @@ def build_nmf2_card(ledger, toss_holdings, fx_rate=None):
     rows.sort(key=lambda r: r.get("value_krw", 0), reverse=True)
     unrealized = value_krw - cost_krw
     budget = float((ledger or {}).get("budget_krw") or 0)
+    accounting = ledger.get("dashboard_realized") or {}
+    realized = accounting.get("realized_profit_ytd")
+    total_pl = unrealized + (realized or 0.0)
+    sell_orders = accounting.get("realized_trades")
     return {
         "id": "nmf2",
         "name": "NMF2 (신마법공식 2.0)",
@@ -1438,13 +1442,10 @@ def build_nmf2_card(ledger, toss_holdings, fx_rate=None):
         "cost_basis": round(cost_krw, 2),
         "budget": round(budget, 2),
         "unrealized_profit": round(unrealized, 2),
-        # No realized figure: the ledger keeps positions, not a closed-trade
-        # book, and this sleeve has not sold since inception. 0.0 is the honest
-        # value today, and total_pl_ytd stays equal to unrealized because of it.
-        "realized_profit_ytd": 0.0,
-        "realized_trades": 0,
-        "total_pl_ytd": round(unrealized, 2),
-        "profit_rate_ytd_pct": round(unrealized / cost_krw * 100, 2) if cost_krw > 0 else 0.0,
+        "realized_profit_ytd": realized,
+        "realized_trades": sell_orders,
+        "total_pl_ytd": round(total_pl, 2),
+        "profit_rate_ytd_pct": round(total_pl / budget * 100, 2) if budget > 0 else 0.0,
         "holdings": rows,
         "last_run": (ledger or {}).get("updated"),
         "extra": {
@@ -1457,6 +1458,10 @@ def build_nmf2_card(ledger, toss_holdings, fx_rate=None):
             "deployed_pct": round(cost_krw / budget * 100, 2) if budget > 0 else 0.0,
             "unmatched_symbols": unmatched,
             "ledger_updated": (ledger or {}).get("updated"),
+            "realized_profit_source": accounting.get("source", "unavailable"),
+            "realized_profit_period": accounting.get("year"),
+            "realized_profit_caveat": accounting.get("error") or
+                      "Actual filled orders, average-cost sales, with trading fees expensed.",
             "caveat": "Value is marked from the Toss snapshot, so it is only as fresh as that "
                       "snapshot. Ledger cash is shown but excluded from `value` — Toss cash is "
                       "counted once, in totals.cash_krw.",
@@ -2808,7 +2813,10 @@ def main(dry_run=False):
     # NMF2 first: it claims its ledger's shares out of the Toss rows so the
     # hands-on sleeve below can only ever see what is left. One carve-out, two
     # sleeves — which is why the reconciliation gap cannot move.
-    nmf2 = build_nmf2_card(load_nmf2_ledger(), toss_rows, fx)
+    from nmf2_accounting import attach_realized
+    nmf2_ledger = attach_realized(load_nmf2_ledger(), NMF2_LEDGER_FILE,
+                                 os.path.join(TRADING_DIR, "strategy_results", "nmf2_realized.json"))
+    nmf2 = build_nmf2_card(nmf2_ledger, toss_rows, fx)
     toss_claims = {r["ticker"]: r["qty"] for r in (nmf2 or {}).get("holdings", [])}
     # USVB claims in the SAME carve-out, and it must happen here rather than later:
     # build_manual_sleeve runs a few lines down and gives the hands-on sleeve
