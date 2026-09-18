@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-09-18T06:30:20.804922+09:00",
+  "generated_at": "2026-09-18T16:15:40.020926+09:00",
   "stats": {
-    "total": 310,
-    "queued": 228,
+    "total": 311,
+    "queued": 229,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-09-18T06:30:20.804819+09:00",
+    "last_gc_at": "2026-09-18T16:15:40.020816+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -8993,6 +8993,40 @@
       "discovered": "2026-09-17",
       "matched_keywords": [
         "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.20550",
+      "source": "arxiv",
+      "title": "Principal component error in high-dimensional factor models",
+      "authors": [
+        "Alex Bernstein",
+        "Lisa R. Goldberg",
+        "Nicholas Gunther",
+        "Alec N. Kercheval",
+        "Tian Lan",
+        "Yian Lin",
+        "Dayi Yao"
+      ],
+      "abstract": "In a statistical factor model, principal components (or eigenvectors) of a sample covariance matrix serve as estimates of {\\it principal directions}, the true drivers of co-movement of a collection of observed variables. We write the often substantial error in these estimates as a sum of two interpretable terms, which we show have almost sure asymptotic limits as the number of variables grows with sample size bounded. This scenario is commonplace in financial economics, genomics, machine learning and signal processing. {\\it Out-of-subspace error} measures the distance from an estimate to the subspace spanned by population factor exposures. It can be expressed in terms of data, providing an estimable floor for error. {\\it In-subspace error} arises from the fixed sample size of the latent factor returns and cannot be estimated from data alone. We illustrate our error analysis with a three-factor simulation of the US public equity market, showing the dependence of the magnitude of the error and its components on dimension and sample size. In that simulation, out-of-subspace error dominates. Researchers who rely on principal component analysis to estimate factor models can use our results to quantify errors in model-based predictions and attributions.",
+      "categories": [
+        "math.ST",
+        "q-fin.PM",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2609.20550v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.20550v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-17",
+      "discovered": "2026-09-18",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
