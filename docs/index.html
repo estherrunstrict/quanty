@@ -2075,7 +2075,7 @@ function render(data) {
       <span class="hdr-meta"><span class="live-dot"></span>${data.strategies.filter(s => s.id !== 'manual').length} strategies</span>
       <span class="hdr-meta">${data.meta.kst}</span>
       <button class="refresh-btn view-btn${VIEW.amounts ? ' on' : ''}" onclick="setView(${VIEW.amounts ? 'false' : 'true'})" title="${VIEW.amounts ? 'Hide the balances — show every figure as a share of total capital' : 'Show the actual balances'}">${VIEW.amounts ? '% Relative view' : '₩ Show amounts'}</button>
-      <a class="refresh-btn" href="decision.html" style="text-decoration:none">→ Decision Center</a>
+      <a class="refresh-btn" href="pipeline.html" style="text-decoration:none">→ Pipeline</a> <a class="refresh-btn" href="decision.html" style="text-decoration:none">→ Decision Center</a>
       <button class="refresh-btn" onclick="load()">Refresh</button>
     </div>
   `;
@@ -2802,7 +2802,7 @@ async function load() {
     const loader = document.querySelector('#loader');
     if (loader) {
       app.innerHTML = '<header class="hdr fade-in"><h1>Automation <em>Oracle</em></h1>' +
-        '<div class="hdr-right"><a class="refresh-btn" href="decision.html" style="text-decoration:none">→ Decision Center</a></div></header>' +
+        '<div class="hdr-right"><a class="refresh-btn" href="pipeline.html" style="text-decoration:none">→ Pipeline</a> <a class="refresh-btn" href="decision.html" style="text-decoration:none">→ Decision Center</a></div></header>' +
         '<div style="padding:3rem 0;text-align:center;color:var(--tx3);font-size:0.8rem">' +
         'Dashboard data not available. Updated daily after market close.</div>';
     }

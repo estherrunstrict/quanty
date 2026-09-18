@@ -1,0 +1,36 @@
+'use strict';
+function el(tag,text,cls){const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;}
+let monitor=null, selected=null, filter='all', loading=false;
+const labels={observed:'기록 수신',delayed:'갱신 지연',unknown:'미확인',blocked:'페이퍼 정체',unverified:'실행 미확인',attention:'확인 필요',unconnected:'미연결'};
+const stages=[['research','01 / 연구·검증'],['paper','02 / 페이퍼'],['real_test','03 / 실자금 테스트']];
+const attention=i=>['blocked','unknown','delayed','attention'].includes(i.status);
+function date(value){if(!value)return '미확인';const d=new Date(value.includes('KST')?value.replace(' KST','+09:00').replace(' ','T'):/[Zz]|[+-]\d\d:\d\d$/.test(value)?value:value+'+09:00');return isNaN(d)?value:d.toLocaleString('ko-KR',{timeZone:'Asia/Seoul',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})+' KST';}
+function metric(value){return value===null||value===undefined?'미확인':String(value);}
+function showDetail(id,scroll=false){
+ selected=id;const i=monitor.items.find(x=>x.id===id);if(!i)return;
+ document.querySelectorAll('.test-card').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.id===id)));
+ const p=document.getElementById('detail');p.replaceChildren(el('div',i.money_mode==='real'?'REAL MONEY / 실제 자금':'TEST EVIDENCE','eyebrow'),el('h3',i.name),el('span',labels[i.status]||'미확인','pill '+i.status));
+ for(const [label,value] of [['최근 확인 결과',i.result],['다음 확인 사항',i.next_action],['최근 실행 근거',date(i.last_observed_at)],['현재 보유 종목',metric(i.holdings_count)],['미확정 주문 기록',metric(i.unresolved_intents)],['완료 사이클 YTD',metric(i.cycles)],['승격 조건',i.criteria],['데이터 출처',i.source],['출처 기준 시각',date(i.source_at)]])p.append(el('h4',label),el('p',value));
+ p.append(el('h4','최근 관찰 기록'));if(!i.events.length)p.append(el('p','실행 이력 미연결 · 후보 등록은 실행 완료가 아닙니다.'));for(const e of i.events)p.append(el('p',date(e.at)+' · '+e.label));
+ if(scroll&&matchMedia('(max-width:1050px)').matches)p.scrollIntoView({block:'start'});
+}
+function render(){
+ const items=monitor.items;const stats=document.getElementById('stats');stats.replaceChildren();
+ for(const [label,value] of [['추적 대상',items.length],['실행 기록 수신',items.filter(i=>i.status==='observed').length],['확인 필요',items.filter(attention).length],['승인 대기 · 전체',metric(monitor.pending_decisions)]]){const a=el('div');a.append(el('span',label),el('strong',value));stats.append(a);}
+ const board=document.getElementById('board');board.replaceChildren();const visible=items.filter(i=>filter==='all'||filter==='attention'&&attention(i)||filter==='real'&&i.money_mode==='real'||filter==='observed'&&i.status==='observed');
+ for(const [key,title] of stages){const lane=el('section',undefined,'test-lane');const group=visible.filter(i=>i.stage===key);lane.append(el('h3',title),el('p',group.length+'개 대상','muted'));if(!group.length)lane.append(el('p','해당 조건의 대상 없음','empty'));for(const i of group){const b=el('button',undefined,'test-card '+i.status);b.type='button';b.dataset.id=i.id;b.setAttribute('aria-controls','detail');b.setAttribute('aria-pressed',String(selected===i.id));b.append(el('span',labels[i.status]||'미확인','status-label'),el('strong',i.name),el('span',i.money_mode==='real'?'실제 자금':i.money_mode==='simulated'?'모의 자금':'연구 후보','mode-label'),el('p',i.result),el('small','최근 기록 '+date(i.last_observed_at)));b.addEventListener('click',()=>showDetail(i.id,true));lane.append(b);}board.append(lane);}
+ if(visible.length){if(!visible.some(i=>i.id===selected))selected=(visible.find(attention)||visible[0]).id;showDetail(selected);}else{selected=null;document.getElementById('detail').replaceChildren(el('h3','대상 없음'),el('p','다른 필터를 선택해 주세요.'));}
+ const sources=document.getElementById('sources');sources.replaceChildren();for(const s of monitor.sources){const card=el('article');card.append(el('h3',s.name),el('span',labels[s.status]||'미확인','status-label'),el('p','기준 '+date(s.at)));sources.append(card);}
+ document.getElementById('freshness-note').textContent=monitor.freshness_note;
+ updateAge();
+}
+function updateAge(){if(!monitor)return;const stamp=new Date(monitor.generated_at);const minutes=(Date.now()-stamp)/60000;const stale=!Number.isFinite(minutes)||minutes>30||minutes< -5;document.getElementById('snapshot').textContent='서버 수집 '+date(monitor.generated_at)+(stale?' · 수집 지연':'');const notice=document.getElementById('notice');const messages=[...(monitor.issues||[])];if(stale)messages.unshift('모니터 수집 시각이 오래되었거나 유효하지 않습니다. 아래는 마지막 관찰 기록입니다.');notice.hidden=!messages.length;notice.textContent=messages.join(' ');}
+async function load(){if(loading)return;loading=true;const b=document.getElementById('refresh');b.disabled=true;b.textContent='조회 중…';try{const r=await fetch('data/pipeline_data.json',{cache:'no-store'});if(!r.ok)throw Error();const d=await r.json();if(d.schema_version!==1||!Array.isArray(d.items)||!Array.isArray(d.sources))throw Error();monitor=d;render();}catch{const n=document.getElementById('notice');n.hidden=false;n.textContent='모니터 데이터를 불러오지 못했습니다.'+(monitor?' 마지막 기록을 유지합니다.':' 데이터 수집과 배포 상태를 확인하세요.');if(!monitor){document.getElementById('board').replaceChildren(el('p','현재 표시할 실행 근거가 없습니다.','empty'));document.getElementById('snapshot').textContent='수집 상태 미확인';}}finally{loading=false;b.disabled=false;b.textContent='지금 새로고침';}}
+for(const b of document.querySelectorAll('[data-filter]'))b.addEventListener('click',()=>{filter=b.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));if(monitor)render();});
+document.getElementById('refresh').addEventListener('click',load);load();setInterval(()=>{if(!document.hidden)load();},60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)load();});
+// Tiny safe Markdown renderer for generated embed examples. No HTML from payloads.
+function markdown(node,text){const re=/(\*\*([^*]+)\*\*|\[([^\]]+)\]\((https:\/\/[^\s)]+)\))/g;let last=0;for(const m of String(text).matchAll(re)){node.append(document.createTextNode(text.slice(last,m.index)));if(m[2])node.append(el('strong',m[2]));else{const a=el('a',m[3]);a.href=m[4];a.rel='noopener noreferrer';node.append(a);}last=m.index+m[0].length;}node.append(document.createTextNode(text.slice(last)));}
+let examples;
+function showPreview(key){const e=examples?.[key];if(!e)return;document.querySelectorAll('[data-preview]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.preview===key)));const box=document.getElementById('embed-preview');box.replaceChildren(el('h4',e.title));box.style.borderColor=`#${Number(e.color).toString(16).padStart(6,'0')}`;const p=el('p');markdown(p,e.description||'');box.append(p);const fields=el('div',undefined,'embed-fields');for(const f of e.fields||[]){const cell=el('div',undefined,f.inline?'':'wide');cell.append(el('b',f.name));const v=el('p');markdown(v,f.value);cell.append(v);fields.append(cell);}box.append(fields,el('small',e.footer?.text||'가상 데이터'));}
+document.querySelectorAll('[data-preview]').forEach(b=>b.addEventListener('click',()=>showPreview(b.dataset.preview)));
+fetch('data/notification_examples.json').then(r=>{if(!r.ok)throw Error();return r.json();}).then(d=>{examples=d;showPreview('portfolio');}).catch(()=>{document.getElementById('embed-preview').textContent='알림 예시를 불러오지 못했습니다. 새로고침해 주세요.';});

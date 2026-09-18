@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-18T14:11:01.729718+00:00",
+  "refresh_seconds": 60,
+  "collection_interval_minutes": 10,
+  "stale_after_hours": 96,
+  "freshness_note": "실행 기록은 96시간 경과 시 지연 표시합니다. 거래소 캘린더 기반 장애 판정은 아직 연결되지 않았습니다.",
+  "sources": [
+    {
+      "name": "Dashboard",
+      "status": "observed",
+      "at": "2026-09-18 16:15 KST"
+    },
+    {
+      "name": "후보 레지스트리",
+      "status": "observed",
+      "at": "2026-09-18T16:15:35.306497+09:00"
+    },
+    {
+      "name": "Paper Factory 실행 기록",
+      "status": "unconnected",
+      "at": null
+    }
+  ],
+  "issues": [],
+  "items": [
+    {
+      "id": "korea_etf",
+      "name": "Korea ETF Momentum",
+      "stage": "paper",
+      "money_mode": "simulated",
+      "status": "observed",
+      "last_observed_at": "2026-09-18T09:00:25.315110+09:00",
+      "source": "Korea ETF session result · 읽기 전용",
+      "source_at": "2026-09-18T09:00:25.315110+09:00",
+      "holdings_count": 0,
+      "cycles": 2,
+      "unresolved_intents": null,
+      "result": "페이퍼 세션 기록 · 리밸런싱 비대상일",
+      "next_action": "체결·대사와 테스트 결과 검토",
+      "criteria": "승격 기준 미연결",
+      "events": [
+        {
+          "at": "2026-09-18T09:00:25.315110+09:00",
+          "label": "페이퍼 세션 기록 · 리밸런싱 비대상일"
+        }
+      ]
+    },
+    {
+      "id": "usvb",
+      "name": "US VB (TQQQ/SQQQ 당일)",
+      "stage": "real_test",
+      "money_mode": "real",
+      "status": "observed",
+      "last_observed_at": "2026-09-18T22:33:16",
+      "source": "USVB ledger · 읽기 전용",
+      "source_at": "2026-09-18T22:33:16",
+      "holdings_count": 1,
+      "cycles": null,
+      "unresolved_intents": null,
+      "result": "원장 갱신 수신 · 체결·청산 완료 판정 아님",
+      "next_action": "브로커 미체결·잔여 보유와 원장 대사 확인",
+      "criteria": "승격 기준 미연결",
+      "events": [
+        {
+          "at": "2026-09-18T22:33:16",
+          "label": "원장 갱신 수신 · 체결·청산 완료 판정 아님"
+        }
+      ]
+    },
+    {
+      "id": "candidate:hybrid-vb-paper",
+      "name": "Hybrid VB (paper variant)",
+      "stage": "paper",
+      "money_mode": "simulated",
+      "status": "blocked",
+      "last_observed_at": null,
+      "source_at": "2026-09-18T16:15:35.306497+09:00",
+      "source": "후보 레지스트리 · 실행 텔레메트리 미연결",
+      "holdings_count": null,
+      "cycles": null,
+      "unresolved_intents": null,
+      "result": "레지스트리에서 페이퍼 정체로 보고됨",
+      "next_action": "실행 배포·스케줄 및 결과 파일 확인",
+      "criteria": "This is a paper-shadow of a live bot — used to validate proposed changes before they go live",
+      "events": []
+    },
+    {
+      "id": "candidate:momentum-12-1",
+      "name": "12-1 Time-Series Momentum",
+      "stage": "paper",
+      "money_mode": "simulated",
+      "status": "blocked",
+      "last_observed_at": null,
+      "source_at": "2026-09-18T16:15:35.306497+09:00",
+      "source": "후보 레지스트리 · 실행 텔레메트리 미연결",
+      "holdings_count": null,
+      "cycles": null,
+      "unresolved_intents": null,
+      "result": "레지스트리에서 페이퍼 정체로 보고됨",
+      "next_action": "실행 배포·스케줄 및 결과 파일 확인",
+      "criteria": "60 trading days paper; realized Sharpe ≥ 0.7× backtest; no overlap > 0.7 with live bots",
+      "events": []
+    },
+    {
+      "id": "candidate:risk-parity",
+      "name": "Risk Parity (All-Weather)",
+      "stage": "paper",
+      "money_mode": "simulated",
+      "status": "blocked",
+      "last_observed_at": null,
+      "source_at": "2026-09-18T16:15:35.306497+09:00",
+      "source": "후보 레지스트리 · 실행 텔레메트리 미연결",
+      "holdings_count": null,
+      "cycles": null,
+      "unresolved_intents": null,
+      "result": "레지스트리에서 페이퍼 정체로 보고됨",
+      "next_action": "실행 배포·스케줄 및 결과 파일 확인",
+      "criteria": "60 trading days paper; realized Sharpe ≥ 0.7× backtest; MDD ≤ 1.25× backtest",
+      "events": []
+    },
+    {
+      "id": "candidate:xs-momentum",
+      "name": "Cross-Sectional 12-1 Momentum (5 indices)",
+      "stage": "paper",
+      "money_mode": "simulated",
+      "status": "blocked",
+      "last_observed_at": null,
+      "source_at": "2026-09-18T16:15:35.306497+09:00",
+      "source": "후보 레지스트리 · 실행 텔레메트리 미연결",
+      "holdings_count": null,
+      "cycles": null,
+      "unresolved_intents": null,
+      "result": "레지스트리에서 페이퍼 정체로 보고됨",
+      "next_action": "실행 배포·스케줄 및 결과 파일 확인",
+      "criteria": "60 trading days paper; Sharpe ≥ 0.7× backtest; distinct return profile from [[momentum-12-1]]",
+      "events": []
+    },
+    {
+      "id": "candidate:commodity-vb-selection",
+      "name": "Commodity VB Selection",
+      "stage": "research",
+      "money_mode": "none",
+      "status": "unverified",
+      "last_observed_at": null,
+      "source_at": "2026-09-18T16:15:35.306497+09:00",
+      "source": "후보 레지스트리 · 실행 텔레메트리 미연결",
+      "holdings_count": null,
+      "cycles": null,
+      "unresolved_intents": null,
+      "result": "후보 등록만 확인 · 실행 결과 미확인",
+      "next_action": "백테스트 결과와 검증 근거 연결",
+      "criteria": "Distinct selection criterion vs [[hybrid-vb]]; OOS Sharpe ≥ 1.0",
+      "events": []
+    },
+    {
+      "id": "candidate:silver-copper",
+      "name": "Silver/Copper Pair",
+      "stage": "research",
+      "money_mode": "none",
+      "status": "unverified",
+      "last_observed_at": null,
+      "source_at": "2026-09-18T16:15:35.306497+09:00",
+      "source": "후보 레지스트리 · 실행 텔레메트리 미연결",
+      "holdings_count": null,
+      "cycles": null,
+      "unresolved_intents": null,
+      "result": "후보 등록만 확인 · 실행 결과 미확인",
+      "next_action": "백테스트 결과와 검증 근거 연결",
+      "criteria": "Pair-trade backtest with reasonable cointegration evidence",
+      "events": []
+    },
+    {
+      "id": "candidate:soxl-soxs",
+      "name": "SOXL/SOXS Leveraged ETF Rotation (v3)",
+      "stage": "research",
+      "money_mode": "none",
+      "status": "unverified",
+      "last_observed_at": null,
+      "source_at": "2026-09-18T16:15:35.306497+09:00",
+      "source": "후보 레지스트리 · 실행 텔레메트리 미연결",
+      "holdings_count": null,
+      "cycles": null,
+      "unresolved_intents": null,
+      "result": "후보 등록만 확인 · 실행 결과 미확인",
+      "next_action": "백테스트 결과와 검증 근거 연결",
+      "criteria": "MDD must clear ≤ 25% on 3+ years OOS before paper-trading",
+      "events": []
+    },
+    {
+      "id": "candidate:top10-momentum",
+      "name": "Top-10 Momentum (v2)",
+      "stage": "research",
+      "money_mode": "none",
+      "status": "unverified",
+      "last_observed_at": null,
+      "source_at": "2026-09-18T16:15:35.306497+09:00",
+      "source": "후보 레지스트리 · 실행 텔레메트리 미연결",
+      "holdings_count": null,
+      "cycles": null,
+      "unresolved_intents": null,
+      "result": "후보 등록만 확인 · 실행 결과 미확인",
+      "next_action": "백테스트 결과와 검증 근거 연결",
+      "criteria": "OOS Sharpe ≥ 1.0; clear separation from [[usa-quant40]]",
+      "events": []
+    }
+  ],
+  "pending_decisions": 3,
+  "decision_source_at": "2026-09-18T16:15:35.306497+09:00"
+}

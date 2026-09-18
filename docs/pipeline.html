@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pipeline · Quanty Oracle</title><meta name="theme-color" content="#08080a">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/pipeline.css"><script src="assets/pipeline.js" defer></script>
+</head>
+<body><div class="shell">
+<header><a class="brand" href="index.html">Automation <em>Oracle</em></a><nav aria-label="주요 화면"><a href="index.html">Dashboard</a><a href="pipeline.html" aria-current="page">Pipeline</a><a href="decision.html">Decisions ↗</a></nav></header>
+<main>
+<noscript><p>실제 테스트 모니터링에는 JavaScript가 필요합니다.</p></noscript>
+<div class="eyebrow">TEST OPERATIONS / MONITOR</div>
+<div class="hero"><div><h1>Tests in focus<span>.</span></h1><p>페이퍼 실행부터 실자금 검증까지.<br>최근 실행 근거와 확인할 항목을 한곳에서 추적합니다.</p></div><aside><span class="pill">읽기 전용 모니터링</span><p>서버 수집 10분 · 화면 조회 60초<br>기록 갱신은 체결 성공을 의미하지 않습니다.</p><div id="snapshot" role="status">서버 기록을 불러오는 중…</div><button class="refresh" id="refresh">지금 새로고침</button></aside></div>
+<div id="notice" class="notice" role="status" hidden></div>
+<div class="stats" id="stats" aria-label="테스트 요약"></div>
+<div class="section-title"><h2>Test pipeline</h2><div class="preview-controls filters" role="group" aria-label="대상 필터"><button data-filter="all" aria-pressed="true">전체</button><button data-filter="observed" aria-pressed="false">기록 수신</button><button data-filter="attention" aria-pressed="false">확인 필요</button><button data-filter="real" aria-pressed="false">실자금</button></div></div>
+<div class="monitor-workspace"><div><div class="test-board" id="board" aria-live="polite"><p>실제 테스트 기록을 불러오는 중…</p></div><p class="muted" id="freshness-note"></p></div><aside class="detail monitor-detail" id="detail" aria-live="polite"><h3>테스트 상세</h3><p>테스트 카드를 선택하면 실행 근거와 다음 확인 사항을 볼 수 있습니다.</p></aside></div>
+<section class="sources-section"><div class="section-title"><h2>Evidence & coverage</h2><a href="decision.html" class="decision-link">승인 대기 확인 ↗</a></div><div class="source-grid" id="sources"></div><p class="muted">미확정 주문·실행 실패 원인의 상세 텔레메트리가 없는 대상은 미확인으로 표시합니다. 누락된 수치를 0이나 정상으로 간주하지 않습니다.</p></section>
+<details class="design-note"><summary>파이프라인 구조와 모니터링 범위</summary><p>데이터 → 연구·검증 → 페이퍼 → 승인 → 실자금 테스트 → 체결·회계 → 성과 피드백</p><p>이 화면은 실행 결과 파일, USVB 원장, 후보 레지스트리를 읽습니다. 거래·승격·예산 변경을 수행하지 않습니다. 후보 등록과 실제 실행 기록을 구분합니다.</p></details>
+<details class="design-note"><summary>Discord 메시지 디자인 미리보기</summary>
+<section class="notifications" aria-labelledby="notification-title"><div class="section-title"><h2 id="notification-title">Discord · concise by design</h2><span class="pill">가상 데이터 미리보기</span></div><div class="notification-grid"><div><h3>핵심 먼저.<br>상세는 한 번 더.</h3><p>상태 → 주요 수치 → 확인 사항.<br>봇 고유 색상은 유지하고, 긴 정렬 표는 짧은 문장으로 바꿉니다.</p><div class="preview-controls" role="group" aria-label="알림 유형"><button data-preview="portfolio" aria-pressed="true">포트폴리오</button><button data-preview="bot" aria-pressed="false">전략 현황</button><button data-preview="trade" aria-pressed="false">거래 기록</button><button data-preview="alert" aria-pressed="false">확인 필요</button></div><p class="muted">실제 알림 생성 함수로 만든 예시입니다.<br>Discord로 전송하지 않습니다.</p></div><div class="discord"><div class="sender"><span class="avatar">Q</span><strong>Quanty</strong><span class="app-tag">APP</span><span class="muted">미리보기</span></div><div id="embed-preview" class="embed" aria-live="polite">예시를 불러오는 중…</div></div></div></section>
+</details>
+</main><footer>QUANTY / TEST OPERATIONS<span>연구 → 실행 → 회계 → 검증</span></footer>
+</div></body></html>
