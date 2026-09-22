@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-09-22T16:15:51.212672+09:00",
+  "generated_at": "2026-09-23T06:30:21.352817+09:00",
   "stats": {
-    "total": 313,
-    "queued": 231,
+    "total": 314,
+    "queued": 232,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-09-22T16:15:51.212558+09:00",
+    "last_gc_at": "2026-09-23T06:30:21.352711+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -9083,6 +9083,36 @@
       "discovered": "2026-09-22",
       "matched_keywords": [
         "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.22639",
+      "source": "arxiv",
+      "title": "Adapting Pairs Trading to Gambling Markets A Case Study of the U.S. Presidential Election",
+      "authors": [
+        "Haoyu Liu",
+        "Len Thomas",
+        "Benjamin Baer",
+        "Carl Donovan"
+      ],
+      "abstract": "Pairs trading exploits mean reversion in the relationship between related assets. We adapt this idea to political betting markets by modelling the combined implied probability of the two major-party nominees with a latent Ornstein-Uhlenbeck process whose mean-reversion level varies over time and whose observations contain additive noise. Model parameters are estimated from regularly sampled odds data using a state-space likelihood, with consecutive repeated values represented by a single retained observation and the elapsed number of sampling intervals preserved in the continuous-time transition. Parametric-bootstrap upper prediction bounds identify signal times at which the combined implied probability is likely to decline, and a no-intercept Bradley-Terry-type model selects the candidate-specific odds quote. The candidate-selection model is trained on 2020 U.S. presidential-election data and evaluated out of sample on 2024 data. The 2024 analysis produced 130 signals, empirical one-step coverage of 95.1%, a mean synthetic odds-price return of 1.86%, and an unannualized per-trade Sharpe-type ratio of 1.12. These returns are frictionless descriptive quantities rather than executable betting-exchange profits. The results support the integrated framework as a proof of concept for two-candidate electoral markets.",
+      "categories": [
+        "stat.AP",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2609.22639v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.22639v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-18",
+      "discovered": "2026-09-23",
+      "matched_keywords": [
+        "mean reversion"
       ],
       "status": "queued",
       "ingested_into": null,
