@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-09-23T06:30:21.352817+09:00",
+  "generated_at": "2026-09-23T16:15:43.436008+09:00",
   "stats": {
-    "total": 314,
-    "queued": 232,
+    "total": 319,
+    "queued": 237,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-09-23T06:30:21.352711+09:00",
+    "last_gc_at": "2026-09-23T16:15:43.435863+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -9113,6 +9113,147 @@
       "discovered": "2026-09-23",
       "matched_keywords": [
         "mean reversion"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.26303",
+      "source": "arxiv",
+      "title": "Target alignment, dilution and forecast selection when cross-sectional forecasts share a common target",
+      "authors": [
+        "Masoud Soleimani"
+      ],
+      "abstract": "Forecasters often score the same units per date against one standardized realized outcome. We show that every standardized forecast splits exactly into a component aligned with this common target and a component uncorrelated with it. Three consequences follow: forecast-error correlation largely mirrors forecast correlation and is therefore a poor measure of diversity; an equally weighted combination beats a no-information forecast only when average alignment is large relative to the combination's dispersion; and the gain from adding a forecaster separates into genuine improvement and mere dilution, which equal-weight admission can mistakenly reward. We develop a cautious selection rule, study it in simulations, and apply it to language-model forecasts of US equity rankings and mechanical signals ranking exchange-traded funds. Selection removes most dilution losses, but no combination beats the no-information forecast.",
+      "categories": [
+        "econ.EM",
+        "cs.LG",
+        "q-fin.ST",
+        "stat.ME"
+      ],
+      "url": "https://arxiv.org/abs/2609.26303v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.26303v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-22",
+      "discovered": "2026-09-23",
+      "matched_keywords": [
+        "cross-sectional"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.25965",
+      "source": "arxiv",
+      "title": "Modeling interest rate swap volatility with GARCH processes",
+      "authors": [
+        "Michał Balcerek",
+        "Michał Wronka"
+      ],
+      "abstract": "We examine the conditional volatility dynamics of the USD 1Yx10Y forward swap rate using GARCH(1,1), GJR-GARCH(1,1), and a two-regime Markov-switching GARCH (MSGARCH) model. The analysis uses daily data from 2007 to 2023 and incorporates market-implied measures (ATM swaption volatility and the SRVIX in- dex) together with a broad set of diagnostic tests. Standard GARCH and GJR- GARCH models show stable short-run parameters, but the intercept ω varies markedly across rolling windows, causing instability in the implied long-run vari- ance. This pattern, confirmed by the Nyblom test, motivates adopting a regime- switching specification. MSGARCH mitigates this issue by keeping regime-specific parameters stable and capturing time variation through filtered regime probabili- ties. It delivers the highest log-likelihood and lowest AIC, whereas BIC favours the more parsimonious GJR-GARCH. One-step-ahead backtesting indicates comparable short-horizon accuracy across models, but MSGARCH offers a clearer structural in- terpretation by isolating high- and low-volatility regimes aligned with major market events.",
+      "categories": [
+        "q-fin.MF",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2609.25965v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.25965v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-22",
+      "discovered": "2026-09-23",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.26242",
+      "source": "arxiv",
+      "title": "Can You Delete a Year of Market Data? Machine Unlearning Against Exact Retraining Oracles",
+      "authors": [
+        "Junyi Ye"
+      ],
+      "abstract": "When a data license expires, deleting stored records does not remove influence encoded in a trained forecaster. Machine unlearning seeks to remove this influence without retraining. We benchmark temporal unlearning with 3,200 paired references trained on all data and oracles retrained without the requested period. The grid covers five architectures, four rolling folds, five deletable years, and three experimental deletion levels on an S&P 500 volatility panel. The 2020 COVID crisis year produces the largest memorization gap for every architecture. Removing it improves all three deployable models in every fold, with the largest improvement in the 2022 bear market, while the two non-deployable models respond inconsistently. The target for approximate unlearning is the oracle, not low predictive accuracy on the deleted period. In one Transformer cell, an oracle that never trained on 2020 still predicts it at an information coefficient of 0.51, compared with 0.55 for the reference; pushing predictions toward noise reduces test skill. Across twelve deployable architecture-method pairs, only TSMixer with the hinge method remains near the oracle in every fold, closing 74-118% of the reference-to-oracle gap without a measurable loss of test skill. Method rankings vary across architectures and rolling windows. Audit separation rises with prior memorization but can remain small after exact deletion. The window-level loss comparison reaches at most 0.69, and treating stock-level windows as independent inflates the absolute t-statistic by a median factor of 1.9. These results call for an explicit deletion scope, oracle validation for the relevant architecture and window, and power-aware auditing.",
+      "categories": [
+        "cs.LG",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2609.26242v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.26242v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-13",
+      "discovered": "2026-09-23",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.25144",
+      "source": "arxiv",
+      "title": "The Informational Content in Lepto-Variance and Its Relation to Higher Moments",
+      "authors": [
+        "Vassilis Polimenis"
+      ],
+      "abstract": "Lepto-regression is defined as the machine learning process of constructing a Regression Tree of a target feature on itself. It is a novel, model-free method potentially revealing information on important sample structure properties. But it is yet not clear what the informational content of lepto-variance is and how it is related to other well-known statistics of a sample. One significant finding is that 58% of the historical US stock return variability is 1-bit lepto-variance that can not be explained by any financial factor. The central question investigated in this paper is to use small normal N(0, 1) drawn samples to explore how the 1-bit sample lepto-variance and lepto-ratio relate to sample variance, skewness and excess kurtosis. Using a large sample simulation, the lepto ratio of a normal is found to converge to 36.3%. For smaller normally distributed simulated N(0, 1) samples, while lepto-variance itself is highly correlated to sample variance, lepto-variance as a fraction of total variance is highly correlated to excess kurtosis. Both lepto-variance and lepto-ratio are orthogonal to sample skew. Another finding is that while lepto-ratio is strongly correlated to lepto-variance it remains orthogonal to sample variance.",
+      "categories": [
+        "stat.ME",
+        "cs.LG",
+        "q-fin.RM",
+        "stat.ML"
+      ],
+      "url": "https://arxiv.org/abs/2609.25144v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.25144v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-21",
+      "discovered": "2026-09-23",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.23272",
+      "source": "arxiv",
+      "title": "On Control of Drawdown: Robust Invariance and Optimality",
+      "authors": [
+        "Chung-Han Hsieh"
+      ],
+      "abstract": "Mitigating \\emph{drawdown}, the decline in wealth from its running peak, presents a canonical problem in path-dependent risk control. In this paper, we develop a finite-horizon control framework that enforces a prescribed maximum percentage drawdown limit in multi-asset stochastic systems. Our first result is an exact robust-invariance theorem characterizing every control action that preserves a prescribed drawdown limit against all supported returns. We show that every robustly safe control admits a \\emph{drawdown-modulated} form: the product of the current drawdown \\emph{cushion} and a feasible \\emph{normalized direction}. This yields a complete parameterization of robustly drawdown-safe policies. Additionally, under stagewise-independent returns, we show that optimizing over all robustly safe causal policies reduces to a one-dimensional Bellman recursion and yields an optimal robustly safe state-feedback policy. Finally, we characterize the linear time-invariant (LTI) gains satisfying a prescribed drawdown limit and prove that optimal drawdown modulation achieves no lower expected return under the same limit. Strict expected-return improvement holds for horizons of at least two stages whenever the LTI policy has positive expected one-stage net return.",
+      "categories": [
+        "math.OC",
+        "q-fin.MF",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2609.23272v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.23272v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-20",
+      "discovered": "2026-09-23",
+      "matched_keywords": [
+        "drawdown"
       ],
       "status": "queued",
       "ingested_into": null,
