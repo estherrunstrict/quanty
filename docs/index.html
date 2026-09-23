@@ -2107,26 +2107,35 @@ function render(data) {
   FX = exchangeRate;
   CAP = (data.totals && data.totals.investments_krw > 0) ? data.totals.investments_krw : totalAsset;
 
-  // ── Sum realized + unrealized from all bots (per-currency)
+  // ── Sum live bot P/L from the published card totals (per currency)
   let unrealKRW = 0, unrealUSD = 0;
   let realKRW = 0,   realUSD = 0;
+  let totalPlKRW = 0, totalPlUSD = 0;
+  const cardPl = s => s.total_pl_ytd ??
+    ((s.realized_profit_ytd || 0) + (s.unrealized_profit ?? s.profit ?? 0));
   data.strategies.forEach(s => {
+    if (s.id === 'manual' || s.paper_equity) return;
     if (s.currency === 'KRW') {
       unrealKRW += (s.unrealized_profit ?? s.profit ?? 0);
       realKRW   += (s.realized_profit_ytd || 0);
+      totalPlKRW += cardPl(s);
     } else if (s.currency === 'USD') {
       unrealUSD += (s.unrealized_profit ?? s.profit ?? 0);
       realUSD   += (s.realized_profit_ytd || 0);
+      totalPlUSD += cardPl(s);
     } else if (s.currency === 'MULTI') {
       unrealKRW += (s.kr?.unrealized_profit ?? s.kr?.profit ?? 0);
       unrealUSD += (s.us?.unrealized_profit ?? s.us?.profit ?? 0);
       realKRW   += (s.kr?.realized_profit_ytd || 0);
       realUSD   += (s.us?.realized_profit_ytd || 0);
+      totalPlKRW += cardPl(s.kr || {});
+      totalPlUSD += cardPl(s.us || {});
     }
   });
   const unrealCombined = unrealKRW + unrealUSD * exchangeRate;
   const realCombined   = realKRW   + realUSD   * exchangeRate;
-  const totalPnlCombined = unrealCombined + realCombined;
+  const totalPnlCombined = totalPlKRW + totalPlUSD * exchangeRate;
+  const plAdjustment = totalPnlCombined - realCombined - unrealCombined;
   const originalDeposit = portfolio.original_deposit_krw || 1;
   const totalPnlPct = originalDeposit > 0 ? (totalPnlCombined / originalDeposit * 100) : 0;
 
@@ -2243,15 +2252,15 @@ function render(data) {
   //                                 with the cron name that is already printed
   //                                 in the footer
   //
-  // What is left — Realized and Unrealized — are the two halves the hero's
-  // total is made of and appear nowhere else, and KIS Cash is the only view of
-  // uninvested broker cash on the page.
+  // Realized and Unrealized explain the hero's P/L; show an adjustment when
+  // a bot's authoritative total differs from those display components.
   const stripData = totalAsset > 0 ? [
     { lbl: 'KIS Cash', val: won(cashKRW),
       sub: VIEW.amounts ? '$' + cashUSD.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' USD'
                         : '+ ' + fmtVal(cashUSD, 'USD') + ' in USD' },
     { lbl: 'Realized YTD', val: fmtPnl(realCombined, 'KRW'), cls: pnlClass(realCombined), sub: 'KRW ' + fmtPnl(realKRW, 'KRW') + ' + USD ' + fmtPnl(realUSD, 'USD') },
     { lbl: 'Unrealized', val: fmtPnl(unrealCombined, 'KRW'), cls: pnlClass(unrealCombined), sub: 'KRW ' + fmtPnl(unrealKRW, 'KRW') + ' + USD ' + fmtPnl(unrealUSD, 'USD') },
+    ...(Math.abs(plAdjustment) >= 1 ? [{ lbl: 'P/L adjustments', val: fmtPnl(plAdjustment, 'KRW'), cls: pnlClass(plAdjustment), sub: 'Included in bot total P/L' }] : []),
   ] : [
     { lbl: 'KIS Cash', val: '—', sub: 'Waiting for data update' },
     { lbl: 'Realized YTD', val: '—', sub: 'Waiting for data update' },
