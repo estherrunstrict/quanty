@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-09-24T06:30:21.632312+09:00",
+  "generated_at": "2026-09-24T16:15:42.510543+09:00",
   "stats": {
-    "total": 319,
-    "queued": 237,
+    "total": 324,
+    "queued": 242,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-09-24T06:30:21.632201+09:00",
+    "last_gc_at": "2026-09-24T16:15:42.510415+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -9252,6 +9252,161 @@
       "year": 2026,
       "published": "2026-09-20",
       "discovered": "2026-09-23",
+      "matched_keywords": [
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.27113",
+      "source": "arxiv",
+      "title": "Active Portfolio Management in Concentrated Equity Markets",
+      "authors": [
+        "Brian Ceco",
+        "Xiaofei Shi",
+        "Ting-Kam Leonard Wong"
+      ],
+      "abstract": "The equal-weighted portfolio is a passive, rule-based strategy that has historically been difficult to outperform, delivering higher returns than the capitalization-weighted \"market\" benchmark across many markets and periods. Stochastic portfolio theory (SPT) reveals that this relative performance is regime dependent, with the equal-weighted portfolio underperforming during periods of increasing market concentration and high correlations, particularly market bubbles. These observations have motivated us to formulate and solve a stochastic control problem in which an investor actively allocates between the equal-weighted and market portfolios. The investor bases their allocation decisions on forecasts made under a flexible stochastic diversity--dispersion (SDD) model. Using a quadratic surrogate for implementation frictions, we characterize the optimal allocation through a linear forward--backward SDE and obtain an explicit \"aiming in front of a moving target'' representation of the optimal trading rate, in the spirit of Gârleanu and Pedersen. The penalty parameters are calibrated in sample to match the cumulative wealth effect of proportional transaction costs, while out-of-sample performance is evaluated with those costs deducted directly from portfolio wealth. Using historical S&P 500 data, we show that a mean-reverting SDD specification reproduces several empirical features of market diversity and dispersion. In out-of-sample backtests from 1995 to 2024, the resulting strategies deliver higher cumulative net returns than both the equal-weighted and market portfolios, and higher information ratios than the equal-weighted portfolio after 15-basis-point proportional transaction costs.",
+      "categories": [
+        "q-fin.PM",
+        "math.OC",
+        "q-fin.MF"
+      ],
+      "url": "https://arxiv.org/abs/2609.27113v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.27113v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-22",
+      "discovered": "2026-09-24",
+      "matched_keywords": [
+        "regime",
+        "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.27051",
+      "source": "arxiv",
+      "title": "Propose, Don't Judge: An Anytime-Valid Referee for LLM Agents That Mine Investment Factors",
+      "authors": [
+        "Bo Qu",
+        "Mingguang Chen",
+        "Licheng Wang"
+      ],
+      "abstract": "Language-model agents now run the whole of quantitative factor research: they propose investment factors, backtest them, select the survivors and retire them. We ask which of those jobs an agent should keep. Our answer is governed self-evolution: the agent may propose, and a frozen statistical referee that the agent cannot touch must judge. The referee scores each candidate only on market outcomes revealed after submission, by betting, so its false-discovery guarantee holds at every stopping time for any proposal policy. We cross three proposers (a script, a bandit and a language model) with this referee and with three deliberately leaky ones, in a synthetic world with planted truth, a probe-authoring environment and a ten-year walk-forward on the CSI 500. Who judges sets the number of false admissions: the frozen referee admits 5-11 times fewer sub-threshold factors than the leaky referees under a scripted proposer, and no proposer closes that gap. Who proposes sets the yield: the language model beats the script, matches the bandit, and adds the one capability a bandit lacks, writing its own diagnostic probes. The certificate's price is time: an admitted true factor waits about 500 trading days, and the certified portfolio's Sharpe ratio therefore trails an ungated one. Judging belongs to the procedure; proposing and instrument-making belong to the agent.",
+      "categories": [
+        "cs.AI",
+        "q-fin.PM",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2609.27051v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.27051v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-22",
+      "discovered": "2026-09-24",
+      "matched_keywords": [
+        "factor",
+        "walk-forward"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.26349",
+      "source": "arxiv",
+      "title": "Optimal Investment and Consumption in Financial Markets with Integrated Variance Clocks",
+      "authors": [
+        "Eduardo Abi Jaber",
+        "Florian Gutekunst",
+        "Martin Herdegen",
+        "David Hobson"
+      ],
+      "abstract": "We study the infinite-horizon optimal investment and consumption problem in a general class of continuous financial markets, where uncertainty is driven by a continuous non-decreasing stochastic clock representing accumulated variance. This framework encompasses classical Markovian and non-Markovian stochastic volatility models as well as singular realized-variance models in which no spot volatility process exists. We characterize the value process and optimal investment and consumption strategies in terms of a non-linear infinite-horizon backward stochastic differential equation driven jointly by calendar time and the stochastic clock. We develop a general well-posedness theory for this new class of IVC-BSDEs based on the method of sub- and supersolutions, establishing existence, uniqueness, and stability under natural conditions that might be of independent interest beyond the financial application at hand. We are moreover able to identify the sign of the $Z$-component of the solution using Malliavin calculus. We then apply our results to Volterra Heston models with locally integrable kernels, covering both rough and hyper-rough regimes. Exploiting the affine structure of the model, we verify the optimality of the candidate strategies in incomplete markets and obtain an explicit representation of the solution in the complete market case. Owing to the generality of the framework and the weak assumptions imposed on the stochastic clock, our results unify and extend several existing results for optimal investment and consumption, including classical Markovian stochastic volatility models.",
+      "categories": [
+        "q-fin.MF",
+        "math.OC",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2609.26349v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.26349v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-22",
+      "discovered": "2026-09-24",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.27786",
+      "source": "arxiv",
+      "title": "Feasible Multi-Asset Optimal Execution under Cash Constraints",
+      "authors": [
+        "Ryuji Hashimoto",
+        "Namid R. Stillman"
+      ],
+      "abstract": "Optimal execution (OE) in multi-asset settings involves complex interactions across assets, particularly through shared capital constraints during portfolio rebalancing. While existing models capture cross-impact and portfolio-level dynamics, they largely overlook the role of explicit cash constraints along the execution trajectory. As a result, the feasibility of execution strategies under limited capital remains poorly understood. In this paper, we extend the classical Almgren-Chriss framework to incorporate intertemporal constraints on expected cash consumption, requiring that the expected cumulative cash spent does not exceed a prescribed budget at every trading period. We show that the resulting multi-asset OE problem can be equivalently formulated as a quadratically constrained quadratic program (QCQP), and further establish that it admits a convex representation under mild conditions. This provides a tractable framework for analyzing execution strategies under dynamic capital constraints. Through controlled synthetic experiments, we show that the proposed cash constraints qualitatively alter OE schedules toward cash-feasible sell-first executions as the constraints become tighter. Furthermore, evaluations in an out-of-sample agent-based market simulator demonstrate that our method substantially reduces peak cash drawdown while maintaining implementation shortfall comparable to existing execution strategies. Our results highlight the importance of explicitly modeling financial feasibility in multi-asset execution and provide a foundation for bridging theoretical OE models with practical capital constraints.",
+      "categories": [
+        "q-fin.TR",
+        "cs.CE",
+        "math.OC",
+        "q-fin.CP",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2609.27786v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.27786v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-18",
+      "discovered": "2026-09-24",
+      "matched_keywords": [
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.27785",
+      "source": "arxiv",
+      "title": "Financial Tail Risk Beyond Lipschitz Continuity via Semi-Discrete Optimal Transport",
+      "authors": [
+        "Ryan M. Engel",
+        "Kibaek Lee",
+        "Namid Stillman"
+      ],
+      "abstract": "Financial returns are heavy-tailed, and accurate tail risk estimation is central to portfolio risk management. Modern neural generators sample by pushing a simple base distribution through a learned map, and for training stability that map is built from Lipschitz components. This is the binding constraint: a Lipschitz map of a Gaussian is sub-Gaussian, so heavier-tailed targets admit no exact match at any finite Lipschitz constant. The Monge--Ampère equation ties the Brenier map's local distortion to the density ratio $f/(g\\circ T)$, so a deeper trough in the target density requires a higher-gain map and yields a higher-variance estimator. The argument needs only bounded distortion, so it covers normalizing flows, flow matching, GANs, and diffusion samplers alike. Semi-Discrete Optimal Transport (SDOT) relaxes the map's regularity rather than the source's tail class. Its power diagram gives every training observation a cell holding exactly $1/N$ of the source measure, and tail observations are reached by crossing a cell boundary rather than by stretching. Our primary experiment sweeps severity over a calibrated Merton jump-diffusion spanning kurtosis 94 to 1,679. SDOT holds tail ratios at $0.85$--$0.94$ with cross-seed standard deviations below $0.025$, while every learned generator either compresses the tails or inflates them with a variance that grows alongside. Further experiments carry the result to real S\\&P~500 returns and to a 21-year backtest, where SDOT gives the best risk-adjusted market-neutral strategy under CVaR optimization (Sharpe $0.70$, max drawdown $-2.60\\%$, against $0.40$ for the next-best generator).",
+      "categories": [
+        "q-fin.RM",
+        "cs.CE",
+        "q-fin.CP",
+        "stat.ML"
+      ],
+      "url": "https://arxiv.org/abs/2609.27785v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.27785v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-08-17",
+      "discovered": "2026-09-24",
       "matched_keywords": [
         "drawdown"
       ],
