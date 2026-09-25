@@ -1,20 +1,20 @@
 {
-  "updated_at": "2026-09-25 16:15 KST",
+  "updated_at": "2026-09-26 06:30 KST",
   "portfolio": {
-    "total_value_krw": 126571894,
+    "total_value_krw": 131006364,
     "original_deposit_krw": 75714217,
-    "total_profit_krw": -2309288,
-    "total_profit_pct": -3.05,
+    "total_profit_krw": -1853716,
+    "total_profit_pct": -2.45,
     "cash_krw": 12928007,
-    "cash_usd": 227.84,
+    "cash_usd": 0.0,
     "unsettled_us_sell_krw": 0,
     "upbit_krw": 10744934,
     "exchange_rate": 1360.0,
-    "unrealized_krw": -348405,
+    "unrealized_krw": 107168,
     "realized_krw": -1960883,
     "unrealized_native": {
       "krw": -562850,
-      "usd": 157.68
+      "usd": 492.66
     },
     "realized_native": {
       "krw": -2190152,
@@ -22,8 +22,8 @@
     }
   },
   "meta": {
-    "timestamp": "2026-09-25T16:15:19.824987+09:00",
-    "kst": "2026-09-25 16:15 KST",
+    "timestamp": "2026-09-26T06:30:11.178108+09:00",
+    "kst": "2026-09-26 06:30 KST",
     "equity_start": "2026-01-01"
   },
   "strategies": [
@@ -39,7 +39,7 @@
       "total_trades": 38,
       "winning_trades": 18,
       "allocation": 1.0,
-      "last_run": "2026-09-25",
+      "last_run": "2026-09-26",
       "holdings": [],
       "extra": {
         "k": 0.4,
@@ -47,7 +47,7 @@
         "ma_period": 5,
         "equity_days": 100
       },
-      "stale_hours": 11.236349448561668,
+      "stale_hours": 1.4841107932064268,
       "unrealized_profit": 0,
       "realized_profit_ytd": 919942.96,
       "realized_trades": 38,
@@ -59,7 +59,7 @@
       "cycles_ytd": 38,
       "total_pl_ytd": 919942.96,
       "profit_rate_ytd_pct": 8.56,
-      "stale_weekday_hours": 11.24,
+      "stale_weekday_hours": 1.48,
       "is_stale": false,
       "stale_limit_hours": 36.0,
       "budget_basis": "account",
@@ -92,7 +92,7 @@
         "target_ticker": "139220",
         "rebalance_day": false
       },
-      "stale_hours": 7.2480865340100395,
+      "stale_hours": 21.49570165514946,
       "timestamp": "2026-09-25T09:00:26.510315+09:00",
       "unrealized_profit": 0,
       "realized_profit_ytd": -1246635.0,
@@ -105,7 +105,7 @@
       "cycles_ytd": 2,
       "total_pl_ytd": -1246635.0,
       "profit_rate_ytd_pct": null,
-      "stale_weekday_hours": 7.25,
+      "stale_weekday_hours": 14.99,
       "is_stale": false,
       "stale_limit_hours": 36.0,
       "backtest": {
@@ -124,22 +124,22 @@
       "name": "US Quant40",
       "currency": "USD",
       "mode": "live",
-      "value": 9206.16,
+      "value": 9256.2,
       "cost_basis": 9142.68,
       "cash": 5563.392642521233,
-      "profit": 63.48,
+      "profit": 113.52,
       "holdings": [
         {
           "ticker": "SPY",
           "quantity": 12,
-          "value": 9206.16,
+          "value": 9256.2,
           "avg_price": 761.89,
-          "current_price": 767.18,
-          "profit": 63.48,
+          "current_price": 771.35,
+          "profit": 113.52,
           "profit_krw": -27228.547617187498,
-          "profit_rate": 0.69,
+          "profit_rate": 1.24,
           "currency": "USD",
-          "live_price": 767.18,
+          "live_price": 771.35,
           "mark_to_market": true,
           "name": "SS SPDR S&P 500 TRUST"
         }
@@ -149,9 +149,9 @@
         "signal": "\ud83d\udfe1 Bullish (3/4)",
         "regime": ""
       },
-      "stale_hours": 233.74864108622074,
+      "stale_hours": 247.99625619371733,
       "timestamp": "2026-09-15T22:30:24.608895",
-      "unrealized_profit": 63.48,
+      "unrealized_profit": 113.52,
       "realized_profit_ytd": 1379.86,
       "realized_trades": 21,
       "wins_ytd": 13,
@@ -160,10 +160,10 @@
       "mdd_pct": null,
       "realized_source": "kis_overseas",
       "cycles_ytd": 21,
-      "total_pl_ytd": 1443.34,
-      "profit_rate_ytd_pct": 13.5,
-      "unrealized_drift_at_mtm": 83.52,
-      "stale_weekday_hours": 185.75,
+      "total_pl_ytd": 1493.38,
+      "profit_rate_ytd_pct": 13.97,
+      "unrealized_drift_at_mtm": 133.56,
+      "stale_weekday_hours": 193.49,
       "is_stale": true,
       "stale_limit_hours": 36.0,
       "profit_rate_basis": "budget",
@@ -183,34 +183,34 @@
       "name": "JD Strategy",
       "currency": "USD",
       "mode": "live",
-      "value": 26715.52,
-      "cost_basis": 26622.03,
-      "cash": 8772.15848991115,
-      "profit": 93.49,
+      "value": 29968.96,
+      "cost_basis": 29775.53,
+      "cash": 5577.760803035161,
+      "profit": 193.43,
       "holdings": [
         {
           "ticker": "AAPL",
           "quantity": 10,
-          "value": 3359.2,
+          "value": 3410.7,
           "avg_price": 335.07815,
-          "current_price": 335.91999999999996,
-          "profit": 8.42,
-          "profit_rate": 0.25,
-          "profit_krw": 7678.747435791016,
-          "live_price": 335.91999999999996,
+          "current_price": 341.07,
+          "profit": 59.92,
+          "profit_rate": 1.79,
+          "profit_krw": 9918.104099121094,
+          "live_price": 341.07,
           "mark_to_market": true,
           "name": "\uc560\ud50c"
         },
         {
           "ticker": "NVDA",
-          "quantity": 104,
-          "value": 23356.32,
-          "avg_price": 223.76203,
-          "current_price": 224.57999999999998,
-          "profit": 85.07,
-          "profit_rate": 0.37,
-          "profit_krw": -144556.32852865334,
-          "live_price": 224.57999999999998,
+          "quantity": 118,
+          "value": 26558.26,
+          "avg_price": 223.93855694915254,
+          "current_price": 225.07,
+          "profit": 133.51,
+          "profit_rate": 0.51,
+          "profit_krw": 203322.52718782227,
+          "live_price": 225.07,
           "mark_to_market": true,
           "name": "\uc5d4\ube44\ub514\uc544"
         }
@@ -222,9 +222,9 @@
         "regime": "EASING",
         "is_holding": true
       },
-      "stale_hours": 17.735335786475076,
-      "timestamp": "2026-09-24T22:31:11.007993",
-      "unrealized_profit": 93.49,
+      "stale_hours": 7.986083544890086,
+      "timestamp": "2026-09-25T22:31:00.713759",
+      "unrealized_profit": 193.43,
       "realized_profit_ytd": -893.92,
       "realized_trades": 26,
       "wins_ytd": 7,
@@ -233,10 +233,10 @@
       "mdd_pct": null,
       "realized_source": "kis_overseas",
       "cycles_ytd": 26,
-      "total_pl_ytd": -800.43,
-      "profit_rate_ytd_pct": -2.4,
-      "unrealized_drift_at_mtm": 193.64,
-      "stale_weekday_hours": 17.74,
+      "total_pl_ytd": -700.49,
+      "profit_rate_ytd_pct": -2.1,
+      "unrealized_drift_at_mtm": 36.08,
+      "stale_weekday_hours": 1.48,
       "is_stale": false,
       "stale_limit_hours": 36.0,
       "profit_rate_basis": "budget",
@@ -256,21 +256,21 @@
       "name": "Dual Momentum",
       "currency": "USD",
       "mode": "live",
-      "value": 20273.0,
+      "value": 20478.64,
       "cost_basis": 19995.56,
-      "cash": 3241.25,
-      "profit": 277.44,
+      "cash": 0.0,
+      "profit": 483.08,
       "holdings": [
         {
           "ticker": "EFA",
           "quantity": 194,
-          "value": 20273.0,
+          "value": 20478.64,
           "avg_price": 103.0699,
-          "profit": 277.44,
+          "profit": 483.08,
           "currency": "USD",
-          "profit_rate": 1.39,
-          "current_price": 104.5,
-          "live_price": 104.5,
+          "profit_rate": 2.42,
+          "current_price": 105.56,
+          "live_price": 105.56,
           "mark_to_market": true,
           "name": "ISHARES MSCI EAFE"
         }
@@ -280,9 +280,9 @@
         "mode_label": "offensive",
         "rebalance_day": false
       },
-      "stale_hours": 17.728335985210208,
-      "timestamp": "2026-09-24T22:31:37.707513",
-      "unrealized_profit": 277.44,
+      "stale_hours": 7.9795056975550125,
+      "timestamp": "2026-09-25T22:31:24.911612",
+      "unrealized_profit": 483.08,
       "realized_profit_ytd": 171.31,
       "realized_trades": 1,
       "wins_ytd": 1,
@@ -291,10 +291,10 @@
       "mdd_pct": null,
       "realized_source": "kis_overseas",
       "cycles_ytd": 1,
-      "total_pl_ytd": 448.75,
-      "profit_rate_ytd_pct": 1.34,
-      "unrealized_drift_at_mtm": 11.64,
-      "stale_weekday_hours": 17.73,
+      "total_pl_ytd": 654.39,
+      "profit_rate_ytd_pct": 1.96,
+      "unrealized_drift_at_mtm": 83.42,
+      "stale_weekday_hours": 1.48,
       "is_stale": false,
       "stale_limit_hours": 36.0,
       "profit_rate_basis": "budget",
@@ -413,118 +413,118 @@
         "unrealized_drift_at_mtm": 23260.0
       },
       "us": {
-        "value": 16834.57,
+        "value": 16813.93,
         "cost_basis": 17111.2985,
-        "profit": -276.73,
+        "profit": -297.37,
         "holdings": [
           {
             "ticker": "CPER",
             "quantity": 35,
-            "value": 1422.75,
+            "value": 1421.35,
             "avg_price": 39.9391,
-            "current_price": 40.65,
-            "profit": 24.88,
-            "profit_rate": 1.78,
+            "current_price": 40.61,
+            "profit": 23.48,
+            "profit_rate": 1.68,
             "currency": "USD",
-            "live_price": 40.65,
+            "live_price": 40.61,
             "mark_to_market": true,
             "name": "UNITED STATES COPPER"
           },
           {
             "ticker": "GDX",
             "quantity": 31,
-            "value": 2862.85,
+            "value": 2878.97,
             "avg_price": 95.72380000000001,
-            "current_price": 92.35,
-            "profit": -104.59,
-            "profit_rate": -3.52,
+            "current_price": 92.86999999999999,
+            "profit": -88.47,
+            "profit_rate": -2.98,
             "currency": "USD",
-            "live_price": 92.35,
+            "live_price": 92.86999999999999,
             "mark_to_market": true,
             "name": "VANECK GOLD MINERS"
           },
           {
             "ticker": "GLD",
             "quantity": 7,
-            "value": 2741.83,
+            "value": 2753.87,
             "avg_price": 399.05879999999996,
-            "current_price": 391.69,
-            "profit": -51.58,
-            "profit_rate": -1.85,
+            "current_price": 393.40999999999997,
+            "profit": -39.54,
+            "profit_rate": -1.42,
             "currency": "USD",
-            "live_price": 391.69,
+            "live_price": 393.40999999999997,
             "mark_to_market": true,
             "name": "SPDR GOLD SHARES"
           },
           {
             "ticker": "GLTR",
             "quantity": 12,
-            "value": 2321.28,
+            "value": 2335.56,
             "avg_price": 198.216,
-            "current_price": 193.44000000000003,
-            "profit": -57.31,
-            "profit_rate": -2.41,
+            "current_price": 194.63,
+            "profit": -43.03,
+            "profit_rate": -1.81,
             "currency": "USD",
-            "live_price": 193.44000000000003,
+            "live_price": 194.63,
             "mark_to_market": true,
             "name": "ABERDEEN STANDARD PHYSICAL PRECIOUS METALS BASKET SHARES"
           },
           {
             "ticker": "SIL",
             "quantity": 29,
-            "value": 2637.84,
+            "value": 2655.24,
             "avg_price": 94.4019,
-            "current_price": 90.96000000000001,
-            "profit": -99.82,
-            "profit_rate": -3.65,
+            "current_price": 91.55999999999999,
+            "profit": -82.42,
+            "profit_rate": -3.01,
             "currency": "USD",
-            "live_price": 90.96000000000001,
+            "live_price": 91.55999999999999,
             "mark_to_market": true,
             "name": "GLOBAL X SILVER MINERS"
           },
           {
             "ticker": "SLV",
             "quantity": 31,
-            "value": 1786.22,
+            "value": 1802.34,
             "avg_price": 58.3785,
-            "current_price": 57.62,
-            "profit": -23.51,
-            "profit_rate": -1.3,
+            "current_price": 58.14,
+            "profit": -7.39,
+            "profit_rate": -0.41,
             "currency": "USD",
-            "live_price": 57.62,
+            "live_price": 58.14,
             "mark_to_market": true,
             "name": "ISHARES SILVER TRUST"
           },
           {
             "ticker": "USO",
             "quantity": 20,
-            "value": 3061.8,
+            "value": 2966.6,
             "avg_price": 151.32999999999998,
-            "current_price": 153.09,
-            "profit": 35.2,
-            "profit_rate": 1.16,
+            "current_price": 148.32999999999998,
+            "profit": -60.0,
+            "profit_rate": -1.98,
             "currency": "USD",
-            "live_price": 153.09,
+            "live_price": 148.32999999999998,
             "mark_to_market": true,
             "name": "UNITED STATES OIL"
           }
         ],
         "regime": {
-          "USO": "BULL",
           "URA": "BEAR",
           "FTGC": "BULL",
-          "DBA": "BULL",
+          "DBA": "NEUTRAL",
           "GLD": "NEUTRAL",
           "SLV": "NEUTRAL",
           "GDX": "NEUTRAL",
           "SIL": "NEUTRAL",
           "GLTR": "NEUTRAL",
-          "CPER": "NEUTRAL"
+          "CPER": "NEUTRAL",
+          "USO": "BULL"
         },
-        "heat": 0.05944678253376871,
-        "dd": -0.1794675557813032,
+        "heat": 0.060210577910691926,
+        "dd": -0.18987633957406688,
         "open_positions": 7,
-        "unrealized_profit": -276.73,
+        "unrealized_profit": -297.37,
         "realized_profit_ytd": -271.86,
         "realized_trades": 22,
         "wins_ytd": 10,
@@ -533,9 +533,9 @@
         "mdd_pct": null,
         "realized_source": "kis_overseas",
         "cycles_ytd": 22,
-        "total_pl_ytd": -548.59,
-        "profit_rate_ytd_pct": -1.64,
-        "unrealized_drift_at_mtm": 75.42
+        "total_pl_ytd": -569.23,
+        "profit_rate_ytd_pct": -1.71,
+        "unrealized_drift_at_mtm": 50.23
       },
       "holdings": [
         {
@@ -603,77 +603,77 @@
         {
           "ticker": "CPER",
           "quantity": 35,
-          "value": 1418.725,
+          "value": 1418.9,
           "avg_price": 39.9391,
-          "current_price": 40.53499984741211,
-          "profit": 20.85649465942371,
-          "profit_rate": 1.4920212208390016,
+          "current_price": 40.650001525878906,
+          "profit": 24.8815534057616,
+          "profit_rate": 1.7799638095973735,
           "currency": "USD",
           "name": "UNITED STATES COPPER"
         },
         {
           "ticker": "GDX",
           "quantity": 31,
-          "value": 2859.75,
+          "value": 2856.34,
           "avg_price": 95.72380000000001,
-          "current_price": 92.0,
-          "profit": -115.43780000000035,
-          "profit_rate": -3.8901506208487424,
+          "current_price": 92.04000091552734,
+          "profit": -114.1977716186527,
+          "profit_rate": -3.848362773388303,
           "currency": "USD",
           "name": "VANECK GOLD MINERS"
         },
         {
           "ticker": "GLD",
           "quantity": 7,
-          "value": 2743.16,
+          "value": 2744.0,
           "avg_price": 399.05879999999996,
-          "current_price": 391.82000732421875,
-          "profit": -50.67154873046849,
-          "profit_rate": -1.8139664319597015,
+          "current_price": 392.0,
+          "profit": -49.41159999999974,
+          "profit_rate": -1.7688621325979925,
           "currency": "USD",
           "name": "SPDR GOLD SHARES"
         },
         {
           "ticker": "GLTR",
           "quantity": 12,
-          "value": 2316.0,
+          "value": 2322.6648,
           "avg_price": 198.216,
-          "current_price": 193.0,
-          "profit": -62.5920000000001,
-          "profit_rate": -2.631472736812368,
+          "current_price": 193.55540466308594,
+          "profit": -55.92714404296885,
+          "profit_rate": -2.3512710058290254,
           "currency": "USD",
           "name": "ABERDEEN STANDARD PHYSICAL PRECIOUS METALS BASKET SHARES"
         },
         {
           "ticker": "SIL",
           "quantity": 29,
-          "value": 2630.59,
+          "value": 2631.75,
           "avg_price": 94.4019,
-          "current_price": 90.70999908447266,
-          "profit": -107.0651265502929,
-          "profit_rate": -3.9108332729821504,
+          "current_price": 90.75,
+          "profit": -105.90509999999993,
+          "profit_rate": -3.8684602746343,
           "currency": "USD",
           "name": "GLOBAL X SILVER MINERS"
         },
         {
           "ticker": "SLV",
           "quantity": 31,
-          "value": 1774.285,
+          "value": 1790.4174,
           "avg_price": 58.3785,
-          "current_price": 57.22249984741211,
-          "profit": -35.83600473022469,
-          "profit_rate": -1.9801813211848374,
+          "current_price": 57.744998931884766,
+          "profit": -19.638533111572343,
+          "profit_rate": -1.0851616059255331,
           "currency": "USD",
           "name": "ISHARES SILVER TRUST"
         },
         {
           "ticker": "USO",
           "quantity": 20,
-          "value": 3026.0,
+          "value": 2998.8,
           "avg_price": 151.32999999999998,
-          "current_price": 151.25999450683594,
-          "profit": -1.4001098632809317,
-          "profit_rate": -0.04626015539817008,
+          "current_price": 149.9600067138672,
+          "profit": -27.39986572265593,
+          "profit_rate": -0.9053018477055419,
           "currency": "USD",
           "name": "UNITED STATES OIL"
         }
@@ -746,11 +746,11 @@
           }
         }
       },
-      "stale_hours": 17.719694432285095,
+      "stale_hours": 7.972171169718107,
       "realized_trades": 114,
       "cycles_ytd": 114,
       "mdd_pct": null,
-      "stale_weekday_hours": 17.72,
+      "stale_weekday_hours": 1.47,
       "is_stale": false,
       "stale_limit_hours": 36.0,
       "backtest_kr": {
@@ -779,7 +779,7 @@
       "mode": "live",
       "value": 0,
       "cost_basis": 0,
-      "cash": 198.0,
+      "cash": 0.0,
       "profit": 0,
       "holdings": [],
       "budget": 33373.76,
@@ -787,8 +787,8 @@
         "regime": "BEARISH",
         "exposure": "REDUCE_EXPOSURE",
         "confidence": 60,
-        "breadth_score": 34.4,
-        "uptrend_score": 31.2,
+        "breadth_score": 28.6,
+        "uptrend_score": 39.6,
         "top_probability": 0,
         "ftd_active": false,
         "screener_candidates": [
@@ -976,8 +976,8 @@
         "trend_pass_count": 20,
         "vcp_count": 6
       },
-      "stale_hours": 17.71666953265667,
-      "timestamp": "2026-09-24T22:32:19.710963",
+      "stale_hours": 7.965451633731524,
+      "timestamp": "2026-09-25T22:32:15.508901",
       "unrealized_profit": 0,
       "realized_profit_ytd": -216.81,
       "realized_trades": 1,
@@ -989,7 +989,7 @@
       "cycles_ytd": 1,
       "total_pl_ytd": -216.81,
       "profit_rate_ytd_pct": -0.65,
-      "stale_weekday_hours": 17.72,
+      "stale_weekday_hours": 1.46,
       "is_stale": false,
       "stale_limit_hours": 36.0,
       "profit_rate_basis": "budget",
@@ -1492,14 +1492,14 @@
       "currency": "KRW",
       "mode": "testing",
       "account": "toss",
-      "value": 108337.6,
+      "value": 108623.2,
       "cost_basis": 97974.4,
       "budget": 2720000.0,
-      "unrealized_profit": 10363.2,
+      "unrealized_profit": 10648.8,
       "realized_profit_ytd": 0.0,
       "realized_trades": 0,
-      "total_pl_ytd": 10363.2,
-      "profit_rate_ytd_pct": 10.58,
+      "total_pl_ytd": 10648.8,
+      "profit_rate_ytd_pct": 10.87,
       "holdings": [
         {
           "ticker": "TQQQ",
@@ -1508,26 +1508,26 @@
           "quantity": 1.0,
           "currency": "USD",
           "avg_price": 72.04,
-          "current_price": 79.66,
-          "value": 79.66,
-          "value_krw": 108337.6,
-          "profit": 7.62,
-          "profit_rate": 10.58,
+          "current_price": 79.87,
+          "value": 79.87,
+          "value_krw": 108623.2,
+          "profit": 7.83,
+          "profit_rate": 10.87,
           "source": "toss",
           "ledger_qty": 1.0
         }
       ],
-      "last_run": "2026-09-25T07:15:06",
+      "last_run": "2026-09-25T23:33:26",
       "extra": {
         "note": "\uac80\uc99d \uac00\ub3d9(testing) \u2014 \uc2e4\uc81c \ub3c8, \uc2e4\uc81c \uccb4\uacb0. \ub2e4\ub9cc QQQ \ucf54\uc5b4 \uc5c6\uc774 \uc2ac\ub9ac\ube0c \ub2e8\ub3c5\uc774\ub77c \ubc31\ud14c\uc2a4\ud2b8\ub85c \uc2b9\uaca9 \uac8c\uc774\ud2b8\ub97c \ud1b5\uacfc\ud55c \uad6c\uc131\uc774 \uc544\ub2c8\ub2e4. \uc9c0\uae08 \ubaa9\uc801\uc740 \uc218\uc775\uc774 \uc544\ub2c8\ub77c \uccb4\uacb0 \uc2ac\ub9ac\ud53c\uc9c0 \uc2e4\uce21\uc774\ub2e4.",
         "status": "\ubcf4\uc720 \uc911 (\ub2f9\uc77c \uccad\uc0b0 \uc608\uc815)",
         "budget_usd": 2000.0,
-        "cash_usd": 34.77,
+        "cash_usd": 50.47,
         "position_usd": 72.04,
         "ticker_count": 1,
         "ledger_position_count": 1,
         "unmatched_symbols": [],
-        "ledger_updated": "2026-09-25T07:15:06",
+        "ledger_updated": "2026-09-25T23:33:26",
         "schedule_kst": "\uc9c4\uc785 22:33/23:33 (\uc6d4-\uae08) \u00b7 \uccad\uc0b0 04:50/05:50 (\ud654-\ud1a0)",
         "caveat": "Value is marked from the Toss snapshot, so it is only as fresh as that snapshot. A flat book is NORMAL \u2014 every position is closed the same session."
       },
@@ -1550,21 +1550,21 @@
       "name": "Hands-on / Manual",
       "currency": "KRW",
       "mode": "manual",
-      "value": 195579177.68,
+      "value": 196887688.46,
       "holdings": [
         {
           "ticker": "GOOGL",
           "name": "\uc54c\ud30c\ubcb3 A",
-          "qty": 296.0,
-          "quantity": 296.0,
+          "qty": 298.0,
+          "quantity": 298.0,
           "currency": "USD",
-          "current_price": 342.85,
-          "value": 101483.6,
-          "value_krw": 138017696.0,
-          "cost_krw": 148855097.73,
-          "pl_krw": -10837401.73,
-          "profit": 957.45,
-          "profit_rate": -7.28,
+          "current_price": 344.35,
+          "value": 102616.3,
+          "value_krw": 139558168.0,
+          "cost_krw": 149877554.81,
+          "pl_krw": -10319386.81,
+          "profit": 1399.66,
+          "profit_rate": -6.89,
           "source": "toss",
           "bot_claimed_qty": 0.0
         },
@@ -1587,32 +1587,32 @@
         {
           "ticker": "TSLA",
           "name": "\ud14c\uc2ac\ub77c",
-          "qty": 25.379145,
-          "quantity": 25.379145,
+          "qty": 25.512033,
+          "quantity": 25.512033,
           "currency": "USD",
-          "current_price": 381.11,
-          "value": 9672.25,
-          "value_krw": 13154254.49,
-          "cost_krw": 14733502.55,
-          "pl_krw": -1579248.06,
-          "profit": -277.71,
-          "profit_rate": -10.72,
+          "current_price": 372.65,
+          "value": 9507.06,
+          "value_krw": 12929600.37,
+          "cost_krw": 14807540.13,
+          "pl_krw": -1877939.76,
+          "profit": -492.9,
+          "profit_rate": -12.68,
           "source": "toss",
           "bot_claimed_qty": 0.0
         },
         {
           "ticker": "NKE",
           "name": "\ub098\uc774\ud0a4",
-          "qty": 185.519662,
-          "quantity": 185.519662,
+          "qty": 186.925001,
+          "quantity": 186.925001,
           "currency": "USD",
-          "current_price": 36.08,
-          "value": 6693.55,
-          "value_krw": 9103227.19,
-          "cost_krw": 12586454.25,
-          "pl_krw": -3483227.06,
-          "profit": -1806.45,
-          "profit_rate": -27.67,
+          "current_price": 35.78,
+          "value": 6688.18,
+          "value_krw": 9095920.09,
+          "cost_krw": 12660492.24,
+          "pl_krw": -3564572.15,
+          "profit": -1861.82,
+          "profit_rate": -28.16,
           "source": "toss",
           "bot_claimed_qty": 0.0
         },
@@ -1633,9 +1633,9 @@
           "bot_claimed_qty": 0.0
         }
       ],
-      "cost_basis": 217494999.53,
-      "total_pl_ytd": -21915821.85,
-      "profit_rate_ytd_pct": -10.08,
+      "cost_basis": 218665532.18,
+      "total_pl_ytd": -21777843.72,
+      "profit_rate_ytd_pct": -9.96,
       "extra": {
         "note": "Broker positions attributed to no bot: KIS and Toss holdings minus every bot's claimed shares.",
         "ticker_count": 5,
@@ -1644,11 +1644,11 @@
         "kis_unrealized_krw": 0.0,
         "kis_unclaimed_krw": 0.0,
         "kis_unclaimed": {},
-        "toss_krw": 195579177.68,
+        "toss_krw": 196887688.46,
         "toss_ticker_count": 5,
-        "toss_bot_claimed_krw": 24098473.6,
-        "toss_cost_krw": 217494999.53,
-        "toss_pl_krw": -21915821.85,
+        "toss_bot_claimed_krw": 24098759.2,
+        "toss_cost_krw": 218665532.18,
+        "toss_pl_krw": -21777843.72,
         "caveat": "The NMF2 sleeve inside Toss is now its own bot card and is excluded here. P/L uses the broker's own purchase amounts (Toss purchaseAmount / KIS profit), pro-rated by the share no bot claims."
       },
       "kill_state": "ok",
@@ -3411,7 +3411,7 @@
       ],
       [
         "2026-09-25",
-        1962942.4
+        2030996.8
       ]
     ],
     "jd_strategy": [
@@ -3997,7 +3997,7 @@
       ],
       [
         "2026-09-25",
-        -1088584.8
+        -952666.4
       ]
     ],
     "dual_momentum": [
@@ -4583,7 +4583,7 @@
       ],
       [
         "2026-09-25",
-        610300.0
+        889970.4
       ]
     ],
     "hybrid_vb_kr": [
@@ -5755,7 +5755,7 @@
       ],
       [
         "2026-09-25",
-        -746082.4
+        -774152.8
       ]
     ],
     "claude_bot": [
@@ -6609,7 +6609,7 @@
       ],
       [
         "2026-09-25",
-        195579177.68
+        196887688.46
       ]
     ]
   },
@@ -7783,7 +7783,7 @@
       ],
       [
         "2026-09-25",
-        -550678.2
+        -95105.4
       ]
     ],
     "total": [
@@ -8369,12 +8369,12 @@
       ],
       [
         "2026-09-25",
-        -1611817.64
+        -1156244.84
       ]
     ]
   },
   "realized_pl": {
-    "_updated": "2026-09-25T05:03:05+09:00",
+    "_updated": "2026-09-26T05:03:07+09:00",
     "_year": 2026,
     "_source_mode": "both",
     "_total_krw": -2190152.04,
@@ -8486,6 +8486,30 @@
     ]
   },
   "feed": [
+    {
+      "type": "session",
+      "title": "Session Complete",
+      "body": "Done.",
+      "source": "VB_Strategy",
+      "timestamp": "2026-09-26 05:01:08",
+      "bot": "btc_vb"
+    },
+    {
+      "type": "signal",
+      "title": "NO SIGNAL \u2014 Bearish",
+      "body": "Step 3: Close < MA(5) \u2192 NO SIGNAL (bearish). Sitting in cash.",
+      "source": "VB_Strategy",
+      "timestamp": "2026-09-26 05:01:07",
+      "bot": "btc_vb"
+    },
+    {
+      "type": "session",
+      "title": "Daily Run Started",
+      "body": "BTC VB Strategy \u2014 Daily Run 2026-09-26",
+      "source": "VB_Strategy",
+      "timestamp": "2026-09-26 05:00:06",
+      "bot": "btc_vb"
+    },
     {
       "type": "session",
       "title": "Session Complete",
@@ -8701,39 +8725,15 @@
       "source": "VB_Strategy",
       "timestamp": "2026-09-21 05:00:06",
       "bot": "btc_vb"
-    },
-    {
-      "type": "signal",
-      "title": "No Breakout Today",
-      "body": "No breakout within 1433 minutes. Target was \u20a9112,212,086",
-      "source": "VB_Strategy",
-      "timestamp": "2026-09-21 04:54:31",
-      "bot": "btc_vb"
-    },
-    {
-      "type": "session",
-      "title": "Session Complete",
-      "body": "Done.",
-      "source": "VB_Strategy",
-      "timestamp": "2026-09-21 04:54:31",
-      "bot": "btc_vb"
-    },
-    {
-      "type": "signal",
-      "title": "LONG Signal Active",
-      "body": "Step 3: Close \u2265 MA(5) \u2192 LONG signal active.",
-      "source": "VB_Strategy",
-      "timestamp": "2026-09-20 05:01:22",
-      "bot": "btc_vb"
     }
   ],
-  "mark_to_market_at": "2026-09-25 16:15 KST",
+  "mark_to_market_at": "2026-09-26 06:30 KST",
   "accounts": {
     "toss": {
-      "total_krw": 219725183.68,
-      "cash_krw": 47532.4,
-      "holdings_krw": 219677651.28,
-      "as_of": "2026-09-25T16:15:17+09:00",
+      "total_krw": 221055140.66,
+      "cash_krw": 68693.0,
+      "holdings_krw": 220986447.66,
+      "as_of": "2026-09-26T06:30:10+09:00",
       "stale": false,
       "usable": true,
       "age_hours": 0.0,
@@ -8754,21 +8754,21 @@
             "rule": "T+2 business days (Korean settlement cycle)"
           },
           "USD": {
-            "buy_usd": 777.465694,
+            "buy_usd": 1567.960204,
             "sell_usd": 0.0,
-            "net_krw": 1057353.34,
+            "net_krw": 2132425.88,
             "fx_rate": 1360.0,
             "rule": "T+2 business days (inferred; API exposes no \uc608\uc218\uae08)"
           }
         },
-        "unsettled_buy_krw": 1057353.34,
+        "unsettled_buy_krw": 2132425.88,
         "unsettled_sell_krw": 0.0,
-        "net_krw": 1057353.34,
+        "net_krw": 2132425.88,
         "open_buy_reserved_krw": 0.0,
-        "deposit_krw": 1104885.74,
-        "app_total_krw": 220782537.03,
+        "deposit_krw": 2201118.88,
+        "app_total_krw": 223187566.54,
         "settles_on": "2026-09-28",
-        "entry_count": 3,
+        "entry_count": 6,
         "entries": [
           {
             "symbol": "GOOGL",
@@ -8802,21 +8802,54 @@
             "filled_at": "2026-09-24T22:49:34.232+09:00",
             "trade_date": "2026-09-24",
             "settles_on": "2026-09-28"
+          },
+          {
+            "symbol": "GOOGL",
+            "side": "BUY",
+            "currency": "USD",
+            "amount_native": 690.4948,
+            "fees_native": 0.0,
+            "cash_delta_native": -690.4948,
+            "filled_at": "2026-09-25T22:40:12.592+09:00",
+            "trade_date": "2026-09-25",
+            "settles_on": "2026-09-29"
+          },
+          {
+            "symbol": "NKE",
+            "side": "BUY",
+            "currency": "USD",
+            "amount_native": 49.999994,
+            "fees_native": 0.0,
+            "cash_delta_native": -49.999994,
+            "filled_at": "2026-09-25T23:13:08.479+09:00",
+            "trade_date": "2026-09-25",
+            "settles_on": "2026-09-29"
+          },
+          {
+            "symbol": "TSLA",
+            "side": "BUY",
+            "currency": "USD",
+            "amount_native": 49.999716,
+            "fees_native": 0.0,
+            "cash_delta_native": -49.999716,
+            "filled_at": "2026-09-25T22:50:05.249+09:00",
+            "trade_date": "2026-09-25",
+            "settles_on": "2026-09-29"
           }
         ]
       },
       "source": "server-cron"
     },
     "kis": {
-      "total_krw": 115826959.4,
-      "cash_krw": 13237869.4,
-      "stock_krw": 102589090.0,
-      "as_of": "2026-09-25 16:15 KST",
+      "total_krw": 120261429.8,
+      "cash_krw": 12928007.0,
+      "stock_krw": 107333422.8,
+      "as_of": "2026-09-26 06:30 KST",
       "stale": false,
       "kr_stock_krw": 3269310.0,
-      "us_stock_krw": 99319780.0,
+      "us_stock_krw": 104064112.8,
       "krw_cash_krw": 12928007.0,
-      "usd_cash_usd": 227.84,
+      "usd_cash_usd": 0.0,
       "unsettled_us_sell_krw": 0.0,
       "holdings_count": 13,
       "cash_basis": "prvs_rcdl_excc_amt (\uac00\uc218\ub3c4\uc815\uc0b0\uae08\uc561, D+2) + USD \uc8fc\ubb38\uac00\ub2a5\uae08\uc561",
@@ -8824,27 +8857,27 @@
         "usable": true,
         "basis": "US unsettled sells netted against unsettled buys (ustl_sll_amt_smtl - ustl_buy_amt_smtl, clamped at 0); KR cash is already D+2",
         "unsettled_us_sell_gross_krw": 0.0,
-        "unsettled_us_buy_krw": 24996364.0,
+        "unsettled_us_buy_krw": 29308707.0,
         "net_applied_krw": 0.0,
         "double_count_avoided_krw": 0.0,
-        "broker_total_krw": 110457987.0,
-        "gap_vs_broker_krw": 5368972.4,
-        "message": "KIS app shows \u20a9110,457,987 \u2014 this tile differs by +5,368,972"
+        "broker_total_krw": 110889977.0,
+        "gap_vs_broker_krw": 9371452.8,
+        "message": "KIS app shows \u20a9110,889,977 \u2014 this tile differs by +9,371,453"
       }
     },
     "upbit": {
       "total_krw": 10744934.0,
       "cash_krw": 10744934.0,
       "position_krw": 0.0,
-      "as_of": "2026-09-25",
+      "as_of": "2026-09-26",
       "stale": false,
       "is_holding": false,
-      "age_days": 0.68
+      "age_days": 0.27
     },
     "cma": {
-      "total_krw": 180121143.0,
-      "cash_krw": 180121143.0,
-      "krw_cash_krw": 180121143.0,
+      "total_krw": 178132921.0,
+      "cash_krw": 178132921.0,
+      "krw_cash_krw": 178132921.0,
       "stock_krw": 0.0,
       "label": "KIS CMA"
     }
@@ -9054,12 +9087,12 @@
   },
   "allocation": {
     "as_of": "2026-09-25T08:20:07",
-    "age_hours": 7.92,
+    "age_hours": 22.17,
     "stale": false,
     "applied": true,
     "applied_at": "2026-09-25T08:20:07",
     "policy_version": "v2-fleet-etf-equal-weight",
-    "capital_krw": 526418220.08,
+    "capital_krw": 530194425.46,
     "capital_as_of": "2026-09-25 06:30 KST",
     "capital_basis": "measured+external",
     "fx": 1360.0,
@@ -9073,8 +9106,8 @@
       "fx": 1360.0
     },
     "level0": {
-      "manual_krw": 195579177.68,
-      "residual_krw": 330839042.4
+      "manual_krw": 196887688.46,
+      "residual_krw": 333306737.0
     },
     "level1": {
       "X": 0.8,
@@ -9089,9 +9122,9 @@
     },
     "level2": {
       "N": 5,
-      "exposure_budget_krw": 421134576.06,
-      "per_bot_krw": 45111079.68,
-      "fleet_pool_krw": 225555398.38,
+      "exposure_budget_krw": 424155540.37,
+      "per_bot_krw": 45453570.38,
+      "fleet_pool_krw": 227267851.91,
       "fleet_recalled": false,
       "roster": [
         "jd_strategy",
@@ -9121,7 +9154,7 @@
         "drift_krw": 0.0,
         "ramped": false,
         "held_by_band": true,
-        "uncapped_krw": 45111079.68,
+        "uncapped_krw": 45453570.38,
         "limited_by": "band",
         "ramp_factor": null,
         "runs_to_target": null,
@@ -9141,7 +9174,7 @@
         "drift_krw": 0.0,
         "ramped": false,
         "held_by_band": true,
-        "uncapped_krw": 45111079.68,
+        "uncapped_krw": 45453570.38,
         "limited_by": "band",
         "ramp_factor": null,
         "runs_to_target": null,
@@ -9156,12 +9189,12 @@
         "why": "",
         "currency": "USD",
         "current_krw": 45388313.6,
-        "held_krw": 27571280.0,
+        "held_krw": 27850950.4,
         "target_krw": 45388313.6,
         "drift_krw": 0.0,
         "ramped": false,
         "held_by_band": true,
-        "uncapped_krw": 45111079.68,
+        "uncapped_krw": 45453570.38,
         "limited_by": "band",
         "ramp_factor": null,
         "runs_to_target": null,
@@ -9176,12 +9209,12 @@
         "why": "",
         "currency": "USD",
         "current_krw": 45388313.6,
-        "held_krw": 22895015.2,
+        "held_krw": 22866944.8,
         "target_krw": 45388313.6,
         "drift_krw": 0.0,
         "ramped": false,
         "held_by_band": true,
-        "uncapped_krw": 45111079.68,
+        "uncapped_krw": 45453570.38,
         "limited_by": "band",
         "ramp_factor": null,
         "runs_to_target": null,
@@ -9196,12 +9229,12 @@
         "why": "",
         "currency": "USD",
         "current_krw": 45388313.6,
-        "held_krw": 36333107.2,
+        "held_krw": 40757785.6,
         "target_krw": 45388313.6,
         "drift_krw": 0.0,
         "ramped": false,
         "held_by_band": true,
-        "uncapped_krw": 45111079.68,
+        "uncapped_krw": 45453570.38,
         "limited_by": "band",
         "ramp_factor": null,
         "runs_to_target": null,
@@ -9292,7 +9325,7 @@
         "why": "killed(mdd)",
         "currency": "USD",
         "current_krw": 14540004.8,
-        "held_krw": 12520377.6,
+        "held_krw": 12588432.0,
         "target_krw": 0.0,
         "drift_krw": -14540004.8,
         "ramped": false,
@@ -9311,7 +9344,7 @@
         "why": "testing",
         "currency": "USD",
         "current_krw": 2720000.0,
-        "held_krw": 108337.6,
+        "held_krw": 108623.2,
         "target_krw": 0.0,
         "drift_krw": -2720000.0,
         "ramped": false,
@@ -9325,32 +9358,32 @@
     ]
   },
   "totals": {
-    "investments_krw": 526418220.08,
-    "bots_krw": 126687563.6,
-    "manual_krw": 195579177.68,
-    "cash_krw": 204151478.8,
+    "investments_krw": 530194425.46,
+    "bots_krw": 131432182.0,
+    "manual_krw": 196887688.46,
+    "cash_krw": 201874555.0,
     "split_pct": {
-      "bots": 24.07,
-      "manual": 37.15,
-      "cash": 38.78
+      "bots": 24.79,
+      "manual": 37.13,
+      "cash": 38.08
     },
     "reconciliation_gap_krw": 0.0,
     "reconciliation_gap_pct": 0.0,
     "reconciliation_warning": false,
-    "bots_cards_krw": 142853782.72,
-    "unreported_bot_positions_krw": 0.0,
+    "bots_cards_krw": 147598401.12,
+    "unreported_bot_positions_krw": -0.0,
     "bots_breakdown": {
-      "kis_krw": 102589090.0,
+      "kis_krw": 107333422.8,
       "upbit_krw": 0.0,
-      "toss_krw": 24098473.6
+      "toss_krw": 24098759.2
     },
     "manual_breakdown": {
       "kis_krw": 0.0,
-      "toss_krw": 195579177.68
+      "toss_krw": 196887688.46
     },
     "cash_breakdown": {
-      "kis_krw": 13237869.4,
-      "toss_krw": 47532.4,
+      "kis_krw": 12928007.0,
+      "toss_krw": 68693.0,
       "upbit_idle_krw": 10744934.0
     },
     "fx_rate": 1360.0

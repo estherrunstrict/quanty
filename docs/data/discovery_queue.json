@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-09-25T16:15:37.907865+09:00",
+  "generated_at": "2026-09-26T06:30:21.366899+09:00",
   "stats": {
-    "total": 324,
-    "queued": 242,
+    "total": 325,
+    "queued": 243,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-09-25T16:15:37.907704+09:00",
+    "last_gc_at": "2026-09-26T06:30:21.366795+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -9409,6 +9409,34 @@
       "discovered": "2026-09-24",
       "matched_keywords": [
         "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.29530",
+      "source": "arxiv",
+      "title": "The Impossible Trinity of Time-Series Validation: A Conservation Law among Training Sufficiency, Test Coverage, and Temporal Causality",
+      "authors": [
+        "Jiayu Li"
+      ],
+      "abstract": "Validating a model on a time series asks for three things at once: each training run should use most of the sample (sufficiency), the test sets should together cover most of the sample (coverage), and training data should come before test data (causality). We prove that the three cannot be had together and price each one. Let $α$ be the smallest training fraction over folds, $β$ the fraction of the sample covered by tests, $Λ$ the fraction of the sample used as training data from the future of a test point, and $δ$ the distance from a test point to the nearest training point in its future. Every scheme on a sample of length $T$ satisfies $α+β\\le 1+Λ$ and $α+\\min\\{β,δ/T\\} \\le 1$, and under $β$-mixing the leakage bias at a test point is at most $2Mβ_{\\mathrm{mix}}(δ)$. In words: going beyond the causal frontier $α+β=1$ requires training on the future; that future data must sit within $(1-α)T$ of a test point; and its harm depends on its distance, not its amount. Hence expanding walk-forward is exactly the Pareto frontier of causal validation, $k$-fold cross-validation buys the most future data, and purged $k$-fold with an embargo pays in distance instead, which is cheap when the process forgets quickly but cannot repair the part of causality demanded by non-stationarity. On pure noise, shuffled 5-fold reports an information coefficient of $+0.32$, while contiguous 5-fold, using the same amount of future data, reports $+0.004$.",
+      "categories": [
+        "cs.LG",
+        "q-fin.ST",
+        "stat.ML"
+      ],
+      "url": "https://arxiv.org/abs/2609.29530v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.29530v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-02",
+      "discovered": "2026-09-26",
+      "matched_keywords": [
+        "walk-forward"
       ],
       "status": "queued",
       "ingested_into": null,
