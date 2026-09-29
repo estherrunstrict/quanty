@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-09-29T06:30:22.028310+09:00",
+  "generated_at": "2026-09-29T16:15:45.526468+09:00",
   "stats": {
-    "total": 328,
-    "queued": 246,
+    "total": 336,
+    "queued": 254,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-09-29T06:30:22.028203+09:00",
+    "last_gc_at": "2026-09-29T16:15:45.526361+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -9521,6 +9521,249 @@
       "doi": null,
       "year": 2026,
       "published": "2026-09-25",
+      "discovered": "2026-09-29",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.35086",
+      "source": "arxiv",
+      "title": "Retrieval-Augmented Diffusion Modeling for Stochastic Discount Factor Portfolios",
+      "authors": [
+        "Kelvin J. L. Koa",
+        "Xinyang Li",
+        "Ke-Wei Huang"
+      ],
+      "abstract": "In this work, we study portfolio optimization under the stochastic discount factor (SDF) framework by learning market state representations that capture the underlying risk structures of financial data. This is challenging due to several factors: financial markets exhibit non-stationary dynamics with shifting regimes, multimodal inputs such as price and news data often contain stochastic noise, and existing diffusion-based approaches, while effective for modeling stochastic dynamics, rely on assumptions such as isotropic Gaussian noise that fail to capture the state-dependent nature of financial uncertainty. To address these challenges, we introduce RADAR, a retrieval-augmented diffusion framework that learns market representations by conditioning on similar historical regimes. RADAR leverages retrieval to construct context-dependent noise distributions, applies conditional diffusion to denoise multimodal representations, and initializes the diffusion process using empirical statistics to reflect state-dependent uncertainty. Experiments show that RADAR achieves state-of-the-art performance on key risk-adjusted metrics while producing economically meaningful signals on asset returns and correlations.",
+      "categories": [
+        "cs.LG",
+        "q-fin.CP",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2609.35086v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.35086v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-28",
+      "discovered": "2026-09-29",
+      "matched_keywords": [
+        "factor",
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.34169",
+      "source": "arxiv",
+      "title": "From Word Counts to Context: Topic Models for Asset Pricing",
+      "authors": [
+        "Kevin Foley",
+        "Jonathan Hartadi",
+        "Shivesh Prakash",
+        "Swapnil Vatsal"
+      ],
+      "abstract": "News may reveal systematic risk, but whether its context enhances the construction of systematic risk factors is still unclear. We seek to test whether utilizing a sentence transformer represents an improvement over techniques such as Latent Dirichlet Allocation (LDA) in the coherence of topic term lists generated from unstructured text data. To test this, the same collection of unstructured text data comprising of 394,661 articles and the same downstream financial portfolio construction pipeline were applied with the text layer differing, including the length of article text each model used and how topic terms were ranked: we benchmark LDA against a frozen sentence transformer with k-means clustering. We find that the sentence transformer branch had higher observed scores both in terms of coherence (measured by NPMI) as well as financial performance (measured by Sharpe), although the available tests do not establish outperformance. Further exploratory specifications such as utilizing spherical clustering and multi-horizon exposures had an observed excess-return Sharpe of 1.03 for the combined model. We believe that there is some promise in applying context-aware techniques on unstructured news text, but stricter tests using only information available at each date and broader datasets may be required to enhance the confidence in the observed performance.",
+      "categories": [
+        "cs.CE",
+        "q-fin.PM",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2609.34169v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.34169v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-28",
+      "discovered": "2026-09-29",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.33767",
+      "source": "arxiv",
+      "title": "Taming the Greeks: Option Portfolios with Inductive Biases",
+      "authors": [
+        "Wee Ling Tan",
+        "Stephen Roberts",
+        "Stefan Zohren"
+      ],
+      "abstract": "We present an end-to-end deep learning framework for systematic options trading that directly embeds hedging behavior through explicit control of portfolio-level risk exposures. While neural networks trained to optimize risk-adjusted performance have been shown to outperform traditional rules-based strategies, such approaches remain agnostic to the sensitivities of the resulting portfolios with respect to specific underlying risk factors. We propose a general training objective that combines a performance-driven loss with a differentiable risk-sensitivity penalty, enforcing neutrality to selected risk dimensions. Unlike reinforcement learning methods that approximate optimal hedging policies via simulated market dynamics, our framework operates entirely on historical data and jointly optimizes risk-adjusted returns and targeted risk constraints in a single learning problem. We instantiate the framework on static delta-neutral straddle portfolios with the penalty directed at first-order directional exposure, and evaluate two penalty variants -- an exposure-normalized penalty and a Greek-ratio drift penalty. Empirical results on Nasdaq 100 equity options demonstrate that appropriately calibrated regularization simultaneously improves out-of-sample risk-adjusted performance relative to an unregularized baseline while reducing realized directional exposure.",
+      "categories": [
+        "q-fin.PM",
+        "cs.LG",
+        "q-fin.CP",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2609.33767v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.33767v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-27",
+      "discovered": "2026-09-29",
+      "matched_keywords": [
+        "factor",
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.32686",
+      "source": "arxiv",
+      "title": "Optimal Reinsurance-Dividend Strategy with Fixed Transaction Costs in a Regime-Switching Brownian Risk Model: A Viscosity Solution to the Impulse Control Problem",
+      "authors": [
+        "Wenyuan Wang",
+        "Zuo Quan Xu",
+        "Kaixin Yan"
+      ],
+      "abstract": "We consider a problem of optimal proportional reinsurance-dividend distribution under a Brownian risk model, where both the drift and volatility coefficients are subject to endogenous regime-switching. Dividend payments are subject to fixed transaction costs. The problem is formulated as a two-dimensional stochastic control problem, and we prove that the value function is the unique viscosity solution of the associated Hamilton-Jacobi-Bellman equation with nonlocal operator. For almost all parameter configurations, we explicitly characterize the optimal strategy that maximizes the expected total discounted dividends net of transaction costs until ruin. The optimal dividend policy is a two-barrier impulsive strategy, while the optimal reinsurance proportion is given in feedback form. Numerical examples are provided to illustrate the optimality results.",
+      "categories": [
+        "math.OC",
+        "q-fin.MF",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2609.32686v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.32686v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-26",
+      "discovered": "2026-09-29",
+      "matched_keywords": [
+        "regime",
+        "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.33799",
+      "source": "arxiv",
+      "title": "Oracle-Parametrized Constant Function Market Makers: From Price Feeds to Pricing Rules",
+      "authors": [
+        "Hamed Amini",
+        "Zachary Feinstein"
+      ],
+      "abstract": "This paper introduces oracle-parametrized automated market makers (OP-AMMs), i.e., automated market makers whose quoted price depends jointly on the pool reserves and an external oracle price. In doing so, we extend the information-agnostic AMM framework to settings, such as tokenized securities, for which price discovery occurs off-chain. Under a strict oracle-contraction condition, we show that the quoted price of any OP-AMM interpolates between the oracle price and an implicit autarkic price determined by the pool reserves. We then derive a general loss-versus-rebalancing (LVR) decomposition that separates the residual exposure to market lags from the losses induced by oracle errors. This analysis is further extended to stale, discrete-update oracles and to sandwich attacks around oracle updates. Using this framework, we find conditions under which OP-AMMs simultaneously increase local capital efficiency and reduce normalized LVR relative to information-agnostic AMMs. However, sufficiently noisy or stale oracles can reverse these gains. A counterfactual backtest using one-second SPY NBBO data is provided to demonstrate these trade-offs. In particular, we map the Pareto-efficient frontier of oracle-parametrized constant function market maker (OP-CFMM) designs across stylized oracle regimes.",
+      "categories": [
+        "q-fin.TR",
+        "q-fin.MF"
+      ],
+      "url": "https://arxiv.org/abs/2609.33799v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.33799v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-27",
+      "discovered": "2026-09-29",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.35359",
+      "source": "arxiv",
+      "title": "From Cointegration to Out-of-Sample Failure: A Pairs-Trading Case Study on PEP-KO",
+      "authors": [
+        "Davide Graziano"
+      ],
+      "abstract": "This paper examines whether a cointegration-based pairs trading strategy between PepsiCo and The Coca-Cola Company is statistically robust and economically exploitable. We first test for cointegration and estimate the spread's mean-reversion dynamics over 2013-2018, then hold these statistical parameters fixed and optimise a threshold-based trading strategy in-sample over 2018-2023. Robustness is assessed through transaction-cost and parameter sensitivity tests, walk-forward validation, and Adjusted and Deflated Sharpe Ratios. The strategy is then evaluated out-of-sample from 2023 to the present, including an analysis of time-varying hedge ratios using rolling OLS and a Kalman filter. The results show that weakening mean-reversion dynamics in the spread undermine the effectiveness of the strategy out-of-sample.",
+      "categories": [
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2609.35359v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.35359v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-28",
+      "discovered": "2026-09-29",
+      "matched_keywords": [
+        "deflated sharpe",
+        "walk-forward"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.33524",
+      "source": "arxiv",
+      "title": "EverMine: Dissecting the Self-Evolution of Research Capabilities in Long-Horizon Alpha Research",
+      "authors": [
+        "Siyuan Li",
+        "Jiangfeng Zhang",
+        "Rui Yao",
+        "Weihua Qiu",
+        "Mingyang Xu",
+        "Zixuan Yuan"
+      ],
+      "abstract": "Self-evolving agents aim to turn research feedback into reusable skills, tools, and research rules. Whether these accumulated capabilities continue to improve later research requires controlled evaluation. Long-horizon alpha discovery provides a state-dependent setting: once a new factor enters the portfolio, the predictive information already covered changes, so the value of the same candidate or experience may change over time. We introduce EverMine, an empirical framework for studying self-evolving research capabilities in long-horizon alpha discovery. EverMine decomposes the research state into history (Hist), the current factor portfolio (Frontier), and reusable capabilities (Cap). Under matched resource limits, we compare complete runs with fixed or evolving Cap, and replace Cap while holding Hist and Frontier fixed to estimate the conditional value of accumulated capabilities. We also combine full trajectories with historical-state replay to examine how experience-based decisions affect candidate selection and portfolio outcomes. Across 18 long-horizon trajectories, end-to-end comparisons show no consistent gain from Cap evolution. Across 48 continuation branches from shared Hist and Frontier states, accumulated Cap also does not consistently outperform the initial Cap. Parameter tuning of existing factor structures can still improve the portfolio. In an exploratory replay of two screening batches from one Evolving trajectory, some screened-out candidates have positive marginal value at the original state, yet submitting all screened-out candidates sequentially slightly lowers final portfolio IC in both batches. These results show that candidate value depends on the evolving portfolio and submission order, and motivate evaluating self-evolving research capabilities through end-to-end outcomes, conditional capability value, and the consequences of experience-based decisions.",
+      "categories": [
+        "cs.AI",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2609.33524v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.33524v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-27",
+      "discovered": "2026-09-29",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.34474",
+      "source": "arxiv",
+      "title": "Deep kernel hedging",
+      "authors": [
+        "Jean-Loup Dupret",
+        "Donatien Hainaut",
+        "Edouard Motte"
+      ],
+      "abstract": "We introduce a deep kernel hedging framework that combines the flexibility of deep learning with the structural inductive bias of kernel methods. The hedging functional is restricted to a reproducing kernel Hilbert space whose kernel is parameterized through a neural network embedding of the input features. The framework minimizes a regularized empirical risk under convex loss functions and can accommodate path-dependent information through truncated time-augmented signature features. We derive a generalized representer theorem for the joint hedging problem, reducing the empirical optimization to a finite-dimensional problem. To further reduce the computational cost associated with large kernel matrices, we develop a scalable random Fourier feature approximation and establish convergence guarantees. The random Fourier parameters are sampled once and remain fixed throughout training, while the deep kernel adapts to market data through the learned neural representation. We evaluate the performance of the proposed deep kernel approach on both synthetic and real data and compare it with standard kernel methods and classical deep hedging architectures. Numerical results indicate competitive and robust hedging performance, particularly in low-data regimes, which highlights the benefits of combining expressive neural representations with the inductive bias of kernel methods.",
+      "categories": [
+        "cs.LG",
+        "math.FA",
+        "q-fin.CP",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2609.34474v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.34474v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-28",
       "discovered": "2026-09-29",
       "matched_keywords": [
         "regime"
