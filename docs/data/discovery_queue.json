@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-09-30T06:30:20.907975+09:00",
+  "generated_at": "2026-09-30T16:15:37.214875+09:00",
   "stats": {
-    "total": 336,
-    "queued": 254,
+    "total": 337,
+    "queued": 255,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-09-30T06:30:20.907872+09:00",
+    "last_gc_at": "2026-09-30T16:15:37.214726+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -9765,6 +9765,35 @@
       "year": 2026,
       "published": "2026-09-28",
       "discovered": "2026-09-29",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.37872",
+      "source": "arxiv",
+      "title": "A Generalized Langevin Model of Latent Liquidity and Concave Price Impact",
+      "authors": [
+        "Andrey Itkin"
+      ],
+      "abstract": "We model market impact as the response to submitted order flow net of counterflow from latent traders, activated when price displacements from the level that would prevail without the order exceed individual thresholds. Order flow depletes this pool, and a generalized Langevin equation governs its recovery over several time scales. Its memory kernels are finite sums of exponentials, so its Markovian lift is exact rather than an approximation. For an undepleted pool, aggregation under explicit assumptions on individual trading responses yields an intermediate square-root regime between linear small- and large-order limits, without imposing a square-root impact law. Scaling thresholds and responses with price noise makes impact in this regime proportional to volatility, and thresholds that grow with the execution horizon make it independent of duration. With constant displayed depth, expected round-trip costs are nonnegative under the log-price convention, independently of the memory. Numerical experiments show that depletion narrows the square-root range and that memory spectra producing similar single-order impacts can respond differently after substantial prior trading. Calibration to market data is left to a companion paper.",
+      "categories": [
+        "q-fin.TR",
+        "q-fin.CP",
+        "q-fin.MF",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2609.37872v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.37872v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-29",
+      "discovered": "2026-09-30",
       "matched_keywords": [
         "regime"
       ],
