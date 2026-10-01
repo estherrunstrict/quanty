@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-10-01T06:30:23.097260+09:00",
+  "generated_at": "2026-10-01T16:15:38.119588+09:00",
   "stats": {
-    "total": 337,
-    "queued": 255,
+    "total": 339,
+    "queued": 257,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-10-01T06:30:23.097156+09:00",
+    "last_gc_at": "2026-10-01T16:15:38.119478+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -9796,6 +9796,66 @@
       "discovered": "2026-09-30",
       "matched_keywords": [
         "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.38765",
+      "source": "arxiv",
+      "title": "Multiperiod bond portfolio optimization with transaction costs using a Markov Decision process",
+      "authors": [
+        "Balaji Ramachandran",
+        "Srikanth Iyer",
+        "Shashi Jain"
+      ],
+      "abstract": "Bank treasury portfolios must balance yield, liquidity, and interest-rate risk across bonds of different maturities. Static allocation rules are ill-suited to this task: portfolios concentrated in long-duration securities with no dynamic adjust- ment mechanism can accumulate large mark-to-market losses and liquidity stress under rising interest rates, as illustrated by the failure of Silicon Valley Bank in 2023. We develop a tractable simulation-based framework for multi-period bond port- folio optimization under interest-rate risk and proportional transaction costs. Yield-curve dynamics are modeled using the Dynamic Nelson-Siegel parameter- ization with Vector Autoregressive factor dynamics, from which we construct a time-inhomogeneous discrete-state Markov chain approximating the joint yield process across bond maturities. This chain forms the state space of a finite- horizon Markov Decision Process in which the investor maximizes expected terminal wealth subject to proportional rebalancing costs. The optimal portfolio policy is obtained by backward induction. We also quantify the approximation error introduced by truncating the transition kernel, and show that it leaves mean terminal wealth almost unchanged while substantially distorting drawdown and tail statistics.",
+      "categories": [
+        "q-fin.CP",
+        "q-fin.MF",
+        "q-fin.PM",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2609.38765v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.38765v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-30",
+      "discovered": "2026-10-01",
+      "matched_keywords": [
+        "factor",
+        "drawdown",
+        "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2609.38545",
+      "source": "arxiv",
+      "title": "Say, Echo, Do: Strategic Narratives and Revealed Positioning in Financial Markets",
+      "authors": [
+        "Ali Atiah Alzahrani"
+      ],
+      "abstract": "Machine-learning signals built from financial text treat what institutions say, and what the media repeat, as evidence about value. But whoever shapes a narrative may be trading against it. We study markets with three observable voices: institutional statements (Say), media repetition (Echo) and revealed positioning (Do). We ask when words should be followed and when they should be faded. In a linear-quadratic model of an informed institution that speaks and trades before a partly credulous crowd, talking an asset down while buying it is optimal exactly when $\\varphi^2<2λk<\\varphi$. A distribution-free identity then shows that when the observable Say-Do covariance is negative, words carry negative predictive content and should be faded. For measurement, we derive (i) an exact factorised posterior over which articles are echoes, combining arrival times with embedding similarity; (ii) a return-aligned contrastive objective that attains its bound exactly when squared embedding distances are an increasing affine function of squared outcome distances, with the tightest loss-based certificate of which neighbour rankings survive imperfect training; and (iii) a path-signature statistic for who moved first. In a controlled market with known ground truth, echo sentiment predicts returns with a significantly negative sign in all 29 simulated markets, the rolling Say-Do correlation flags false-alarm events with an AUC of 0.90, and return-aligned embeddings organise headlines by consequence rather than topic. We also report where the tools fail.",
+      "categories": [
+        "q-fin.TR",
+        "cs.LG"
+      ],
+      "url": "https://arxiv.org/abs/2609.38545v1",
+      "pdf_url": "https://arxiv.org/pdf/2609.38545v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-29",
+      "discovered": "2026-10-01",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
