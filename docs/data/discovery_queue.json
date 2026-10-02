@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-10-02T06:30:22.281133+09:00",
+  "generated_at": "2026-10-02T16:15:38.026867+09:00",
   "stats": {
-    "total": 339,
-    "queued": 257,
+    "total": 343,
+    "queued": 261,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-10-02T06:30:22.281033+09:00",
+    "last_gc_at": "2026-10-02T16:15:38.026755+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -9856,6 +9856,119 @@
       "discovered": "2026-10-01",
       "matched_keywords": [
         "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.01348",
+      "source": "arxiv",
+      "title": "Verify Claims, Not Scores: Evidence-Based Verification of Modular Agents",
+      "authors": [
+        "Ali Atiah Alzahrani"
+      ],
+      "abstract": "When developers change one component of an agent, such as its controller, a learned model or its verifier, they usually judge the change by an aggregate task score. That score cannot tell whether improvement was attainable, which component lost value, or what the agent's own checks certify. We introduce a claim-specific verification audit for modular agents that plan, act, check and refine. Instead of scoring the agent, the audit scores the evidence: each conclusion is recorded with the evidence behind it, one of four verdicts (supported, unsupported, unresolved or not evaluated) and the boundary within which it holds. Three tools supply that evidence. Oracle policies measure attainable improvement under an explicitly stated action set, so that a low value can be traced to the evaluation rather than to the environment. Replacing one component at a time with a perfect counterpart locates lost value, with null results read as unresolved whenever a downstream component could mask them. A separate test asks whether the verifier's score identifies the quantity it is read as bounding. Applied to a constrained portfolio-allocation agent in a synthetic market with known hidden regimes, the audit shows that the value of perfect regime information depends on the action set used to measure it, that the scenario generator discards most of the regime signal while better local fidelity does not improve decisions, and that the runtime verifier can be bypassed with no visible change in outcomes. The contribution is the protocol and the evidential distinctions it enforces; the empirical findings are specific to the agent and environment studied.",
+      "categories": [
+        "cs.AI",
+        "cs.LG",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2610.01348v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.01348v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-01",
+      "discovered": "2026-10-02",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.00147",
+      "source": "arxiv",
+      "title": "Admissible Portfolio Optimization: Information Constraints, Conditional Efficient Frontiers, and the Price of Causal Identification",
+      "authors": [
+        "Alejandro Rodriguez Dominguez"
+      ],
+      "abstract": "Mean--variance portfolio choice takes the conditioning information as given and optimizes over weights, so two errors about that information pass into the portfolio unseen: using variables unavailable at the decision time and treating common variation as idiosyncratic. We make the conditioning information a decision variable subject to hard admissibility constraints declared in advance: availability, a no-arbitrage-preserving enlargement of the decision filtration, statistical separation and, for interventional claims, invariance across declared regimes. A lexicographic admissibility order in which no risk--return quantity enters selects an optimal information class, and the classical problem is solved inside it. We prove existence, invariance under recodings, and a value-of-admissible-information theorem whose failure conditions show that selection by decision loss admits look-ahead information whenever present; the two-stage solution and the joint envelope are the minimal elements of two orders on one set. Under exact separation the diversifiable part of risk is a property of the admissible class and is interventionally stable only under interventional admissibility; requiring causal identification carries an explicit oracle price traded against search complexity. The estimator is consistent with second-order regret. On market data with 127 candidate drivers the condition is attainable on individual equities, where enlarging the search reduces the defect at a measurable rate, and not on pre-diversified portfolios, where it is nearly invariant to the search because the residual dependence is the common factor itself. Where it fails, the covariance still yields minimum-variance portfolios that match shrinkage at markedly lower turnover while discarding a measurable part of their risk, which an exact decomposition attributes to the residual share, breadth and average residual correlation.",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2610.00147v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.00147v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-10",
+      "discovered": "2026-10-02",
+      "matched_keywords": [
+        "factor",
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.01325",
+      "source": "arxiv",
+      "title": "PPO-HRAP: Proximal Policy Optimization with a Hybrid Regime-Aware Policy for Risk-Controlled Trading",
+      "authors": [
+        "Duong Hien Chi Kien",
+        "Thanh Trung Huynh"
+      ],
+      "abstract": "Reinforcement learning for trading often struggles to balance upside participation with drawdown control. Profit-only policies can collapse toward passive long exposure on upward-drifting assets, while aggressively risk-penalized rewards can become too defensive during volatile periods. This paper proposes PPO-HRAP, a hybrid regime-aware policy that combines Proximal Policy Optimization with an interpretable regime prior. The agent observes both market features and portfolio-state variables, receives a reward combining portfolio log return, VIX-conditioned drawdown-increase penalty, target-exposure deviation, and turnover cost, and executes a blended action between the PPO actor output and a regime-derived target exposure. On the held-out 2020-2022 SPY test window, PPO-HRAP achieves 27.62% total return, 8.48% annualized return, 0.6447 Sharpe ratio, 0.8588 Sortino ratio, and 0.4592 Calmar ratio, while reducing maximum drawdown from 34.10% for Buy and Hold to 18.47%. Across five SPY seeds, PPO-HRAP remains stable with mean total return $0.2725 \\pm 0.0109$ and mean Sharpe ratio $0.6219 \\pm 0.0565$. Single-run cross-asset tests on QQQ and DIA further show that the proposed method ranks first on total return and Sharpe ratio for all three reported assets. These results suggest that blending learned actions with a volatility-aware regime prior is a practical way to improve risk-adjusted trading behavior, although the current policy still incurs high turnover and cross-asset robustness beyond SPY remains limited to single-run evidence.",
+      "categories": [
+        "cs.AI",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2610.01325v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.01325v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-01",
+      "discovered": "2026-10-02",
+      "matched_keywords": [
+        "regime",
+        "reinforcement learning",
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.00619",
+      "source": "arxiv",
+      "title": "Beyond Supra-Competitive Outcomes: Collusive Behaviour in Deep Reinforcement Learning for Optimal Execution Games",
+      "authors": [
+        "Christos Spyridon Koulouris",
+        "Carlo Campajola"
+      ],
+      "abstract": "In this paper, we extend earlier findings of supra-competitive outcomes in optimal-execution games by identifying a learned punitive mechanism that deters deviations and provides behavioural evidence of collusion. We investigate this mechanism in a two-player, finite-horizon Almgren-Chriss liquidation game. Independent proximal policy optimisation agents with access to within-episode price and action histories achieve costs below the Nash benchmark. We identify a profitable deviation by training against the mean learned liquidation schedule, then impose its first trade on one of the original agents. The opponent responds by accelerating liquidation. This response more than offsets the deviator's gain in every run and both player roles, while leaving the punisher's average payoff materially unchanged relative to not punishing under the same deviation. The punisher imposes greater losses on the deviator while preserving its own average payoff, despite the availability of more profitable, less punitive liquidation plans. Matching deviations and subsequent additional selling rise and later decline during training, while final policies retain an effective punitive response. We formalise two checks: whether punishment outweighs the gain from deviating, and whether the change in trading behaviour is large enough to account for the loss imposed. Both checks hold for the tested deviation. Together, these findings provide behavioural and economic evidence supporting a collusive interpretation of the learned supra-competitive outcomes.",
+      "categories": [
+        "q-fin.TR",
+        "cs.AI"
+      ],
+      "url": "https://arxiv.org/abs/2610.00619v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.00619v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-30",
+      "discovered": "2026-10-02",
+      "matched_keywords": [
+        "reinforcement learning"
       ],
       "status": "queued",
       "ingested_into": null,
