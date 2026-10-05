@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-10-03T06:30:23.226449+09:00",
+  "generated_at": "2026-10-05T16:16:31.325145+09:00",
   "stats": {
-    "total": 343,
-    "queued": 261,
+    "total": 344,
+    "queued": 262,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-10-03T06:30:23.226345+09:00",
+    "last_gc_at": "2026-10-05T16:16:31.325016+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -9967,6 +9967,34 @@
       "year": 2026,
       "published": "2026-09-30",
       "discovered": "2026-10-02",
+      "matched_keywords": [
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.03598",
+      "source": "arxiv",
+      "title": "When a Correct Reward Is Not Enough: Diagnosing and Guiding PPO in an Analytically Solved Broker-Trader Game",
+      "authors": [
+        "Siu Tung Wong",
+        "Carlo Campajola"
+      ],
+      "abstract": "Reinforcement learning (RL) is increasingly used for financial optimal-control problems when complex dynamics make analytical strategies difficult to obtain. There are financial mathematics literactures which provides many solved models whose equations and controls could evaluate and guide learning; we ask whether RL can exploit these results. We place a proximal policy optimisation (PPO) agent in an analytically solved continuous-time broker--trader game. PPO replaces the broker and chooses its trading speed while interacting with an informed trader and stochastic uninformed order flow. We derive a finite-step reward from the broker's continuous-time payoff and verify its discrete implementation through grid refinement and an exact one-step identity. With zero uninformed flow, a validation-selected PPO--FFNN approaches the reference action. With stochastic uninformed flow, the tested PPO--FFNN and PPO--LSTM remain inaccurate, although supervised learning confirms that their actors can represent the action. Monte Carlo diagnostics show that their critics do not reliably rank nearby actions; potential-based reward shaping also gives no reliable improvement. Under partial information, a causal certainty-equivalent controller based on the broker's observable history remains close to the reference, while PPO has larger errors and lower payoffs. Finally, we freeze the analytical policy and train PPO to adjust it after the execution cost changes. Halving the cost yields a repeatable improvement that closes \\(2.22\\%\\) of the gap to the changed-cost reference. The analytical solution therefore provides both a benchmark for diagnosing RL and a useful starting policy for adaptation.",
+      "categories": [
+        "q-fin.TR",
+        "cs.AI"
+      ],
+      "url": "https://arxiv.org/abs/2610.03598v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.03598v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-02",
+      "discovered": "2026-10-05",
       "matched_keywords": [
         "reinforcement learning"
       ],
