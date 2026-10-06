@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-10-06T06:30:21.427461+09:00",
+  "generated_at": "2026-10-06T16:15:43.718041+09:00",
   "stats": {
-    "total": 344,
-    "queued": 262,
+    "total": 349,
+    "queued": 267,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-10-06T06:30:21.427356+09:00",
+    "last_gc_at": "2026-10-06T16:15:43.717925+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -9997,6 +9997,147 @@
       "discovered": "2026-10-05",
       "matched_keywords": [
         "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.04221",
+      "source": "arxiv",
+      "title": "Robust enhanced index tracking portfolio selection under distributional uncertainty",
+      "authors": [
+        "Jun Cai",
+        "Zhiqiao Song"
+      ],
+      "abstract": "The enhanced index tracking (EIT) portfolio selection problem aims to construct a portfolio that is expected to outperform a benchmark index. In practice, investors face uncertainty in the joint distribution of asset and index losses, as the true distribution is typically unknown and only partial information is available. Moreover, portfolio selection requires balancing the trade-off between mean loss and downside risk while targeting higher returns. Effectively modeling and managing these factors in EIT portfolio selection is therefore of both practical and research interest. To address these challenges, this paper proposes robust EIT portfolio selection models under distributional uncertainty, guided by Pareto-optimality theory. The models minimize a convex combination of worst-case mean loss and downside risk, subject to a constraint on worst-case mean return. Two uncertainty sets are considered: one assuming a known mean loss vector and covariance matrix, and a more general set with unknown moments. Closed-form solutions are derived for the former, while the latter reduces to tractable convex optimization problems. Empirical results based on real market data show that the proposed models outperform not only the tracked index but also the equally weighted portfolio, robust mean-variance models, and robust variance models in terms of out-of-sample cumulative wealth, as well as Sharpe, Sortino, and Omega ratios. Moreover, portfolios that minimize a convex combination of worst-case mean loss and downside risk consistently outperform those that minimize downside risk alone. We also provide practical guidance for selecting optimal weighting coefficients to effectively balance risk and return.",
+      "categories": [
+        "q-fin.PM",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2610.04221v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.04221v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-03",
+      "discovered": "2026-10-06",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.04122",
+      "source": "arxiv",
+      "title": "Cities of Signals: Compression, Separation, and the Geometry of Novelty",
+      "authors": [
+        "Marc da Costa Nunes"
+      ],
+      "abstract": "A cross-sectional signal is a forecast vector over $d$ assets at each date; demeaned and normalized, it is a point on a sphere. Its city is the direction of its time-averaged vector in a common target-aligned frame, a compressed summary. When is the angle between two cities a conservative estimate of the angle between the histories? For independent uniform histories, the probability that the history angle is at least the city angle tends to one when the city angle is at most 90 degrees, with an $O(T^{-1/2})$ error bound uniform in dimension. Selecting for positive average information coefficient (IC) changes the unconditional limit to $γ_q>1/2$, about 56% for 20 assets. The bound extends to independent, rotationally symmetric histories with temporal dependence; summable products of lag correlations preserve the conditional limit. A stationary ergodic theorem allows shared signal movement and identifies the population margin determining the limiting ordering. Among 266,815 positive-IC pairs in AlphaNova's Competition May 2026, the history angle is at least the city angle for 58.9% overall, 74.1% at city angles up to 90 degrees, and 1.5% beyond. These frequencies describe the observed library and do not validate the uniform null: residual agreement is mostly positive, and an empirical second-moment diagnostic cannot be matched within that null by adjusting temporal dependence alone. On the full 776-signal sample, a city angle of at least 60 degrees selects pairs with a 94.3% success rate at the same history-angle threshold, against an 85.0% base rate, and retains 72.5% of pairs. Explicit constructions show the limits of direction-only summaries, retained lengths give sharp bounds, and shared time blocks recover missing information, here only at fine resolution. Persistent positive IC confines cities and bounds their motion; convergence also requires a stable mean direction.",
+      "categories": [
+        "q-fin.PM",
+        "q-fin.MF"
+      ],
+      "url": "https://arxiv.org/abs/2610.04122v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.04122v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-02",
+      "discovered": "2026-10-06",
+      "matched_keywords": [
+        "cross-sectional"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.05740",
+      "source": "arxiv",
+      "title": "Latent Continuum of Regimes in Limit Order Book Dynamics",
+      "authors": [
+        "Anjali Thawait"
+      ],
+      "abstract": "Market-regime models typically assume a finite set of discrete latent states. We examine whether high frequency limit-order-book dynamics exhibit distinct regime separation or apparent regimes result from discretising an underlying continuum, analysing deep limit-order book data for EURO STOXX 50 index futures across 987 clean trading days from 2022 to 2025 using 30, 45 and 60-second aggregation windows. Market states are represented by symmetric positive definite covariance matrices and analysed under Log-Euclidean and affine-invariant geometries; the resulting state cloud has an effective dimension of approximately 1.4. A causal anomaly layer filters statistical, calendar and rollover contamination, while label-free economic validation evaluates market-state separation independently of volatility-based proxy labels. A 17-method zoo spanning conventional and Riemannian representations, reinforced by full-cloud geometric certificates, consistently favours a continuum over a discrete regime structure. A dominant latent coordinate captures between 83.66% and 85.27% of variation in the covariance-state geometry and tracks VSTOXX without regime labels, remaining stable across years although its average level shifts with market conditions, indicating that conventional regimes are coarse quantisations. A divisive hierarchy spanning macro, macro-subregime, micro and micro-subregime tiers is evaluated using expanding-year walk-forward tests, with out-of-sample performance strongest at the macro tier while finer tiers fail to generalise; continuous fine-scale information nonetheless remains predictive, and its discretisation causes the performance loss. Forecasting performance peaks near ten minutes, reaching a maximum pooled R2_OOS of 0.7483. Overall, the latent stress coordinate defines a stable, low-dimensional geometric continuum that captures market stress and its predictive dynamics.",
+      "categories": [
+        "q-fin.TR",
+        "q-fin.CP",
+        "q-fin.MF",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2610.05740v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.05740v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-05",
+      "discovered": "2026-10-06",
+      "matched_keywords": [
+        "regime",
+        "walk-forward"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.04990",
+      "source": "arxiv",
+      "title": "Buying at Support: The Entry Problem under Multi-Skew Brownian Motion",
+      "authors": [
+        "Jun Maeda"
+      ],
+      "abstract": "We study when to buy a share that will later be sold optimally, when the price follows a geometric multi-skew Brownian motion whose skew levels model support and resistance. The reward for buying is the exit premium of the liquidation problem solved in a companion paper. This premium is strictly $r$-subharmonic inside the exit continuation region, so buying is optimal only at levels where the price is pushed upward, and the entry problem reduces to a finite one whose value is an upper concave hull of finitely many points. With one support and one resistance, the optimal rule is to buy exactly at the support, in every exit regime, with an explicit value.",
+      "categories": [
+        "q-fin.MF",
+        "math.PR",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2610.04990v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.04990v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-04",
+      "discovered": "2026-10-06",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.05741",
+      "source": "arxiv",
+      "title": "A Dirichlet Mixed-Membership Model for Exact Multivariate Distributional Credibility",
+      "authors": [
+        "Sebastián Calcetero Vanegas",
+        "Ian Weng Chan"
+      ],
+      "abstract": "Credibility theory combines individual experience with portfolio information for insurance pricing, but classical formulations focus primarily on conditional means and expected premiums. We propose a Dirichlet mixed-membership model (DMMM) for multivariate distributional credibility. Policyholder risk is represented by a stable composition over latent risk classes: baseline characteristics determine its a priori assessment, while repeated multivariate experience progressively updates its a posteriori assessment. Support-specific expert distributions accommodate heterogeneous outcomes, with dependence induced through the shared latent structure. The resulting posterior predictive distribution can be written exactly as a convex combination of portfolio and experience components, extending the familiar credibility-factor structure beyond the conditional mean. We study the framework through a simulation experiment and a vehicle telematics application. The simulation shows that relatively simple experts can capture complex multivariate insurance distributions and learn policyholder-specific risk as experience accumulates. In the telematics application, recent claims and driving behaviour provide complementary information for future claim-frequency prediction, allowing similar policyholders to receive different experience-rated assessments. The DMMM therefore provides a flexible and interpretable framework for combining heterogeneous insurance experience while retaining the structure of classical credibility.",
+      "categories": [
+        "stat.ME",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2610.05741v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.05741v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-05",
+      "discovered": "2026-10-06",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
