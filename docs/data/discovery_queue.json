@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-10-07T06:30:26.130370+09:00",
+  "generated_at": "2026-10-07T16:15:48.031078+09:00",
   "stats": {
-    "total": 349,
-    "queued": 267,
+    "total": 352,
+    "queued": 270,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-10-07T06:30:26.130262+09:00",
+    "last_gc_at": "2026-10-07T16:15:48.030961+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -10138,6 +10138,94 @@
       "discovered": "2026-10-06",
       "matched_keywords": [
         "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.08631",
+      "source": "arxiv",
+      "title": "Exponential investors with weakly mean-reverting prices",
+      "authors": [
+        "Balazs Hoffmann",
+        "Miklos Rasonyi"
+      ],
+      "abstract": "We investigate a continuous-time financial market where the asset price exhibits weak (sublinear) mean reversion and has a nonzero drift. Complementing earlier work on strong (superlinear) mean reversion, we show that, for an investor maximizing expected exponential utility, the certainty equivalent grows as $O(T^{2β+1})$ where $0<β<1$ is the strength of mean reversion. An explicit asymptotically optimal strategy is also given.",
+      "categories": [
+        "q-fin.PM",
+        "math.PR"
+      ],
+      "url": "https://arxiv.org/abs/2610.08631v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.08631v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-06",
+      "discovered": "2026-10-07",
+      "matched_keywords": [
+        "mean reversion"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.06947",
+      "source": "arxiv",
+      "title": "FactorBench: A Portfolio-Aware Benchmark for Automated Factor Mining",
+      "authors": [
+        "Zhuohan Wang",
+        "Carmine Ventre"
+      ],
+      "abstract": "Factor mining seeks to discover signals from financial data that predict future asset returns and guide portfolio construction. Automated factor mining now spans genetic programming, reinforcement learning, generative models, and large language model agents. Yet it remains unclear whether advances across these paradigms yield more generalizable, distinct, and economically useful financial signals. We introduce FactorBench, a portfolio-aware benchmark comparing roughly five thousand mined factors from nine automated mining methods across five equity markets. A shared data and evaluation contract supports both symbolic expressions and executable Python factors, connecting heterogeneous discovery algorithms to common signal combination and portfolio construction procedures. FactorBench traces the outputs of mining systems across three levels: factor validity, temporal generalization, and predictiveness beyond measured risk and style exposures; within- and across-method pool distinctness, including similarity to the benchmark Alpha101; and composite-signal quality and after-cost long-only and long--short portfolio performance. After systematically assessing whether advances in factor mining translate into signal quality and portfolio performance, FactorBench finds that no paradigm consistently dominates.",
+      "categories": [
+        "q-fin.PM",
+        "cs.LG"
+      ],
+      "url": "https://arxiv.org/abs/2610.06947v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.06947v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-03",
+      "discovered": "2026-10-07",
+      "matched_keywords": [
+        "factor",
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.08169",
+      "source": "arxiv",
+      "title": "Modelling Regime Shifts in Continuous Intraday Electricity Markets with State-dependent Hawkes Processes",
+      "authors": [
+        "Ayoub Jhabli",
+        "Tarek AlSkaif",
+        "Kwabena E. Bennin",
+        "Bedir Tekinerdogan",
+        "Axel Naumann",
+        "Joost M. E. Pennings"
+      ],
+      "abstract": "The growing importance of intraday trading in Europe, driven by the increasing penetration of renewable energy sources, has led to higher volatility and periods of market stress. Understanding how order flow behaves under varying liquidity conditions requires models that adapt to the state of the market. This paper proposes a multivariate state-dependent Hawkes process to model the flow of orders across different liquidity regimes in the intraday continuous electricity market. The observed market states are identified using a proposed Liquidity Stress Index (LSI), which quantifies stress using the bid-ask spread in the limit order book, order book volume, and mid-price volatility. Transitions between states induce changes in the intensity parameters, resulting in piecewise dynamics that reflect regime-specific order-flow behavior. The model is calibrated on January-March 2024 Dutch intraday continuous cross-border intraday (XBID) hourly order data from EPEX SPOT. The estimated dynamics show that order flow is strongly self-exciting and near-critical, that executed trades trigger new same-side orders while the reverse effect is negligible, and that liquidity stress mainly strengthens transaction self-excitation rather than reshaping the cross-side structure. Robustness checks over the LSI composition and the state partition show that the results are driven by the regime construction itself: alternative index compositions fit within a narrow band, three states fit better than two, and removing the states clearly degrades the fit relative to a single-regime Hawkes benchmark. The results highlight both the value of conditioning order-flow models on liquidity stress and the limits of a single-exponential specification when event frequencies are highly imbalanced.",
+      "categories": [
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2610.08169v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.08169v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-06",
+      "discovered": "2026-10-07",
+      "matched_keywords": [
+        "regime"
       ],
       "status": "queued",
       "ingested_into": null,
