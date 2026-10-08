@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-10-08T06:30:24.453870+09:00",
+  "generated_at": "2026-10-08T16:15:37.407751+09:00",
   "stats": {
-    "total": 352,
-    "queued": 270,
+    "total": 357,
+    "queued": 275,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-10-08T06:30:24.453756+09:00",
+    "last_gc_at": "2026-10-08T16:15:37.407607+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -10224,6 +10224,152 @@
       "year": 2026,
       "published": "2026-10-06",
       "discovered": "2026-10-07",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.10407",
+      "source": "arxiv",
+      "title": "SOTA: Stock Options Trading Agents Guided by Option-Implied Return Distributions",
+      "authors": [
+        "Yizhen Xie",
+        "Mengyang Liu"
+      ],
+      "abstract": "As option markets grow and AI advances, agentic systems for option trading are gaining increasing attention. Language-model-based agents can reason over contextual information such as news, but option trading presents a particularly challenging decision problem: a single stock can have thousands of contracts, and the agent must decide both which contracts to trade and how to combine them. Existing approaches often sidestep this complexity by restricting the policy to a fixed strategy structure, such as a straddle, limiting their ability to switch strategies as market conditions change. We present SOTA (Stock Options Trading Agents), an agentic trading framework for structured option-strategy selection. SOTA abstracts the large option universe into strategy-level decisions while deterministic resolvers handle portfolio implementation. We develop SOTA by post-training Qwen3.8-27B with supervised fine-tuning followed by reinforcement learning. SOTA is evaluated on options on nine large-cap U.S. equities and SPY against rule-based and machine-learning strategy selectors in the same trading environment. Over a six-month out-of-sample period, SOTA earns an 18.3% total return with a Sharpe ratio of 1.60 and a maximum drawdown of 8.96%. We also document an asymmetric role of news: news improves frontier-teacher trajectories, but retaining news during reinforcement learning reduces out-of-sample return from 18.3% to -2.7%.",
+      "categories": [
+        "cs.AI",
+        "cs.LG",
+        "q-fin.PM",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2610.10407v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.10407v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-07",
+      "discovered": "2026-10-08",
+      "matched_keywords": [
+        "reinforcement learning",
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.09654",
+      "source": "arxiv",
+      "title": "DSTNet: Dynamic Spectral Trajectory Network for Causal Multi-Horizon Financial Forecasting",
+      "authors": [
+        "Aashish Bohra",
+        "Lokendra Vishwakarm"
+      ],
+      "abstract": "Wavelet-based financial forecasters typically use the transform only to denoise, or reduce it to a single spectral snapshot at the forecast origin, and the convolution that produces the coefficients is usually bilateral, so it can read past the forecast origin. DSTNet instead retains the recent evolution of filter-bank magnitudes as a causal Dynamic Spectral Trajectory, built from seven trailing technical indicators over a twenty-day lookback with a one-sided Morlet-derived filter bank and an explicit burn-in for the left-boundary transient. A factorized Scale-Temporal Spectral Transformer attends along the time and filter-bank axes separately, a learned gate fuses the spectral branch with a CNN-BiLSTM, and horizon-specific gates emit one, three, five, and ten day forecasts in a single pass. We evaluate seven equity indices and gold under a common expanding-window protocol and an untouched one-year hold-out, against nine learned baselines and a random-walk persistence benchmark. Under MAE and MAPE, persistence is the strongest of the ten fixed competitors in 29 of the 32 series-horizon cells and DSTNet is the only model below it in every cell, by 0.7 to 0.9 percent at one day and 3.4 to 4.5 percent at ten days. At one day, paired testing favours DSTNet against the weaker learned baselines but is inconclusive against persistence and the strongest learned forecasters. A downstream allocation diagnostic does not support an equity-timing advantage on any of the seven indices.",
+      "categories": [
+        "cs.LG",
+        "q-fin.CP",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2610.09654v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.09654v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-07",
+      "discovered": "2026-10-08",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.07006",
+      "source": "arxiv",
+      "title": "STOCK-JEPA: Prior-Anchored Latent Revision Representation Learning in Equity Markets",
+      "authors": [
+        "Yizhi Luo",
+        "Jiahe Yi",
+        "Jianhui Zhang",
+        "Shuo Sun"
+      ],
+      "abstract": "Learning effective representations helps characterize the structure and dynamics of equity markets from financial data with a low signal-to-noise ratio. Black-box deep models can capture complex patterns but may overfit sample noise and lack explicit economic structure. Meanwhile, classic linear financial models provide interpretable references, but their oversimplified assumptions leave non-linear signals uncaptured. To combine the strengths of these two directions, we propose Stock-JEPA, a joint-embedding predictive framework that learns predictable incremental revisions relative to a point-in-time financial prior. First, we leverage a low-complexity financial model to produce fixed statistics summarizing multi-horizon return and risk. A prior projector then maps these statistics into the target encoder's latent space as an anchor. Second, we design a context-conditioned revision predictor to estimate the future representation's predictable displacement from the anchor. Separate losses update the two branches: the anchor learns from prior statistics, while the revision captures additional predictable information from historical context. Third, we freeze all representation modules and train a downstream readout, evaluating its forecasts through cross-sectional ranking and portfolio performance. Theoretically, we prove that optimal revision reduces the prior anchor's expected squared error for the same future representation by exactly $\\mathbb{E}[\\|\\boldsymbolΔ\\|_2^2]$. This non-negative gain is the expected squared magnitude of the additional signal predictable from historical context. Experimentally, Stock-JEPA outperforms 13 strong baselines across large-scale China and U.S. equity universes on 5 key evaluation metrics. Ablation studies and representation analysis further demonstrate the value of the learned revisions for representation learning in equity markets.",
+      "categories": [
+        "cs.LG",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2610.07006v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.07006v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-04",
+      "discovered": "2026-10-08",
+      "matched_keywords": [
+        "cross-sectional"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.08869",
+      "source": "arxiv",
+      "title": "Learned Monotone Recurrent Features in Governed Credit Scoring: The Price of the Frame and the Necessity of Macro Conditioning",
+      "authors": [
+        "Yew Lee Tan"
+      ],
+      "abstract": "Regulated credit scoring requires scores monotone non-decreasing in every exposure input. Deployed pipelines -- hand-crafted monotone aggregates feeding sign-constrained gradient boosting -- already meet this by composition; the open question is what learned temporal aggregation is worth inside one. We answer on five production-scale credit datasets at matched admissibility (one priced baseline convention excepted), with a monotone recurrent architecture whose per-input guarantee we extend, with proofs, to vector-valued inputs and to exogenously macro-conditioned decay gates, severities, thresholds, and peak memory. Two findings result. First, a strictness ladder: the value of learned monotone features rises with governance-frame strictness -- zero on unconstrained engineered panels, maximal in summaries-only frames -- replicated across two datasets and an official temporal-stability metric, though unconditioned features degrade on externally adjudicated later weeks. Second, a conditioning-delivery asymmetry under regime shift. On a train-on-boom, test-on-crisis mortgage design, two public macroeconomic series hurt as input columns, yet conditioning the recurrence on them delivers the paper's only learned-block crisis-cohort uplifts. The confirmed effect: +0.006 to +0.013 AUC on an internally pre-registered Freddie Mac replication, at all five held-out seeds. The discovery estimate: +0.015 to +0.021 on Fannie Mae (three of five seeds post hoc), worth 10-27 basis points of defaulted balance at an 80% approval cutoff, and grows with early-prepaid loans excluded. A state-level test identifies the mechanism: between-cohort calibration transfer. A pandemic-band episode bounds scope: under forbearance-distorted labels the gain generalizes at a quarter to a third of crisis size on Fannie Mae, on Freddie Mac only against the capacity control.",
+      "categories": [
+        "q-fin.RM",
+        "cs.LG",
+        "stat.AP"
+      ],
+      "url": "https://arxiv.org/abs/2610.08869v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.08869v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-06",
+      "discovered": "2026-10-08",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.08821",
+      "source": "arxiv",
+      "title": "Two-Regime Risk Measures under Convex Loss",
+      "authors": [
+        "Mihaela-Adriana Nistor",
+        "Ionel Popescu"
+      ],
+      "abstract": "We study a two-regime summary of a real-valued loss distribution. The two representative levels and the boundary between them are chosen by minimizing a convex residual loss. When the distribution has an atom at the boundary, assigning that atom to the lower or upper regime can give different optimized costs. Taking the better whole-atom assignment yields the lower-semicontinuous cutoff profile. We prove epi-convergence of this profile under a loss-adapted \\(ψ\\)-weak topology and obtain convergence of minimum values and outer stability of optimal cutoff sets. Under a unique finite atom-free limiting cutoff, positive regime masses, and unique conditional centers, the two fitted levels and a canonical one-jump representation converge as well. We also examine the resulting summary from the viewpoint of monetary risk axioms, establish explicit failures of external monotonicity and subadditivity, and give finite-support algorithms with conditional error control. A four-scenario model illustrates the cutoff geometry and the role of ties and atoms.",
+      "categories": [
+        "q-fin.RM",
+        "math.PR"
+      ],
+      "url": "https://arxiv.org/abs/2610.08821v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.08821v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-09-24",
+      "discovered": "2026-10-08",
       "matched_keywords": [
         "regime"
       ],
