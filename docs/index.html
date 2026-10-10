@@ -1379,6 +1379,8 @@ function coreMetrics(d) {
 function btCells(bt, label) {
   if (!bt || nil(bt.cagr_pct) || nil(bt.mdd_pct)) return '';
   let o = mSep(label || 'Backtest');
+  if (bt.verification_status && bt.verification_status !== 'verified')
+    o += mCell('Evidence', '재검증 필요' + mSub('과거 참고치 · 증액 근거 아님'));
   o += mCell('BT CAGR', (bt.cagr_pct >= 0 ? '+' : '') + bt.cagr_pct.toFixed(1) + '%' +
              mSub('/yr'));
   o += mCell('BT MDD', bt.mdd_pct.toFixed(1) + '%' +
@@ -2111,7 +2113,8 @@ function render(data) {
   let unrealKRW = 0, unrealUSD = 0;
   let realKRW = 0,   realUSD = 0;
   let totalPlKRW = 0, totalPlUSD = 0;
-  const unknownPl = data.strategies.some(s => s.id !== 'manual' && s.pnl_mode !== 'paper' && !s.paper_equity && 'total_pl_ytd' in s && s.total_pl_ytd === null);
+  const positionUnverified = data.position_reconciliation && data.position_reconciliation.status !== 'verified';
+  const unknownPl = positionUnverified || data.strategies.some(s => s.id !== 'manual' && s.pnl_mode !== 'paper' && !s.paper_equity && 'total_pl_ytd' in s && s.total_pl_ytd === null);
   const cardPl = s => s.total_pl_ytd ??
     ((s.realized_profit_ytd || 0) + (s.unrealized_profit ?? s.profit ?? 0));
   data.strategies.forEach(s => {
@@ -2233,6 +2236,7 @@ function render(data) {
           ${leg('var(--blue)', 'Cash', sp.cash, T.cash_krw)}
         </div>
         ${warn}
+        ${positionUnverified ? '<div class="recon-warn">봇 보유 수량과 계좌가 일치하지 않습니다. 봇별 평가·손익은 검증 전 수치이며 자동 배분 입력이 보류됩니다.</div>' : ''}
       </div>
     `;
     app.appendChild(hero);
