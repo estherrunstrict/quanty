@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Oracle</title>
+<title>Quanty · Portfolio Journal</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon.ico" sizes="48x48">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -987,8 +987,14 @@ a { color: var(--accent); text-decoration: none; }
   .mob-section { display: block !important; }
 }
 </style>
+<link rel="stylesheet" href="portfolio.css?v=20261010">
 </head>
 <body>
+<aside class="portfolio-nav" aria-label="포트폴리오 탐색">
+  <div><a class="nav-brand" href="#overview">Quanty.</a><p class="nav-caption">PORTFOLIO JOURNAL<br>복리 성장과 자본 보전</p></div>
+  <nav><a href="#overview">자산 현황</a><a href="#actions">운용 메모</a><a href="#watch">보유·관찰</a><a href="#manual-guide">수동 투자 제안</a><a href="#operations">실행 상태</a><a href="#bots">전략 상세</a></nav>
+  <p class="nav-foot">잘 관리된 위험 위에<br>긴 시간의 성장을 쌓습니다.</p>
+</aside>
 
 <canvas id="bgfx" aria-hidden="true"></canvas>
 <div id="bgfx-brush" aria-hidden="true"></div>
@@ -999,6 +1005,7 @@ a { color: var(--accent); text-decoration: none; }
   </div>
 </div>
 
+<script src="portfolio_view.js?v=20261010"></script>
 <script>
 // ═══ Chrome backdrop ═══════════════════════════════════════
 // Five soft lobes drifting on incommensurable sine periods, composited
@@ -2072,7 +2079,7 @@ function render(data) {
   // ── Header
   const hdr = h('header', 'hdr fade-in');
   hdr.innerHTML = `
-    <h1>Automation <em>Oracle</em></h1>
+    <h1>Portfolio <em>Journal</em></h1>
     <div class="hdr-right">
       <span class="hdr-meta"><span class="live-dot"></span>${data.strategies.filter(s => s.id !== 'manual').length} strategies</span>
       <span class="hdr-meta">${data.meta.kst}</span>
@@ -2154,6 +2161,7 @@ function render(data) {
   const ACCT = data.accounts || {};
   if (T && T.investments_krw > 0) {
     const hero = h('section', 'hero fade-in');
+    hero.id = 'overview';
     const invUSD = exchangeRate > 0 ? T.investments_krw / exchangeRate : 0;
 
     // A broker app adds 평가금액 to 예수금, and 예수금 only moves on the
@@ -2218,7 +2226,7 @@ function render(data) {
 
     hero.innerHTML = `
       <div class="hero-top">
-        <div class="hero-lbl">Total Capital</div>
+        <div class="hero-lbl">전체 자산 / TOTAL CAPITAL</div>
         <div class="hero-val">${VIEW.amounts ? '₩' + Math.round(T.investments_krw).toLocaleString() : '100%'}</div>
         <div class="hero-sub">${VIEW.amounts ? '≈ $' + Math.round(invUSD).toLocaleString() + ' · ' : 'the whole, across '}KIS + CMA + Upbit + Toss</div>
         <div class="hero-pnl ${pnlClass(totalPnlCombined)}">Bot P/L YTD ${unknownPl ? '미확인 · 체결 회계 검증 필요' : fmtPnl(totalPnlCombined, 'KRW') + (VIEW.amounts ? '' : ' of capital') + ' (' + (totalPnlPct >= 0 ? '+' : '') + totalPnlPct.toFixed(2) + '% of deposits)'}</div>
@@ -2242,6 +2250,7 @@ function render(data) {
     app.appendChild(hero);
   }
 
+  if (typeof renderInvestmentPanels === 'function') renderInvestmentPanels(data);
   // ── Strip
   const strip = h('section', 'strip fade-in d1');
   // This strip is now exactly one thing: where the bot P/L came from, plus the
@@ -2329,6 +2338,7 @@ function render(data) {
   stratsWrap.appendChild(intro);
 
   const strats = h('section', 'strats fade-in d2');
+  strats.id = 'bots';
 
   data.strategies.forEach(s => {
     const isManual = s.id === 'manual';
@@ -2362,9 +2372,10 @@ function render(data) {
     // and a killed bot is also always "stale" soon after — the stale badge
     // would bury the reason.
     const isKilled = !isManual && s.kill_state === 'killed';
-    const modeTag = isManual ? 'manual'
+    const isObserve = data.investment_guidance?.operations?.some(r => r.bot === s.id && r.mode === 'observe');
+    const modeTag = isObserve ? 'stale' : isManual ? 'manual'
       : (isKilled ? 'killed' : (isPaper ? 'paper' : (isTesting ? 'testing' : (isStale ? 'stale' : 'live'))));
-    const modeLabel = isManual ? 'Manual'
+    const modeLabel = isObserve ? '보유·관찰' : s.id === 'hybrid_vb' ? 'KR 관찰 · US 운용' : isManual ? 'Manual'
       : (isKilled ? 'Killed' : (isPaper ? 'Paper' : (isTesting ? 'Testing' : (isStale ? 'Stale' : 'Live'))));
 
     let metricsHTML = '';
@@ -2823,7 +2834,7 @@ async function load() {
   }
 }
 
-startBackdrop();
+// The journal uses a static paper canvas; no background animation is needed.
 load();
 </script>
 
