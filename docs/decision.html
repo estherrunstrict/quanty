@@ -550,6 +550,22 @@ const fmtNum = (n) => {
 };
 const cls = (n) => (n === null || n === undefined || n === 0) ? "dim" : (n > 0 ? "pos" : "neg");
 
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function safePayload(value) {
+  if (typeof value === 'string') return escapeHtml(value);
+  if (Array.isArray(value)) return value.map(safePayload);
+  if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).map(([k,v]) => [k,safePayload(v)]));
+  return value;
+}
+function safeUrl(value) {
+  try { const u = new URL(value); return ['https:', 'http:'].includes(u.protocol) ? escapeHtml(u.href) : '#'; }
+  catch { return '#'; }
+}
+let approvalSession = null;
+try { localStorage.removeItem('quanty_approval_token'); } catch {}
+
 function botLink(slug, label) {
   if (!slug) return label || "—";
   const text = label || slug;
@@ -586,6 +602,7 @@ async function load() {
 }
 
 function render(dash, dec, disc) {
+  dash = safePayload(dash); dec = safePayload(dec); disc = safePayload(disc);
   // Header sub
   const tsLocal = new Date(dec.generated_at).toLocaleString();
   const dashUpdated = dash?.updated_at || "—";
@@ -655,14 +672,17 @@ function render(dash, dec, disc) {
           <div class="rhs">
             ${memoLink(m.wiki_path)}
             <div class="actions">
-              <button class="btn-approve" onclick="actOnDecision('${m.id}','approve',this.closest('.memo'))">Approve</button>
-              <button class="btn-reject" onclick="actOnDecision('${m.id}','reject',this.closest('.memo'))">Reject</button>
+              <button class="btn-approve" data-decision-id="${m.id}" data-action="approve">Approve</button>
+              <button class="btn-reject" data-decision-id="${m.id}" data-action="reject">Reject</button>
             </div>
           </div>
         </div>`)
       .join("");
   }
 
+  decEl.querySelectorAll('[data-decision-id]').forEach(button => {
+    button.addEventListener('click', () => actOnDecision(button.dataset.decisionId, button.dataset.action, button.closest('.memo')));
+  });
   // Alerts
   document.getElementById("cnt-alerts").textContent = dec.alerts.length;
   const alEl = document.getElementById("alerts-card");
@@ -881,7 +901,7 @@ function render(dash, dec, disc) {
           <span>${(p.authors || []).slice(0, 3).join(", ")}${(p.authors || []).length > 3 ? " et al." : ""}</span>
           ${(p.categories || []).map((c) => `<span class="kw">${c}</span>`).join("")}
           ${(p.matched_keywords || []).map((k) => `<span class="kw">${k}</span>`).join("")}
-          <a href="${p.url}" target="_blank" rel="noopener" style="margin-left:auto">source ↗</a>
+          <a href="${safeUrl(p.url)}" target="_blank" rel="noopener" style="margin-left:auto">source ↗</a>
         </div>
         <div class="abstract">${p.abstract || "(no abstract)"}</div>
       </div>`).join("");
@@ -935,8 +955,8 @@ load();
 
 async function actOnDecision(id, action, rowEl) {
   if (!confirm(action.toUpperCase() + " this decision?\n\n" + id)) return;
-  let token = localStorage.getItem('quanty_approval_token');
-  if (!token) { token = prompt('Approval token:'); if (!token) return; localStorage.setItem('quanty_approval_token', token); }
+  let token = approvalSession && approvalSession.expires > Date.now() ? approvalSession.token : null;
+  if (!token) { token = prompt('Approval token:'); if (!token) return; approvalSession = {token, expires: Date.now() + 15 * 60 * 1000}; }
   let base;
   try {
     const ep = await fetch('data/approve_endpoint.json', { cache: 'no-store' }).then(r => r.json());
@@ -949,7 +969,7 @@ async function actOnDecision(id, action, rowEl) {
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify({ id, action })
     });
-    if (res.status === 401) { localStorage.removeItem('quanty_approval_token'); alert('Token rejected — re-enter next time.'); return; }
+    if (res.status === 401) { approvalSession = null; alert('Token rejected — re-enter next time.'); return; }
     if (res.status === 409) { alert('Already decided — refresh the page.'); return; }
     if (!res.ok) { alert('Failed (' + res.status + '). Tunnel may be restarting; try again shortly.'); return; }
     const data = await res.json();
@@ -958,10 +978,13 @@ async function actOnDecision(id, action, rowEl) {
       a.textContent = '';
       const span = document.createElement('span');
       span.className = 'decided-' + data.new_status;
-      span.textContent = data.new_status;
+      span.textContent = data.publish_state === 'published' ? data.new_status + ' · 게시 완료' : data.new_status + ' · 게시 실패, 재시도 필요';
       a.appendChild(span);
     }
-    rowEl.style.opacity = '0.6';
+    if (data.publish_state !== 'published') {
+      const retry = document.createElement('button'); retry.textContent = '게시 재시도';
+      retry.addEventListener('click', () => actOnDecision(id, action, rowEl)); a.appendChild(retry);
+    } else rowEl.style.opacity = '0.6';
   } catch (e) { alert('Network error — tunnel may be restarting. Try again shortly.'); }
 }
 </script>

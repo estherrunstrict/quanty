@@ -2111,10 +2111,11 @@ function render(data) {
   let unrealKRW = 0, unrealUSD = 0;
   let realKRW = 0,   realUSD = 0;
   let totalPlKRW = 0, totalPlUSD = 0;
+  const unknownPl = data.strategies.some(s => s.id !== 'manual' && s.mode !== 'paper' && !s.paper_equity && 'total_pl_ytd' in s && s.total_pl_ytd === null);
   const cardPl = s => s.total_pl_ytd ??
     ((s.realized_profit_ytd || 0) + (s.unrealized_profit ?? s.profit ?? 0));
   data.strategies.forEach(s => {
-    if (s.id === 'manual' || s.paper_equity) return;
+    if (s.id === 'manual' || s.paper_equity || s.mode === 'paper') return;
     if (s.currency === 'KRW') {
       unrealKRW += (s.unrealized_profit ?? s.profit ?? 0);
       realKRW   += (s.realized_profit_ytd || 0);
@@ -2217,7 +2218,7 @@ function render(data) {
         <div class="hero-lbl">Total Capital</div>
         <div class="hero-val">${VIEW.amounts ? '₩' + Math.round(T.investments_krw).toLocaleString() : '100%'}</div>
         <div class="hero-sub">${VIEW.amounts ? '≈ $' + Math.round(invUSD).toLocaleString() + ' · ' : 'the whole, across '}KIS + CMA + Upbit + Toss</div>
-        <div class="hero-pnl ${pnlClass(totalPnlCombined)}">Bot P/L YTD ${fmtPnl(totalPnlCombined, 'KRW')}${VIEW.amounts ? '' : ' of capital'} (${totalPnlPct >= 0 ? '+' : ''}${totalPnlPct.toFixed(2)}% of deposits)</div>
+        <div class="hero-pnl ${pnlClass(totalPnlCombined)}">Bot P/L YTD ${unknownPl ? '미확인 · 체결 회계 검증 필요' : fmtPnl(totalPnlCombined, 'KRW') + (VIEW.amounts ? '' : ' of capital') + ' (' + (totalPnlPct >= 0 ? '+' : '') + totalPnlPct.toFixed(2) + '% of deposits)'}</div>
       </div>
       <div class="hero-accts">
         ${tile('kis', 'KIS')}${tile('cma', 'CMA')}${tile('upbit', 'Upbit')}${tile('toss', 'Toss')}
@@ -2258,7 +2259,7 @@ function render(data) {
     { lbl: 'KIS Cash', val: won(cashKRW),
       sub: VIEW.amounts ? '$' + cashUSD.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' USD'
                         : '+ ' + fmtVal(cashUSD, 'USD') + ' in USD' },
-    { lbl: 'Realized YTD', val: fmtPnl(realCombined, 'KRW'), cls: pnlClass(realCombined), sub: 'KRW ' + fmtPnl(realKRW, 'KRW') + ' + USD ' + fmtPnl(realUSD, 'USD') },
+    { lbl: 'Realized YTD', val: unknownPl ? '미확인' : fmtPnl(realCombined, 'KRW'), cls: pnlClass(realCombined), sub: 'KRW ' + fmtPnl(realKRW, 'KRW') + ' + USD ' + fmtPnl(realUSD, 'USD') },
     { lbl: 'Unrealized', val: fmtPnl(unrealCombined, 'KRW'), cls: pnlClass(unrealCombined), sub: 'KRW ' + fmtPnl(unrealKRW, 'KRW') + ' + USD ' + fmtPnl(unrealUSD, 'USD') },
     ...(Math.abs(plAdjustment) >= 1 ? [{ lbl: 'P/L adjustments', val: fmtPnl(plAdjustment, 'KRW'), cls: pnlClass(plAdjustment), sub: 'Included in bot total P/L' }] : []),
   ] : [
