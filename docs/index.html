@@ -2111,11 +2111,11 @@ function render(data) {
   let unrealKRW = 0, unrealUSD = 0;
   let realKRW = 0,   realUSD = 0;
   let totalPlKRW = 0, totalPlUSD = 0;
-  const unknownPl = data.strategies.some(s => s.id !== 'manual' && s.mode !== 'paper' && !s.paper_equity && 'total_pl_ytd' in s && s.total_pl_ytd === null);
+  const unknownPl = data.strategies.some(s => s.id !== 'manual' && s.pnl_mode !== 'paper' && !s.paper_equity && 'total_pl_ytd' in s && s.total_pl_ytd === null);
   const cardPl = s => s.total_pl_ytd ??
     ((s.realized_profit_ytd || 0) + (s.unrealized_profit ?? s.profit ?? 0));
   data.strategies.forEach(s => {
-    if (s.id === 'manual' || s.paper_equity || s.mode === 'paper') return;
+    if (s.id === 'manual' || s.paper_equity || s.pnl_mode === 'paper') return;
     if (s.currency === 'KRW') {
       unrealKRW += (s.unrealized_profit ?? s.profit ?? 0);
       realKRW   += (s.realized_profit_ytd || 0);
@@ -2346,7 +2346,7 @@ function render(data) {
     // stale is a HEALTH fact, and letting the health badge overwrite the
     // deployment one made an unfunded paper bot indistinguishable from a
     // dead live bot — korea_etf reads paper/budget 0 and had run that morning.
-    const isPaper = !isManual && s.mode === 'paper';
+    const isPaper = !isManual && s.pnl_mode === 'paper';
     // "testing" is its own deployment fact, between paper and live: real money
     // and real fills, but a configuration that did NOT pass the promotion gates
     // (USVB runs sleeve-only, USVB_CORE_WEIGHT=0). Folding it into "live" is
