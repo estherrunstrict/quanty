@@ -1172,6 +1172,32 @@ function fmtPnl(v, currency) {
 
 function pnlClass(v) { return v >= 0 ? 'up' : 'dn'; }
 
+// A quantity mismatch qualifies a reported number; it does not erase it.
+// Missing P/L is different: never turn explicit null (including a MULTI leg)
+// into zero or an apparently complete fleet total.
+function botPnlSummary(data, rate) {
+  const result = {realKRW: 0, realUSD: 0, unrealKRW: 0, unrealUSD: 0,
+    totalPlKRW: 0, totalPlUSD: 0, unknownPl: false};
+  const add = (card, currency) => {
+    if (!card) { result.unknownPl = true; return; }
+    const unreal = card.unrealized_profit ?? card.profit ?? 0;
+    const real = card.realized_profit_ytd ?? 0;
+    const total = card.total_pl_ytd === null ? null : (card.total_pl_ytd ?? real + unreal);
+    if (total === null || !Number.isFinite(total)) result.unknownPl = true;
+    result['real' + currency] += real;
+    result['unreal' + currency] += unreal;
+    result['totalPl' + currency] += total ?? 0;
+  };
+  for (const s of data.strategies || []) {
+    if (s.id === 'manual' || s.paper_equity || s.pnl_mode === 'paper') continue;
+    if (s.currency === 'MULTI') { add(s.kr, 'KRW'); add(s.us, 'USD'); }
+    else if (['KRW', 'USD'].includes(s.currency)) add(s, s.currency);
+    else result.unknownPl = true;
+  }
+  result.total = result.unknownPl ? null : result.totalPlKRW + result.totalPlUSD * rate;
+  return result;
+}
+
 // Whole-won, no decimals — or, in relative view, the share of Total Capital.
 // Was defined identically inside allocatorFrameNote() and buildAllocation();
 // fundingBlock() needed a third copy, which is the point at which a
@@ -2117,38 +2143,14 @@ function render(data) {
   CAP = (data.totals && data.totals.investments_krw > 0) ? data.totals.investments_krw : totalAsset;
 
   // ── Sum live bot P/L from the published card totals (per currency)
-  let unrealKRW = 0, unrealUSD = 0;
-  let realKRW = 0,   realUSD = 0;
-  let totalPlKRW = 0, totalPlUSD = 0;
   const positionUnverified = data.position_reconciliation && data.position_reconciliation.status !== 'verified';
-  const unknownPl = positionUnverified || data.strategies.some(s => s.id !== 'manual' && s.pnl_mode !== 'paper' && !s.paper_equity && 'total_pl_ytd' in s && s.total_pl_ytd === null);
-  const cardPl = s => s.total_pl_ytd ??
-    ((s.realized_profit_ytd || 0) + (s.unrealized_profit ?? s.profit ?? 0));
-  data.strategies.forEach(s => {
-    if (s.id === 'manual' || s.paper_equity || s.pnl_mode === 'paper') return;
-    if (s.currency === 'KRW') {
-      unrealKRW += (s.unrealized_profit ?? s.profit ?? 0);
-      realKRW   += (s.realized_profit_ytd || 0);
-      totalPlKRW += cardPl(s);
-    } else if (s.currency === 'USD') {
-      unrealUSD += (s.unrealized_profit ?? s.profit ?? 0);
-      realUSD   += (s.realized_profit_ytd || 0);
-      totalPlUSD += cardPl(s);
-    } else if (s.currency === 'MULTI') {
-      unrealKRW += (s.kr?.unrealized_profit ?? s.kr?.profit ?? 0);
-      unrealUSD += (s.us?.unrealized_profit ?? s.us?.profit ?? 0);
-      realKRW   += (s.kr?.realized_profit_ytd || 0);
-      realUSD   += (s.us?.realized_profit_ytd || 0);
-      totalPlKRW += cardPl(s.kr || {});
-      totalPlUSD += cardPl(s.us || {});
-    }
-  });
+  const {realKRW, realUSD, unrealKRW, unrealUSD, totalPlKRW, totalPlUSD, unknownPl} = botPnlSummary(data, exchangeRate);
   const unrealCombined = unrealKRW + unrealUSD * exchangeRate;
   const realCombined   = realKRW   + realUSD   * exchangeRate;
   const totalPnlCombined = totalPlKRW + totalPlUSD * exchangeRate;
   const plAdjustment = totalPnlCombined - realCombined - unrealCombined;
-  const originalDeposit = portfolio.original_deposit_krw || 1;
-  const totalPnlPct = originalDeposit > 0 ? (totalPnlCombined / originalDeposit * 100) : 0;
+  const originalDeposit = portfolio.original_deposit_krw || 0;
+  const totalPnlPct = originalDeposit > 0 ? (totalPnlCombined / originalDeposit * 100) : null;
 
   // ── Total-Capital hero
   // Jae runs most of his money by hand, in front of the bots, and it lives in
@@ -2229,7 +2231,7 @@ function render(data) {
         <div class="hero-lbl">전체 자산 / TOTAL CAPITAL</div>
         <div class="hero-val">${VIEW.amounts ? '₩' + Math.round(T.investments_krw).toLocaleString() : '100%'}</div>
         <div class="hero-sub">${VIEW.amounts ? '≈ $' + Math.round(invUSD).toLocaleString() + ' · ' : 'the whole, across '}KIS + CMA + Upbit + Toss</div>
-        <div class="hero-pnl ${pnlClass(totalPnlCombined)}">Bot P/L YTD ${unknownPl ? '미확인 · 체결 회계 검증 필요' : fmtPnl(totalPnlCombined, 'KRW') + (VIEW.amounts ? '' : ' of capital') + ' (' + (totalPnlPct >= 0 ? '+' : '') + totalPnlPct.toFixed(2) + '% of deposits)'}</div>
+        <div class="hero-pnl ${unknownPl ? '' : pnlClass(totalPnlCombined)}">Bot P/L YTD ${unknownPl ? '미확인 · 손익 데이터 누락' : fmtPnl(totalPnlCombined, 'KRW') + (VIEW.amounts ? '' : ' of capital') + (totalPnlPct === null ? '' : ' (' + (totalPnlPct >= 0 ? '+' : '') + totalPnlPct.toFixed(2) + '% of deposits)')} · 보고값${positionUnverified ? ' · 보유 수량 대사 필요' : ''}</div>
       </div>
       <div class="hero-accts">
         ${tile('kis', 'KIS')}${tile('cma', 'CMA')}${tile('upbit', 'Upbit')}${tile('toss', 'Toss')}
@@ -2272,9 +2274,9 @@ function render(data) {
     { lbl: 'KIS Cash', val: won(cashKRW),
       sub: VIEW.amounts ? '$' + cashUSD.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' USD'
                         : '+ ' + fmtVal(cashUSD, 'USD') + ' in USD' },
-    { lbl: 'Realized YTD', val: unknownPl ? '미확인' : fmtPnl(realCombined, 'KRW'), cls: pnlClass(realCombined), sub: 'KRW ' + fmtPnl(realKRW, 'KRW') + ' + USD ' + fmtPnl(realUSD, 'USD') },
-    { lbl: 'Unrealized', val: fmtPnl(unrealCombined, 'KRW'), cls: pnlClass(unrealCombined), sub: 'KRW ' + fmtPnl(unrealKRW, 'KRW') + ' + USD ' + fmtPnl(unrealUSD, 'USD') },
-    ...(Math.abs(plAdjustment) >= 1 ? [{ lbl: 'P/L adjustments', val: fmtPnl(plAdjustment, 'KRW'), cls: pnlClass(plAdjustment), sub: 'Included in bot total P/L' }] : []),
+    { lbl: 'Realized YTD · 보고값', val: unknownPl ? '미확인' : fmtPnl(realCombined, 'KRW'), cls: pnlClass(realCombined), sub: 'KRW ' + fmtPnl(realKRW, 'KRW') + ' + USD ' + fmtPnl(realUSD, 'USD') },
+    { lbl: 'Unrealized · 보고값', val: unknownPl ? '미확인' : fmtPnl(unrealCombined, 'KRW'), cls: pnlClass(unrealCombined), sub: 'KRW ' + fmtPnl(unrealKRW, 'KRW') + ' + USD ' + fmtPnl(unrealUSD, 'USD') },
+    ...(!unknownPl && Math.abs(plAdjustment) >= 1 ? [{ lbl: 'P/L adjustments', val: fmtPnl(plAdjustment, 'KRW'), cls: pnlClass(plAdjustment), sub: 'Included in bot total P/L' }] : []),
   ] : [
     { lbl: 'KIS Cash', val: '—', sub: 'Waiting for data update' },
     { lbl: 'Realized YTD', val: '—', sub: 'Waiting for data update' },
