@@ -26,6 +26,14 @@ function renderInvestmentPanels(data) {
     `</tbody></table></div>${guide.watch_quality !== 'verified' ? '<p class="guide-footnote">계좌 조회가 미확인입니다. 보유가 없다는 뜻이 아닙니다.</p>' : ''}</div>`;
   app.appendChild(watch);
   const manual = section('manual-guide', '수동 투자 자산의 다음 판단', '현재 비중에서 출발한 제안 · 직접 검토 후 실행');
+  manual.innerHTML += `<article class="guide-report" aria-labelledby="manual-report-title">
+    <div><h3 id="manual-report-title">Manual 투자전략 보고서</h3>
+    <p>보유 5종목의 손익·환율 영향, 유지·축소 조건과 주가·환율 시나리오를 확인하세요.</p>
+    <small>작성 2026-10-11 · 계좌 기준 2026-10-10 23:04 KST · 기준일이 고정된 보고서입니다.</small></div>
+    <div class="guide-report-links">
+      <a href="reports/manual-investment-strategy-2026-10-11.html">투자전략 보고서 보기 →</a>
+      <a href="reports/manual-investment-strategy-2026-10-11.pdf" download>PDF 다운로드 · 8페이지</a>
+    </div></article>`;
   manual.innerHTML += '<div class="guide-manual">' + (guide.manual || []).map(r =>
     `<article class="guide-card"><div class="guide-card-header"><h3>${guideText(r.ticker)}<small>${guideText(r.name)}</small></h3><div class="guide-weight">${fmt(r.weight_pct)}<small>전체 자산 비중</small></div></div>` +
     `<span class="guide-badge">${guideText(r.direction)}</span><p class="guide-proposal">${guideText(r.proposal)}</p><p class="guide-timing">${guideText(r.timing)}</p>` +
