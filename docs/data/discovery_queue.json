@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-10-10T23:05:07.910325+09:00",
+  "generated_at": "2026-10-12T16:15:57.823586+09:00",
   "stats": {
-    "total": 361,
-    "queued": 279,
+    "total": 363,
+    "queued": 281,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-10-10T23:05:07.910223+09:00",
+    "last_gc_at": "2026-10-12T16:15:57.823476+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -10477,6 +10477,63 @@
       "discovered": "2026-10-10",
       "matched_keywords": [
         "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.13126",
+      "source": "arxiv",
+      "title": "MLP-Initialized Reinforcement Learning for Exit Timing in SPX Short-Straddle Portfolios",
+      "authors": [
+        "Jianning Wang",
+        "Robert Ślepaczuk",
+        "Paweł Sakowski"
+      ],
+      "abstract": "This paper studies exit timing for SPX short-straddle portfolios using a two-stage supervised and reinforcement-learning framework. Historical episodes first generate ex-post optimal hold/exit labels for training a multilayer perceptron (MLP) using only contemporaneously available state variables at deployment. The trained MLP then initializes reinforcement-learning actors that are fine-tuned with a risk-aware trading reward. Out-of-sample evaluation over 2024-2026 shows that the supervised MLP substantially outperforms passive holding and representative fixed-time and profit-and-loss-based exit rules. Across seven independent seeds, MLP-initialized Actor-Critic averages 37.54% cumulative return and a Sharpe ratio of 1.705, compared with 35.01% and 1.651 for the supervised MLP. Actor-Critic trained from scratch averages only 0.18% return. These findings show that oracle-guided supervised learning provides a stable foundation for reward-based policy fine-tuning in a sparse and path-dependent option-exit problem.",
+      "categories": [
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2610.13126v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.13126v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-09",
+      "discovered": "2026-10-12",
+      "matched_keywords": [
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.13574",
+      "source": "arxiv",
+      "title": "$L_0$ Feature Selection via Monte Carlo Tree Search in High-Dimensional Financial Regression",
+      "authors": [
+        "Cameron Mouangue",
+        "Tristan Cazenave"
+      ],
+      "abstract": "Feature selection is a central problem in high-dimensional financial regression, where large numbers of engineered variables and strong correlations among predictors reduce model stability and interpretability. $L_1$ regularization (Lasso) is widely used for sparse regression, but its shrinkage can be restrictive when informative signals are spread across correlated variables. Exact sparse regression avoids this shrinkage but requires solving a combinatorial optimization problem that is computationally difficult and is typically fit to minimize in-sample rather than out-of-sample error. This paper presents a feature selection framework based on Monte Carlo Tree Search with Generalized Nested Rollout Policy Adaptation (GNRPA). Feature selection is formulated as a sequential decision process, and candidate subsets are scored by their out-of-sample validation performance rather than training error. The method also supports a lexicographic objective accounting for subset size and multicollinearity. We study this approach on a contemporaneous explanatory regression task: explaining the weekly return of the NASDAQ-100 index from 1,072 engineered features spanning market, macroeconomic, and factor data. This isolates the value of subset selection under multicollinearity from the separate problem of predictive forecasting. On this task, the proposed method identifies sparse feature subsets with higher out-of-sample explanatory power than an optimized Lasso baseline, reaching an out-of-sample $R^2$ of 0.6961 versus 0.6313 for Lasso. These results suggest that Monte Carlo Tree Search is a practical alternative to convex regularization for sparse explanatory feature selection in financial regression, with potential value for factor attribution and risk decomposition where transparency matters as much as out-of-sample fit.",
+      "categories": [
+        "cs.LG",
+        "q-fin.CP",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2610.13574v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.13574v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-09",
+      "discovered": "2026-10-12",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
