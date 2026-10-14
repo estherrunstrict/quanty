@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-10-14T06:30:28.988039+09:00",
+  "generated_at": "2026-10-14T16:15:49.833414+09:00",
   "stats": {
-    "total": 363,
-    "queued": 281,
+    "total": 369,
+    "queued": 287,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-10-14T06:30:28.987931+09:00",
+    "last_gc_at": "2026-10-14T16:15:49.833311+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -10532,6 +10532,181 @@
       "year": 2026,
       "published": "2026-10-09",
       "discovered": "2026-10-12",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.18332",
+      "source": "arxiv",
+      "title": "Portfolio Decarbonization under Incomplete Carbon and Transition Information",
+      "authors": [
+        "Olivier Féron",
+        "Ruben Haalebos"
+      ],
+      "abstract": "We study dynamic portfolio decarbonization under incomplete information about firms' carbon intensities and the underlying transition state. The investor maximizes expected utility of terminal wealth net of a penalty on perceived cumulative financed emissions. Asset returns and carbon intensities depend on a stochastic transition factor, while the investor may need to infer the current transition state, its long-run mean and firms' carbon intensities from market observations and periodic noisy disclosures. The optimal strategy combines a Merton-type component with climate-dependent expected-return adjustments, a direct carbon intensity penalty and intertemporal hedging demands associated with stochastic carbon intensities and learning. In a numerical application, incomplete information has limited effects on welfare and target satisfaction when prior beliefs are well specified. By contrast, biased beliefs generate welfare losses in either direction but asymmetric environmental consequences: optimistic and pessimistic beliefs induce opposite portfolio tilts and therefore affect the probability of exceeding the cumulative emissions target differently.",
+      "categories": [
+        "q-fin.MF",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2610.18332v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.18332v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-13",
+      "discovered": "2026-10-14",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.14959",
+      "source": "arxiv",
+      "title": "AlphaRLM: Aligning Language Models for Literature-Grounded Symbolic Factor Discovery",
+      "authors": [
+        "Jie Huang",
+        "Yuecheng Hong",
+        "Yao Chen",
+        "Hao Zhong",
+        "Linfeng Xiao",
+        "Xudong Liu",
+        "Hao Xia",
+        "Jianxuan Xin"
+      ],
+      "abstract": "Formulaic alpha mining seeks to discover executable expressions that capture predictive market signals in a vast, noisy search space. Recent LLM-based approaches use prompting, iterative search, or seed-factor evolution, leaving direct factor construction through policy learning less explored. To address this, we introduce AlphaRLM, a reinforcement-learning framework that trains LLMs to construct executable symbolic factors from financial literature without input factor expressions. AlphaRLM incorporates Literature-Guided Operator Assembly (LEGO), which conditions factor construction on literature-derived ideas and executable operators, providing semantic priors for exploration. It further aligns the generation policy with market feedback through executable-validity and grouped-return-separation rewards that capture non-monotonic structures across factor quantiles. Extensive experiments on CSI 300, CSI 1000, and S&P 500 show that AlphaRLM outperforms strong factor-mining and LLM-based baselines in annualized excess return. Notably, the 8B model achieves strong cross-market performance, highlighting the promise of literature-conditioned, market-aligned factor generation.",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.LG",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2610.14959v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.14959v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-10",
+      "discovered": "2026-10-14",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.16588",
+      "source": "arxiv",
+      "title": "Demand Under a Mechanical Price: Elasticity and Welfare in Ethereum's Data-Availability Market",
+      "authors": [
+        "Farbod Ghasemlu"
+      ],
+      "abstract": "Ethereum sells data-availability capacity to rollups through \"blobs\" priced by a controller: the blob fee rises and falls exponentially with cumulative usage above or below a target, and no auction sets it. We measure what this mechanical price costs. The Pectra upgrade of 7 May 2025 doubled blob capacity on a date fixed weeks in advance, while the market was congested, and the blob fee fell from 0.82 mETH per blob (about USD 1.40) to its 1-wei floor. Rollups' blob purchases rose 24%. The 95% interval, built from the same estimator at 516 placebo dates, runs from 8% to 40%, so removing the entire price raised purchases by at most 40%. The implied elasticity at the pre-shock price is -0.19, and no value below -0.31 is consistent with the interval. The estimate includes any rise in L2 activity that coincided with the fork, so it bounds the price response from above. With demand this inelastic, the controller works mainly as a transfer. Rollups paid USD 14.8 million in blob fees under the first blob regime, 67% of it in two quarters when capacity was full and any market-clearing mechanism would have collected comparable scarcity rents. Where capacity was slack, the reserve price introduced in December 2025 cost at most 2.6 ETH (USD 8,039) in deadweight loss under the most elastic demand the data allow. Mempool records for 5.4 million blob transactions show that when the fee sits at its floor, capacity is slack: transactions miss about one block and are almost never priced out.",
+      "categories": [
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2610.16588v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.16588v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-12",
+      "discovered": "2026-10-14",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.15256",
+      "source": "arxiv",
+      "title": "Do Rollups Self-Organize? Multi-Agent Reinforcement Learning in the EIP-4844 Blob Fee Market",
+      "authors": [
+        "Alessio Brini"
+      ],
+      "abstract": "EIP-4844 gave Ethereum rollups a separate fee dimension for data, governed by a multiplicative update rule that targets three ``blobs'' per block. Whether this target is reached depends on how many independent, self-interested rollups choose to post data, a question that closed-form models address only for a single agent under exogenous prices or in a static equilibrium. We propose a calibrated multi-agent reinforcement learning environment for the blob fee market in which the blob base fee is endogenous, set by the EIP-4844 rule on the aggregated decisions of heterogeneous rollups fit to post-Dencun Ethereum data. After confirming that the environment reproduces the known single-agent analytical optimum, we show that independent learners, with no convergence guarantee, still settle near the target without coordination ($3.32\\pm0.01$ blobs per block over five seeds). Over a fiftyfold demand range ($10\\times$ to $500\\times$), supply stays at the target from $10\\times$ to $200\\times$ and rises above it at higher demand, where the fee can no longer hold it. Posting frequency increases with rollup size, an emergent analog of the size threshold predicted by prior theory. A costless layer-1 calldata outside option pushes the fee down by roughly an order of magnitude while aggregate supply stays at the target, so the fee rule acts as a negative-feedback controller on decentralized supply.",
+      "categories": [
+        "cs.MA",
+        "cs.GT",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2610.15256v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.15256v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-11",
+      "discovered": "2026-10-14",
+      "matched_keywords": [
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.16663",
+      "source": "arxiv",
+      "title": "Asymmetric $q$-Gaussian Distributions from Tsallis Maximum Entropy",
+      "authors": [
+        "Francesco Cesarone",
+        "Massimiliano Corradini",
+        "Nicolò Giunta",
+        "Serena Rocci"
+      ],
+      "abstract": "Within the framework of non-extensive statistical mechanics, $q$-Gaussian distributions arise as maximum-entropy solutions of Tsallis entropy under suitable escort moment constraints. Although widely used in physics, biology, geology, finance, and related fields, standard $q$-Gaussians are intrinsically symmetric and cannot capture asymmetric fluctuations often observed in empirical data. We ask whether asymmetry can arise from the Tsallis maximum-entropy principle without externally skewing or joining distributions. We show that this is achieved by retaining the Tsallis entropy and imposing a global escort mean together with distinct downside and upside escort semi-variances. The key step is to reformulate the problem of maximum Tsallis entropy in terms of the escort density. The nonlinear escort constraints then become affine, while maximizing Tsallis entropy becomes equivalent to maximizing a strictly concave functional over a convex feasible set. Consequently, any admissible stationary solution is the unique global maximizer of the corresponding variational problem. The finite-sample approximation properties of the proposed asymmetric $q$-Gaussian are studied through Monte Carlo experiments using synthetic data generated from Azzalini skew-Student distributions. Compared with the classical symmetric $q$-Gaussian, the asymmetric specification systematically provides a closer approximation to synthetic asymmetric heavy-tailed distributions. Finally, we fit the model to return series from major equity indices, a commodity, and cryptocurrencies, and compare its in-sample goodness of fit with that of a symmetric $q$-Gaussian. The results show that the asymmetric model offers a closer in-sample description of unconditional return distributions, most clearly in the tails.",
+      "categories": [
+        "q-fin.ST",
+        "cond-mat.stat-mech"
+      ],
+      "url": "https://arxiv.org/abs/2610.16663v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.16663v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-12",
+      "discovered": "2026-10-14",
+      "matched_keywords": [
+        "commodity"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.17304",
+      "source": "arxiv",
+      "title": "Dirichlet sub-mixtures: A new reading of multiplicative background risk models with Pareto margins",
+      "authors": [
+        "Nawaf Mohammed",
+        "Edward Furman"
+      ],
+      "abstract": "Multiplicative background risk models (MBRMs) provide a tractable framework for describing dependent risks. We construct a class of MBRMs with Pareto margins by combining Marshall--Olkin exponential and additive gamma risk factor structures, each allowed to incorporate idiosyncratic and systemic background risk factors. Our main result establishes, under an admissibility condition on the risk factor systems, a finite sub-mixture representation of the joint survival function in terms of Pareto survival functions, whose weights are Dirichlet probabilities of orderings induced by the background risk factors and sum to at most one. This yields a new interpretation of such MBRMs, in which dependence is expressed through Pareto survival functions and their Dirichlet weights. The resulting family encompasses many known multivariate Pareto constructions, is closed under marginalization, and admits characterizations of independence and, under a non-degeneracy condition, of its singular and absolutely continuous parts. It is associated, its covariance decomposition separates the contributions of the two risk factor structures and their interaction, and its joint tails are regularly varying along rays. The presence of asymptotic tail dependence and the decay rates of joint exceedance probabilities are governed by the gamma risk factors alone; the exponential risk factors affect only the tail constants.",
+      "categories": [
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2610.17304v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.17304v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-12",
+      "discovered": "2026-10-14",
       "matched_keywords": [
         "factor"
       ],
