@@ -9,7 +9,10 @@ function renderHfai(data) {
   const labels = {
     UNAVAILABLE: '상태 확인 불가', STALE: '상태 갱신 지연', AUTH_REQUIRED: '모델 인증 대기',
     AUTH_UNVERIFIED: '인증 확인 대기', AUTH_FAILED: '인증 실패', CONFIG_INVALID: '인증 설정 확인 필요',
-    CONNECTION_FAILED: '모델 연결 실패', RESPONSE_INVALID: '모델 응답 검증 실패', CONNECTED: 'API 응답 확인',
+    CONNECTION_FAILED: '모델 연결 실패', RESPONSE_INVALID: '모델 응답 검증 실패', CONNECTED: '모델 응답 확인',
+    REAUTH_REQUIRED: 'ChatGPT 재로그인 필요', PLAN_PERMISSION_REQUIRED: '구독 사용 권한 승인 필요',
+    PLAN_LIMITED: 'ChatGPT 구독 사용 한도 도달', PLAN_UNAVAILABLE: 'ChatGPT 구독 사용 불가',
+    MODEL_SELECTION_REQUIRED: '구독 모델 조회 대기',
     QUOTA_REQUIRED: 'API 크레딧·사용 한도 확인 필요', API_LIMITED: 'API 호출 제한', MODEL_BLOCKED: '모델 호출 대기',
     INPUT_MISSING: '13F·시세 입력 대기', DATA_BLOCKED: '입력 검증 미통과', READY: '게시 시점 입력 검증 통과',
     WAITING_SCHEDULE: '다음 분석 일정 대기', EVALUATING: 'AI 분석 중', EXIT_PENDING: '모의 청산 자료 대기',
@@ -36,7 +39,7 @@ function renderHfai(data) {
     <div><dt>손실 중단 기준</dt><dd>${money(d.loss_stop_krw)}</dd></div>
     <div><dt>모의 누적 손익</dt><dd>${money(d.paper_pnl_krw)}</dd></div>
     <div><dt>실주문</dt><dd>${d.real_orders_sent === 0 ? '0건' : '미확인'}</dd></div></dl>
-    <div class="hfai-readiness"><p><b>모델</b> ${esc(d.model?.name || '미설정')} · ${esc(label(d.model?.status))}
+    <div class="hfai-readiness"><p><b>모델</b> ${esc(d.model?.provider || '제공자 미확인')} · ${esc(d.model?.name || '미설정')} · ${esc(label(d.model?.status))}
     <small>인증 점검 시각: ${esc(at(d.model?.checked_at))}</small></p>
     <p><b>데이터</b> ${esc(label(d.data_status))} · 후보 ${Number.isInteger(d.candidate_count) ? d.candidate_count : '—'}개
     <small>시세 기준: ${esc(at(d.snapshot_at))}</small></p>
