@@ -992,7 +992,7 @@ a { color: var(--accent); text-decoration: none; }
 <body>
 <aside class="portfolio-nav" aria-label="포트폴리오 탐색">
   <div><a class="nav-brand" href="#overview">Quanty.</a><p class="nav-caption">PORTFOLIO JOURNAL<br>복리 성장과 자본 보전</p></div>
-  <nav><a href="#overview">자산 현황</a><a href="#actions">운용 메모</a><a href="#watch">보유·관찰</a><a href="#manual-guide">수동 투자 제안</a><a href="reports/manual-investment-strategy-2026-10-11.html">투자전략 보고서 ↗</a><a href="#operations">실행 상태</a><a href="#bots">전략 상세</a></nav>
+  <nav><a href="#overview">자산 현황</a><a href="#actions">운용 메모</a><a href="#watch">보유·관찰</a><a href="#manual-guide">수동 투자 제안</a><a href="reports/manual-investment-strategy-2026-10-11.html">투자전략 보고서 ↗</a><a href="#operations">실행 상태</a><a href="#hfai">13F · AI 연구 봇</a><a href="#bots">전략 상세</a></nav>
   <p class="nav-foot">잘 관리된 위험 위에<br>긴 시간의 성장을 쌓습니다.</p>
 </aside>
 
@@ -1006,6 +1006,8 @@ a { color: var(--accent); text-decoration: none; }
 </div>
 
 <script src="portfolio_view.js?v=20261011-report"></script>
+<link rel="stylesheet" href="hfai_view.css?v=20261014">
+<script src="hfai_view.js?v=20261014"></script>
 <script>
 // ═══ Chrome backdrop ═══════════════════════════════════════
 // Five soft lobes drifting on incommensurable sine periods, composited
@@ -2253,6 +2255,7 @@ function render(data) {
   }
 
   if (typeof renderInvestmentPanels === 'function') renderInvestmentPanels(data);
+  if (typeof renderHfai === 'function') renderHfai(data.hfai_status);
   // ── Strip
   const strip = h('section', 'strip fade-in d1');
   // This strip is now exactly one thing: where the bot P/L came from, plus the
@@ -2807,14 +2810,15 @@ let refreshTimer = null;
 
 async function load() {
   try {
-    const [res, histRes] = await Promise.all([
+    const [res, histRes, hfaiRes] = await Promise.all([
       // no-store 필수. 기본 캐시로 두면 발행이 끝난 뒤에도 브라우저가 직전
       // 빌드의 JSON 을 그대로 재생한다 — 2026-08-20 19:27 발행 직후에도
       // 열려 있던 탭은 16:00 값(수동 1.85억, 이미 판 빙그레 포함)을 계속
       // 보여줬다. 60초 자동 새로고침도 같은 캐시를 다시 읽으니 소용없다.
       // decision.html 은 처음부터 no-store 였다 — 여기만 빠져 있었다.
       fetch('data/dashboard_data.json', { cache: 'no-store' }),
-      fetch('data/equity_history.json', { cache: 'no-store' }).catch(()=>null)
+      fetch('data/equity_history.json', { cache: 'no-store' }).catch(()=>null),
+      fetch('data/hfai_status.json', { cache: 'no-store' }).catch(()=>null)
     ]);
     if (!res.ok) throw new Error(res.status);
     const data = await res.json();
@@ -2822,6 +2826,7 @@ async function load() {
       const eqData = await histRes.json();
       if (!data.equity_series) data.equity_series = eqData;
     }
+    data.hfai_status = hfaiRes && hfaiRes.ok ? await hfaiRes.json().catch(()=>null) : null;
     LAST_DATA = data;
     render(data);
   } catch (e) {
