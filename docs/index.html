@@ -992,7 +992,7 @@ a { color: var(--accent); text-decoration: none; }
 <body>
 <aside class="portfolio-nav" aria-label="포트폴리오 탐색">
   <div><a class="nav-brand" href="#overview">Quanty.</a><p class="nav-caption">PORTFOLIO JOURNAL<br>복리 성장과 자본 보전</p></div>
-  <nav><a href="#overview">자산 현황</a><a href="#actions">운용 메모</a><a href="#watch">보유·관찰</a><a href="#manual-guide">수동 투자 제안</a><a href="reports/manual-investment-strategy-2026-10-11.html">투자전략 보고서 ↗</a><a href="#operations">실행 상태</a><a href="#hfai">13F · AI 연구 봇</a><a href="#bots">전략 상세</a></nav>
+  <nav><a href="#overview">자산 현황</a><a href="#actions">운용 메모</a><a href="#watch">보유·관찰</a><a href="#manual-guide">수동 투자 제안</a><a href="reports/manual-investment-strategy-2026-10-11.html">투자전략 보고서 ↗</a><a href="#operations">실행 상태</a><a href="#bots">전략 상세</a></nav>
   <p class="nav-foot">잘 관리된 위험 위에<br>긴 시간의 성장을 쌓습니다.</p>
 </aside>
 
@@ -1006,8 +1006,8 @@ a { color: var(--accent); text-decoration: none; }
 </div>
 
 <script src="portfolio_view.js?v=20261011-report"></script>
-<link rel="stylesheet" href="hfai_view.css?v=20261014">
-<script src="hfai_view.js?v=20261014"></script>
+<link rel="stylesheet" href="hfai_view.css?v=20261014-peer">
+<script src="hfai_view.js?v=20261014-peer"></script>
 <script>
 // ═══ Chrome backdrop ═══════════════════════════════════════
 // Five soft lobes drifting on incommensurable sine periods, composited
@@ -2103,13 +2103,15 @@ function render(data) {
   }
   const app = $('#app');
   app.innerHTML = '';
+  // Presentation rows only: financial summaries continue to read data.strategies.
+  const strategyRows = typeof hfaiStrategyRows === 'function' ? hfaiStrategyRows(data.strategies) : data.strategies;
 
   // ── Header
   const hdr = h('header', 'hdr fade-in');
   hdr.innerHTML = `
     <h1>Portfolio <em>Journal</em></h1>
     <div class="hdr-right">
-      <span class="hdr-meta"><span class="live-dot"></span>${data.strategies.filter(s => s.id !== 'manual').length} strategies</span>
+      <span class="hdr-meta"><span class="live-dot"></span>${strategyRows.filter(s => s.id !== 'manual').length} strategies</span>
       <span class="hdr-meta">${data.meta.kst}</span>
       <button class="refresh-btn view-btn${VIEW.amounts ? ' on' : ''}" onclick="setView(${VIEW.amounts ? 'false' : 'true'})" title="${VIEW.amounts ? 'Hide the balances — show every figure as a share of total capital' : 'Show the actual balances'}">${VIEW.amounts ? '% Relative view' : '₩ Show amounts'}</button>
       <a class="refresh-btn" href="pipeline.html" style="text-decoration:none">→ Pipeline</a> <a class="refresh-btn" href="decision.html" style="text-decoration:none">→ Decision Center</a>
@@ -2255,7 +2257,7 @@ function render(data) {
   }
 
   if (typeof renderInvestmentPanels === 'function') renderInvestmentPanels(data);
-  if (typeof renderHfai === 'function') renderHfai(data.hfai_status);
+  if (typeof renderHfaiOperation === 'function') renderHfaiOperation(data.hfai_status);
   // ── Strip
   const strip = h('section', 'strip fade-in d1');
   // This strip is now exactly one thing: where the bot P/L came from, plus the
@@ -2333,19 +2335,23 @@ function render(data) {
   // time. Outside the .strats grid so it is a paragraph, not a card.
   const intro = h('div', 'strats-intro');
   intro.innerHTML =
-    '카드 하나가 자동매매 봇 하나입니다. 각 봇은 정해진 규칙대로 스스로 사고팔며, 서로 다른 시장과 계좌에서 ' +
-    '독립적으로 움직입니다. <b>Invested</b> 투입한 원금 · <b>Budget Cap</b> 이 봇에 허용된 최대 금액 · ' +
+    '카드 하나가 운용 전략 하나입니다. Live·Testing·Paper·관찰 표시는 각 전략의 현재 실행 모드입니다. ' +
+    '모의 운용 금액과 손익은 카드에 표시하며 실제 계좌 합계에 포함하지 않습니다. <b>Invested</b> 투입한 원금 · <b>Budget Cap</b> 이 봇에 허용된 최대 금액 · ' +
     '<b>Market Value</b> 지금 평가액 · <b>Unrealized</b> 아직 팔지 않은 포지션의 평가손익 · ' +
     '<b>Realized YTD</b> 올해 확정한 손익(거래 수) · <b>Total P/L</b> 둘을 합친 올해 손익 · ' +
     '<b>Profit %</b> 한도 대비 수익률 · <b>Win Rate</b> 이긴 거래의 비율(사이클 수) · ' +
     '<b>BT</b> 백테스트(과거 데이터로 시험한) 수치 · <b>MDD</b> 최대 낙폭.' +
-    (VIEW.amounts ? '' : ' 금액 자리는 모두 총자본 대비 비율(%)입니다.');
+    (VIEW.amounts ? '' : ' 실제 운용 금액은 총자본 대비 비율(%)이며, 모의 금액의 비율 기준은 해당 카드에 표시합니다.');
   stratsWrap.appendChild(intro);
 
   const strats = h('section', 'strats fade-in d2');
   strats.id = 'bots';
 
-  data.strategies.forEach(s => {
+  strategyRows.forEach(s => {
+    if (s.id === 'toss_hfai' && typeof renderHfai === 'function') {
+      renderHfai(data.hfai_status, strats);
+      return;
+    }
     const isManual = s.id === 'manual';
     const card = h('div', isManual ? 'strat manual' : 'strat');
     // Identity rail. Same colour as this bot's chart line, allocation dot
