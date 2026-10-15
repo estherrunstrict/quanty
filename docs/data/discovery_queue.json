@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-10-15T06:30:26.324490+09:00",
+  "generated_at": "2026-10-15T16:16:13.128957+09:00",
   "stats": {
-    "total": 369,
-    "queued": 287,
+    "total": 371,
+    "queued": 289,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-10-15T06:30:26.324388+09:00",
+    "last_gc_at": "2026-10-15T16:16:13.128846+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -10709,6 +10709,62 @@
       "discovered": "2026-10-14",
       "matched_keywords": [
         "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.20037",
+      "source": "arxiv",
+      "title": "Data-Driven Dynamic Portfolio Selection with Vine Copula Simulation and Reinforcement Learning",
+      "authors": [
+        "Gabriël M. J. Gelissen",
+        "Fengyi Yuan"
+      ],
+      "abstract": "We develop a data-driven approach to dynamic portfolio selection that combines vine-copula simulation with reinforcement learning. The investor has constant relative risk aversion and maximises expected terminal utility with a running penalty on the conditional value-at-risk (CVaR) of one-period losses. We estimate a conditional vine model from historical returns and use it to generate joint scenarios for CVaR evaluation and conditional paths for training a recurrent portfolio policy. Under uniform local derivative bounds, we propagate edgewise pair-copula parameter errors through the conditional transforms to obtain power-law stability bounds in Hellinger distance and total variation. In a finite-horizon investment model, we combine these estimates with a marginal and structural approximation budget to bound policy values, optimal values and the true-market loss of policies selected under a fitted model, with separate simulation and numerical optimisation terms. On a seven-asset panel comprising US and Chinese equities and gold, the selected ensemble of ten trained policies achieves a compound annual growth rate of 34.13% and a Sharpe ratio of 2.31 over 22 complete monthly holding periods, exceeding the corresponding values of six classical and vine-based benchmarks. Combining simulated and historical training data reduces monthly target-to-target turnover by 41.5% relative to training on historical data alone, while maintaining comparable growth.",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2610.20037v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.20037v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-14",
+      "discovered": "2026-10-15",
+      "matched_keywords": [
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.20366",
+      "source": "arxiv",
+      "title": "Regime Detection in Latent Factor Models -- A Bayesian Decision-Theoretic Approach",
+      "authors": [
+        "Karl Kristian Engelund"
+      ],
+      "abstract": "Regime-switching multi-factor models are widely used in quantitative finance, but filtering does not by itself determine when an agent should act on inferred regime changes. We formulate online regime detection with latent factors and hidden regimes as a Bayesian decision problem balancing false alarms, detection delay, and misclassification. Since posterior regime probabilities are generally non-Markovian, the problem is represented as a measure-valued optimal stopping problem and approximated using particle filtering with Monte Carlo dynamic programming. A single-change-point Heston model provides a benchmark. With observed variance, the problem reduces to a two-dimensional Markov free-boundary problem, while under latent variance decisions are based on the filtered posterior measure. Numerical experiments in Heston and regime-switching Vasicek models show that the latent-information procedure can outperform feasible plug-in rules.",
+      "categories": [
+        "q-fin.MF",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2610.20366v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.20366v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-14",
+      "discovered": "2026-10-15",
+      "matched_keywords": [
+        "factor",
+        "regime",
+        "regime detection"
       ],
       "status": "queued",
       "ingested_into": null,
