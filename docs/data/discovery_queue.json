@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-10-16T06:30:42.325981+09:00",
+  "generated_at": "2026-10-16T16:15:55.616283+09:00",
   "stats": {
-    "total": 371,
-    "queued": 289,
+    "total": 374,
+    "queued": 292,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-10-16T06:30:42.325878+09:00",
+    "last_gc_at": "2026-10-16T16:15:55.616177+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -10765,6 +10765,105 @@
         "factor",
         "regime",
         "regime detection"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.21057",
+      "source": "arxiv",
+      "title": "Loss-versus-rebalancing with external proportional transaction costs",
+      "authors": [
+        "Masaaki Fukasawa"
+      ],
+      "abstract": "We study liquidity provision in automated market makers when trading in the external market incurs proportional transaction costs. We consider both separately collected fees and fees retained in reserves. The benchmark is a self-financing strategy holding the same total risky inventory and trading at the external bid and ask. Under continuous external prices and pure arbitrage, the pool and benchmark have identical liquidation wealth whenever the pool fee or the external spread is positive. Thus loss-versus-rebalancing relative to this transaction-cost benchmark is zero, even without a pool fee if the external spread is positive. We then construct retained-fee utility-indifference pools that implement admissible decreasing inventory schedules, and geometric mean pools that implement feasible constant no-trade boundaries for portfolio weights. These results offer an investment interpretation of liquidity provision: by choosing the pool design, a liquidity provider can specify a trading strategy whose rebalancing is carried out by arbitrageurs.",
+      "categories": [
+        "q-fin.MF",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2610.21057v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.21057v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-15",
+      "discovered": "2026-10-16",
+      "matched_keywords": [
+        "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.21491",
+      "source": "arxiv",
+      "title": "NEST: Stale-Robust Tokenized-Stock Measurement for a Crypto-Treasury LETF Stack",
+      "authors": [
+        "Doohwi Cha",
+        "Minsuk Sung",
+        "Minjae Lee",
+        "Hyeonjun Yeo",
+        "Hanhee Kim",
+        "Seunghan Son",
+        "Donghwa Seo",
+        "Juyeong Lee"
+      ],
+      "abstract": "Tokenized equities trade while listed markets are closed, so their marks could improve off-hours measurement along layered exposures that link Bitcoin, crypto-treasury stocks, and leveraged ETFs. A token return and the next opening gap, however, share the price move from the previous close to the token mark, so part of their apparent fit is mechanical. We develop NEST, a stale-robust protocol that separates this shared-history fit from conditional measurement value. A shared-history identity and a variance-clock bound show how much fit timing alone can generate. The partial determination index (PDI), the squared partial correlation between token and gap given public controls, measures what remains, and a finite-sample frontier expresses the partial-F decision in PDI units. Product, provenance, timestamp, and execution audits decide whether an informative mark is admissible. For MSTRx, a tracker certificate on MicroStrategy (MSTR), a token-only $R^2$ of 0.916 shrinks to a modest increment once Bitcoin, mark age, and a pre-09:00 MSTR premarket proxy are controlled: the token explains 15.7% of the remaining gap variation (1% frontier 0.031), and 14.0% to 17.0% under stricter clock variants, including one in which every token mark precedes 09:00. A trade-level reconstruction on Gate gives 25.2%; NVDAX and AAPLX clear their frontiers, whereas TSLAX does not. An admitted mark updates, rather than replaces, BTC-unit exposure diagnostics for the BTC-MSTR-LETF chain.",
+      "categories": [
+        "q-fin.TR",
+        "cs.CR"
+      ],
+      "url": "https://arxiv.org/abs/2610.21491v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.21491v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-15",
+      "discovered": "2026-10-16",
+      "matched_keywords": [
+        "ETF"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.21081",
+      "source": "arxiv",
+      "title": "StochLOB: Heavy-Tailed Score Matching for Robust Limit Order Book Trend Prediction",
+      "authors": [
+        "Arshia Abolghasemi",
+        "Seyed Reza Tavakoli",
+        "Parsa Naderi",
+        "Nazanin Mirzaei",
+        "Behrad Jahani",
+        "Saba Yousefzadeh",
+        "Tahereh Javaheri",
+        "Mohammad Hosein Rohban",
+        "Gholamali Aminian",
+        "Ali Habibnia"
+      ],
+      "abstract": "Score-based diffusion methods usually perturb data with Brownian Gaussian noise, corresponding to a light-tailed forward stochastic differential equation (SDE). For market time series this SDE can be a poor abstraction: limit order book (LOB) order flow is heavy-tailed, bursty, and occasionally jump-like. We study STOCHLOB, a training-only score-matching framework that changes the forward diffusion corruption law while leaving the deployed predictor deterministic. Instead of Brownian-only Gaussian corruption, the noising process uses two non-Gaussian SDE-inspired alternatives: jump-Lévy noise through a compound-Poisson variance mixture, and clipped $α$-stable noise through a positive-stable Gaussian scale mixture. These corruptions inject finite jumps and heavy-tailed residuals into training without requiring reverse-time diffusion sampling at inference. The resulting score target has a useful interpretation: its radial factor $h_t(r)$ is the posterior expected corruption precision, so large residuals are weighted according to the latent corruption scale that most plausibly generated them. On chronologically held-out Coinbase LOB data, the proposed variants remain competitive on uncorrupted BTC and altcoin test horizons and improve several realized tail-window stress diagnostics. An exploratory Feishu A-share transfer study further tests whether the probability outputs remain usable under transaction costs and trading-rule constraints. Code and configuration files are available at https://github.com/ArshiAbolghasemi/Penny.",
+      "categories": [
+        "cs.LG",
+        "q-fin.TR",
+        "stat.ML"
+      ],
+      "url": "https://arxiv.org/abs/2610.21081v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.21081v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-15",
+      "discovered": "2026-10-16",
+      "matched_keywords": [
+        "factor",
+        "transaction cost"
       ],
       "status": "queued",
       "ingested_into": null,
