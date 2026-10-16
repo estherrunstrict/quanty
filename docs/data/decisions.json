@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-16T16:15:48.724062+09:00",
+  "generated_at": "2026-10-17T06:30:22.128171+09:00",
   "portfolio_constraints": {
     "max_single_bot_pct": 40,
     "max_leverage": 1.5,
@@ -30,13 +30,13 @@
       "level": "error",
       "bot": "usa-quant40",
       "title": "Stale data — USA Quant40 (\"Quant Replacing the 40\")",
-      "body": "Last update 30.7d ago vs 4d threshold for a weekday cadence. Check the server cron log."
+      "body": "Last update 31.3d ago vs 4d threshold for a weekday cadence. Check the server cron log."
     },
     {
       "level": "info",
       "bot": "usa-quant40",
       "title": "Peak-to-trough vs backtest — USA Quant40 (\"Quant Replacing the 40\")",
-      "body": "MDD = ₩3,776,660 (14.5% of capital); backtest_mdd = 20.4%. Currently at 71% of backtest worst — early warning, still below the 100% warn threshold. Window: 118d; worst single day: ₩-2,133,190."
+      "body": "MDD = ₩3,776,660 (14.7% of capital); backtest_mdd = 20.4%. Currently at 72% of backtest worst — early warning, still below the 100% warn threshold. Window: 118d; worst single day: ₩-2,133,190."
     },
     {
       "level": "warn",
@@ -139,8 +139,8 @@
       "capital_pct_source": "computed",
       "dashboard_id": "btc_vb",
       "wiki_path": "quanty-wiki/bots/btc-vb.md",
-      "last_update": "2026-10-16",
-      "days_since_update": 0.7,
+      "last_update": "2026-10-17",
+      "days_since_update": 0.3,
       "period_pl_krw": 726260.5700000001,
       "mdd_pl_krw": 548719.5,
       "best_day_krw": 903679.24,
@@ -166,8 +166,8 @@
       "capital_pct_source": "computed",
       "dashboard_id": "claude_bot",
       "wiki_path": "quanty-wiki/bots/claude-trading-bot.md",
-      "last_update": "2026-10-15T22:32:25.512882",
-      "days_since_update": 0.7,
+      "last_update": "2026-10-16T22:32:19.813583",
+      "days_since_update": 0.3,
       "period_pl_krw": -299197.8,
       "mdd_pl_krw": 1959682.7999999998,
       "best_day_krw": 1112445.6,
@@ -220,8 +220,8 @@
       "capital_pct_source": "manual",
       "dashboard_id": "hybrid_vb",
       "wiki_path": "quanty-wiki/bots/hybrid-vb.md",
-      "last_update": "2026-10-15T09:31:43.819469-04:00",
-      "days_since_update": 0.7,
+      "last_update": "2026-10-16T09:31:43.421662-04:00",
+      "days_since_update": 0.3,
       "period_pl_krw": -4626194.4,
       "mdd_pl_krw": 8045124.51,
       "best_day_krw": 2092929.9999999998,
@@ -243,12 +243,12 @@
       "verdict": "keep",
       "schedule": "09:30 ET weekdays (+30s delay)",
       "paper_source": "[[jd-wealth-research-strategy]]",
-      "capital_allocated_pct": 26.8,
+      "capital_allocated_pct": 26.1,
       "capital_pct_source": "computed",
       "dashboard_id": "jd_strategy",
       "wiki_path": "quanty-wiki/bots/jd-strategy.md",
-      "last_update": "2026-10-15T22:31:00.618000",
-      "days_since_update": 0.7,
+      "last_update": "2026-10-16T22:31:02.018231",
+      "days_since_update": 0.3,
       "period_pl_krw": 854104.44,
       "mdd_pl_krw": 1347807.1099999999,
       "best_day_krw": 1596189.37,
@@ -260,9 +260,9 @@
       "backtest_window": "11.6y (2015-01..2026-08-21) via backtest_jd_strategy.py, first authored 2026-08-22 (453 trades, $10k->$47.8k). Raw log: docs/backtest_logs/2026-08-22/jd_strategy.txt. Deployed spec incl. the 50-plan config quirk; world-#1 ticker is a hand-coded crossover timeline (AAPL-fixed robustness run agrees: 14.9/36.9). The overlay gives up 6.7%p CAGR vs holding the same stocks (21.1%) without reducing MDD (36.9 vs 36.1) — Sharpe-equivalent to SPY B&H (0.87 vs 0.83).",
       "realized_sharpe_annualized": 0.62,
       "realized_sharpe_ci_low_95": 0.43,
-      "realized_mdd_pct": 4.15,
+      "realized_mdd_pct": 4.27,
       "sharpe_decay": 0.72,
-      "mdd_excess": 0.11
+      "mdd_excess": 0.12
     },
     "korea-etf-momentum": {
       "title": "Korea ETF Momentum Rotation",
@@ -275,7 +275,7 @@
       "dashboard_id": "korea_etf",
       "wiki_path": "quanty-wiki/bots/korea-etf-momentum.md",
       "last_update": "2026-10-16T09:00:35.711606+09:00",
-      "days_since_update": 0.3,
+      "days_since_update": 0.9,
       "period_pl_krw": -4535370.0,
       "mdd_pl_krw": 6429870.0,
       "best_day_krw": 2304975.0,
@@ -328,8 +328,8 @@
       "capital_pct_source": "computed",
       "dashboard_id": "dual_momentum",
       "wiki_path": "quanty-wiki/bots/modified-dual-momentum.md",
-      "last_update": "2026-10-15T22:31:26.605482",
-      "days_since_update": 0.7,
+      "last_update": "2026-10-16T22:31:32.608412",
+      "days_since_update": 0.3,
       "period_pl_krw": -1501771.2000000002,
       "mdd_pl_krw": 1936802.4,
       "best_day_krw": 428351.99999999994,
@@ -432,12 +432,12 @@
       "verdict": "watch",
       "schedule": "09:30 ET weekdays",
       "paper_source": "home-grown",
-      "capital_allocated_pct": 21.5,
+      "capital_allocated_pct": 21.3,
       "capital_pct_source": "computed",
       "dashboard_id": "quant40",
       "wiki_path": "quanty-wiki/bots/usa-quant40.md",
       "last_update": "2026-09-15T22:30:24.608895",
-      "days_since_update": 30.7,
+      "days_since_update": 31.3,
       "period_pl_krw": 1241240.7200000002,
       "mdd_pl_krw": 3776660.2699999996,
       "best_day_krw": 2030932.2,
@@ -449,9 +449,9 @@
       "backtest_window": "5.6y (2021-01..2026-08) via scripts/backtest_strategy.py, first persisted run 2026-08-22 (394 trades, $25k->$42.1k). Raw log: docs/backtest_logs/2026-08-22/quant40.txt. Realized Sharpe 7.35-over-22-days now has an anchor: backtest Sharpe is 0.87, so the live figure is luck until proven otherwise.",
       "realized_sharpe_annualized": 0.41,
       "realized_sharpe_ci_low_95": 0.22,
-      "realized_mdd_pct": 14.52,
+      "realized_mdd_pct": 14.68,
       "sharpe_decay": 0.47,
-      "mdd_excess": 0.71
+      "mdd_excess": 0.72
     },
     "usvb": {
       "title": "USVB (Toss US night volatility breakout)",
@@ -584,7 +584,7 @@
       "sharpe_ci_high_95": -0.76,
       "var_95_1d_krw": -2255347,
       "diversification_ratio": 0.13,
-      "effective_n_bets": 2.59
+      "effective_n_bets": 2.6
     },
     "per_bot": {
       "btc-vb": {
@@ -609,7 +609,7 @@
         "sharpe_annualized": 0.41,
         "sharpe_ci_low_95": 0.22,
         "sharpe_ci_high_95": 0.6,
-        "weight": 0.215
+        "weight": 0.213
       },
       "jd-strategy": {
         "daily_pnl_krw_mean": 7300.04,
@@ -617,7 +617,7 @@
         "sharpe_annualized": 0.62,
         "sharpe_ci_low_95": 0.43,
         "sharpe_ci_high_95": 0.82,
-        "weight": 0.268
+        "weight": 0.261
       },
       "modified-dual-momentum": {
         "daily_pnl_krw_mean": -12835.65,
@@ -727,11 +727,11 @@
           },
           "usa-quant40": {
             "sharpe": 0.41,
-            "weight": 0.215
+            "weight": 0.213
           },
           "jd-strategy": {
             "sharpe": 0.62,
-            "weight": 0.268
+            "weight": 0.261
           },
           "modified-dual-momentum": {
             "sharpe": -0.86,
