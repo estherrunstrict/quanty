@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-10-17T06:30:24.910407+09:00",
+  "generated_at": "2026-10-19T16:16:28.121739+09:00",
   "stats": {
-    "total": 374,
-    "queued": 292,
+    "total": 377,
+    "queued": 295,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-10-17T06:30:24.910257+09:00",
+    "last_gc_at": "2026-10-19T16:16:28.121606+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -10864,6 +10864,129 @@
       "matched_keywords": [
         "factor",
         "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.23749",
+      "source": "arxiv",
+      "title": "From Alpha to Execution: Trading Horizons, Regimes, and Schedules under Concave Impact and Hurst Scaling",
+      "authors": [
+        "Dnyanesh Kulkarni",
+        "Revant Nayar"
+      ],
+      "abstract": "Classical execution models assume linear impact, diffusive prices, and an exogenous horizon. We study execution under concave power-law impact and Hurst-scaled price fluctuations, and make two contributions. First, we choose the execution horizon by maximizing the Sharpe ratio of the trade's realized P&L. Price moves during the execution window are part of that P&L, so executing more slowly reduces its variance, and because impact is concave it can also lower cost per share. Urgency comes only from alpha realized while the order is being worked. The problem is governed by the signs of two quantities: (i) the duration elasticity of impact $a$, which under a structural prior equals the impact-persistence gap $β- H$ and can take either sign; and (ii) the net urgency $ν$, the rate of alpha realization net of exposure relief. When $ν$ keeps its sign over the window, an interior optimum exists, to leading order in $T/t_f$, only when both are positive; otherwise the order should be worked at the fastest or slowest admissible pace. In the interior regime the first-order condition involves no impact coefficient, order size or volume, and the objective is flat: for a large-cap example, the window within 1% of maximal Sharpe spans more than an order of magnitude. Second, given the window, we derive the schedule shape by convex programming under an envelope cost. For any increasing per-share cost of delay $w(t)$, the KKT solution is $φ\\propto (λ- w(t))_+^{1/β}$. For a Hurst-scaled envelope $w \\propto t^H$, the normalized schedule depends only on $(β, H)$, has a closed form via the incomplete beta function, is front-loaded, and tapers smoothly to zero, saving 10-17% of envelope cost relative to a constant-rate (TWAP) schedule of equal duration. Whether it uses the whole window depends on a single dimensionless robustness level, for which we give a calibration.",
+      "categories": [
+        "q-fin.TR",
+        "math.OC",
+        "q-fin.MF",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2610.23749v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.23749v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-16",
+      "discovered": "2026-10-19",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.23619",
+      "source": "arxiv",
+      "title": "Cross-product Modelling in Continuous Intraday Electricity Markets via Hawkes Processes",
+      "authors": [
+        "Ayoub Jhabli",
+        "Tarek Alskaif",
+        "Kwabena E. Bennin",
+        "Bedir Tekinerdogan",
+        "Joost M. E. Pennings"
+      ],
+      "abstract": "As renewable energy integration accelerates, intraday continuous (IDC) electricity markets have become essential for short-term balancing. However, the simultaneous trading of overlapping contracts with varying granularities creates complex, hidden liquidity dependencies that are critical to market stability but remain poorly understood. This paper proposes a multivariate State-Dependent Hawkes Process (SDHP) to model cross-product liquidity dynamics between Quarter-Hourly and Hourly IDC contracts. To determine how cross-product effects vary under different market conditions, we classify the trading sessions into two distinct regimes: 'Normal' and 'Stressed', based on a composite metric of the bid-ask spread, mid-price volatility and queue imbalance. The model is calibrated on the first month of each quarter of 2024 using level 3 limit order book (LOB) data from the Dutch EPEX SPOT IDC market. We find that order flow is overwhelmingly self-driven, with roughly 95\\% of orders arriving in reaction to earlier orders in both regimes. Cross-excitation runs mainly from the Quarter-Hourly to the Hourly contract, but this leadership weakens under stress: the ratio of cumulative cross-excitation falls from 2.8 to 1.5, so the two contracts influence each other almost equally. Stress also makes the Quarter-Hourly to Hourly channel much faster, cutting its mean lag from 6.05 to 0.93 seconds. The strong seasonal variation found in calm periods largely disappears under stress, where all four months converge to the same structure.",
+      "categories": [
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2610.23619v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.23619v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-16",
+      "discovered": "2026-10-19",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.22522",
+      "source": "arxiv",
+      "title": "Agentic AI in Automated Markets",
+      "authors": [
+        "Irene Aldridge",
+        "Lourenco Belleau-Bhowmik",
+        "James Chan",
+        "Josh Chang",
+        "Kelly Deng",
+        "Pranav Dhingra",
+        "Xinda Ding",
+        "Haodong Fang",
+        "Satya Hanumanchi",
+        "Carter He",
+        "Shuang He",
+        "Yadong Hou",
+        "Vallab Karanam",
+        "Rithvik Kasarla",
+        "Tishya Khanna",
+        "Jihyun Kim",
+        "Sarah Konety",
+        "Abhinav Kotta",
+        "Anderson Lo",
+        "Jake Luther",
+        "Omar Mian",
+        "Ishan Patwardhan",
+        "Matteo Perona",
+        "Chenyue Qi",
+        "Shashank Ramachandran",
+        "Shubham Rateria",
+        "Jake Swain",
+        "David Thai",
+        "Michael Twersky",
+        "Susan Wu",
+        "Dean Xu",
+        "Helenna Yin",
+        "Jiachun Zheng"
+      ],
+      "abstract": "Automated markets increasingly host autonomous, learning trading agents and are powered by formulaic automated market makers (AMMs). We study how heterogeneous agent behavior shapes stress, risk-adjusted performance, liquidity, and volatility in these types of markets. Three behavioral archetypes are modeled as agentic reinforcement learning (RL) systems: a rational arbitrageur, a manipulator, and a retail herd-follower. Each archetype is defined by its reward function within a common, asset-agnostic exposure-control environment, and each is trained with a value-based Deep Q-Network (DQN) and with REINFORCE using a learned baseline. A pilot on hourly cryptocurrency data (AAVE, ETC, SUI) motivates the hypotheses. Herd-followers produce the most frequent but shortest stress episodes, manipulators the fewest but most persistent, and rational agents the most stable rolling Sharpe ratios despite higher return volatility. SHAP attributions tie these patterns to drawdown and cross-asset signals, short-term volatility and position state, and momentum, respectively. The results motivate behavior-specific regulation rather than uniform limits on volatility or turnover.",
+      "categories": [
+        "econ.EM",
+        "cs.ET",
+        "q-fin.RM",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2610.22522v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.22522v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-15",
+      "discovered": "2026-10-19",
+      "matched_keywords": [
+        "momentum",
+        "reinforcement learning",
+        "drawdown"
       ],
       "status": "queued",
       "ingested_into": null,
