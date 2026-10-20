@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-10-20T06:30:27.230153+09:00",
+  "generated_at": "2026-10-20T16:15:55.430162+09:00",
   "stats": {
-    "total": 377,
-    "queued": 295,
+    "total": 384,
+    "queued": 302,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-10-20T06:30:27.230039+09:00",
+    "last_gc_at": "2026-10-20T16:15:55.430049+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -10987,6 +10987,225 @@
         "momentum",
         "reinforcement learning",
         "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.26456",
+      "source": "arxiv",
+      "title": "Regime-Aware Interpretable Ranking for Sector Rotation",
+      "authors": [
+        "Kelvin J. L. Koa",
+        "Ziling Liu",
+        "Xinyang Li",
+        "Shuowei Feng",
+        "Ruoyu Liang",
+        "Mathieu Giroux",
+        "Eugene Y. Wen",
+        "Xuan Yao",
+        "Ke-Wei Huang",
+        "Hugo Lamarre"
+      ],
+      "abstract": "Sector rotation is a common decision in benchmark-relative portfolio management, where portfolio managers rank sectors for overweight and underweight positions. We formulate this task as ranking sector actions by expected future risk-adjusted active performance, measured with forward sector-benchmark Sharpe ratios. Such rankings should preserve temporal information, express model outputs through economically familiar signal characteristics, account for changes in signal relevance across macroeconomic environments, and capture dependencies among sectors. We propose RegimeRank, an interpretable sector-ranking model that represents fundamental and technical signals through expert-defined temporal characteristics, conditions them on learned macro factors via cross-attention, and models cross-sector dependencies through self-attention. Expected-gradient attributions identify the contributions of individual signal-transformation pairs, while macroeconomic and cross-sector attention maps provide diagnostics of the learned conditioning and relational structure. We evaluate RegimeRank on weekly S&P 500 data from 2002 to 2024 under combinatorial purged cross-validation, where it outperforms representative ranking and machine-learning baselines across multiple ranking metrics. Ablation studies support the contributions of latent macro states, regime conditioning, and cross-sector modelling, while attribution and attention analyses illustrate the temporal characteristics, macro states, and sector relationships underlying its rankings.",
+      "categories": [
+        "q-fin.PM",
+        "cs.LG",
+        "q-fin.CP"
+      ],
+      "url": "https://arxiv.org/abs/2610.26456v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.26456v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-19",
+      "discovered": "2026-10-20",
+      "matched_keywords": [
+        "factor",
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.24558",
+      "source": "arxiv",
+      "title": "Optimal Trading Filters and the Value of Predictive Signals",
+      "authors": [
+        "Matteo Smerlak"
+      ],
+      "abstract": "The value of a forecast depends on its accuracy, but also on its actionability. In trading, an investor must translate return forecasts into positions while accounting for trading costs and the lingering impact of earlier trades. We solve the stationary quadratic trading problem with transient price impact using tools from prediction theory: Wiener-Hopf factorization gives the optimal policy as the composition of a conditional forecast and an explicit causal linear filter. We recover the Gârleanu-Pedersen aim-portfolio under exponential resilience and derive fractional trading filters under power-law impact decay, requiring memory beyond finite-dimensional LQR control. At fixed positive risk penalty, signals of equal instantaneous predictive strength have equal frictionless Markowitz value. With trading costs, net attainable value is determined by the mean square of the friction-weighted conditional forecast. Under power-law impact with exposure bleeding, we find an intermediate optimal mean-reversion rate for Ornstein-Uhlenbeck signals.",
+      "categories": [
+        "q-fin.MF",
+        "math.OC",
+        "physics.soc-ph",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2610.24558v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.24558v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-17",
+      "discovered": "2026-10-20",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.24544",
+      "source": "arxiv",
+      "title": "Rachev-Ratio Portfolio Optimization with TimeGAN Scenarios: Replacement versus Supplementation",
+      "authors": [
+        "Yifan He"
+      ],
+      "abstract": "This study evaluates the reliability and investment consequences of scenarios from a specified time-series generative adversarial network (TimeGAN) in Rachev-ratio portfolio allocation. Using 12 exchange-traded funds, we compare historical, replacement and hybrid policies across five training seeds with delayed execution and transaction costs. Synthetic probability mass varies independently of draw count under a fixed training protocol; optimal generator fidelity is not assumed. Generated scenarios understate volatility and tail losses and distort dependence. Limited longer-training diagnostics improve reconstruction loss without improving cross-asset correlation accuracy. Higher-mass hybrids earn larger average net returns in some configurations, but all conditional generated-versus-historical return intervals include zero at the reference block length. Full-period TimeGAN means exceed resampling controls, while direct paired return, Sharpe and realized-tail-ratio intervals include zero. Replacement raises turnover and is sensitive to the modified objective's denominator floor; changing that floor does not uniformly improve realized downside risk. Exploratory generation-error associations do not identify a causal investment-performance channel. The results illustrate financial model risk from the interaction of imperfect scenarios and a tail-sensitive allocation criterion, supporting joint evaluation of fidelity, numerical behavior and realized outcomes within the tested implementation.",
+      "categories": [
+        "q-fin.PM",
+        "q-fin.CP"
+      ],
+      "url": "https://arxiv.org/abs/2610.24544v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.24544v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-17",
+      "discovered": "2026-10-20",
+      "matched_keywords": [
+        "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.26789",
+      "source": "arxiv",
+      "title": "Cooperative Multi-Agent Reinforcement Learning for Market Making on Prediction-Market Order Books",
+      "authors": [
+        "Skander Lejmi"
+      ],
+      "abstract": "A market maker provides liquidity by quoting prices to buy and sell an asset, earning the spread while managing inventory risk. We study market makers trained with multi-agent reinforcement learning on prediction markets, specifically Polymarket, whose thin order books pose distinct challenges. Three challenges underpin this research: adverse selection may cause a policy trained on real data to stop quoting; the consequences of a quote can arrive many steps after the action; and prediction-market L2 data does not identify individual orders needed for simulation. We address these challenges by reconstructing order-level LOBSTER-format data from Polymarket and training agents in JaxMARL-HFT on 417 real markets. We enrich the baseline market maker's observation space with the book and recent flow, redesign its actions and inventory controls, and propose a cooperative multi-agent decomposition into a quoter and a risk manager trained using recurrent Independent Proximal Policy Optimisation (IPPO) with RNN policies. We investigate reward shaping, particularly reward blending and post-fill markout, to mitigate credit-assignment difficulties between the agents. Our redesigned single-agent market maker quotes more frequently and incurs smaller held-out losses than the retrained JaxMARL-HFT baseline, although the contributions of jointly changed observations, actions and risk constraints are not separately identified. Decomposition alone performs poorly; careful reward design substantially improves the desk relative to the unshaped split and yields our best result. Models are evaluated on realised end-of-episode portfolio value on held-out markets. None establishes positive average portfolio value in periodic held-out evaluation, and each configuration was trained with one seed. The environment, data and protocol lay a foundation for makers that quote many linked markets at once.",
+      "categories": [
+        "stat.ML",
+        "cs.LG",
+        "cs.MA",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2610.26789v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.26789v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-19",
+      "discovered": "2026-10-20",
+      "matched_keywords": [
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.26324",
+      "source": "arxiv",
+      "title": "The Control Layer Behind Rule-Following Agents Trading Across Market Conditions",
+      "authors": [
+        "Saad Naja",
+        "Nasser Odtallah",
+        "Jake Van-Praag",
+        "Sarah May"
+      ],
+      "abstract": "Trading discipline often fails people. Our study tested whether four AI trading agents followed their strategies and risk rules. Offering traders the evidence and an agent evaluation toolkit to separate luck from following the rules, before giving agents meaningful autonomy or capital. Our study analysed 2,627 closed positions from 12 February to 27 August 2026 across the same asset universe and execution conditions. Most positions were simulated against live prices with a 0.09% round-trip fee; 18% involved real Hyperliquid orders. Each position declared a strategy, stop and target, with a limit of five open positions per agent. The fleet finished net positive after fees. Rule adherence was high across all four agents, including the unprofitable one. Profitability tracked how often agents won relative to their break-even win rates. Institutional-style controls ran by default and contained losses through a 29% market drawdown and recovery, with documented exceptions. The discipline held for all four agents. Agents kept 97.5% of gross loss within declared stops, and typical losses closed at declared levels. Declared risk remained stable after losses and broadly stable across calm and volatile months. Twenty-three of 24 runs respected the position limit; logs identify the exception's size and duration. The same live data produced different results across assigned strategies. The trade-log tests can be rerun from the published trade snapshot; regime tests also require the published Bitcoin prices and regime labels. Section 3.5 specifies the stop-breach tolerance. These trade-level results are not account-level returns or proof of a lasting edge. Our study provides an evaluation toolkit to help traders distinguish rule-following from luck before committing capital. For anyone considering allocating capital to agents to trade, discipline should be the entry test, not the only test.",
+      "categories": [
+        "cs.AI",
+        "cs.LG",
+        "cs.MA",
+        "q-fin.RM",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2610.26324v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.26324v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-19",
+      "discovered": "2026-10-20",
+      "matched_keywords": [
+        "regime",
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.26746",
+      "source": "arxiv",
+      "title": "Probability-Weighting Functions for Normal Tempered-Stable Laws: Orthogonal Channels and Information-Theoretic Indices",
+      "authors": [
+        "Akash Deep",
+        "Bhathiya Divelgama",
+        "A. Alexandre Trindade",
+        "W. Brent Lindquist",
+        "Svetlozar T. Rachev",
+        "Frank J. Fabozzi"
+      ],
+      "abstract": "A probability-weighting function (PWF) maps objective probabilities into decision weights. We construct PWFs from changes in the distribution of returns rather than from a parametric family: with prior and posterior return distributions $F_{prior}$ and $F_{post}$, the PWF is $w(p) = F_{post}(F_{prior}^{-1}(p))$. Both distributions are normal tempered-stable (NTS), and the posterior differs from the prior along one of three channels, each isolated with the variance held fixed: scale, skewness and tail thickness. Around a symmetric benchmark with excess kurtosis 3, a 40% change in scale moves cumulative probabilities by up to 7 to 8 percentage points, a skewness of $\\pm 0.5$ by 2 percentage points, and a change of $\\pm 0.3$ in the tail index by about 2 percentage points. The three channels leave distinct signatures: the deviation $w(p) - p$ changes sign once, twice and three times, respectively. Three information-theoretic indices (a Fisher-normalized logit shift, a signed Jensen-Shannon divergence and a log-odds elasticity) summarize the distortions and avoid the endpoint singularity of the classical ratio $(w(p)-p)/[p(1-p)]$. Applied to NTS parameters calibrated to S&P 500 ETF daily returns over 2015-2025, the same channels produce distortions of 2 to 7 percentage points. Code that reproduces every figure and number in the paper is provided.",
+      "categories": [
+        "q-fin.MF",
+        "q-fin.RM",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2610.26746v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.26746v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-19",
+      "discovered": "2026-10-20",
+      "matched_keywords": [
+        "ETF"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.25802",
+      "source": "arxiv",
+      "title": "Amortized Neural Filtering for Calibrated Posteriors in Statistical Arbitrage",
+      "authors": [
+        "Minkey Chang"
+      ],
+      "abstract": "Statistical arbitrage trades on an estimate of the state of a residual spread, and conventional practice discards the uncertainty of that estimate. We keep the uncertainty and use it in the trading decision. A Neural Filter Estimator (NFE) is trained on simulated paths of a mean-reverting process whose innovation law is selected by testing candidates against real residuals; once trained, it returns the posterior over the latent state of every spread in a cross-section in one forward pass. Three results follow. On simulated paths with known truth, every practical estimator, ours included, falls in one narrow band of accuracy well below an estimator given full information, so the posterior gains no accuracy over a point estimate; its contribution is a correct account of its own uncertainty. On Korean equities, net of costs, the conventional point estimate forecasts about a thousand basis points per holding period more than it realizes, and the amortized methods cut that gap by a factor of roughly two to eight. Sizing positions from the posterior on the same learned factors as the end-to-end Attention Factor Model matches the Sharpe ratio of those factors under the base rule within the period's noise, at no more risk.",
+      "categories": [
+        "q-fin.GN",
+        "q-fin.RM",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2610.25802v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.25802v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-19",
+      "discovered": "2026-10-20",
+      "matched_keywords": [
+        "factor",
+        "statistical arbitrage"
       ],
       "status": "queued",
       "ingested_into": null,
