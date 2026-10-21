@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-10-21T06:30:32.060365+09:00",
+  "generated_at": "2026-10-21T16:15:51.020753+09:00",
   "stats": {
-    "total": 384,
-    "queued": 302,
+    "total": 386,
+    "queued": 304,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-10-21T06:30:32.060265+09:00",
+    "last_gc_at": "2026-10-21T16:15:51.020613+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -11206,6 +11206,66 @@
       "matched_keywords": [
         "factor",
         "statistical arbitrage"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.27751",
+      "source": "arxiv",
+      "title": "Market Regime-Based Multi-Asset Portfolio Optimization Using Nested Clustered Optimization for Tactical Asset Allocation",
+      "authors": [
+        "Supriadi",
+        "Bambang Siswoyo"
+      ],
+      "abstract": "We propose a regime-aware tactical asset allocation (TAA) framework integrating market regime detection with Nested Clustered Optimization (NCO) for multi-asset portfolio construction. The central hypothesis is that incorporating market regime information into the NCO pipeline, specifically at the stages of covariance estimation, hierarchical clustering, and weight optimization, yields portfolios with improved risk-adjusted performance and reduced downside risk relative to regime-agnostic baselines. Market regimes (Bullish, Sideways/Neutral, Bearish) are detected using a Gaussian Hidden Markov Model (HMM) fitted exclusively on information available up to each decision point, thereby preventing look-ahead bias. Regime-conditional covariance matrices and clustering structures parameterize NCO at each rebalancing event. An adaptive rebalancing rule, triggered by regime transitions or material changes in optimal weights, replaces fixed-calendar rebalancing. The framework is evaluated on a heterogeneous monthly multi-asset universe comprising Indonesian government bonds (SBN), the LQ45 equity index, gold (IDR-denominated), foreign exchange (CNY/IDR), and Bitcoin/IDR (BTC). Out-of-sample performance is assessed via rolling walk-forward backtesting. Benchmarks include equal-weight (1/N), buy-and-hold, standard NCO without regime awareness, minimum variance, hierarchical risk parity (HRP), and a rule-based regime strategy. Performance metrics include cumulative return, annualized Sharpe ratio, Sortino ratio, maximum drawdown, Calmar ratio, turnover, and net-of-cost returns. Statistical significance is assessed using the Jobson-Korkie test. The empirical analysis indicates that the proposed regime-aware TAA framework successfully limits tail risk, achieving a maximum drawdown of 4.44% and demonstrating the utility of HMM-based regime detection in multi-asset risk management.",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2610.27751v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.27751v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-20",
+      "discovered": "2026-10-21",
+      "matched_keywords": [
+        "risk parity",
+        "regime",
+        "walk-forward",
+        "regime detection",
+        "drawdown",
+        "look-ahead bias"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.27214",
+      "source": "arxiv",
+      "title": "Deep catastrophic-risk-aware reinforcement learning",
+      "authors": [
+        "Carlos Pérez Octavio Mendoza",
+        "Frédéric Godin"
+      ],
+      "abstract": "Estimating extreme risk in reinforcement learning becomes increasingly difficult as the confidence level increases, since only a small number of observations contribute to empirical estimates of Conditional Value-at-Risk (CVaR). In this paper, we extend an Extreme Value Theory (EVT) approach for CVaR optimization to high-dimensional neural-network policies. Using a peaks-over-threshold representation and method-of-moments estimation, we obtain a differentiable tail-risk objective and show that, conditional on the selected threshold, its finite-sample gradient can be computed directly through automatic differentiation. We first validate the approach in a controlled experiment with a known optimal solution and then investigate its performance in a deep-hedging problem with rare extreme market movements. Our results show similar hedging behavior for EVT- and empirical-CVaR-trained policies under normal conditions, while EVT-trained policies exhibit lower hedging losses under the extreme-scenario evaluation across the training sample sizes considered. These results suggest that EVT can provide a practical alternative for training neural policies when the observations relevant to extreme risk are scarce.",
+      "categories": [
+        "cs.LG",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2610.27214v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.27214v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-19",
+      "discovered": "2026-10-21",
+      "matched_keywords": [
+        "reinforcement learning"
       ],
       "status": "queued",
       "ingested_into": null,
