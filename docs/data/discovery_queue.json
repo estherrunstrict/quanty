@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-10-21T16:15:51.020753+09:00",
+  "generated_at": "2026-10-22T06:30:27.887719+09:00",
   "stats": {
-    "total": 386,
-    "queued": 304,
+    "total": 387,
+    "queued": 305,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-10-21T16:15:51.020613+09:00",
+    "last_gc_at": "2026-10-22T06:30:27.887598+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -11266,6 +11266,37 @@
       "discovered": "2026-10-21",
       "matched_keywords": [
         "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.28071",
+      "source": "arxiv",
+      "title": "Arithmetic Models for Commodity Futures, Vanilla, and Calendar Spread Options",
+      "authors": [
+        "Malthe Rauh Johansen",
+        "Nina Lange",
+        "David Skovmand"
+      ],
+      "abstract": "We develop an arithmetic multi-factor stochastic volatility model for commodity futures and options. The arithmetic specification yields a low-dimensional Markovian representation of the futures curve and semi-closed-form pricing formulas for vanilla and basket options, including calendar spread options. These properties make the model suitable for large-scale empirical estimation. We estimate the model using an unscented Kalman filter on a panel of WTI crude oil futures, vanilla options, and calendar spread options spanning 2013-2024. We find that three stochastic volatility factors are needed to capture both the level and slope of the volatility term structure, and that hedges based on these factors remove almost all of the daily risk of a portfolio of vanilla options. Calendar spread options provide information about the dependence structure of futures prices that is not captured by futures and vanilla options alone. A model estimated without calendar spread options systematically overprices them by overstating the decorrelation between adjacent futures contracts. Including these options in the estimation brings the model's decorrelation close to the observed decorrelation, which removes the overpricing and improves their hedges, at only a small loss of accuracy in the pricing and hedging of vanilla options. Finally, we show that the arithmetic model fits futures and vanilla options better than its geometric counterpart and hedges the vanilla options slightly better.",
+      "categories": [
+        "q-fin.PR",
+        "econ.EM",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2610.28071v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.28071v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-20",
+      "discovered": "2026-10-22",
+      "matched_keywords": [
+        "factor",
+        "commodity"
       ],
       "status": "queued",
       "ingested_into": null,
