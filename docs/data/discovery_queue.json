@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-10-23T06:31:19.702595+09:00",
+  "generated_at": "2026-10-23T16:16:03.018795+09:00",
   "stats": {
-    "total": 387,
-    "queued": 305,
+    "total": 389,
+    "queued": 307,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-10-23T06:31:19.702488+09:00",
+    "last_gc_at": "2026-10-23T16:16:03.018666+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -11297,6 +11297,68 @@
       "matched_keywords": [
         "factor",
         "commodity"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.30564",
+      "source": "arxiv",
+      "title": "When News Gets Old: Portfolio Allocation with Reinforcement Learning and Large Language Models",
+      "authors": [
+        "Bolin Song",
+        "Surui Xiang"
+      ],
+      "abstract": "Financial news can influence investment decisions long after publication. Timely news may reach an investor before prices fully adjust, whereas older news may already be reflected in prices. We examine two ways to handle aging signals: retain them and give a portfolio policy timing information, or filter them out before portfolio selection. A fixed large language model (LLM) extracts signals from public SEC disclosures. We compare these treatments in reinforcement learning (RL) policies and LLMs that choose portfolios directly. We evaluate returns after trading costs in historical tests over 2023-2025. RL choices respond to timing information in a controlled test, but historical returns show no consistent benefit from adding it. For the LLM, filtering old news produced the highest average net return, reaching 18.43% per year when news delivery was delayed by four weeks. This exceeded the returns of all RL strategies that used news.",
+      "categories": [
+        "cs.LG",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2610.30564v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.30564v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-22",
+      "discovered": "2026-10-23",
+      "matched_keywords": [
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.30557",
+      "source": "arxiv",
+      "title": "Governed Self-Evolution for Autonomous Investing: A Multi-Agent LLM System with an Invariant Core",
+      "authors": [
+        "Yebo Feng",
+        "Jingyang Dai",
+        "Liangrui Pan",
+        "Nelson Lau",
+        "Jiahua Xu",
+        "Yang Liu"
+      ],
+      "abstract": "LLM agents that act on live Web data must combine heterogeneous evidence, remember what they have done and improve from outcomes without weakening their own safeguards. We study this problem in autonomous investing, where every action is irreversible and based on untrusted Web content. We present Steward, a multi-agent LLM system that draws the boundary of self-evolution in its type system. First, nine role-specialised agents decide jointly: four analysts read news feeds, SEC filings, macroeconomic series and market data and emit typed reports, from which a Portfolio Manager sets target positions that a protected Risk Manager audits. Second, a seven-layer shared memory, assembled by code from the system's own record, gives each decision its position context, the market narrative, calibration and the agent's past decisions. Third, the system improves itself by review: code grades every trade and forecast nightly and writes the grades into memory, and each quarter a reflector proposes prompt learnings that a deterministic gate applies reversibly and replay of recorded inputs verifies. All three operate around an invariant core of order arithmetic, risk rules and discipline-agent prompts that no self-edit can reach. In a five-month live deployment (102 trading days, 1,632 LLM calls), the system contained a 24.6% sector drawdown to a 0.3% loss; in replay of its recorded inputs, a single model given the same raw data traded more and lost 1.35 points against the market over five days where the joint design showed no significant loss, and no injected instruction was followed; and a 2015-2026 backtest shows the core alone lowering the maximum drawdown under all 50 random entry policies. The reflector traced the dominant failure to its root cause, and the gate applied a learning that the agent adopted on trigger evenings and on no control evening. Code: https://github.com/yebof/quant-agent",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.MA",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2610.30557v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.30557v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-22",
+      "discovered": "2026-10-23",
+      "matched_keywords": [
+        "drawdown"
       ],
       "status": "queued",
       "ingested_into": null,
