@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-10-24T06:30:29.719143+09:00",
+  "generated_at": "2026-10-26T16:16:01.617787+09:00",
   "stats": {
-    "total": 389,
-    "queued": 307,
+    "total": 390,
+    "queued": 308,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-10-24T06:30:29.719031+09:00",
+    "last_gc_at": "2026-10-26T16:16:01.617655+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -11359,6 +11359,37 @@
       "discovered": "2026-10-23",
       "matched_keywords": [
         "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.32237",
+      "source": "arxiv",
+      "title": "Financial Context-Rich Strategy for Actor-Critic based Agents: A Deep Reinforcement Learning Approach for Stock Trading",
+      "authors": [
+        "Hrishikesh Singh",
+        "Aarti Sharma",
+        "Millie Pant"
+      ],
+      "abstract": "In modern financial markets, more than 3/4th of the large volume trade is executed by algorithmic trading based on advanced trading strategies to attain higher precision and speed than traditional human traders. The conventional strategies focused on price-based indicators are inadequate in capturing the market dynamism arising from real-world events such as social sentiments, political instability, or sudden economic shifts. With the rise of Deep Reinforcement Learning (DRL) and data availability, there is a requirement for more efficient algorithms that can incorporate these external factors in trading strategies. DRL has shown potential in simulating real-world scenarios and in simplifying complex decision-making since DRL agents can automate the trading process i.e. executing trades in a manner comparable to human traders. They have shown reliable performance since they can update their policies based on risk and quantitative factors. In this paper, we propose a DRL approach based on partial and deep-infusion of sentimental analysis. It features distinct policy designs of actor-critic-based agents: only policy optimization (A2C & PPO) and policy optimization along with Q-learning principles (DDPG, TD3 & SAC). Our findings reveal, that the agents based on policy optimization combined with Q-learning, significantly and consistently demonstrate improved performance upon sentiment deep-infusion in profit maximization as well as risk-averse trading.",
+      "categories": [
+        "cs.AI",
+        "q-fin.CP",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2610.32237v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.32237v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-23",
+      "discovered": "2026-10-26",
+      "matched_keywords": [
+        "factor",
+        "reinforcement learning"
       ],
       "status": "queued",
       "ingested_into": null,
