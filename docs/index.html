@@ -1245,9 +1245,10 @@ function holdDet(code, qty, price, cur) {
     cur === 'KRW' ? {maximumFractionDigits: 0} : {minimumFractionDigits: 2, maximumFractionDigits: 2});
 }
 function holdPl(pnl, rate, cur) {
+  if (!Number.isFinite(pnl)) return '—';
   const r = (typeof rate === 'number') ? (rate >= 0 ? '+' : '') + rate.toFixed(1) + '%' : '';
   if (!VIEW.amounts) return r || '—';
-  return fmtPnl(pnl || 0, cur) + (r ? ' (' + r + ')' : '');
+  return fmtPnl(pnl, cur) + (r ? ' (' + r + ')' : '');
 }
 
 // ── What each bot IS, for a reader who did not build it ──────────────────
@@ -2685,7 +2686,7 @@ function render(data) {
       const showAll = (s.id === 'nmf2');
       const rows = (showAll ? holdings : holdings.slice(0, 5)).map(hld => {
         const cur = hld.currency || s.currency || 'USD';
-        const pnl = hld.profit || 0;
+        const pnl = Number.isFinite(hld.profit) ? hld.profit : null;
         // 코드가 아니라 회사명. 069500 을 보고 무슨 종목인지 아는 사람은 없다.
         // 코드는 버리지 않고 상세줄로 옮긴다 — 주문을 넣을 때는 코드가 필요하다.
         // NMF2·수동 슬리브가 쓰던 방식 그대로다.
@@ -2694,7 +2695,7 @@ function render(data) {
         return `<div class="hold-row">
           <span class="${hld.name ? 'hold-nm' : 'hold-tk'}">${label}</span>
           <span class="hold-det">${holdDet(code, hld.quantity, hld.current_price || hld.avg_price, cur)}</span>
-          <span class="hold-pl ${pnlClass(pnl)}">${holdPl(pnl, hld.profit_rate, cur)}</span>
+          <span class="hold-pl ${pnl === null ? '' : pnlClass(pnl)}">${holdPl(pnl, hld.profit_rate, cur)}</span>
         </div>`;
       }).join('');
       holdingsHTML = `<div class="holds${showAll && holdings.length > 6 ? ' scroll' : ''}">${rows}</div>`;
