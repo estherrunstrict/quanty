@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-10-27T06:30:29.734501+09:00",
+  "generated_at": "2026-10-27T16:15:56.706273+09:00",
   "stats": {
-    "total": 390,
-    "queued": 308,
+    "total": 393,
+    "queued": 311,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-10-27T06:30:29.734397+09:00",
+    "last_gc_at": "2026-10-27T16:15:56.706167+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -11390,6 +11390,95 @@
       "matched_keywords": [
         "factor",
         "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.34153",
+      "source": "arxiv",
+      "title": "Certifying Reward Alignment in Portfolio Reinforcement Learning",
+      "authors": [
+        "Matin Tavakoli",
+        "Seyedreza Tavakoli",
+        "Faezeh Salmani",
+        "Amir Amini",
+        "Mohammad Hosein Rohban",
+        "Gholamali Aminian",
+        "Ali Habibnia Rohban"
+      ],
+      "abstract": "Financial reinforcement learning often translates an investment objective into an additive risk-adjusted reward. An agent can optimise that reward accurately yet implement a different financial preference. We develop a decision audit for terminal mean-variance equilibrium that separates reward misspecification from learning error. In a finite exogenous-state market, we bound the gain from changing one action using actor, reward and continuation-critic residuals. The certificate ignores state-constant critic offsets, accommodates convex action constraints, and has an independent-sample extension that does not require the equilibrium policy. A continuation-aware actor-critic method estimates the future-policy correction from samples. Across nine controlled markets and twenty seeds, it reduces policy distance by and one-step deviation gain by relative to a matched myopic-reward network. A separate PPO comparison tests the same reward intervention within a standard optimiser. Historical tests cross seven covariance estimators and 10, 30 and 49 US industry portfolios over 432 months: joint reward calibration preserves each fitted mean-variance target, but does not improve realised investment performance. Together, these results provide a way to quantify whether a learned decision implements its stated financial objective, separately from how well that objective performs in a backtest.",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2610.34153v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.34153v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-25",
+      "discovered": "2026-10-27",
+      "matched_keywords": [
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.35702",
+      "source": "arxiv",
+      "title": "Weekend Crypto Volatility and Monday Market Risk",
+      "authors": [
+        "Pedram Ebadollahyvahed",
+        "Nneka Umeorah"
+      ],
+      "abstract": "Cryptocurrencies trade continuously while major traditional markets close over the weekend. We examine whether weekend cryptocurrency volatility predicts Monday variance in equity, commodity and fixed-income markets. Using daily range-based variance measures for Bitcoin, Ether, XRP, the S&P 500, gold and a US Treasury ETF over 2017-2026, we augment heterogeneous autoregressive models with a common weekend cryptocurrency factor. Predictive content is weak before 2024 but significant thereafter. In the post-2024 sample, a one-standard-deviation increase in the factor is associated with 27-54% higher fitted Monday variance. Adding the factor reduces out-of-sample QLIKE losses by 11-22%, although statistical evidence varies across markets. Friday cryptocurrency volatility does not reproduce the result, and coin-specific variation adds no significant predictive information beyond the common factor. An endogenous procedure estimates a break in late 2023, during growing anticipation of US spot-Bitcoin ETF approval. However, ETF-flow interactions provide no evidence of amplification through greater measured Monday flow activity, leaving the mechanism unresolved. The findings suggest that calendar-specific volatility measures reveal predictive information that aggregate connectedness measures may obscure.",
+      "categories": [
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2610.35702v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.35702v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-26",
+      "discovered": "2026-10-27",
+      "matched_keywords": [
+        "factor",
+        "ETF",
+        "commodity"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.33438",
+      "source": "arxiv",
+      "title": "Compiling and forecasting implied volatility surfaces via survey sampling, tempered inverse-probability sequence learning, and causal activity clocks",
+      "authors": [
+        "Deepak Bastola",
+        "Eli Prushansky"
+      ],
+      "abstract": "Compiling implied volatility (IV) surfaces and forecasting derivative risk from high-frequency equity and options feeds requires addressing contract heterogeneity, schema shifts, volatility clustering, and non-stationary trading activity. Using a split-adjusted NVIDIA (NVDA) equity and options panel (2018-2025), this study integrates finite-population survey sampling, tempered inverse-probability sequence learning, and causal activity clocks. Four findings emerge. First, cross-sectional surface accuracy depends on matching the sampling design to the target functional: plug-in stratified allocations using lagged cell dispersion improve equal-weighted surface reconstruction with full grid coverage, whereas liquidity-weighted probability proportional to size (PPS) sampling excels on liquidity-weighted targets by construction yet inflates error when misapplied. Second, in longitudinal LSTM sequence training, PPS and Neyman designs retain more tail-volatility windows than simple random sampling (SRS); all three designs are equivalent to full-census training within chosen margins while cutting training time, though incremental forecasting gains of informative selection over SRS are not established. Third, out-of-sample evaluation shows a predictability contrast: short-horizon prices are not forecastable beyond a random walk with drift among tested models, whereas forward IV shows descriptive mean-reversion skill concentrated in a few post-shock reversal sessions (insignificant under session-clustered tests), with sequence models not beating a linear HAR-IV benchmark and feature pruning driving stability. Fourth, across a 6.3x start-to-end (nearly twentyfold trough-to-peak) price expansion, rolling volume and dollar clocks stabilize bar rates and compress intraday return kurtosis beyond diurnal scaling.",
+      "categories": [
+        "stat.AP",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2610.33438v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.33438v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-24",
+      "discovered": "2026-10-27",
+      "matched_keywords": [
+        "cross-sectional"
       ],
       "status": "queued",
       "ingested_into": null,
