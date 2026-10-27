@@ -2605,6 +2605,9 @@ function render(data) {
             '<span style="color:var(--tx4)">/' + (ex.ledger_position_count || 0) + '</span>')
         + mCell('Ledger Cash', fmtVal(ex.cash_krw || 0, 'KRW'));
       signalHTML = `<div class="sig long" style="font-size:0.5rem">TOSS · 신마법공식 2.0 + 계절성</div>`;
+      if (ex.cash_in_lieu_status === 'unverified_excluded') {
+        signalHTML += '<div class="sig cash" style="font-size:0.5rem">Fractional-share cash excluded · settlement unverified</div>';
+      }
     }
 
     else if (s.id === 'usvb') {
