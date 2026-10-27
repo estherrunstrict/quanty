@@ -1178,25 +1178,39 @@ function pnlClass(v) { return v >= 0 ? 'up' : 'dn'; }
 // Missing P/L is different: never turn explicit null (including a MULTI leg)
 // into zero or an apparently complete fleet total.
 function botPnlSummary(data, rate) {
-  const result = {realKRW: 0, realUSD: 0, unrealKRW: 0, unrealUSD: 0,
-    totalPlKRW: 0, totalPlUSD: 0, unknownPl: false};
+  const number = value => {
+    if (value == null || typeof value === 'boolean' ||
+        !['number', 'string'].includes(typeof value) || String(value).trim() === '') return null;
+    const n = Number(value);
+    return Number.isFinite(n) ? n : null;
+  };
+  const sum = values => values.length && values.every(v => v !== null)
+    ? number(values.reduce((a, b) => a + b, 0)) : null;
+  const fx = number(rate);
+  const legs = [];
   const add = (card, currency) => {
-    if (!card) { result.unknownPl = true; return; }
-    const unreal = card.unrealized_profit ?? card.profit ?? 0;
-    const real = card.realized_profit_ytd ?? 0;
-    const total = card.total_pl_ytd === null ? null : (card.total_pl_ytd ?? real + unreal);
-    if (total === null || !Number.isFinite(total)) result.unknownPl = true;
-    result['real' + currency] += real;
-    result['unreal' + currency] += unreal;
-    result['totalPl' + currency] += total ?? 0;
+    card = card || {};
+    const real = number(card.realized_profit_ytd);
+    const unreal = number(Object.hasOwn(card, 'unrealized_profit') ? card.unrealized_profit : card.profit);
+    const total = Object.hasOwn(card, 'total_pl_ytd') ? number(card.total_pl_ytd) : sum([real, unreal]);
+    legs.push({currency, real, unreal, total});
   };
   for (const s of data.strategies || []) {
     if (s.id === 'manual' || s.paper_equity || s.pnl_mode === 'paper') continue;
     if (s.currency === 'MULTI') { add(s.kr, 'KRW'); add(s.us, 'USD'); }
-    else if (['KRW', 'USD'].includes(s.currency)) add(s, s.currency);
-    else result.unknownPl = true;
+    else add(s, s.currency);
   }
-  result.total = result.unknownPl ? null : result.totalPlKRW + result.totalPlUSD * rate;
+  const result = {};
+  for (const [key, prefix] of [['real', 'real'], ['unreal', 'unreal'], ['total', 'totalPl']]) {
+    for (const currency of ['KRW', 'USD']) {
+      const values = legs.filter(leg => leg.currency === currency).map(leg => leg[key]);
+      result[prefix + currency] = values.length ? sum(values) : 0;
+    }
+    result[key] = sum(legs.map(leg => leg.currency === 'KRW' ? leg[key]
+      : leg.currency === 'USD' && leg[key] !== null && fx !== null && fx > 0
+        ? number(leg[key] * fx) : null));
+  }
+  result.unknownPl = result.total === null;
   return result;
 }
 
@@ -1468,6 +1482,7 @@ function renderSparkline(series, width = 280, height = 60) {
   if (!series || series.length < 2) return '';
 
   const values = series.map(p => p[1]);
+  if (values.some(v => !Number.isFinite(v))) return '<div class="sparkline-meta">손익 이력 미확인</div>';
   const dates = series.map(p => p[0]);
   const minV = Math.min(...values);
   const maxV = Math.max(...values);
@@ -1524,6 +1539,7 @@ function buildComparisonChart(equitySeries, aggregateSeries, strategies) {
     // Toss-account bot. Its P/L runs at a ~W50k scale against the others' millions,
     // so the line hugs zero — that is honest for a W1M sleeve, not a bug.
     nmf2:          { name: 'NMF2 (신마법공식 2.0)',     stratId: 'nmf2' },
+    usvb:          { name: 'US VB',                    stratId: 'usvb' },
     hybrid_vb_kr:  { name: 'Hybrid VB (KR)',          stratId: 'hybrid_vb',     sub: 'kr' },
     hybrid_vb_us:  { name: 'Hybrid VB (US)',          stratId: 'hybrid_vb',     sub: 'us' },
   };
@@ -1532,7 +1548,10 @@ function buildComparisonChart(equitySeries, aggregateSeries, strategies) {
   (strategies || []).forEach(s => { stratIndex[s.id] = s; });
 
   const allDates = new Set();
-  const prepared = Object.keys(seriesMeta).map(key => {
+  const prepared = Object.keys(seriesMeta).filter(key => {
+    const strategy = stratIndex[seriesMeta[key].stratId] || {};
+    return !strategy.paper_equity && strategy.pnl_mode !== 'paper';
+  }).map(key => {
     const meta = seriesMeta[key];
     const raw = (equitySeries || {})[key] || [];
     const strat = stratIndex[meta.stratId] || {};
@@ -1606,9 +1625,15 @@ function buildComparisonChart(equitySeries, aggregateSeries, strategies) {
     : '';
 
   const linesSvg = prepared.filter(p => !p.insufficient).map(p => {
-    const pts = p.points.map(pt => `${xFor(dateToIdx[pt.date]).toFixed(1)},${yFor(pt.val).toFixed(1)}`).join(' ');
+    // Unknown observations break the line; JavaScript must not plot null at zero.
+    const segments = [[]];
+    for (const pt of p.points) {
+      if (!Number.isFinite(pt.val)) { segments.push([]); continue; }
+      segments[segments.length - 1].push(`${xFor(dateToIdx[pt.date]).toFixed(1)},${yFor(pt.val).toFixed(1)}`);
+    }
     const sw = p.isPortfolio ? 2.5 : 1.5;
-    return `<polyline data-key="${p.key}" points="${pts}" fill="none" stroke="${p.color}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`;
+    return segments.filter(points => points.length).map(points =>
+      `<polyline data-key="${p.key}" points="${points.join(' ')}" fill="none" stroke="${p.color}" stroke-width="${sw}" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`).join('');
   }).join('');
 
   const cursor = `<line class="cmp-cursor" x1="0" y1="0" x2="0" y2="${VB}" stroke="var(--tx2)" stroke-width="0.5" stroke-dasharray="3,3" vector-effect="non-scaling-stroke" style="display:none"/>`;
@@ -1618,6 +1643,7 @@ function buildComparisonChart(equitySeries, aggregateSeries, strategies) {
   // In relative view the same value is its signed share of Total Capital;
   // the series themselves stay in KRW, only the labels change.
   const fmtKrw = (v) => {
+    if (!Number.isFinite(v)) return '미확인';
     if (!VIEW.amounts) return fmtPct(v, true);
     const sign = v >= 0 ? '+' : '−';
     const a = Math.abs(v);
@@ -2148,13 +2174,14 @@ function render(data) {
 
   // ── Sum live bot P/L from the published card totals (per currency)
   const positionUnverified = data.position_reconciliation && data.position_reconciliation.status !== 'verified';
-  const {realKRW, realUSD, unrealKRW, unrealUSD, totalPlKRW, totalPlUSD, unknownPl} = botPnlSummary(data, exchangeRate);
-  const unrealCombined = unrealKRW + unrealUSD * exchangeRate;
-  const realCombined   = realKRW   + realUSD   * exchangeRate;
-  const totalPnlCombined = totalPlKRW + totalPlUSD * exchangeRate;
-  const plAdjustment = totalPnlCombined - realCombined - unrealCombined;
-  const originalDeposit = portfolio.original_deposit_krw || 0;
-  const totalPnlPct = originalDeposit > 0 ? (totalPnlCombined / originalDeposit * 100) : null;
+  const {realKRW, realUSD, unrealKRW, unrealUSD, unknownPl,
+    real: realCombined, unreal: unrealCombined, total: totalPnlCombined} = botPnlSummary(data,
+      portfolio.exchange_rate_quality === 'fallback' ? null : portfolio.exchange_rate);
+  const plAdjustment = totalPnlCombined !== null && realCombined !== null && unrealCombined !== null
+    ? totalPnlCombined - realCombined - unrealCombined : null;
+  const originalDeposit = Number(portfolio.original_deposit_krw);
+  const totalPnlPct = !unknownPl && Number.isFinite(originalDeposit) && originalDeposit > 0
+    ? (totalPnlCombined / originalDeposit * 100) : null;
 
   // ── Total-Capital hero
   // Jae runs most of his money by hand, in front of the bots, and it lives in
@@ -2279,9 +2306,9 @@ function render(data) {
     { lbl: 'KIS Cash', val: won(cashKRW),
       sub: VIEW.amounts ? '$' + cashUSD.toLocaleString(undefined, {maximumFractionDigits: 0}) + ' USD'
                         : '+ ' + fmtVal(cashUSD, 'USD') + ' in USD' },
-    { lbl: 'Realized YTD · 보고값', val: unknownPl ? '미확인' : fmtPnl(realCombined, 'KRW'), cls: pnlClass(realCombined), sub: 'KRW ' + fmtPnl(realKRW, 'KRW') + ' + USD ' + fmtPnl(realUSD, 'USD') },
-    { lbl: 'Unrealized · 보고값', val: unknownPl ? '미확인' : fmtPnl(unrealCombined, 'KRW'), cls: pnlClass(unrealCombined), sub: 'KRW ' + fmtPnl(unrealKRW, 'KRW') + ' + USD ' + fmtPnl(unrealUSD, 'USD') },
-    ...(!unknownPl && Math.abs(plAdjustment) >= 1 ? [{ lbl: 'P/L adjustments', val: fmtPnl(plAdjustment, 'KRW'), cls: pnlClass(plAdjustment), sub: 'Included in bot total P/L' }] : []),
+    { lbl: 'Realized YTD · 보고값', val: realCombined === null ? '미확인' : fmtPnl(realCombined, 'KRW'), cls: realCombined === null ? '' : pnlClass(realCombined), sub: realCombined === null ? '손익 구성 데이터 누락' : 'KRW ' + fmtPnl(realKRW, 'KRW') + ' + USD ' + fmtPnl(realUSD, 'USD') },
+    { lbl: 'Unrealized · 보고값', val: unrealCombined === null ? '미확인' : fmtPnl(unrealCombined, 'KRW'), cls: unrealCombined === null ? '' : pnlClass(unrealCombined), sub: unrealCombined === null ? '손익 구성 데이터 누락' : 'KRW ' + fmtPnl(unrealKRW, 'KRW') + ' + USD ' + fmtPnl(unrealUSD, 'USD') },
+    ...(plAdjustment !== null && Math.abs(plAdjustment) >= 1 ? [{ lbl: 'P/L adjustments', val: fmtPnl(plAdjustment, 'KRW'), cls: pnlClass(plAdjustment), sub: 'Included in bot total P/L' }] : []),
   ] : [
     { lbl: 'KIS Cash', val: '—', sub: 'Waiting for data update' },
     { lbl: 'Realized YTD', val: '—', sub: 'Waiting for data update' },
@@ -2813,37 +2840,57 @@ function render(data) {
 
 // ═══ Data Fetching ════════════════════════════════════════
 let refreshTimer = null;
+let loadInProgress = false;
+
+async function fetchJson(path, timeoutMs = 10000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(path, { cache: 'no-store', signal: controller.signal });
+    if (!response.ok) throw new Error(response.status);
+    return await response.json();
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 async function load() {
+  if (loadInProgress) return;
+  loadInProgress = true;
+  clearTimeout(refreshTimer);
   try {
-    const [res, histRes, hfaiRes] = await Promise.all([
-      // no-store 필수. 기본 캐시로 두면 발행이 끝난 뒤에도 브라우저가 직전
-      // 빌드의 JSON 을 그대로 재생한다 — 2026-08-20 19:27 발행 직후에도
-      // 열려 있던 탭은 16:00 값(수동 1.85억, 이미 판 빙그레 포함)을 계속
-      // 보여줬다. 60초 자동 새로고침도 같은 캐시를 다시 읽으니 소용없다.
-      // decision.html 은 처음부터 no-store 였다 — 여기만 빠져 있었다.
-      fetch('data/dashboard_data.json', { cache: 'no-store' }),
-      fetch('data/equity_history.json', { cache: 'no-store' }).catch(()=>null),
-      fetch('data/hfai_status.json', { cache: 'no-store' }).catch(()=>null)
+    const [data, history, hfai] = await Promise.all([
+      fetchJson('data/dashboard_data.json'),
+      fetchJson('data/equity_history.json', 3000).catch(() => null),
+      fetchJson('data/hfai_status.json', 3000).catch(() => null)
     ]);
-    if (!res.ok) throw new Error(res.status);
-    const data = await res.json();
-    if (histRes && histRes.ok) {
-      const eqData = await histRes.json();
-      if (!data.equity_series) data.equity_series = eqData;
-    }
-    data.hfai_status = hfaiRes && hfaiRes.ok ? await hfaiRes.json().catch(()=>null) : null;
-    LAST_DATA = data;
+    if (!data.equity_series && history) data.equity_series = history;
+    data.hfai_status = hfai;
     render(data);
+    LAST_DATA = data;
   } catch (e) {
     const app = document.querySelector('#app');
-    const loader = document.querySelector('#loader');
-    if (loader) {
-      app.innerHTML = '<header class="hdr fade-in"><h1>Automation <em>Oracle</em></h1>' +
-        '<div class="hdr-right"><a class="refresh-btn" href="pipeline.html" style="text-decoration:none">→ Pipeline</a> <a class="refresh-btn" href="decision.html" style="text-decoration:none">→ Decision Center</a></div></header>' +
-        '<div style="padding:3rem 0;text-align:center;color:var(--tx3);font-size:0.8rem">' +
-        'Dashboard data not available. Updated daily after market close.</div>';
+    let status = document.querySelector('#refresh-status');
+    if (!status) {
+      status = document.createElement('div');
+      status.id = 'refresh-status';
+      status.className = 'recon-warn';
+      status.setAttribute('role', 'status');
+      app.prepend(status);
     }
+    status.textContent = LAST_DATA
+      ? 'Refresh failed. Showing the last loaded snapshot; retrying in 60 seconds. '
+      : 'Dashboard data unavailable. Retrying in 60 seconds. ';
+    const retry = document.createElement('button');
+    retry.className = 'refresh-btn';
+    retry.textContent = 'Retry now';
+    retry.onclick = load;
+    status.appendChild(retry);
+    const loader = document.querySelector('#loader');
+    if (loader) loader.remove();
+  } finally {
+    loadInProgress = false;
+    refreshTimer = setTimeout(load, 60000);
   }
 }
 
