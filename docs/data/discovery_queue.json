@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-10-28T06:30:30.171354+09:00",
+  "generated_at": "2026-10-28T16:16:55.114177+09:00",
   "stats": {
-    "total": 393,
-    "queued": 311,
+    "total": 394,
+    "queued": 312,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-10-28T06:30:30.171248+09:00",
+    "last_gc_at": "2026-10-28T16:16:55.114050+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -11479,6 +11479,36 @@
       "discovered": "2026-10-27",
       "matched_keywords": [
         "cross-sectional"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.36491",
+      "source": "arxiv",
+      "title": "Simple Portfolios that Deliver Consistent Decent Returns",
+      "authors": [
+        "Oskar Edén Wallberg",
+        "Alexander Karolin"
+      ],
+      "abstract": "Portfolio construction has been studied extensively in both academia and industry. Its applications range from pension funds and hedge funds to private savings. The academic literature centers on methodology, commonly evaluated in settings that allow short selling, leverage, and frequent trading. Industry, on the other hand, operates under real constraints, but its data and methods are proprietary and largely unpublished. Neither is directly available to the private investor. This paper is an empirical study of established portfolio construction methods in the setting of the private investor. We consider a small investable universe of liquid US ETFs, where trading is monthly and carries a cost, and neither shorting nor leverage is permitted. Portfolio construction is posed as a convex optimization problem, its inputs are estimated from public data, and every parameter is interpretable. We denote such portfolios simple. We show that simple portfolios of as few as three ETFs deliver consistent and decent returns, without tuning to the backtest period. To find them, we have developed a framework, which we share publicly, able to backtest hundreds of portfolios on a standard laptop over a twenty year period or longer. When no return forecast is made, portfolios are constructed from risk alone, using methods such as risk parity and minimum volatility, built on a statistical factor model fitted with expectation maximization. When a forecast is made, we combine the Markowitz formulation with momentum signals and ridge regression. We report what works and what each component adds, weighing its gain against its complexity and the effort it demands of the investor. The findings are supported by numerical experiments over the past two decades, and the proposed portfolios outperform the standard 60/40 allocation.",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2610.36491v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.36491v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-27",
+      "discovered": "2026-10-28",
+      "matched_keywords": [
+        "momentum",
+        "risk parity",
+        "factor",
+        "ETF"
       ],
       "status": "queued",
       "ingested_into": null,
