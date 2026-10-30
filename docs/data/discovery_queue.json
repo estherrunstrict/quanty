@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-10-30T06:30:28.139406+09:00",
+  "generated_at": "2026-10-30T16:16:50.019705+09:00",
   "stats": {
-    "total": 394,
-    "queued": 312,
+    "total": 396,
+    "queued": 314,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-10-30T06:30:28.139295+09:00",
+    "last_gc_at": "2026-10-30T16:16:50.019550+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -11509,6 +11509,63 @@
         "risk parity",
         "factor",
         "ETF"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.37705",
+      "source": "arxiv",
+      "title": "Decorrelating the Advice Layer: A Calibrated Fragility Metric and Tested Mitigations for Synchronized Liquidation in Agentic Wealth Management",
+      "authors": [
+        "Saurabh Kohli"
+      ],
+      "abstract": "Conversational AI agents are turning wealth management into a continuous loop of market analysis, allocation, risk checks and execution, run for millions of clients on a handful of foundation models. We build a multi-asset agent-based model of this layer, calibrated to measured model concentration, cross-model correlation, retail turnover and 33 years of real equity returns, and ask when the layer amplifies market declines and what prevents it. The effective number of independent decision-makers is bounded however many clients the layer serves: about 2.0 at today's consumer concentration. This monoculture of views drives crowding in individual securities and sets the blast radius of a compromised model provider, but it does not drive market-wide liquidation. Index tail losses rise with the square root of agentic adoption, are 1.47-1.90 times larger under an agentic than under a periodic robo-advice architecture, and do not rise with model concentration; synchronized automation (risk overlays, drawdown cuts and attention-driven execution) drives them. A fragility index computed from aggregate flow, public returns and an impact estimate forecasts tail liquidation out of sample (hold-out R^2 of 0.56) far better than concentration or correlation measures. Decorrelating the automation, not the models, works: dispersing overlay parameters, staging execution and a participation breaker together cut tail liquidation by 63% at no measurable cost to client welfare, whereas provider diversification has no effect. Because the statistics required are sums, they can be computed across platforms under secure aggregation with differential privacy at negligible cost for realistic client populations. In historical replays, an agentic layer holding 10% of the market would have deepened the 2020 crash by about 858 basis points.",
+      "categories": [
+        "q-fin.RM",
+        "q-fin.PM",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2610.37705v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.37705v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-26",
+      "discovered": "2026-10-30",
+      "matched_keywords": [
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2610.39636",
+      "source": "arxiv",
+      "title": "Information Flow and Market Risk: Transformer-Based Evidence on Sentiment and Volatility Dynamics",
+      "authors": [
+        "Szymon Lis",
+        "Robert Ślepaczuk",
+        "Paweł Sakowski"
+      ],
+      "abstract": "This study examines whether transformer-based financial news sentiment improves equity volatility forecasts beyond conventional market-based predictors. Using data for eleven US stocks, we compare volatility persistence models with specifications incorporating the VIX, AAII investor sentiment, and news sentiment extracted using ModernFinBERT. The forecasting target is annualized volatility constructed from future averages of trailing 252-session Yang-Zhang estimates, evaluated at horizons of 1, 5, and 22 trading days. Models are assessed through walk-forward testing with expanding and rolling estimation windows, fixed initial hyperparameter selection, and statistical comparisons accounting for multiple testing and serial dependence. Results show that a naive persistence benchmark achieves the lowest average QLIKE loss at all horizons. Although HAR-VIX produces the largest number of individual forecasting wins under expanding windows, it does not achieve the lowest mean loss. Adding text-based sentiment improves HAR forecasts in only two of 33 expanding-window comparisons, and neither improvement remains statistically significant under longer HAC bandwidths. A blinded audit of 2,700 news texts further characterizes the agreement and confidence patterns of ModernFinBERT classifications. The findings do not establish a general incremental forecasting advantage from transformer-based news sentiment. They highlight the importance of strong benchmarks, temporal alignment, robust inference, and careful evaluation of text-derived predictors.",
+      "categories": [
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2610.39636v1",
+      "pdf_url": "https://arxiv.org/pdf/2610.39636v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-29",
+      "discovered": "2026-10-30",
+      "matched_keywords": [
+        "walk-forward",
+        "multiple testing"
       ],
       "status": "queued",
       "ingested_into": null,
