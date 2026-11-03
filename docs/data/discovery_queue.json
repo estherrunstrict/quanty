@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-11-03T16:16:05.808572+09:00",
+  "generated_at": "2026-11-04T06:30:35.052744+09:00",
   "stats": {
-    "total": 407,
-    "queued": 325,
+    "total": 411,
+    "queued": 329,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-11-03T16:16:05.808450+09:00",
+    "last_gc_at": "2026-11-04T06:30:35.052617+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -11873,6 +11873,120 @@
       "matched_keywords": [
         "factor",
         "cross-sectional"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.03453",
+      "source": "arxiv",
+      "title": "Penalize the Common Trade: A Collision-Aware Layer for Learned Portfolios",
+      "authors": [
+        "Eric Benhamou",
+        "Jean-Jacques Ohana",
+        "Beatrice Guez",
+        "Ethan Setrouk",
+        "Chamyl Saadi",
+        "Thomas Jacquot"
+      ],
+      "abstract": "Different learning systems can make nearly the same trade when they share data, objectives, or representations. The market then sees decision concentration even if the models look diverse. We call exposure to this shared direction a signal collision. A linear-impact game shows the basic externality: each allocator chooses too much common exposure because it does not bear the full price effect imposed on others. An overlap-dependent toll recovers the social choice, and a feedback model gives the exact gain at which return-responsive allocation becomes unstable. We also state the restrictive spectral conditions under which a leading eigenportfolio can reveal the collision direction. These results motivate a simple post-model layer: subtract a penalty for loading on the recent common return mode before forming the portfolio. In a frozen panel of ten liquid cross-asset ETFs, 760 completed weeks from January 2012 through July 2026, and exact self-financing costs of 10 basis points per dollar traded, this layer changes maximum drawdown from 23.6% to 14.1%, volatility from 12.6% to 10.7%, and excess-return Sharpe from 0.664 to 0.667. A volatility-matched momentum diagnostic still draws down 19.9%. Paired stationary-bootstrap uncertainty is wide: the 95% interval for drawdown improvement is $[-3.3,18.4]$ percentage points and includes zero. The result establishes a reproducible risk-control association and specifies the holdings-and-flow validation needed to attribute the common direction to AI crowding. AI-use disclosure. Generative AI tools, including OpenAI Codex, assisted manuscript preparation. For this preprint version, Codex assisted with LaTeX editing, author and venue metadata, compilation, and layout checks.",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2611.03453v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.03453v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-02",
+      "discovered": "2026-11-04",
+      "matched_keywords": [
+        "momentum",
+        "ETF",
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.03391",
+      "source": "arxiv",
+      "title": "Specification LASSO and a Flexible Characteristics-Based Asset Pricing Model",
+      "authors": [
+        "Chaohua Dong",
+        "Shuyi Ge",
+        "Shaoran Li",
+        "Wen Su"
+      ],
+      "abstract": "This paper studies a partially linear semiparametric additive model that allows for interactions among variables in high-dimensional settings. We propose the Specification LASSO (S-LASSO), a two-step method that integrates LASSO and Adaptive Group LASSO to simultaneously perform variable selection and model specification. Theoretically, we establish that S-LASSO possesses oracle properties in terms of selection consistency and asymptotic normality. Monte Carlo simulations confirm that S-LASSO outperforms existing alternatives across a variety of scenarios. Empirically, we apply S-LASSO to a characteristics-based asset pricing model, exploring the linear and nonlinear effects of asset-specific characteristics on cross-sectional returns, as well as their interactions with firm size.",
+      "categories": [
+        "math.ST",
+        "econ.EM",
+        "q-fin.PM",
+        "stat.ME"
+      ],
+      "url": "https://arxiv.org/abs/2611.03391v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.03391v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-02",
+      "discovered": "2026-11-04",
+      "matched_keywords": [
+        "cross-sectional"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "openalex:W7123808958",
+      "source": "openalex",
+      "title": "GroupSegment-SHAP: Shapley Value Explanations with Group-Segment Players for Multivariate Time Series",
+      "authors": [
+        "Jinwoong Kim",
+        "Sangjin Park"
+      ],
+      "abstract": "Multivariate time-series models achieve strong predictive performance in healthcare, industry, energy, and finance, but how they combine cross-variable interactions with temporal dynamics remains unclear. SHapley Additive exPlanations (SHAP) are widely used for interpretation. However, existing time-series variants typically treat the feature and time axes independently, fragmenting structural signals formed jointly by multiple variables over specific intervals. We propose GroupSegment SHAP (GS-SHAP), which constructs explanatory units as group-segment players based on cross-variable dependence and distribution shifts over time, and then quantifies each unit's contribution via Shapley attribution. We evaluate GS-SHAP across four real-world domains: human activity recognition, power-system forecasting, medical signal analysis, and financial time series, and compare it with KernelSHAP, TimeSHAP, SequenceSHAP, WindowSHAP, and TSHAP. GS-SHAP improves deletion-based faithfulness (DeltaAUC) by about 1.7x on average over time-series SHAP baselines, while reducing wall-clock runtime by about 40 percent on average under matched perturbation budgets. A financial case study shows that GS-SHAP identifies interpretable multivariate-temporal interactions among key market variables during high-volatility regimes.",
+      "categories": [],
+      "url": "https://doi.org/10.1145/3799682.3840928",
+      "pdf_url": null,
+      "doi": "10.1145/3799682.3840928",
+      "year": 2026,
+      "published": "2026-11-03",
+      "discovered": "2026-11-04",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "openalex:W4411902028",
+      "source": "openalex",
+      "title": "Corporate Boards: New Thinking",
+      "authors": [
+        "Renée B. Adams"
+      ],
+      "abstract": "In the face of global challenges, corporate boards may need to think differently. In this review, I explore how the finance literature addresses the challenges boards face. I focus on a key recent challenge: how boards navigate shifting expectations about their objectives beyond shareholder value. I highlight that the literatures on boards’ stakeholder objectives and diversity overlap. This raises interesting, and important, questions about how boards can develop “new thinking” more generally. Much research remains to be done in this area. To rise to the challenge, however, finance academia may also need to think differently. Using data that measure how individual directors think, I illustrate that many factors may influence how directors think, including selection. Recognizing path dependencies in approaches and assumptions may help the field of finance continue to generate influential research on boards.",
+      "categories": [],
+      "url": "https://doi.org/10.1146/annurev-financial-120723-124911",
+      "pdf_url": null,
+      "doi": "10.1146/annurev-financial-120723-124911",
+      "year": 2026,
+      "published": "2026-11-02",
+      "discovered": "2026-11-04",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
