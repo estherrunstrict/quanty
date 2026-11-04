@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-11-04T16:16:12.722960+09:00",
+  "generated_at": "2026-11-05T06:30:32.742795+09:00",
   "stats": {
-    "total": 415,
-    "queued": 333,
+    "total": 416,
+    "queued": 334,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-11-04T16:16:12.722852+09:00",
+    "last_gc_at": "2026-11-05T06:30:32.742689+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -12107,6 +12107,33 @@
       "matched_keywords": [
         "regime",
         "walk-forward"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "openalex:W7225195844",
+      "source": "openalex",
+      "title": "Deep Learning Approaches for Financial Time Series Change Detection: Algorithms and Applications",
+      "authors": [
+        "Michael Endale",
+        "Mohammed Ayalew Belay"
+      ],
+      "abstract": "Financial markets move through regimes such as calm bull markets, volatility bursts, crashes, and structural breaks. Detecting when such changes occur, ideally as soon as they occur, is central to trading, risk management, and asset allocation. Classical change-point detection and regime-switching econometrics are rigorous but rely on parametric assumptions strained by heavy tails, volatility clustering, high dimensionality, and low signal-to-noise ratios. Deep learning offers flexible representations but introduces risks of overfitting, look-ahead bias, and opacity. This review grounds the field in a curated corpus of 186 works, including more than 60 highly cited papers in machine learning, deep learning, change-point analysis, and deep learning for finance. We formalize offline and online detection in a unified notation, connect deep detectors to CUSUM and Bayesian online detection, and propose six complementary taxonomies. We also develop a symmetry perspective: a change point is a broken time-translation symmetry, good detectors respect scale, permutation, and translation symmetries, and financial asymmetries such as the leverage effect carry signal. Twenty deep detectors are compared, and a reproducible simulation study illustrates the benefits of symmetry-based augmentation and the risk of spurious alarms under volatility clustering. We close with open problems and a research agenda.",
+      "categories": [],
+      "url": "https://doi.org/10.20944/preprints202611.0295.v1",
+      "pdf_url": null,
+      "doi": "10.20944/preprints202611.0295.v1",
+      "year": 2026,
+      "published": "2026-11-04",
+      "discovered": "2026-11-05",
+      "matched_keywords": [
+        "regime",
+        "look-ahead bias",
+        "overfitting"
       ],
       "status": "queued",
       "ingested_into": null,
