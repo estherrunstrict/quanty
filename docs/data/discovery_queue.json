@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-11-04T06:30:35.052744+09:00",
+  "generated_at": "2026-11-04T16:16:12.722960+09:00",
   "stats": {
-    "total": 411,
-    "queued": 329,
+    "total": 415,
+    "queued": 333,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-11-04T06:30:35.052617+09:00",
+    "last_gc_at": "2026-11-04T16:16:12.722852+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -11987,6 +11987,126 @@
       "discovered": "2026-11-04",
       "matched_keywords": [
         "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.05310",
+      "source": "arxiv",
+      "title": "Mitigating Return Drag and Regime Whipsaws in Sector Rotation: An Asymmetric Downside-Aware Nested Clustered Optimization Framework",
+      "authors": [
+        "Supriadi"
+      ],
+      "abstract": "Hierarchical clustering and Nested Clustered Optimization (NCO) mitigate the mathematical ill-conditioning of classical Markowitz covariance matrices. However, two structural vulnerabilities persist in equity markets: (1) symmetric variance penalizes upside and downside return dispersion identically, inducing acute return drag against soaring momentum sectors; and (2) unconstrained Hidden Markov Models (HMM) exhibit hyper-active regime switching (whipsaw instability), incurring excessive turnover and transaction drag. We propose Asymmetric Downside-Risk Nested Clustered Optimization with Sticky Regime Dynamics (Asym-Sticky-NCO) for tactical sector rotation across all 11 S&P 500 GICS sectors. The framework substitutes symmetric covariance with the Bawa-Lindenberg downside semi-covariance matrix across both hierarchical tree clustering and two-stage allocation. Furthermore, we introduce a Sticky Gaussian HMM incorporating a diagonal self-transition persistence prior (\\k{appa}) and confidence-adaptive boundaries (δ) to enforce macroeconomic persistence. Strictly non-anticipative walk-forward backtesting across 65 out-of-sample months (August 2020 to December 2025) demonstrates that the architecture elevates CAGR from 10.65% (Plain NCO) to 13.41% (+276 bps/year), delivers a 97.74% total return versus 72.99%, suppresses maximum drawdown to 14.22% (versus 23.93% for the S&P 500), and achieves a Calmar ratio of 0.94 (+38.2% over S&P 500; +84.3% over Baseline Regime-NCO). Crucially, sticky dynamics cut regime whipsaws by 75.0% (from 16 to 4 switches) and reduce monthly turnover from 60.78% to 30.48%, addressing core limitations of machine learning asset allocation.",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2611.05310v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.05310v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-03",
+      "discovered": "2026-11-04",
+      "matched_keywords": [
+        "momentum",
+        "regime",
+        "walk-forward",
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.04040",
+      "source": "arxiv",
+      "title": "PanelGP: A Probabilistic Factor Model for Asset-Return Panels",
+      "authors": [
+        "Andrea Ruglioni",
+        "Damir Filipovic"
+      ],
+      "abstract": "We develop PanelGP, a conditional factor model for large panels of stock returns in which firm characteristics determine the factor loadings and economic conditions determine the expected factors. Both relations are estimated nonparametrically with Gaussian-process priors. The kernel choice nests instrumented principal component analysis (IPCA) as well as smooth nonlinear maps. Asset-specific loading innovations and common factor innovations separate idiosyncratic from systematic risk, so one estimated model forecasts both expected returns and their covariance matrix. Estimation uses sparse variational inference with a joint posterior over loadings and factors. Because each predicted return is bilinear in a Gaussian state, the predictive covariance matrix and the cumulants of any portfolio have closed forms. In simulations, the estimator recovers the nonlinear maps and the variance parameters. For S&P 500 constituents over 1995-2024, nonlinear loadings rank stocks better than affine loadings and improve the Gaussian log score. Relative to IPCA, the resulting portfolios have higher Sharpe ratios, also net of trading costs, and the minimum-variance portfolio has lower volatility. The predicted variances rank stocks and months by risk but are too compressed.",
+      "categories": [
+        "q-fin.ST",
+        "econ.EM",
+        "stat.ML"
+      ],
+      "url": "https://arxiv.org/abs/2611.04040v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.04040v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-02",
+      "discovered": "2026-11-04",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.03985",
+      "source": "arxiv",
+      "title": "Thinking Fast, Trading Late: System One Decision Models vs the Market",
+      "authors": [
+        "Amir Dehkordi",
+        "Alireza Kargarzadeh",
+        "Nariman Khaledian",
+        "Navid Parvini",
+        "Sid Ghatak",
+        "Arman Khaledian"
+      ],
+      "abstract": "Large language models (LLMs) read company news at scale, and backtests suggest that their readings predict stock returns. We ask how much of that predictability survives a test that rules out look-ahead, memorization and selection. We propose OLIVIA, a protocol for such tests: point-in-time inputs with company identities masked, selection on validation data only, an analysis plan frozen by cryptographic hash, and a test period unblinded once through a logged lock. We apply it to AI decision models, non-generative language models that return probabilities for typed questions, reading news about S&P 500 stocks: an open-weights model we fine-tuned on 2024-2025 data, three commercial models and standard baselines. The fine-tuned model's signal replicated on two validation quarters (daily information coefficients 0.055 and 0.065) but fell to 0.020 (t = 1.7) on the blinded January-July 2026 test. The commercial models' readings line up with the overnight move to the open (information coefficient 0.074 to 0.077) but not with the move after it, so the news is priced by the time a trader can act on it at the open. No model can tell over- from under-reaction, and no pre-registered strategy survives costs and a deflated Sharpe ratio. Commercial models identify masked companies in 62% to 74% of cases against a 28% baseline: masking hides names, not companies. The market reads the news first.",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.LG",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2611.03985v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.03985v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-02",
+      "discovered": "2026-11-04",
+      "matched_keywords": [
+        "deflated sharpe"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.03755",
+      "source": "arxiv",
+      "title": "Honest Small Decision Models for Finance: Scale, Specialization Collapse, and Mixed-Corpus Remediation",
+      "authors": [
+        "Ajitabh Kumar"
+      ],
+      "abstract": "Financial workflows need fast, calibrated, auditable decisions, not just generated text. We train System-1 decision models, small language models fine-tuned to answer typed questions (choice/score/noul) with a probability in a single forward pass, across two model families (K2-Horizon and Qwen3.5/3.8) and nine rungs from 0.8B to 32B parameters, using one frozen LoRA recipe on a public decision benchmark and two new finance corpora: a programmatic-gold policy corpus (rule-reading with exact labels) and a reality-labeled outcome corpus (19,640 realized forward-return questions in walk-forward splits, plus a sealed 2026 test of 1,360 questions). Narrow fine-tuning costs general decision competence 9-45 percentage points, a data-mixture effect that shrinks with model scale and is associated with narrow-gradient volume. On reality-labeled questions, every trained rung from 0.8B to 32B lands at the horizon-conditioned prior baseline (accuracy 0.37-0.38, no detectable conditional edge under our controls); the models respond with flat, well-calibrated probabilities that track per-horizon base rates: naturally honest uncertainty, with a mid-scale calibration sweet spot (ECE 0.026 at 2B, degrading to 0.043-0.044 at 9-32B under prior drift). A mixed-corpus remediation carries all competencies in one adapter at modest cost: it matches or slightly exceeds the generalist specialist on the public benchmark while holding the policy ceiling and near-specialist outcome calibration, yielding a deployable artifact with per-domain temperature regimes and a band-dispatch escalation analysis: sharp, dispatchable bands where rules determine answers; flat, review-routing bands where reality does not.",
+      "categories": [
+        "cs.LG",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2611.03755v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.03755v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-02",
+      "discovered": "2026-11-04",
+      "matched_keywords": [
+        "regime",
+        "walk-forward"
       ],
       "status": "queued",
       "ingested_into": null,
