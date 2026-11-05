@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-11-05T06:30:32.742795+09:00",
+  "generated_at": "2026-11-05T16:15:20.203874+09:00",
   "stats": {
-    "total": 416,
-    "queued": 334,
+    "total": 419,
+    "queued": 337,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-11-05T06:30:32.742689+09:00",
+    "last_gc_at": "2026-11-05T16:15:20.203741+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -12134,6 +12134,88 @@
         "regime",
         "look-ahead bias",
         "overfitting"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.06495",
+      "source": "arxiv",
+      "title": "Constrained defined-contribution pension management: A reparameterized neural network approach",
+      "authors": [
+        "Yueman Feng",
+        "Wenyuan Li"
+      ],
+      "abstract": "This paper studies constrained defined contribution (DC) pension management under a two-factor financial market model. The pension participant is allowed to invest in cash, two nominal bonds, an inflation-linked bond, and a stock index. Moreover, they can also purchase term life insurance to manage pre-retirement death risk. Unlike traditional literature, we consider a pension member restricted to a general non-empty, closed, and convex trading constraint set that includes no short-selling, no borrowing, and portfolio-mix constraints as special cases. Such restrictions reflect common limits on pension-account trading. To solve the problem, we construct a family of unconstrained artificial markets, in which the original trading constraints are satisfied by adjusting the drift terms of the risky assets. Using a duality transformation, we derive the Lagrangian dual problem and propose a reparameterized neural network method to compute lower and upper bounds on the primal value function. We calibrate our model with U.S. data using a Kalman filter method, and find that our method produces a smaller duality gap than the benchmark methods. We also compare the constrained results with the unconstrained explicit solution and find that trading constraints substantially change wealth accumulation, portfolio strategies, and insurance demand. This highlights that unconstrained solutions may provide misleading guidance for pension management in practice.",
+      "categories": [
+        "q-fin.PM",
+        "math.OC"
+      ],
+      "url": "https://arxiv.org/abs/2611.06495v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.06495v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-04",
+      "discovered": "2026-11-05",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.06607",
+      "source": "arxiv",
+      "title": "Hard to Fool: A Bounded LLM Research Loop for Quantitative Finance, and What Two Dozen Campaigns Found",
+      "authors": [
+        "Henry Zhang"
+      ],
+      "abstract": "Agentic research loops that let a language model propose a change, run a fixed experiment and keep whatever improves the metric work well in machine learning. In trading research the same loop is a machine for producing false discoveries: a backtest that \"improves the metric\" is, by default, overfit, look-ahead, a multiple-comparisons artifact, cost-free, or market drift wearing a strategy. We describe Autonomous Quant Researcher, an open-source loop built on the opposite premise: the model proposes, and only trusted code decides. Proposals are strict declarative JSON over a fixed vocabulary, so there is no model-written code to sandbox. Evaluation runs on immutable chronological stores split into discovery, validation and a final holdout that can be opened exactly once, after a durable receipt is written. Acceptance is a conjunction of absolute gates (positive edge and net P&L after costs, a positive weekly-cluster bootstrap lower bound, survival at elevated costs, per-year stability and sample floors), never a single score. Duplicates are refused before they spend a trial, and every formulation, refusal, crash and result is kept in a hash-chained, append-only ledger. We report every campaign run to date, across 0DTE options priced from traded option bars, overnight SPX verticals, daily ETF rules, technical-analysis premises, Kalshi crypto binaries, earnings options, off-exchange volume and a pre-registered alternative-data campaign. Most hypotheses fail, and we report them. Two results survive their pre-registered bars. The clearest example of the loop working is a failure: a language-model survivor that passed discovery and validation with Sharpe ratios near 3 and fell to 0.26 on its single holdout use. The value of such a loop lies less in what it finds than in how hard it is to make it report something that is not there.",
+      "categories": [
+        "q-fin.CP",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2611.06607v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.06607v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-04",
+      "discovered": "2026-11-05",
+      "matched_keywords": [
+        "ETF"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.06126",
+      "source": "arxiv",
+      "title": "Exponential Seniority Weighting Chain-Ladder Reserving",
+      "authors": [
+        "Mario V. Wüthrich"
+      ],
+      "abstract": "We develop a tractable state-space version of the chain-ladder model. The state-space dynamics acts on the accident year axis which, in contrast to the classical chain-ladder model, makes accident years dependent. This state-space version yields an exponential seniority weighting in the chain-ladder factor estimation, and it admits an analytical likelihood representation that enables us to compute the seniority weighted chain-ladder reserves and their prediction uncertainty: the one-year uncertainty is available in closed form and the total uncertainty requires a Monte Carlo simulation from the fully tractable likelihood representation.",
+      "categories": [
+        "stat.AP",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2611.06126v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.06126v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-04",
+      "discovered": "2026-11-05",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
