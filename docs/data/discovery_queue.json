@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-11-06T06:30:43.616516+09:00",
+  "generated_at": "2026-11-06T16:16:45.219657+09:00",
   "stats": {
-    "total": 421,
-    "queued": 339,
+    "total": 422,
+    "queued": 340,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-11-06T06:30:43.616409+09:00",
+    "last_gc_at": "2026-11-06T16:16:45.219546+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -12268,6 +12268,34 @@
       "discovered": "2026-11-06",
       "matched_keywords": [
         "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.07287",
+      "source": "arxiv",
+      "title": "Neural Realized Measures: Forecast-Supervised Intraday Aggregation for Volatility Forecasting",
+      "authors": [
+        "Brian Sing Fan Chan",
+        "Jennifer So Kuen Chan"
+      ],
+      "abstract": "High-frequency volatility forecasting typically separates measurement from prediction: intraday observations are first compressed into a daily realized measure using a fixed aggregation rule, and the resulting statistic is then passed to a forecasting model. This conventional pipeline therefore treats measure construction as forecast-agnostic preprocessing. We ask whether the aggregation stage itself can instead be learned from the downstream forecasting objective while preserving the statistical structure of established realized measures. We propose Neural Realized Measures (NRM), a primitive-preserving, forecast-supervised aggregation framework that retains the original measure-specific intraday contributions but replaces uniform aggregation with positive, mean-normalized context-dependent weights. Uniform weights exactly recover the corresponding raw realized measure (RRM), so the classical construction is nested as a special case. Because NRM remains an explicit weighted sum of established primitive contributions, it also retains direct bar-level attribution. Across SF, HAR, and MIDAS forecasting specifications, NRM is evaluated against corresponding RRM specifications under controlled comparisons. In Heston simulations, NRM reduces RMSE for both contemporaneous and next-day latent integrated variance across all evaluated primitive--regime combinations. On six cryptocurrencies using five-minute data, NRM improves QLIKE in all 54 paired out-of-sample comparisons, with mean gains of 7.23\\%, 8.15\\%, and 9.22\\% under SF, HAR, and MIDAS, respectively. Validation-selected NRM specifications also achieve the lowest mean QLIKE across the six assets among the evaluated approaches. Ablation and SHAP analyses reveal systematic time-of-day and nonlinear local-context effects in the learned allocation.",
+      "categories": [
+        "q-fin.ST",
+        "stat.ML"
+      ],
+      "url": "https://arxiv.org/abs/2611.07287v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.07287v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-05",
+      "discovered": "2026-11-06",
+      "matched_keywords": [
+        "regime"
       ],
       "status": "queued",
       "ingested_into": null,
