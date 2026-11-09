@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-11-07T06:30:47.393620+09:00",
+  "generated_at": "2026-11-09T16:16:21.411701+09:00",
   "stats": {
-    "total": 428,
-    "queued": 346,
+    "total": 434,
+    "queued": 352,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-11-07T06:30:47.393517+09:00",
+    "last_gc_at": "2026-11-09T16:16:21.411539+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -12448,6 +12448,176 @@
       "matched_keywords": [
         "factor",
         "statistical arbitrage"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.09834",
+      "source": "arxiv",
+      "title": "The Logic of Factor Portfolios: Boolean Rules, Interactions, and Trading Costs",
+      "authors": [
+        "Ziyao Wang",
+        "Svetlozar T. Rachev",
+        "Frank J. Fabozzi"
+      ],
+      "abstract": "Investors turn signals into holdings through decision rules: buy the top decile, hold stocks with high momentum and low volatility, exclude stocks that fail a screen. Many such rules are Boolean functions of threshold statements about signal ranks, and writing them this way shows both what a rule holds and how often it trades. A Walsh decomposition splits the return of any rule into exposures to individual signals and to interactions among signals; an intersection and a union of the same two screens, for example, have opposite interaction exposures. The same coefficients, together with the persistence of the underlying statements, determine turnover. Interactions are less persistent than their components, so rules that load on higher-order interactions trade more, and thresholds discard information, so at equal risk threshold implementations of interactions trade more than smooth ones. In U.S. stocks from 1973 to 2024, these predictions hold closely: predicted and realized persistence have correlations of at least 0.999, predicted turnover matches realized turnover with a slope of 1.02, and the same interactions are more persistent as products of ranks than as threshold rules. Trading costs rise with order, and because premia fall with order, 58% of single-signal portfolios have absolute premia above their quoted-spread costs over 1995-2024, against 24% of two-signal and 6% of three-signal interaction portfolios. Out of sample, interaction portfolios raise the Sharpe ratio of single-signal tangency portfolios, and over 1995-2024 they reject a six-factor model that conventional sorts on the same signals do not reject.",
+      "categories": [
+        "q-fin.PM",
+        "q-fin.GN"
+      ],
+      "url": "https://arxiv.org/abs/2611.09834v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.09834v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-06",
+      "discovered": "2026-11-09",
+      "matched_keywords": [
+        "momentum",
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.09012",
+      "source": "arxiv",
+      "title": "Towards Robust Reinforcement Learning Market Making: Lessons from Loss Function Experimentation",
+      "authors": [
+        "Siddharth Nand",
+        "Bora Guney"
+      ],
+      "abstract": "Market makers play a vital role in ensuring efficient trade within financial markets. Recent literature has delved into training market-making systems using reinforcement learning. This paper delves into the impact of various loss function formulations on risk management behavior within reinforcement-based market making. Through empirical evaluation, we contrast profit-maximizing strategies with risk-averse approaches, finding that penalties for inventory and cash management foster more resilient and adaptable market-making strategies. Our results underscore the significance of striking a balance between profit maximization and risk management in algorithmic trading, providing actionable insights for refining strategies in practical settings.",
+      "categories": [
+        "cs.LG",
+        "q-fin.CP",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2611.09012v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.09012v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-06",
+      "discovered": "2026-11-09",
+      "matched_keywords": [
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.08701",
+      "source": "arxiv",
+      "title": "Does a Trading Policy Need to Know What It Trades? Microstructure Invariance and Zero-Shot Transfer of Execution Policies",
+      "authors": [
+        "Hieu Tran",
+        "Hong Yu"
+      ],
+      "abstract": "Execution algorithms are calibrated asset by asset, because the queues, trade rates and bid-ask spreads they face differ by orders of magnitude across assets. For reinforcement learning this is zero-shot generalisation across contexts of very different scales, and microstructure invariance proposes a normalisation fixed by theory: measured in each asset's own units of time, size and price, markets look alike. In an exact order-by-order replay of public Nasdaq data, we train policies once, on 954 stocks in 2019, to choose between waiting in the queue and crossing the spread, and evaluate them unchanged on 1,964 unseen stocks in 2020-21, 2,629 stocks in 2025-26, crypto pairs and a second exchange. First, a policy that sees a stock only through its recent trade rate, trade size, spread and price increment (tick) costs within 0.015 spreads per share (a fifth of what learning saves) of a policy whose training data included the stock, and the stock's own history does not help it; it comes within a similar margin of policies trained on the second exchange when every episode counts equally, and within a wider one on crypto. Second, in mean cost before fees, invariant units beat raw units, z-scores and asset descriptors, but by under a basis point: most of their advantage is information and a common cost scale that a learner can also take as plain inputs, and none of the representations tested extrapolates to unseen spread regimes. Third, a near-zero transfer gap to a pooled comparator is weak evidence that a representation is right: we show that such a comparator detects only a small share of what a poor representation loses, and confirm it in synthetic markets and on pendulums.",
+      "categories": [
+        "cs.LG",
+        "cs.CE",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2611.08701v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.08701v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-05",
+      "discovered": "2026-11-09",
+      "matched_keywords": [
+        "regime",
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.09213",
+      "source": "arxiv",
+      "title": "Joint modelling of financial cost and carbon footprint in motor insurance claims: a BINAR(1) decision framework for circular auto parts adoption",
+      "authors": [
+        "Charles Minier",
+        "Stéphane Loisel",
+        "Renata Alcoforado"
+      ],
+      "abstract": "Motor insurance claims management increasingly faces a dual objective: controlling claim costs while reducing greenhouse-gas emissions associated with vehicle repair decisions. This paper proposes a bivariate, discrete-time modelling framework that links the dynamics of financial claims and repair-related carbon footprint inspired by a BINAR(1) dependence structure, allowing for temporal persistence, cross-dependence and a positive/negative correlation between the two dimensions. Using externally sourced emission factors and cost information for replacement parts, we operationalise the carbon footprint of claims under two repair pathways: new parts versus circular-economy reused parts (PIEC). We then conduct scenario analyses in which the acceptance rate of reused parts varies, and we quantify the joint implications for expected monetary outlays and CO 2 -equivalent emissions. Results show that higher PIEC acceptance can simultaneously reduce expected emissions and average claim cost, and the magnitude of the joint benefit depends on the dependence structure and persistence captured by the BINAR(1) process. The proposed framework provides a transparent, reproducible tool for insurers to evaluate repair-policy levers and to align claims operations with decarbonisation targets while retaining an explicit stochastic risk perspective.",
+      "categories": [
+        "q-fin.RM",
+        "math.PR"
+      ],
+      "url": "https://arxiv.org/abs/2611.09213v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.09213v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-06",
+      "discovered": "2026-11-09",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "openalex:W7214662279",
+      "source": "openalex",
+      "title": "Assurance and ESG rating divergence can limit the informational value of sustainability disclosure mandates",
+      "authors": [
+        "Ramyashree M S",
+        "Sahanashree N",
+        "Pavithra Salanke",
+        "N. Jayashree"
+      ],
+      "abstract": "Abstract Regulators increasingly treat disclosure quantity as the principal policy lever, assuming that more sustainability disclosure yields better-informed investors and more efficient capital allocation. This conceptual paper argues that the assumption is misspecified. Disclosure moves investor beliefs only insofar as it is credible, and credibility is manufactured downstream of the reporting entity, by assurance providers who verify and rating agencies who aggregate. We develop the construct of the credibility wedge, the gap between the quantity of sustainability information a firm discloses and the reliability investors attach to it. Drawing on costly state verification, cheap-talk and signalling models, ambiguity-based asset pricing and institutional theory, we specify a three-layer architecture of preparer, assurer and rater, each with a distinct failure mode. Twelve propositions connect regime design to the wedge, and the wedge to belief revision, the cost of capital and capital allocation. A two-by-two typology is derived and applied to the four architectures observable in 2026: the narrowed European regime, jurisdictions adopting IFRS S1 and S2, the United States, and India’s BRSR Core. As the wedge grows, the marginal informational return to additional disclosure tends to zero, implying that verification and rating infrastructure must be built before disclosure scope is widened. India offers an unusually favourable research setting, and eight estimable models are specified. For the 2030 Agenda, target 12.6 and its report-counting indicator track disclosure volume rather than decision-useful information, making credible verification a precondition for reporting to advance SDGs 12 and 13.",
+      "categories": [],
+      "url": "https://doi.org/10.1007/s43621-026-05271-6",
+      "pdf_url": null,
+      "doi": "10.1007/s43621-026-05271-6",
+      "year": 2026,
+      "published": "2026-11-07",
+      "discovered": "2026-11-09",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "openalex:W7225384215",
+      "source": "openalex",
+      "title": "Green Credit, Financing Constraints, And Corporate Green Transformation: A Financial Resource Allocation Perspective",
+      "authors": [
+        "Dewi Purwati",
+        "Yeong Hong Yi"
+      ],
+      "abstract": "Green credit has become an important policy instrument for promoting sustainable development and integrating environmental considerations into financial resource allocation. As environmental concerns and climate-related risks increasingly influence economic activities, commercial banks are expected to play a greater role in supporting environmentally sustainable projects while maintaining financial stability. Where economic development and environmental sustainability are important policy priorities, green credit provides a potential mechanism for directing financial resources toward environmentally responsible industries. Drawing on financial intermediation theory and credit risk management perspectives, this study explores the channels through which green credit may influence commercial banks' credit risk. Green credit may reduce credit risk by encouraging banks to incorporate environmental factors into borrower assessments, strengthen lending standards, and identify potential risks associated with environmental regulations and unsustainable business practices. By directing financing toward environmentally responsible enterprises, banks may reduce their exposure to borrowers vulnerable to environmental and regulatory changes, thereby improving loan portfolio quality. These factors suggest that the relationship between green credit and credit risk may depend on banks' lending capabilities, borrower characteristics, and institutional conditions. The study is expected to contribute to the literature on sustainable finance by providing insights into the role of green credit in banking risk management within an emerging-market context. Its findings may also offer practical implications for commercial banks seeking to balance environmental responsibility with prudent lending decisions, as well as for policymakers developing green finance frameworks to support sustainable economic development and financial stability in Indonesia.",
+      "categories": [],
+      "url": "https://doi.org/10.47191/jefms/v9-i11-09",
+      "pdf_url": null,
+      "doi": "10.47191/jefms/v9-i11-09",
+      "year": 2026,
+      "published": "2026-11-07",
+      "discovered": "2026-11-09",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
