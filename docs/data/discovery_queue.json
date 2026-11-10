@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-11-10T06:30:31.259003+09:00",
+  "generated_at": "2026-11-10T16:16:33.010936+09:00",
   "stats": {
-    "total": 435,
-    "queued": 353,
+    "total": 440,
+    "queued": 358,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-11-10T06:30:31.258892+09:00",
+    "last_gc_at": "2026-11-10T16:16:33.010760+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -12639,6 +12639,161 @@
       "doi": "10.21203/rs.3.rs-11209402/v1",
       "year": 2026,
       "published": "2026-11-09",
+      "discovered": "2026-11-10",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.11373",
+      "source": "arxiv",
+      "title": "Optimal execution in a fractional setting with reinforcement learning",
+      "authors": [
+        "Matthieu Garcin",
+        "Jiang Pu",
+        "Thomas Verrier"
+      ],
+      "abstract": "We consider the problem of optimal liquidation with linear market impact, as in the seminal work of Almgren and Chriss, but with an asset driven by a fractional Brownian motion. For $H \\neq 1/2$, we observe that the deterministic solution given by Almgren and Chriss is no longer optimal. We develop a strategy to exploit the information induced by the correlation between price increments. The strategy is derived from a policy gradient algorithm, parameterized by a neural network, trained to maximise the CARA utility, for which our method allows for significant improvements.",
+      "categories": [
+        "q-fin.TR",
+        "q-fin.CP",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2611.11373v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.11373v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-08",
+      "discovered": "2026-11-10",
+      "matched_keywords": [
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.11803",
+      "source": "arxiv",
+      "title": "Diversified-Risk-Perception Risk Measures and Portfolio Selection",
+      "authors": [
+        "Yang Liu",
+        "Yuhao Liu",
+        "Jiani Shen"
+      ],
+      "abstract": "Traditional risk measures generally rely on a single probability model, potentially overlooking information from alternative models and leading to biased risk assessments. This limitation cannot be addressed by asset diversification alone in risk management. In this paper, we propose a Diversified-Risk-Perception (DRP) risk measure framework that integrates asset diversification and risk model diversification to provide a more comprehensive assessment of market risk while reducing reliance on any single model. First, we introduce a flexible exponential aggregation function to evaluate the risk of a portfolio, which accounts for the contributions of all loss components while placing greater emphasis on large losses. Second, we incorporate multiple risk models in the risk measure and optimize their weights based on their perceptions on the risk assessments. As a specific example, we introduce DRP expected shortfall (DRP-ES), establish its theoretical properties, and derive bounds quantifying its sensitivity to model parameters. Empirical experiments in the U.S., Chinese A-share, and South Korean stock markets show that trading strategies based on the DRP-ES achieve higher Sharpe ratios and lower maximum drawdowns than market benchmarks across different periods. Compared with asset diversification strategies based on individual probability models, the DRP strategy exhibits more stable and robust performance across different markets and periods. These findings suggest that the DRP framework can adapt to changing market conditions and improve the stability and effectiveness of portfolio risk management.",
+      "categories": [
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2611.11803v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.11803v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-09",
+      "discovered": "2026-11-10",
+      "matched_keywords": [
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.10972",
+      "source": "arxiv",
+      "title": "JUBILEE: A Benchmark Environment for Off-Policy Evaluation in Debt Collections",
+      "authors": [
+        "Diego Silva Prado",
+        "Tiago Amaral Penteado de Jesus",
+        "Bruno Caldas de Souza",
+        "Cristiano Bevitori Maffia De Oliveira"
+      ],
+      "abstract": "Off-policy evaluation (OPE) estimates the value a candidate decision policy would achieve, using only data logged by the policy already in production. In debt collections, unrecorded factors can influence both actions and outcomes. This paper presents JUBILEE, a benchmark environment built around a debt-collections simulator that generates million-loan panels with competing risks, rare recovery events, and hidden factors driving both outcomes and assignment. The evaluation includes an 80-run comparison of tabular and gradient-boosted estimators under two synthetic outcome mechanisms and a 190-run parameter grid. Independent policy simulations provide reference values with estimated Monte Carlo uncertainty for a synthetic reward score and for simulated cash. With hidden factors influencing action assignment, several tabular methods agree closely while underestimating the field-visit policy's score, an error that also appears with boosted models. Intervals from tabular doubly robust estimation usually contain the reference without hidden assignment dependence but mostly miss it when that dependence is present. Estimates from randomized decisions do not show the same large error, although their limited precision leaves policy choice uncertain. The decision consequences depend on how policy value is defined. The field-visit policy ranks last under the score and first under simulated cash, which excludes channel costs. Under cash, log-based estimators miss this best candidate in nearly every run with hidden assignment dependence in the paired study. JUBILEE supports reproducible study of these failure modes under specified collections mechanisms.",
+      "categories": [
+        "cs.LG",
+        "q-fin.RM",
+        "stat.ML"
+      ],
+      "url": "https://arxiv.org/abs/2611.10972v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.10972v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-07",
+      "discovered": "2026-11-10",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.10956",
+      "source": "arxiv",
+      "title": "Risk-Sensitive Reinforcement Learning for an Options Market Maker: An Empirical Study with Real S&P 500 Options",
+      "authors": [
+        "Jacky Chen",
+        "Ing-Haw Cheng",
+        "John Hull",
+        "Landis Li",
+        "Zissis Poulos",
+        "Justin Shi",
+        "Andreas Veneris",
+        "Zeyu Wang"
+      ],
+      "abstract": "Options market makers absorb client order flow and must hedge the resulting inventory risk under trading frictions. We study whether an option hedging reinforcement learning (RL) agent trained on historical market data outperforms three alternatives in tail-risk protection: (i) traditional delta hedging, (ii) simple hedge-ratio rules, and (iii) the same agent trained in simulated markets. Most RL hedging agents are trained in model-generated markets that do not capture the crashes and volatility regimes present in real data. We introduce an empirical replay environment using S&P 500 option data from 1996 to 2017 and compare against a matched geometric Brownian motion (GBM) environment, a stochastic-volatility (SABR) simulator, and a hybrid that values historical paths with Black-Scholes, all sharing the same portfolio mechanics, stochastic arrivals, costs, and test period. We train a distributional Twin Delayed Deep Deterministic Policy Gradient (TD3) agent and evaluate it out of sample over 2018-2023. The agent trained on empirical data reduces Conditional Value-at-Risk (CVaR) tail loss by 3.1% compared to delta hedging and outperforms every hedge-ratio rule chosen during the training period and every alternative training environment. The reduction reaches 8.9% in volatile and falling markets, but reverses to a cost of 7-10% in rising markets. Empirical training induces a state-dependent short net delta: the policy under-hedges negative-delta books, most strongly after prices have fallen. This tilt disappears with GBM training and is weaker with SABR or hybrid training. These findings suggest that exposure to historical market dynamics can materially change a tail-risk hedging policy, although the evidence rests on a single test path and the edge is regime-conditional.",
+      "categories": [
+        "q-fin.RM",
+        "cs.LG",
+        "q-fin.CP"
+      ],
+      "url": "https://arxiv.org/abs/2611.10956v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.10956v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-07",
+      "discovered": "2026-11-10",
+      "matched_keywords": [
+        "regime",
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.10607",
+      "source": "arxiv",
+      "title": "Worst-Case Contagion in Financial Networks: MILP Clearing and Robust Loss Analysis",
+      "authors": [
+        "G. C. Calafiore",
+        "M. Della Rossa",
+        "A. Proskurnikov"
+      ],
+      "abstract": "We study worst-case contagion losses in financial networks with interbank liabilities and common exposures to marketable assets. Existing linear-programming approaches provide exact stress-test values only within an insolvency-resilience margin, where all institutions remain solvent with respect to the external sector. We show that this margin is computed exactly by a finite family of linear programs, one per vertex of the uncertainty ball, whereas a single linear program based on the componentwise worst deterioration of external resources yields only a certified lower bound. We extend this framework beyond that margin in three directions. First, we derive an exact mixed-integer linear programming (MILP) formulation for the maximal clearing vector under arbitrary signed external net positions, providing a clearing oracle for robust stress testing when insolvency can occur. Second, we develop certified bounds on the worst-case loss beyond the margin, including insolvency-pattern enumeration, scenario lower bounds, fixed-pattern dual upper bounds, localized certificates, and a regime-generation procedure with monotone gap certificates. Third, we analyze the worst-case loss curve as a function of the perturbation radius. For $\\ell_1$ and $\\ell_\\infty$ price-perturbation sets, the curve is convex, nondecreasing and piecewise linear up to the margin, with breakpoints generated by switches in worst-case shock directions, LP bases, and bank-level activity patterns. Beyond the margin, it remains nondecreasing and piecewise affine, but convexity may fail, the curve may jump upward, and the worst case need not be attained. The framework provides a certifiable MILP/LP methodology for parametric stress testing and interpretable diagnostics identifying the banks responsible for changes in systemic loss.",
+      "categories": [
+        "q-fin.RM",
+        "cs.CE",
+        "eess.SY"
+      ],
+      "url": "https://arxiv.org/abs/2611.10607v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.10607v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-07",
       "discovered": "2026-11-10",
       "matched_keywords": [
         "regime"
