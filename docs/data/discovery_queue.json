@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-11-11T16:16:25.033710+09:00",
+  "generated_at": "2026-11-12T06:30:32.239300+09:00",
   "stats": {
-    "total": 443,
-    "queued": 361,
+    "total": 444,
+    "queued": 362,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-11-11T16:16:25.033586+09:00",
+    "last_gc_at": "2026-11-12T06:30:32.239112+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -12880,6 +12880,30 @@
       "discovered": "2026-11-11",
       "matched_keywords": [
         "look-ahead bias"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "openalex:W7225738055",
+      "source": "openalex",
+      "title": "SCALABLE GPU BOOTSTRAPPING FOR FHEW/TFHE",
+      "authors": [
+        "Guangbei Yi"
+      ],
+      "abstract": "Fully Homomorphic Encryption (FHE) allows computation directly on encrypted data, enabling privacy-preserving applications in finance, healthcare, and machine learning. The main run-time bottleneck in FHE is bootstrapping—the periodic noise-reduction step that keeps encrypted computations correct. Among FHE schemes, FHEW and TFHE are bit-wise constructions that support fast bootstrapping with programmable lookup-table evaluation, making them attractive for Boolean and low-degree function evaluation on encrypted data. On GPUs, bootstrapping can be accelerated dramatically, but in current GPU implementations there is no single solution that dominates all settings of parameters and application scenarios: the choice of algorithm and how it is mapped onto GPU hardware depends on the encryption parameters and the number of ciphertexts processed at once. This thesis studies three GPU kernel architectures for FHEW/TFHE bootstrapping--termed DD (digit decomposition), MR (modulus raising), and HY (hybrid 32-bit RNS)--and measures how each one performs across a range of security levels and workload sizes. The study is organized along three dimensions: arithmetic precision (floating-point, 64-bit integer, or 32-bit integer), kernel scheduling (how many algorithmic stages are fused into a single GPU kernel), and data movement (whether intermediate results live in fast on-chip memory or slower off-chip memory). Each architecture occupies a different position in this design space, and none dominates everywhere. The investigation also reveals that several standard GPU optimization techniques--such as replacing synchronization barriers with warp-shuffle communication, or overlapping multiple encryptions via concurrent streams--might not simultaneously optimize latency and throughput in all regimes. Their effectiveness depends on which hardware resource (arithmetic units, memory bandwidth, or kernel launch overhead) is actually the bottleneck in each setting. Benchmarks on NVIDIA RTX 3090 and RTX 5060 Ti GPUs quantify where each architecture wins. MR achieves the lowest per-operation latency at small-to-medium parameters (2.1–3.9×faster than DD). DD achieves up to 18× higher batch throughput at those same parameters. HY lowers latency by 21% at large parameters (N = 4096), and a fully fused persistent variant of HY reaches the highest throughput (42.3 operations/s vs. 38.1 for DD) when both the parameter size and batch size are large. Based on these crossovers, the thesis derives a backend-selection rule that automatically routes each workload to the best-performing architecture, and deploys a simplified version of this rule in the open-source OpenFHE library with O(1) selection overhead and no runtime profiling.",
+      "categories": [],
+      "url": "https://doi.org/10.7273/000008734",
+      "pdf_url": null,
+      "doi": "10.7273/000008734",
+      "year": 2026,
+      "published": "2026-11-11",
+      "discovered": "2026-11-12",
+      "matched_keywords": [
+        "regime"
       ],
       "status": "queued",
       "ingested_into": null,
