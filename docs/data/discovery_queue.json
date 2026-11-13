@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-11-13T06:30:49.151700+09:00",
+  "generated_at": "2026-11-13T16:17:03.329292+09:00",
   "stats": {
-    "total": 444,
-    "queued": 362,
+    "total": 449,
+    "queued": 367,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-11-13T06:30:49.151578+09:00",
+    "last_gc_at": "2026-11-13T16:17:03.329117+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -12904,6 +12904,165 @@
       "discovered": "2026-11-12",
       "matched_keywords": [
         "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.16540",
+      "source": "arxiv",
+      "title": "Dynamic Scenario-Based Portfolio Optimization for Multi-Asset ETFs",
+      "authors": [
+        "Abigail A. Mensah",
+        "Ali M. Jaffri",
+        "Nicholas Appiah W. Brent Lindquist",
+        "Svetlozar T. Rachev",
+        "Frank J. Fabozzi"
+      ],
+      "abstract": "Portfolio outcomes may depend as much on trading restrictions as on how returns are modeled. We compared historical moving-window returns with conditional scenarios from ARMA--GARCH models and a Student-$t$ copula for 30 U.S.-listed exchange-traded funds. Matched mean--variance and conditional value-at-risk portfolios were evaluated under long-only and limited long--short bounds over 946 sessions. Historical portfolios had higher observed reward--risk ratios in most comparisons, but no paired difference remained significant after multiple-testing adjustment. Conditional scenarios did not consistently reduce realized downside risk. We distinguished changes in target weights from trades required to rebalance holdings after market movements. Relaxing the target-adjustment limit changed exposures, turnover, and some returns more than varying scenario count or seed in the examined tests. These findings suggest that assessments of conditional return inputs should consider portfolio constraints and trading requirements.",
+      "categories": [
+        "q-fin.RM",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2611.16540v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.16540v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-12",
+      "discovered": "2026-11-13",
+      "matched_keywords": [
+        "ETF"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.15657",
+      "source": "arxiv",
+      "title": "Global Seasonality Factor Investing",
+      "authors": [
+        "Andrew Butler",
+        "Adam Butler",
+        "Maciej Zawadzki"
+      ],
+      "abstract": "We study seasonality as a factor for predicting risk-adjusted returns across global futures markets. We document five seasonality anomalies that, in aggregate, are pervasive across bond, commodity and equity markets. We demonstrate that each seasonality factor produces excess returns that are not reasonably explained by established global time series carry, momentum and skewness factors. We apply recent innovations in statistical learning and fit nonlinear seasonality models at the individual market level, thereby allowing each feature-market pair to express its unique seasonal prediction pattern. We discuss candidate economic rationales for the existence and persistence of each seasonality anomaly. Walk-forward out-of-sample testing demonstrates that fast-moving seasonal patterns, such as day-of-week and day-of-month, produce strong gross performance but with extremely high turnover, resulting in negative performance net of transaction costs. In contrast, slower-moving seasonal patterns, such as day-of-quarter, day-of-half-year and day-of-year, produce positive gross performance and, with the exception of day-of-quarter, positive net performance. An equal-weight ensemble of seasonality models produces an out-of-sample Sharpe ratio that is competitive with, and uncorrelated to, established global time series factor portfolios. Empirical results demonstrate that adding seasonality to a global factor portfolio increases the out-of-sample Sharpe ratio by approximately $30\\%$ over the full evaluation period.",
+      "categories": [
+        "q-fin.MF",
+        "q-fin.PM",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2611.15657v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.15657v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-11",
+      "discovered": "2026-11-13",
+      "matched_keywords": [
+        "momentum",
+        "factor",
+        "commodity",
+        "walk-forward",
+        "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.15646",
+      "source": "arxiv",
+      "title": "Idiosyncratic Market Effects in Global Time Series Momentum",
+      "authors": [
+        "Andrew Butler",
+        "Maciej Zawadzki",
+        "Adam Butler"
+      ],
+      "abstract": "Time series momentum is a pervasive explanatory factor in financial markets whereby a market's recent historical average return positively predicts future returns. Recent applications of statistical learning augment the traditional linear model definition with a more descriptive global nonlinear factor model. We extend the work of \\citet{MoskowitzNonlinear} and demonstrate that models fit at the individual market level exhibit response curves that are distinct from the global factor model. We highlight the heterogeneity of forward market returns as a function of time series momentum and provide a framework that enables each feature-market pair to express its unique prediction behaviour. Empirical results demonstrate that, despite substantially smaller sample sizes, fitting nonlinear models to individual markets is a robust and often overlooked modelling approach that can result in a marginal improvement in out-of-sample performance.",
+      "categories": [
+        "q-fin.MF",
+        "q-fin.PM",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2611.15646v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.15646v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-11",
+      "discovered": "2026-11-13",
+      "matched_keywords": [
+        "momentum",
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.14699",
+      "source": "arxiv",
+      "title": "Conformal Risk Certificates for Portfolio Optimization Under Uncertainty: A Gated Reinforcement-Learning Approach",
+      "authors": [
+        "Mohammad Zarei",
+        "Amirhossein MohammadpourAzari",
+        "Moslem Habibi"
+      ],
+      "abstract": "Reinforcement-learning portfolio policies can optimize allocations from prices, covariances, and prior positions, yet they lack a calibrated, replayable mechanism for certifying that a proposed allocation respects a bounded risk envelope before execution. Regulators increasingly expect automated portfolio systems to provide exactly this kind of pre-trade audit trail, interpretable risk limit, and human-oversight mechanism. Gated Conformal Semantic Risk Control addresses this gap by separating return-seeking allocation from text-conditioned downside-risk verification. An instruction-tuned language model maps timestamped disclosures into schema-validated semantic risk states over macro, liquidity, earnings, and sector channels. These states induce correlated ellipsoidal factor-shock uncertainty sets whose conformal radii are calibrated by rolling finite-sample prediction over localized semantic nonconformity buckets. An asymmetric second-order cone gate then checks each raw PPO proposal against a certified worst-case semantic loss budget. The gate stays inactive for compliant proposals and intervenes only when that budget is exceeded. In walk-forward out-of-sample tests on nine liquid U.S. Select Sector SPDR ETFs, Raw PPO earns a 12.7% annual return while incurring a 4.05% semantic violation rate. Gated-CSRC removes all observed out-of-sample semantic limit breaches while retaining an 11.7% annual return. This 100-basis-point auditable safety premium is smaller than the yield loss imposed by unconditional hard projection, and exact McNemar testing confirms the compliance gain at $p < 10^{-15}$. Loughran-McDonald lexicon controls and time-shuffled text controls fail to reproduce this certificate.",
+      "categories": [
+        "q-fin.PM",
+        "cs.LG",
+        "math.OC",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2611.14699v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.14699v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-10",
+      "discovered": "2026-11-13",
+      "matched_keywords": [
+        "factor",
+        "ETF",
+        "walk-forward"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.14539",
+      "source": "arxiv",
+      "title": "Can a search hold its own bar? In-loop deflation and its exploits in autonomous strategy discovery",
+      "authors": [
+        "Eray Gençay"
+      ],
+      "abstract": "Corrections for backtest overfitting such as the deflated Sharpe ratio are applied after a search ends: the searcher maximises raw performance and a separate procedure deflates the reported winner. Autonomous searches driven by large language models perform many implicit backtests before reporting, so this paper asks what changes when the correction moves inside the loop and the acceptance threshold is indexed to the running count and dispersion of the search's own trials. The threshold then becomes an object the search can optimise against: we show analytically that a naive in-loop bar admits a variance-dilution effect, in which mediocre near-duplicate candidates lower the bar because the ledger's dispersion falls faster than its trial-count factor grows. We propose two defences, a pre-registered variance floor and a monotone high-water-mark bar, and evaluate the construction under a protocol frozen before any run, with every in-loop decision replaying exactly from its recorded trace. Across 53 audited hundred-candidate searches over two frontier models, two universes, and two feature spaces, the gated search reports \"no certifiable discovery\" on 36 of 37 runs, un-gated controls report a strategy on all 16, and every arm's out-of-sample confidence interval includes zero. Supporting studies find that state-based stopping reaches the same outcome after 8 to 9 trials at about a twelfth of the trial budget while an adaptive budget adds nothing, that a controlled stress test reproduces the dilution effect and both defences, and that a hundred nominal trials collapse to 6 to 8 effectively independent return streams. We scope these results to the analysed system.",
+      "categories": [
+        "stat.AP",
+        "cs.LG",
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2611.14539v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.14539v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-14",
+      "discovered": "2026-11-13",
+      "matched_keywords": [
+        "factor",
+        "deflated sharpe",
+        "overfitting"
       ],
       "status": "queued",
       "ingested_into": null,
