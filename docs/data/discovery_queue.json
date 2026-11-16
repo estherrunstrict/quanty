@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-11-14T06:30:28.319063+09:00",
+  "generated_at": "2026-11-16T16:16:02.707239+09:00",
   "stats": {
-    "total": 449,
-    "queued": 367,
+    "total": 454,
+    "queued": 372,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-11-14T06:30:28.318946+09:00",
+    "last_gc_at": "2026-11-16T16:16:02.707126+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -13063,6 +13063,143 @@
         "factor",
         "deflated sharpe",
         "overfitting"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.18150",
+      "source": "arxiv",
+      "title": "Who Should Be on the Panel? Task-Conditioned Persona Selection for LLM Trading Agents",
+      "authors": [
+        "Boming Yang",
+        "Yuquan Wang",
+        "Jiaxian Guo",
+        "Yusuke Iwasawa",
+        "Yutaka Matsuo"
+      ],
+      "abstract": "Multi-agent LLM systems are built by fixing a cast of roles and then designing how the cast coordinates. Which agents should make up the group for a given task is left to the designer, and the same cast is reused for every task. Financial trading makes the cost of that choice visible: stocks trade differently, and the trading styles suited to one need not suit another. We study task-conditioned persona selection, composing the group from the characteristics of the task it will face, and instantiate it with FinPanel, an LLM multi-agent trading system in which a recruiter selects a panel of named trader personas for each stock from a direction-blind statistical sketch of how the stock trades, each persona gives an independent daily call in its own style, and a manager commits the trade after reading the panel's arguments and their desk-kept, hierarchical track records. Because nothing is returned to the traders, the panel stays the panel that was selected, and it can trade a new stock from an empty record. On eight US stocks over the out-of-knowledge year 2025, against three prior LLM trading agents re-implemented in the same framework and against rule-based, predictive and reinforcement-learning baselines, the selected panel is ahead of a fixed panel of the same size and of the prior agents run as their papers prescribe, with a shallower drawdown than buy-and-hold on every stock; it keeps its performance with no warm-up and with no record at all, whereas the memory-augmented agents' returns swing with their warm-up; and neither more seats nor the manager's reading of the arguments substitutes for selecting the right ones. Who is in the group is a design decision to be made per task, before how the group coordinates.",
+      "categories": [
+        "q-fin.TR",
+        "cs.AI"
+      ],
+      "url": "https://arxiv.org/abs/2611.18150v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.18150v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-13",
+      "discovered": "2026-11-16",
+      "matched_keywords": [
+        "drawdown"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "openalex:W7233521526",
+      "source": "openalex",
+      "title": "Essays on Transparency, Governance, and Innovation in Firms",
+      "authors": [
+        "Jordi Geeraerts"
+      ],
+      "abstract": "Access to external financing is essential for corporate growth and macroeconomic stability, yet information asymmetry frequently prevents capital markets from functioning efficiently. In the wake of major transparency failures and financial crises, regulators globally responded with dense mandatory disclosure regimes, such as the Sarbanes-Oxley Act in the United States and the Corporate Sustainability Reporting Directive in the European Union, to restore investor confidence. However, the economic desirability of mandatory transparency remains contentious. While enhanced disclosure lowers the cost of capital, improves market liquidity, and standardizes financial reporting, it simultaneously imposes severe administrative burdens and proprietary risks that can undermine corporate competitiveness and innovation. This thesis provides a comprehensive evaluation of firm performance by examining the continuous interplay between external regulatory mandates and internal corporate governance. The dissertation begins by addressing two critical, yet largely overlooked, indirect channels of mandatory disclosure policy. Specifically, the first two chapters investigate how regulatory transparency alters competitive dynamics, strategic behavior, and outcome distributions within the realms of patent litigation and public procurement markets. These analyses reveal how mandatory reporting inadvertent shapes legal tactics and government bidding landscapes, offering a more complete accounting of the systemic consequences of disclosure laws. Shifting the analytical lens inward, the third chapter examines the internal organizational architecture that dictates how firms react to such external pressures. Focusing on the prevalence of owner-management and the structural distribution of equity within leadership teams, this chapter investigates internal governance as a fundamental determinant of a firm's propensity to innovate and adapt. Ultimately, by connecting macro-level disclosure policies with micro-level organizational design, this thesis demonstrates that long-term corporate efficiency depends on balancing external regulatory demands with internal governance structures optimized for innovation and growth.",
+      "categories": [],
+      "url": "https://lirias.kuleuven.be/handle/20.500.12942/797232",
+      "pdf_url": null,
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-26",
+      "discovered": "2026-11-16",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "openalex:W4401944931",
+      "source": "openalex",
+      "title": "Enhancing a Multi-Factor Equity Strategy Via Artificial Intelligence and Technical Indicators",
+      "authors": [
+        "Daiya Mita",
+        "Akihiko Takahashi"
+      ],
+      "abstract": "",
+      "categories": [],
+      "url": "https://doi.org/10.1007/s10690-026-09655-6",
+      "pdf_url": null,
+      "doi": "10.1007/s10690-026-09655-6",
+      "year": 2026,
+      "published": "2026-11-14",
+      "discovered": "2026-11-16",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "openalex:W4411787016",
+      "source": "openalex",
+      "title": "Facilitators and barriers to the implementation of community-based medication adherence support for aging individuals with HIV and hypertension in Western Kenya",
+      "authors": [
+        "Jepchirchir Kiplagat",
+        "Violet Naanyu Yebei",
+        "Ruth Nehema",
+        "Henry Zakumumpa",
+        "Kara Wools‐Kaloustian"
+      ],
+      "abstract": "Background: The advent of antiretroviral therapy (ART) remarkably improved the longevity and quality of life of people living with HIV (PLWH). However, as PLWH age, they often experience comorbidities, necessitating multiple medications, resulting in increased medication adherence challenges. Patient-tailored community-based medication adherence programs can improve adherence in this population. We explored facilitators of and barriers to the implementation of community health volunteer (CHV)-led medication adherence (CBA) support programs for older people living with HIV (OALWH). Methods: This qualitative study involved 166 purposefully sampled participants. In-depth interviews (IDIs) were held with 27 healthcare providers (HCPs), 28 CHVs, and 25 older adults' caregivers. Six focus group discussions (FGDs) were held with 86 OALWH affiliated with three health facilities in western Kenya. The IDIs and FGDs covered topics on perceived barriers and facilitators to having a CHV visit OALWH's home to offer medication adherence support. The data were analyzed thematically and organized using the Consolidated Framework for Implementation Research (CFIR). Results: The findings revealed various factors that could influence the implementation of a CBA intervention for OALWH and hypertension. Facilitators included the relative advantage and adaptability of the intervention, the enhanced collaboration between facility and community care providers, and the potential to promote patient-centered care. However, participants voiced several factors that may impede the intervention, such as the complexity of the intervention, increased workload and costs for CHVs, limited knowledge of hypertension management, unmet patient needs, and limited health financing for NCD medications. Fears of decreased cognitive ability, low cardiovascular risk perception, and medication side effects among OALWH were perceived to pose challenges. Furthermore, trust and empathy between CHVs and patients were identified as critical personal attributes that foster patient empowerment. Conclusion: This study identified barriers, highlighting the complexities of tailoring community support services to the needs of OALWH. The findings underscore the necessity for a holistic, multidimensional approach to addressing medication adherence by providing OALWH with the requisite hypertension management messaging, revisiting health system barriers (NCD care financing), and facilitating CHVs with knowledge, skills, and remuneration to enable them to efficiently support CBA intervention.",
+      "categories": [],
+      "url": "https://doi.org/10.1186/s12913-026-16134-1",
+      "pdf_url": null,
+      "doi": "10.1186/s12913-026-16134-1",
+      "year": 2026,
+      "published": "2026-11-14",
+      "discovered": "2026-11-16",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "openalex:W7128779860",
+      "source": "openalex",
+      "title": "Time-Inhomogeneity in Risk Averse Objectives for Financial Applications of Reinforcement Learning",
+      "authors": [
+        "Federico Cacciamani",
+        "Roberto Daluiso",
+        "Marco Pinciroli",
+        "Michele Trapletti",
+        "Edoardo Vittori"
+      ],
+      "abstract": "In finance, sequential decision problems are often faced, for which reinforcement learning (RL) emerges as a promising tool for optimisation without the need of analytical tractability. However, the objective of classical RL is the expected cumulated reward, while financial applications typically require a trade-off between return and risk. In this work, we focus on settings where one cares about the time split of the total return, ruling out most risk-aware generalisations of RL which optimise a risk measure defined on the latter. We notice that a preference for homogeneous splits, which is satisfactory for hedging, can be unfit for other problems, and therefore propose a new risk metric which still penalises uncertainty of the single rewards, but allows for an arbitrary planning of their target levels. We study the properties of the resulting objective and the generalisation of learning algorithms to optimise it. Finally, we show numerical results on toy examples.",
+      "categories": [],
+      "url": "https://doi.org/10.1145/3858063.3859363",
+      "pdf_url": null,
+      "doi": "10.1145/3858063.3859363",
+      "year": 2026,
+      "published": "2026-11-14",
+      "discovered": "2026-11-16",
+      "matched_keywords": [
+        "factor",
+        "reinforcement learning"
       ],
       "status": "queued",
       "ingested_into": null,
