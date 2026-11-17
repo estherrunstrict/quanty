@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-11-17T06:31:38.214407+09:00",
+  "generated_at": "2026-11-17T16:17:14.409050+09:00",
   "stats": {
-    "total": 455,
-    "queued": 373,
+    "total": 459,
+    "queued": 377,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-11-17T06:31:38.214304+09:00",
+    "last_gc_at": "2026-11-17T16:17:14.408929+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -13228,6 +13228,124 @@
       "discovered": "2026-11-17",
       "matched_keywords": [
         "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.19903",
+      "source": "arxiv",
+      "title": "Dynamic Spatio-Temporal Graph Attention Networks with Nested Clustered Optimization for Multi-Asset Portfolios",
+      "authors": [
+        "Supriadi"
+      ],
+      "abstract": "Nested Clustered Optimization (NCO) insulates asset allocation from Markowitz covariance ill-conditioning. However, classical tree clustering relies on static pairwise Pearson correlation, failing to capture time-varying, asymmetric downside risk contagion across multi-asset markets. We propose a unified deep graph machine learning architecture: Dynamic Spatio-Temporal Graph Attention Networks with Nested Clustered Optimization (ST-GAT-NCO) for multi-asset tactical allocation. The framework extracts temporal momentum and downside risk dynamics via causal dilated 1D-convolutions, then deploys a multi-head Graph Attention Network (GAT) over dynamic market topologies to learn latent spatial node representations. These learned embeddings define an angular metric distance space that guides two-stage downside NCO optimization under institutional constraints and turnover smoothing. Evaluated over a 73-month non-anticipative walk-forward out-of-sample window (January 2020 to January 2026) across 13 global asset classes net of 10 bps transaction costs, ST-GAT-NCO achieves a 5.32% CAGR and 37.06% cumulative net return, delivering an excess Sharpe ratio of 0.30 and a Sortino ratio of 0.48. This substantially outperforms classical Minimum Variance (3.68% CAGR, 0.08 Sharpe), Hierarchical Risk Parity (2.65% CAGR), and Plain Symmetric NCO (4.11% CAGR, 0.15 Sharpe), while restricting maximum drawdown to -13.07% (versus -19.44% for Equal-Weight and -16.36% for Downside NCO) under a controlled one-way turnover of 15.31%/month. Regime analysis confirms active capital preservation across the 2020 COVID-19 crash, 2022 monetary tightening, and 2023-2026 disinflation rallies.",
+      "categories": [
+        "q-fin.PM",
+        "cs.LG"
+      ],
+      "url": "https://arxiv.org/abs/2611.19903v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.19903v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-15",
+      "discovered": "2026-11-17",
+      "matched_keywords": [
+        "momentum",
+        "risk parity",
+        "regime",
+        "walk-forward",
+        "drawdown",
+        "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.18759",
+      "source": "arxiv",
+      "title": "Portfolio-Size Constraints on Default Correlation: Exact Coherence Tests and Sharp Asymptotic Bounds",
+      "authors": [
+        "Marina Palaisti"
+      ],
+      "abstract": "An absorbing default process imposes joint restrictions on cumulative default distributions across horizons. We characterize these restrictions for finite homogeneous portfolios. For binomial mixtures whose mixing distribution functions cross at most once, stochastic ordering of the entire default count is equivalent to two inequalities: the probability of no defaults must be nonincreasing and the probability of all defaults must be nondecreasing. In the one-factor Gaussian model, these inequalities give an exact interval of admissible later correlations, obtained from two scalar equations. The intervals are nested as portfolio size increases. If the earlier and later default probabilities are $p_0<p_1$ and the earlier latent correlation is $ρ_0\\in(0,1)$, both interval boundaries approach $ρ_0$ at rate $(\\log n)^{-1/2}$, with common leading magnitude $ρ_0\\sqrt{2(1-ρ_0)}[Φ^{-1}(p_1)-Φ^{-1}(p_0)]$. We also give a constructive absorbing coupling, an exact sequential repair, differential conditions for smooth horizon curves, and a finite-size certificate of incompatibility. Log-domain quadrature, bracketed root finding, and deterministic numerical experiments evaluate the intervals and verify the restrictions on the full count distribution. The framework provides a feasibility analysis of prescribed horizon laws.",
+      "categories": [
+        "q-fin.RM",
+        "math.PR"
+      ],
+      "url": "https://arxiv.org/abs/2611.18759v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.18759v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-11",
+      "discovered": "2026-11-17",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.18687",
+      "source": "arxiv",
+      "title": "Selection-Aware Certification of Client-Constrained Fraud Rule Portfolios Under Synthetic Distribution Shift",
+      "authors": [
+        "Rishabh Pande",
+        "Yu Zeng"
+      ],
+      "abstract": "Selecting fraud-rule portfolios to satisfy a precision or recall floor can overfit the data used for selection. We study finite-family certification for bounded OR portfolios, comparing point-estimate selection, a fixed safety margin, and one-sided Clopper-Pearson lower bounds with Bonferroni adjustment. In a factorial follow-up with 6,400 datasets from two author-designed synthetic generators, full-validation certification reduced the held-out floor-violation rate by 29.1 percentage points on average versus full-validation point selection, while reducing deployment by 31.7 points. Compared with a fixed 0.05 margin, certification reduced violations by 22.2 points and deployment by 29.4 points; results varied across conditions. Using the full rather than half validation sample increased deployment by 17.1 points on average, without a uniform reduction in shifted-test violations. In a separate 400-dataset no-shift sweep, certification deployment rose from 61.3% to 90.2% as validation size increased from 1,500 to 15,000; no violations occurred among 2,887 deployed portfolios tested on 100,000-row holdouts. A temporal case study on the public synthetic Bank Account Fraud Base dataset used recall at a 5% false-positive-rate cap; the selected candidate pool captured less than 1% of test fraud, showing limited coverage in this setup. Together, these experiments characterize how finite-family certification changes the reliability-deployment tradeoff for bounded OR portfolios under specified synthetic conditions. The evidence covers the evaluated generators and one public synthetic BAF case study; it does not estimate performance on real transaction populations or robustness to arbitrary distribution shift. The authors revised and rewrote this abstract after receiving a draft from OpenAI Codex.",
+      "categories": [
+        "q-fin.RM",
+        "cs.AI",
+        "cs.CR",
+        "cs.LG"
+      ],
+      "url": "https://arxiv.org/abs/2611.18687v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.18687v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-03",
+      "discovered": "2026-11-17",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.18660",
+      "source": "arxiv",
+      "title": "The effect of policy cancellation on the risk of an insurance portfolio",
+      "authors": [
+        "Stefan Gerhold",
+        "Friedrich Hubalek",
+        "Manuel Schranzhofer"
+      ],
+      "abstract": "For an insurance portfolio modelled by a large number of i.i.d. losses, the average loss converges to its expected value by the law of large numbers, reflecting the diversification effect of pooling risks. Policy cancellations reduce the portfolio size and thereby weaken this effect. We quantify the resulting increase in risk by applying risk measures to the average loss before and after the cancellation of policies. For a portfolio of size $n$, we show that the impact of cancelling a single contract is of order $n^{-3/2}$, while the cancellation of a fixed proportion of contracts has an effect of order $n^{-1/2}$. We further extend the proportional cancellation regime to heterogeneous portfolios with different cancellation rates and risk characteristics across segments. These asymptotic results provide a quantitative basis for assessing surrender fees and cancellation costs from the insurer's perspective. We complement the theoretical analysis with numerical results for representative life insurance products, illustrating the magnitude of cancellation costs and the effect of portfolio aggregation. The two regimes require different techniques. For the cancellation of a fixed proportion of contracts, we employ central limit theorems in Wasserstein distance. For the cancellation of a single contract, we combine Kantorovich-Rubinstein duality with higher-order distributional approximations based on the Edgeworth and Cornish-Fisher expansions.",
+      "categories": [
+        "q-fin.RM",
+        "math.PR"
+      ],
+      "url": "https://arxiv.org/abs/2611.18660v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.18660v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-10-19",
+      "discovered": "2026-11-17",
+      "matched_keywords": [
+        "regime"
       ],
       "status": "queued",
       "ingested_into": null,
