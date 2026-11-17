@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-11-17T16:17:14.409050+09:00",
+  "generated_at": "2026-11-18T06:30:46.058727+09:00",
   "stats": {
-    "total": 459,
-    "queued": 377,
+    "total": 463,
+    "queued": 381,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-11-17T16:17:14.408929+09:00",
+    "last_gc_at": "2026-11-18T06:30:46.058603+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -13346,6 +13346,116 @@
       "discovered": "2026-11-17",
       "matched_keywords": [
         "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.19937",
+      "source": "arxiv",
+      "title": "AllocFlow: End-to-End Portfolio Trading Action Generation from Raw Market Data",
+      "authors": [
+        "Annan Wang",
+        "Yuchen Xie",
+        "Yu Cen",
+        "Leon Liangyu Chen",
+        "Qianyu Julie Zhu",
+        "Xin Li",
+        "Tianyi Wei",
+        "Weisi Lin"
+      ],
+      "abstract": "Real-world portfolio management requires converting noisy market observations into coordinated, simultaneous allocations across multiple assets under shared capital constraints. Advances in forecasting models and alpha discovery help identify opportunities. However, traditional pipelines often decouple signal forecasting from portfolio construction, potentially misaligning learning with allocation and execution objectives. We present AllocFlow, an end-to-end flow-matching framework that directly generates joint portfolio allocations from raw multi-asset market histories. To capture dependencies among portfolio positions, AllocFlow employs a cross-asset flow Transformer conditioned on temporal market representations to generate continuous, signed position weights across all instruments jointly. To address the sample inefficiency and instability of learning continuous allocation policies from scratch, we establish a two-stage training scheme: strategy-supervised imitation shapes a structured distribution of candidate portfolios, followed by group-relative reinforcement learning (RL) that refines joint decisions using portfolio-level financial rewards and a frozen policy reference. On hourly cryptocurrency perpetual futures, RL refinement raises the annualized net return of the imitation policy from $27.79\\%$ to $51.38\\%$ and its Calmar ratio from $0.955$ to $4.043$, surpassing the teacher strategy on every metric, and AllocFlow reaches a Calmar ratio of $4.90$ on six further months of unseen 2026 data without retraining.",
+      "categories": [
+        "cs.LG",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2611.19937v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.19937v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-15",
+      "discovered": "2026-11-18",
+      "matched_keywords": [
+        "reinforcement learning"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "openalex:W7117556025",
+      "source": "openalex",
+      "title": "Identifying factors affecting financing approaches and sustainable revenue sources of the municipality (Case study: NAZARABAD Municipality, Karaj)",
+      "authors": [
+        "Hosein Alizade",
+        "Hossein Mojtabazadeh",
+        "Ali Asghar Rezvani"
+      ],
+      "abstract": "شهرداری به‌عنوان یک نهاد عمومی عهده­دار مدیریت شهری و تامین­کننده خدمات و نیازهای اساسی شهروندان می­باشد. بنابراین کسب درآمد، تامین و تبیین منابع مالی شهری به منظور ایجاد کالا و خدمات مورد نیاز شهروندان، ضمن اینکه یکی از اهداف اساسی هرجامعه شهری است، در شرایط کیفی زندگی شهروندان نیز تاثیر دارد. راه­های درآمدی باید درجهت کاهش هزینه­ها مورد توجه مدیران شهری باشد. بنابراين لزوم شناسايي عوامل موثر بر منابع درآمدي پايدار شهر نظرآباد و درآمد شهرداري اين شهر به سمت منابع پايدار و قابل وصول وجود دارد. پژوهش حاضر کاربردی و روش بررسی آن روش پیمایش یا توصیفی­تحلیلی با پرسشنامه محقق­ساخته، اسنادی یا کتابخانه­ای، تحلیل طیف مطلوبیت ،تحلیل عاملی و همبستگی و رگرسیون است. متغیر مستقل: منابع درآمدی شهرداری و متغیر وابسته:توسعه پایدار شهری می­باشند. این پژوهش شامل یک فرضیه اصلی و 9 فرضیه فرعی است. نتایج این پژوهش نشان می­دهند که در واقع تامین و افزایش منابع درآمدی شهرداری شهر نظرآباد کرج می­تواند باعث تحقق پایداری منابع در راستای توسعه شهری شود و درآمدهای ناشي از عوارض عمومي شهرداری، بهای خدمات و درآمد موسسات انتفاعي، درآمد حاصله از وجوه و اموال، اعانات و كمك­هاي اعطايي دولت و سازمان­ها به شهرداري در تحقق توسعه پایدار شهری موثر است. همچنین تفاوت معناداری در منابع درآمدی شهرداری در راستای تحقق توسعه پایدار شهری وجود دارد.بیشترین تاثیرات در شاخص درآمد ناشي از عوارض عمومي دیده می­شود. تفاوت معناداری نیز در شاخص­های درآمدی توسعه پایدار شهری وجود دارد. بیشترین تاثیرات در شاخص مطلوبیت درآمدهای شهرداری دیده می­شود. در خصوص تحلیل عاملی متغیرهای پژوهش می­توان گفت بیشترین میزان تاثیرات مثبت در عوامل خدمات شهری، تجارت و معاملات است. و بیشترین میزان تاثیرات منفی در عوامل تاسیسات شهری و سرمایه­گذاری، عوارض و جرایم و بهای خدمات و کاربری­ها دیده می­شود.ودر پایان راهکارهایی ازجمله استفاده از جذب سرمایه گذار در زمینه های خدماتی (پارکینگ،حمل و نقل ،انرژی های نو) پیشنهادشده است.",
+      "categories": [],
+      "url": "https://doi.org/10.71633/jshsp.2026.1214464",
+      "pdf_url": null,
+      "doi": "10.71633/jshsp.2026.1214464",
+      "year": 2026,
+      "published": "2026-12-22",
+      "discovered": "2026-11-18",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "openalex:W7233964197",
+      "source": "openalex",
+      "title": "Market Dynamics and Risk in Digital Assets",
+      "authors": [
+        "Seung Ah Lee"
+      ],
+      "abstract": "This thesis examines key sources of risk and interconnectedness in digital asset markets through three empirical studies. Together, we analyse how operational vulnerabilities and intermarket connections influence return and volatility dynamics across evolving digital currency markets. In Chapter 2, we investigate how deviations of Tether from its US dollar peg affect the returns of ten major digital assets. Positive and negative depegging events are identified through both constant-threshold and time-varying frameworks. Return models are then estimated to evaluate how cryptocurrencies behave around these dates, both with and without pricing factors. The results show that downward depegging leads to immediate and statistically significant declines in returns, particularly at more severe thresholds. Upward depegging generally displays weak and inconsistent effects, while lagged responses point to limited reversal following large downward deviations. In Chapter 3, we analyse information transmission between cryptocurrencies, stablecoins, and traditional financial markets through a Granger-causality network spanning six sectors and 108 time series. The network maps predictive linkages across equities, commodities, corporate bonds, government bonds and macro indicators, non-stable cryptocurrencies, and stablecoins. The full-sample results reveal meaningful interconnectedness, with commodities and corporate bonds acting as central transmitters of causality, while macro variables and stablecoins are found to be fragile to external influences. Subsample analysis shows that interconnectedness peaked during the COVID-19 period and declined as markets moved toward post-pandemic normalisation, suggesting a gradual shift towards a more segmented and resilient financial structure. In Chapter 4, we evaluate operational risks faced by cryptocurrency exchanges, examining the effects of both cyber breaches on digital exchanges and exchange closures on Bitcoin returns and volatility. The results show that cyberattacks produce significant negative return shocks but do not affect volatility, whereas exchange closures primarily trigger volatility spikes. A further decomposition of exchange closure into four different types (operational failure, security breach, scam or fraud, and unknown) reveals that only failures related to business operations generate significant negative return effects. These findings emphasise the importance of distinguishing among types of operational shocks when assessing risk in digital asset markets.",
+      "categories": [],
+      "url": "https://doi.org/10.25949/35028457",
+      "pdf_url": null,
+      "doi": "10.25949/35028457",
+      "year": 2026,
+      "published": "2026-11-17",
+      "discovered": "2026-11-18",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "openalex:W7234020892",
+      "source": "openalex",
+      "title": "Gamifying responsible investment: Developing ESG literacy through simulation-based finance education",
+      "authors": [
+        "Nirav Parikh",
+        "Ying Zhou",
+        "Pete Fernandes"
+      ],
+      "abstract": "As environmental, social and governance (ESG) considerations become increasingly central to financial investment decision-making, finance education is challenged to integrate ESG capability development into traditionally quantitative curricula while maintaining disciplinary rigour and industry relevance. In parallel, Technology-Enhanced Learning (TEL) research highlights the value of simulation-based and gamified approaches for fostering engagement, authenticity, and applied learning; however, their application to ESG literacy development in tertiary finance education remains underexplored. This paper presents a teaching and learning innovation implemented in finance courses within RMIT University’s Bachelor of Business and Bachelor of Commerce programs. The initiative integrates ESG principles, including Indigenous perspectives and Reconciliation Action Plan (RAP) considerations, into a low-fidelity stock market simulation using live market data. Students construct and actively manage investment portfolios, evaluating ASX-listed companies using both traditional financial metrics and ESG performance indicators. Grounded in experiential learning and TEL theories, the simulation creates a bridge between theoretical financial models and authentic investment practice. Students make investment decisions that balance risk, return, and sustainability considerations, positioning ESG as an embedded dimension of financial analysis and valuation The game is played across 10 weeks and aims to help students balance two distinct ways of thinking: reflexive decision-making (System 1), where students chase quick yields based on gut instinct and market hype, versus reflective decision-making (System 2), where they deliberately slow down to weigh ESG factors against risk-adjusted returns. The inclusion of RAP analysis further enables students to critically examine organisational commitments to reconciliation and social responsibility as part of long-term investment evaluation. Following Landers’ (2014) Theory of Gamified Learning, our focus is on using the game mechanics to influence the learning related behaviours of our participants. Left unchecked, financial simulations naturally reward fast, gut-driven trading. To counteract that and build genuine evaluative capability, we treat structured reflection as the essential bridge between active gameplay and deeper conceptual understanding, drawing on Kolb’s (1984) reflective cycle. To evaluate whether learners have achieved the target learning outcomes, assessors examine the alignment between each student’s longitudinal trading patterns and their written rationale for entering or exiting positions. Rather than judging portfolio return in isolation, assessment focuses on whether students can articulate and apply specific ESG criteria, risk-return fundamentals, and context-specific frameworks (such as Indigenous perspectives on land stewardship and community impact) to justify their buy, hold, or sell choices. Initial observations from the implementation indicate high levels of student engagement in class with the material. The reflections demonstrate an increased confidence in applying ESG concepts within investment decision-making contexts. Student feedback suggests that the simulation challenged assumptions that ESG integration necessarily compromises financial returns, while enabling more nuanced understandings of risk, value creation, and sustainability trade-offs. Feedback from RAP-informed activities further indicates that embedding Indigenous perspectives supports students’ appreciation of ethical responsibility and the social embeddedness of financial systems. This study contributes to TEL research by demonstrating how simulation-based and gamified learning can operationalise ESG education in finance disciplines. Our approach offers a scalable pedagogical model that connects disciplinary knowledge with ethical reasoning, sustainability literacy, and reconciliation awareness.",
+      "categories": [],
+      "url": "https://doi.org/10.65106/apubs.2026.3424",
+      "pdf_url": null,
+      "doi": "10.65106/apubs.2026.3424",
+      "year": 2026,
+      "published": "2026-11-17",
+      "discovered": "2026-11-18",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
