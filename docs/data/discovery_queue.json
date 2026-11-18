@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-11-18T06:30:46.058727+09:00",
+  "generated_at": "2026-11-18T16:16:08.425253+09:00",
   "stats": {
-    "total": 463,
-    "queued": 381,
+    "total": 465,
+    "queued": 383,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-11-18T06:30:46.058603+09:00",
+    "last_gc_at": "2026-11-18T16:16:08.425106+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -13456,6 +13456,66 @@
       "discovered": "2026-11-18",
       "matched_keywords": [
         "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.21897",
+      "source": "arxiv",
+      "title": "Revisiting Equity-Bond Diversification under Tail Risk and Structural Market Change: Evidence from Global ETFs and Model-Implied Option Prices",
+      "authors": [
+        "Farzana Afroz",
+        "Abootaleb Shirvani",
+        "Nicholas Appiah",
+        "Svetlozar T. Rachev",
+        "Frank J. Fabozzi"
+      ],
+      "abstract": "This study examines thirty equity--bond and multi-asset exchange-traded funds (ETFs) listed in the United States, Canada, and Australia using daily U.S.-dollar returns over 2020--2024. A rolling-window framework compares minimum-variance and Conditional Value-at-Risk (CVaR) portfolio optimization under long-only and long--short constraints against an equally weighted benchmark. Performance is assessed using risk-adjusted measures, downside risk, extreme-tail estimation, and conditional volatility models. Optimized portfolios exhibit lower empirical VaR and CVaR than the benchmark, with long--short strategies generally providing greater downside-risk reduction. However, the equally weighted benchmark achieves the highest reported Sharpe, Sortino, and Rachev ratios. GARCH and FIGARCH comparisons favor GARCH based on information criteria. A historically estimated Normal Inverse Gaussian model further generates European option prices and model-implied volatility surfaces under a martingale-corrected pricing specification. The findings highlight trade-offs between risk reduction, risk-adjusted performance, and practical implementation costs.",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2611.21897v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.21897v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-16",
+      "discovered": "2026-11-18",
+      "matched_keywords": [
+        "ETF"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.23126",
+      "source": "arxiv",
+      "title": "Which Past Matters? Training History and Multi-Forecast Horizon in Equity Transformers",
+      "authors": [
+        "Chariton Chalvatzis"
+      ],
+      "abstract": "More historical data can improve estimation while introducing relationships that transfer poorly to current market conditions. We therefore examine how training quantity and historical selection interact with forecast horizon in intraday equity prediction. We deploy twelve configurations which combine four sampling and validation policies with 6, 12 and 24 month training quantities under a fixed cross-sectional Transformer and feature set. A monthly walk-forward experiment produces 264 refits and eight cumulative return forecasts from 5 to 120 minutes. Evaluation covers January 2025 through 20 October 2026 and uses cross-sectional Spearman information coefficients against future five-factor residual returns. Six-month recency sampling leads individual models at 5-15 minutes, while multi recency configurations lead at 20-30 minutes and uniform configurations at 60-120 minutes. Increasing training quantity does not uniformly improve accuracy while an equal-weight ensemble of all twelve models exceeds every individual mean at 15, 20 and 25 minutes, but not at the remaining horizons. These findings support evaluating historical selection jointly with forecast horizon without identifying a universal policy or a causal benefit from recency.",
+      "categories": [
+        "q-fin.ST",
+        "cs.LG",
+        "q-fin.CP"
+      ],
+      "url": "https://arxiv.org/abs/2611.23126v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.23126v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-17",
+      "discovered": "2026-11-18",
+      "matched_keywords": [
+        "factor",
+        "cross-sectional",
+        "walk-forward"
       ],
       "status": "queued",
       "ingested_into": null,
