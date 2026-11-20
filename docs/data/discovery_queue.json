@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-11-20T06:30:42.381778+09:00",
+  "generated_at": "2026-11-20T16:15:54.814846+09:00",
   "stats": {
-    "total": 469,
-    "queued": 387,
+    "total": 471,
+    "queued": 389,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-11-20T06:30:42.381658+09:00",
+    "last_gc_at": "2026-11-20T16:15:54.814740+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -13633,6 +13633,63 @@
       "matched_keywords": [
         "factor",
         "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.25762",
+      "source": "arxiv",
+      "title": "Trading Before a Committed Rebalance",
+      "authors": [
+        "Khizar Qureshi"
+      ],
+      "abstract": "An institution must complete a portfolio adjustment, but traders who prepare inventory for it can choose whether to participate. We study how public forecasts affect the institution's cost in a Bayesian execution game with optional activation, transient impact, and uniform-price terminal completion. The curvature of equilibrium cost as a function of the posterior target mean determines the value of information. In the scalar model, information benefits every fixed participation roster. Optional supply can reverse this ranking at entry, at full participation, and in a smooth interior with lognormal activation costs. For centered scalar targets, information weakly lowers cost relative to no information, strictly when the posterior mean is nonzero with positive probability. Centered Gaussian precision gains are always beneficial. An exact symmetric finite-population equilibrium identifies how information resolution and individual strategic size interact near entry. A portfolio extension gives a matrix criterion for the fixed-roster ranking, which can fail under general cross-impact. Even with isotropic execution, shared activation allows equally accurate signals about target magnitude and composition to have opposite execution values under one unchanged prior. Intraday ETF price data is used to characterize target uncertainty and trading conditions without identifying activation or institutional costs.",
+      "categories": [
+        "q-fin.TR",
+        "math.OC",
+        "q-fin.MF"
+      ],
+      "url": "https://arxiv.org/abs/2611.25762v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.25762v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-19",
+      "discovered": "2026-11-20",
+      "matched_keywords": [
+        "ETF"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.26200",
+      "source": "arxiv",
+      "title": "A Three-Factor Hull-White Scenario Generator for Macro-Financial Stress Forecasting",
+      "authors": [
+        "Ahmad Qadi",
+        "Thomas Schröder",
+        "Francesca Medda"
+      ],
+      "abstract": "This paper builds a scenario engine that maps a yield-curve path into a distribution of macro-financial outcomes. A three-factor Hull-White model generates arbitrage-free curves whose factors are simulated under the physical measure, with an estimated and reported market price of risk. A Minnesota-prior VARX maps the simulated curves into weekly equity returns, the federal funds rate, the Weekly Economic Index, inflation and a bank Marginal Expected Shortfall proxy, with a sign-restricted policy shock adapted to weekly data. Evaluated out of sample from 2017 to 2024, the term-structure block has the lowest forecast error in 13 of 20 maturity and horizon cells, and the density forecasts are well calibrated for the continuously moving variables. At weekly frequency the curve carries no incremental information about these variables once their own lags are controlled for, so the engine's value lies in conditioning on a specified curve path, which no benchmark can do.",
+      "categories": [
+        "q-fin.GN",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2611.26200v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.26200v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-19",
+      "discovered": "2026-11-20",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
