@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-11-21T06:30:29.492048+09:00",
+  "generated_at": "2026-11-23T16:16:14.609552+09:00",
   "stats": {
-    "total": 484,
-    "queued": 402,
+    "total": 487,
+    "queued": 405,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-11-21T06:30:29.491944+09:00",
+    "last_gc_at": "2026-11-23T16:16:14.609432+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -14034,6 +14034,91 @@
       "discovered": "2026-11-21",
       "matched_keywords": [
         "commodity"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.26716",
+      "source": "arxiv",
+      "title": "Are Calibrated Decision Models Calibrated on Markets? Geolocated News, Markov Switching and a System One Model for Nasdaq-100 Allocation",
+      "authors": [
+        "Jakub Zając",
+        "Michał Dyrek"
+      ],
+      "abstract": "Portfolio allocation is driven by probabilities of losses, not only by forecasts of the direction (up/down) of the market. A decision model such as Jev returns a probability for a yes/no question and has been reported to be well calibrated on a set of benchmarks. However, the model's calibration against realised market outcomes has not been tested. In this study, every Friday we ask whether the Nasdaq-100 will close lower four weeks later and compare a two-regime Markov-switching model estimated on data from 1990 to 2026, Jev reading weekly headlines and geolocated news features computed with spatial queries in PostGIS, and their combination. A knowledge probe shows that Jev knows events up to late 2024, so we evaluate it on 88 weeks from January 2025 onwards. None of the models predicts the direction better than the historical base rate. A key finding is that raw Jev overestimates the probability of a decline: its mean forecast is 0.48 against an observed frequency of 0.38, and its ECE is 0.10. A prior shift to the historical base rate, which uses no outcomes from the test period, lowers the ECE to 0.015. In contrast, Platt scaling, isotonic regression and the combination with the Markov model all make the forecasts worse. In a half-Kelly allocation, the raw Jev strategy returns 3.1% per year, whereas after the prior shift it returns 14.5%; a simple buy-and-hold strategy in QQQ returns 15.3% per year. The Markov model forecasts large declines (more than 10%) well, with an AUC of 0.81, and its strategy has the highest Sharpe ratio over 1999-2026. Asked about such a large decline (base rate 4%), raw Jev forecasts 16-24% on average, and the same prior shift removes this offset. The practical lesson is that decision-model probabilities must be anchored to the base rate of the market event before they are used to size positions.",
+      "categories": [
+        "q-fin.ST",
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2611.26716v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.26716v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-19",
+      "discovered": "2026-11-23",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.26700",
+      "source": "arxiv",
+      "title": "Held-to-Maturity Accounting: Hidden Losses and Systemic Fragility",
+      "authors": [
+        "Dongxu Li",
+        "Steve Y. Yang"
+      ],
+      "abstract": "This paper studies how accounting-induced opacity affects systemic risk in the banking system. Motivated by the buildup of unrealized losses during recent monetary tightening episodes, we develop a model in which banks hold correlated interest rate sensitive assets and are connected through an endogenous interbank network. We show that Held-To-Maturity (HTM) accounting amplifies systemic risk by delaying loss recognition, allowing losses to accumulate and become synchronized across institutions. When losses are realized under liquidity stress, the interaction of correlated exposures and network linkages generates nonlinear increases in defaults. These findings suggest that accounting regimes are not neutral from a financial stability perspective, as they influence both the buildup and propagation of systemic risk, particularly in environments with common asset exposures and strong interconnectedness.",
+      "categories": [
+        "q-fin.RM",
+        "q-fin.CP"
+      ],
+      "url": "https://arxiv.org/abs/2611.26700v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.26700v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-19",
+      "discovered": "2026-11-23",
+      "matched_keywords": [
+        "regime"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.26670",
+      "source": "arxiv",
+      "title": "A Solvency II-Based Framework for Pricing Structural Longevity Risk under an Affine Mortality Model",
+      "authors": [
+        "Madiha Bouhouche",
+        "Said Khalil",
+        "Fadoua Badaoui"
+      ],
+      "abstract": "This paper develops a Solvency II-based pricing framework for structural longevity risk in incomplete longevity markets. The valuation scheme relies on the Cost-of-Capital principle underlying the Risk Margin and combines it with a continuous-time affine mortality model. Mortality dynamics are specified in calendar time, with age-dependent mortality patterns linked to a latent longevity factor driving long-term mortality improvements. The affine structure preserves closed-form survival probabilities and provides a tractable basis for repeated Best Estimate, Solvency Capital Requirement and Risk Margin calculations. We derive the conditional distribution of one-year discounted Best Estimate variations, obtaining analytical expressions for their asymmetry and Value-at-Risk under the Gaussian affine specification. Within this setting, we introduce a stress-based assessment by applying adverse shocks to the deterministic parameters governing the longevity trend. The trend-based stress is compared with a mortality-level stress and with a Value-at-Risk-based capital assessment. The methodology links stochastic mortality modelling, prudential capital valuation and longevity-linked payoff assessment within a unified actuarial framework. A numerical application based on Belgian mortality data illustrates the implementation and shows that the mortality-level stress produces substantially larger scenario-based capital-cost measures than the trend-based stress. These findings highlight the sensitivity of longevity risk valuation to the specification of adverse mortality scenarios. The approach offers a transparent and operational basis for assessing and pricing structural longevity risk under a Solvency II Cost-of-Capital perspective.",
+      "categories": [
+        "q-fin.PR",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2611.26670v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.26670v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-19",
+      "discovered": "2026-11-23",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
