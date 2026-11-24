@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-11-24T06:30:31.680271+09:00",
+  "generated_at": "2026-11-24T16:17:04.124878+09:00",
   "stats": {
-    "total": 487,
-    "queued": 405,
+    "total": 491,
+    "queued": 409,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-11-24T06:30:31.680117+09:00",
+    "last_gc_at": "2026-11-24T16:17:04.124749+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -14119,6 +14119,124 @@
       "discovered": "2026-11-23",
       "matched_keywords": [
         "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.30843",
+      "source": "arxiv",
+      "title": "Cleaning correlation matrices with external information: the Maximum Variance estimat",
+      "authors": [
+        "Sébastien Valeyre"
+      ],
+      "abstract": "Rotationally invariant estimators clean the eigenvalues of an empirical correlation matrix but keep its noisy eigenvectors. We study an estimator that corrects the eigenvectors by using external information, namely a partition of the assets into groups such as asset classes or regions. The Maximum Variance (MaxVar) estimator restricts the leading eigenvectors to linear combinations of the maximum-variance portfolios of the groups and replaces the rest of the spectrum by a single eigenvalue. It is a factor model with about n parameters instead of n2/2, and it is positive de nite even when the number of observations is smaller than the number of assets n. We apply it to the correlation matrix of 47 futures on stock indices, bonds and currencies, with the three asset classes as groups. In an illustrative Monte Carlo test, in which the reference matrix has the structure assumed by the estimator, the distance to the reference is reduced by one third with respect to the empirical matrix, against less than 10% for the rotationally invariant estimator. The decisive test is the performance of a portfolio on real data: over 1993-2018, the Sharpe ratio of the risk parity portfolio, which involves the inverse of the matrix, is 1.28 with the MaxVar estimator, 1.24 with the rotationally invariant estimator and 1.17 with the empirical matrix, and the advantage increases when the estimation window is shortened.",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2611.30843v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.30843v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-23",
+      "discovered": "2026-11-24",
+      "matched_keywords": [
+        "risk parity",
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.30584",
+      "source": "arxiv",
+      "title": "Do Candlestick Charts Suffice? The Incremental Economic Value of Technical Indicators in Stock Return Prediction",
+      "authors": [
+        "Peng Liu",
+        "Yanyan Zheng"
+      ],
+      "abstract": "Although technical analysis remains widely used in practice, the need for manually constructed indicators is increasingly questioned as deep learning models can extract features directly from OHLC price data. This paper examines the standalone economic value of trading volume and manually constructed technical-indicator groups and whether adding these groups to OHLC candlestick charts provides incremental economic value. Using daily data for 1,707 Chinese A-share stocks from 2013 to 2025, we construct approximately 3.36 million stock-window samples and encode them as multi-channel images containing candlestick charts, trading volume, and seven widely used manually constructed technical indicators. The primary analysis uses a 2D CNN on these images; complementary tests apply a logistic regression, a 1D CNN, and an LSTM to numerical representations of the same samples. Out-of-sample performance from 2021 to 2025 is evaluated using decile portfolios, Sharpe ratios, Fama--French alphas, and formal pairwise tests. Our empirical results yield two central findings. First, specifications based separately on OHLC, trading volume, and each technical-indicator group produce significantly positive high-minus-low returns and factor-adjusted alphas, together with economically meaningful Sharpe ratios; the OHLC-only specifications generally perform best under the nonlinear models. Second, adding these technical-indicator groups to OHLC does not systematically improve any of these performance measures in our setting. Together, these results provide the first large-scale evidence from the Chinese A-share market on the standalone and incremental economic value of these technical-indicator groups across multiple representations and model architectures.",
+      "categories": [
+        "econ.GN",
+        "cs.CE",
+        "cs.LG",
+        "q-fin.PM",
+        "q-fin.TR"
+      ],
+      "url": "https://arxiv.org/abs/2611.30584v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.30584v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-23",
+      "discovered": "2026-11-24",
+      "matched_keywords": [
+        "factor"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.29552",
+      "source": "arxiv",
+      "title": "Gated Payoff-Weighted Net Profit Maximization For Online Portfolio Selection With Transaction Costs",
+      "authors": [
+        "Grace Chengrong Xie",
+        "Alvey Qianli Lin",
+        "Wai Ki Ching"
+      ],
+      "abstract": "In this paper, we study online portfolio selection (OLPS) problems. The net profit maximization (NPM) acting upon Adaptive Online Moving Average (AOLMA), namely the AOLNPM strategy in portfolio selection, trades when forecast gain exceeds the transaction cost. In essence, this method relies heavily on calibrated forecasts. Indeed, we show that AOLMA forecasts overstate the realized relative returns. We therefore design a gate that adjusts how strongly an AOLMA forecast is used; for each asset, it learns the recent mixture proportion assigned to AOLMA from predictive likelihoods against a neutral forecast (no change). The proportion therefore estimates the extent to which the forecast is realized. We then feed the resulting forecast into the NPM portfolio rule, where the gate acts as an asset-specific cost threshold. A payoff-weighted fund combines gated NPM experts with fixed decay factors in proportion to their wealth and needs no learning rate. On nine datasets with a transaction cost rate of 0.1%, our method produces 5.9 times the wealth of AOLNPM in geometric mean and sits above AOLNPM on every dataset, with its preponderance growing with the cost rate.",
+      "categories": [
+        "q-fin.PM",
+        "q-fin.CP",
+        "stat.ML"
+      ],
+      "url": "https://arxiv.org/abs/2611.29552v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.29552v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-22",
+      "discovered": "2026-11-24",
+      "matched_keywords": [
+        "factor",
+        "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.21262",
+      "source": "arxiv",
+      "title": "Liquidity Commitments and Strategic Settlement in Financial Networks",
+      "authors": [
+        "Hicham El Kaissi"
+      ],
+      "abstract": "Credible liquidity commitments can prevent self-fulfilling settlement freezes without being drawn. But how should they be designed to minimise reserved capacity while preserving banks' ordinary self-insurance? Missing incoming payments increase precautionary retention, allowing a freeze to coexist with feasible full repayment. We characterise a canonical contingent entitlement that uniquely implements full payment whenever any admissible continuous schedule can, even when alternatives induce nonmonotone repayment responses. Functional contract design therefore reduces exactly to capacity allocation. Contract shape matters even after commitments are optimally allocated within the affine benchmark. At zero usage prices, flexible commitments can require strictly less capacity than globally optimised affine reserve attenuation. An exact critical-mode criterion provides a sufficient condition for these global savings. For fixed positive reservation weights, strict savings are generic in a specified dense-network regime and arise in open families of sparse directed cycles. For heterogeneous directed cycles with one potentially amplifying bank, a compact linear programme characterises the reserve-preserving capacity infimum. Under stated reserve conditions, a sharp comparison identifies when eligibility restrictions increase costs and change the allocation of support. Verifiable incremental-risk eligibility provides a foundation for preserving ordinary reserves at zero usage prices. General-network bounds and exact exponential two-bank results establish that contractual flexibility retains value at positive usage prices.",
+      "categories": [
+        "q-fin.RM",
+        "cs.GT",
+        "econ.TH",
+        "q-fin.MF"
+      ],
+      "url": "https://arxiv.org/abs/2611.21262v2",
+      "pdf_url": "https://arxiv.org/pdf/2611.21262v2",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-16",
+      "discovered": "2026-11-24",
+      "matched_keywords": [
+        "regime"
       ],
       "status": "queued",
       "ingested_into": null,
