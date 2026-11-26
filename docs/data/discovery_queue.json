@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-11-26T06:30:31.718756+09:00",
+  "generated_at": "2026-11-26T16:15:35.390992+09:00",
   "stats": {
-    "total": 492,
-    "queued": 410,
+    "total": 495,
+    "queued": 413,
     "summarized": 82,
     "ingested": 0,
     "dismissed": 0,
-    "last_gc_at": "2026-11-26T06:30:31.718625+09:00",
+    "last_gc_at": "2026-11-26T16:15:35.390871+09:00",
     "last_gc_removed": 0
   },
   "queue": [
@@ -14267,6 +14267,98 @@
       "matched_keywords": [
         "reinforcement learning",
         "transaction cost"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.34171",
+      "source": "arxiv",
+      "title": "Rank-size analysis of optimal portfolio weights with a reverse-engineering application",
+      "authors": [
+        "Roy Cerqueti",
+        "Francesco Cesarone",
+        "Alessio Di Paolo",
+        "Valerio Ficcadenti"
+      ],
+      "abstract": "This paper investigates the shape of optimal portfolio weights using rank-size analysis. We consider four portfolio selection models: Global Minimum-Variance (GMV), minimum-CVaR, Risk Parity (RP), and the Most Diversified Portfolio (MDP). For each model, we fit seven rank-size specifications to the sorted portfolio weights generated over rolling windows. To compare the fitted specifications, we combine standard goodness-of-fit measures with Cumulative Second-order $\\varepsilon$-Stochastic Dominance, an $\\varepsilon$-parameterized generalization of Second-order Stochastic Dominance that quantifies the extent to which the exact dominance conditions are satisfied or violated. Empirically applied to major equity indices, this approach provides a systematic criterion for identifying the optimal functional form across diverse market compositions. Furthermore, we address the inverse problem of identifying the generating model from the observed weight structure. We use the calibrated rank-size parameters as inputs to a Random Forest classifier, evaluated by a blocked cross-validation that accounts for the overlap between estimation windows. The parameters separate minimum-risk from risk-diversification strategies and identify the RP and MDP portfolios, whereas the GMV and minimum-CVaR portfolios are difficult to distinguish. These results indicate that rank-size parameters provide a compact and informative description of portfolio allocation geometries.",
+      "categories": [
+        "q-fin.PM"
+      ],
+      "url": "https://arxiv.org/abs/2611.34171v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.34171v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-25",
+      "discovered": "2026-11-26",
+      "matched_keywords": [
+        "risk parity"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.34209",
+      "source": "arxiv",
+      "title": "Graph-Informed Deep Factor Model for Statistical Arbitrage",
+      "authors": [
+        "Evelyn Zhu",
+        "Mucheng Zhu",
+        "Brendan Martin",
+        "Mihai Cucuringu"
+      ],
+      "abstract": "Statistical arbitrage exploits temporary mispricings between similar assets in the cross-section of daily equity returns. We propose a nonlinear single-factor model, called a Graph-Informed Deep Factor (GIDF) model, whose per-stock loadings have cross-sectional dependence conditional on a latent network. The network captures cross-sectional return dependencies that remain after removing the dominant eigenmodes of the return correlation matrix, thereby providing a complementary representation of inter-asset relationships beyond the leading sources of systematic variation. It is reconstructed from data using a novel method that we call the Factor-Adjusted Dynamic EWMA (FADE). A signed-edge graph attention mechanism then combines the reconstructed network with exogenous firm characteristics and macroeconomic variables. This graph-informed specification is designed to produce residuals that more effectively separate idiosyncratic mean-reverting dynamics from cross-sectional co-movements, yielding economically useful signals for daily statistical arbitrage. In a comprehensive empirical study on daily U.S. equities from 2015 to 2024, GIDF outperforms classical factor models and state-of-the-art deep learning methods, achieving an out-of-sample Sharpe ratio of 1.78 under the canonical Avellaneda--Lee rule.",
+      "categories": [
+        "q-fin.ST"
+      ],
+      "url": "https://arxiv.org/abs/2611.34209v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.34209v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-25",
+      "discovered": "2026-11-26",
+      "matched_keywords": [
+        "factor",
+        "cross-sectional",
+        "statistical arbitrage"
+      ],
+      "status": "queued",
+      "ingested_into": null,
+      "claude_summary": null,
+      "claude_suggested_action": null,
+      "dismissed_reason": null
+    },
+    {
+      "id": "arxiv:2611.34192",
+      "source": "arxiv",
+      "title": "Time-consistency of cash-subadditive risk measures: The infimal cocycle property",
+      "authors": [
+        "Matteo Ferrari",
+        "Roger J. A. Laeven",
+        "Emanuela Rosazza Gianin",
+        "Marco Zullino"
+      ],
+      "abstract": "We characterize the time-consistency of convex, cash-subadditive dynamic risk measures in terms of their minimal penalty. The dual variables are conditional sub-probability densities, which factorize across an intermediate date in many ways, according to how the discount is allocated to the two periods. We introduce an infimal cocycle property, in which the penalty is the infimum over all such factorizations, and show that it is equivalent to time-consistency, with the infimum attained. This holds on $L^\\infty$ under continuity from below, and on $L^p$, $p<\\infty$, without continuity assumptions. In the cash-additive case it reduces to the classical cocycle property. For risk measures induced by BSDEs, it represents the dynamic programming principle of a stochastic control problem whose value is the penalty.",
+      "categories": [
+        "q-fin.MF",
+        "math.OC",
+        "math.PR",
+        "q-fin.RM"
+      ],
+      "url": "https://arxiv.org/abs/2611.34192v1",
+      "pdf_url": "https://arxiv.org/pdf/2611.34192v1",
+      "doi": null,
+      "year": 2026,
+      "published": "2026-11-25",
+      "discovered": "2026-11-26",
+      "matched_keywords": [
+        "factor"
       ],
       "status": "queued",
       "ingested_into": null,
